@@ -4,16 +4,16 @@ namespace Starlights.Platform.Hosting;
 
 public static class HostingExtensions
 {
-    public static TBuilder AddStarlightsPlatform<TBuilder>(this TBuilder builder)
+    public static TBuilder AddStarlightsPlatform<TBuilder>(this TBuilder builder, Action<PlatformBuilderOptions>? optionsAction = null)
         where TBuilder : IHostApplicationBuilder
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        // TODO: add PlatformBuilderOptions to allow customization of the platform services
+        var options = new PlatformBuilderOptions();
+        optionsAction?.Invoke(options);
 
         // register the platform services
-        var platformBuilder = new PlatformBuilder(builder.Services);
-
+        var platformBuilder = new PlatformBuilder(builder.Services, options);
         platformBuilder.Build();
 
         return builder;

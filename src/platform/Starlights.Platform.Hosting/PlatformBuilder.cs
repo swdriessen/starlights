@@ -6,16 +6,22 @@ namespace Starlights.Platform.Hosting;
 
 public sealed class PlatformBuilder : IPlatformBuilder
 {
-    public PlatformBuilder(IServiceCollection services)
+    private readonly PlatformBuilderOptions _options;
+
+    public PlatformBuilder(IServiceCollection services, PlatformBuilderOptions options)
     {
         Services = services;
+        _options = options;
     }
 
     public IServiceCollection Services { get; }
 
     public void Build()
     {
-        RegisterPlatformModules();
+        if (_options.IsModuleDiscoveryEnabled)
+        {
+            RegisterPlatformModules();
+        }
     }
 
     /// <summary>
@@ -32,6 +38,7 @@ public sealed class PlatformBuilder : IPlatformBuilder
         foreach (var moduleType in types)
         {
             // TODO: add checks for empty constructors or specific constructor signatures if needed <TBD>
+            // TODO: if a module was registered manually... skip or throw an exception
 
             if (Activator.CreateInstance(moduleType) is IPlatformModule module)
             {
@@ -49,7 +56,6 @@ public sealed class PlatformBuilder : IPlatformBuilder
         foreach (var module in modules)
         {
             // TODO: provide configuration through method or constructor
-
             module.ConfigureServices(Services);
         }
     }

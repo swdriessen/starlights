@@ -25,10 +25,7 @@ public static class Program
 
         app.UseAuthorization();
 
-        app.MapGet("/hello", (HttpContext httpContext) =>
-        {
-            return Results.Ok("Hello, World!");
-        })
+        app.MapGet("/hello", (HttpContext _) => Results.Ok("Hello, World!"))
         .WithName("HelloWorld");
 
         app.Run();
