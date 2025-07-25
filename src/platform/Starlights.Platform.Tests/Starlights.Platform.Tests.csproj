@@ -1,7 +1,6 @@
-<Project Sdk="MSTest.Sdk/3.6.4">
+﻿<Project Sdk="MSTest.Sdk/3.6.4">
 
   <PropertyGroup>
-	  <IsTestProject>true</IsTestProject>
     <LangVersion>latest</LangVersion>	  
     <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
   </PropertyGroup>
