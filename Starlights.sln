@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4CA9D0EC-9739-4751-B08B-DF40599F2A52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{57225CEE-0693-4B59-97A3-AC8B03ABCCE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Application", "src\apps\Starlights.Application\Starlights.Application.csproj", "{CB8F0214-70DD-422A-84E6-ADF3F63D661D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CB8F0214-70DD-422A-84E6-ADF3F63D661D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8F0214-70DD-422A-84E6-ADF3F63D661D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8F0214-70DD-422A-84E6-ADF3F63D661D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8F0214-70DD-422A-84E6-ADF3F63D661D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{57225CEE-0693-4B59-97A3-AC8B03ABCCE3} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
+		{CB8F0214-70DD-422A-84E6-ADF3F63D661D} = {57225CEE-0693-4B59-97A3-AC8B03ABCCE3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}
+	EndGlobalSection
+EndGlobal
