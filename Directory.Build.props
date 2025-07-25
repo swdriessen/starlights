@@ -4,4 +4,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
+
+	<ItemGroup Label="Test Projects" Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+		<PackageReference Include="FluentAssertions" />
+	</ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using FluentAssertions;
+using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Tests;
@@ -17,6 +18,6 @@ public sealed class PlatformTests
 
         // Assert
         var app = builder.Build();
-        Assert.IsNotNull(app.Services);
+        app.Should().NotBeNull();
     }
 }
