@@ -1,37 +1,36 @@
+using Starlights.Platform.Hosting;
 
-namespace Starlights.Application
+namespace Starlights.Application;
+
+public static class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddAuthorization();
+        builder.Services.AddOpenApi();
+
+        // add the platform services and its modules
+        builder.AddStarlightsPlatform();
+
+        var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-            builder.Services.AddAuthorization();
-
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-            app.MapGet("/hello", (HttpContext httpContext) =>
-            {
-                return Results.Ok("Hello, World!");
-            })
-            .WithName("HelloWorld");
-
-            app.Run();
+            app.MapOpenApi();
         }
+
+        // configure the platform and its modules
+        app.UseStarlightsPlatform();
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization();
+
+        app.MapGet("/hello", (HttpContext _) => Results.Ok("Hello, World!"))
+        .WithName("HelloWorld");
+
+        app.Run();
     }
 }
