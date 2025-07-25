@@ -14,6 +14,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{57225CEE-0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Application", "src\apps\Starlights.Application\Starlights.Application.csproj", "{CB8F0214-70DD-422A-84E6-ADF3F63D661D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "platform", "platform", "{C840D2F9-B821-4C84-B2D2-5CB18C1C9F23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{AE52B474-883E-423F-A4BB-2724CDDD8AD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "elements", "elements", "{6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Hosting", "src\platform\Starlights.Platform.Hosting\Starlights.Platform.Hosting.csproj", "{ADE9254E-4C16-4541-A4CE-1A176C6C9051}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Hosting.Abstractions", "src\platform\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj", "{A62B6137-209E-4F1B-889C-1778C0CBA17A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +34,14 @@ Global
 		{CB8F0214-70DD-422A-84E6-ADF3F63D661D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB8F0214-70DD-422A-84E6-ADF3F63D661D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB8F0214-70DD-422A-84E6-ADF3F63D661D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADE9254E-4C16-4541-A4CE-1A176C6C9051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADE9254E-4C16-4541-A4CE-1A176C6C9051}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADE9254E-4C16-4541-A4CE-1A176C6C9051}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADE9254E-4C16-4541-A4CE-1A176C6C9051}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A62B6137-209E-4F1B-889C-1778C0CBA17A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A62B6137-209E-4F1B-889C-1778C0CBA17A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A62B6137-209E-4F1B-889C-1778C0CBA17A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A62B6137-209E-4F1B-889C-1778C0CBA17A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -31,6 +49,11 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{57225CEE-0693-4B59-97A3-AC8B03ABCCE3} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
 		{CB8F0214-70DD-422A-84E6-ADF3F63D661D} = {57225CEE-0693-4B59-97A3-AC8B03ABCCE3}
+		{C840D2F9-B821-4C84-B2D2-5CB18C1C9F23} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
+		{AE52B474-883E-423F-A4BB-2724CDDD8AD0} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
+		{6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61} = {AE52B474-883E-423F-A4BB-2724CDDD8AD0}
+		{ADE9254E-4C16-4541-A4CE-1A176C6C9051} = {C840D2F9-B821-4C84-B2D2-5CB18C1C9F23}
+		{A62B6137-209E-4F1B-889C-1778C0CBA17A} = {C840D2F9-B821-4C84-B2D2-5CB18C1C9F23}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}

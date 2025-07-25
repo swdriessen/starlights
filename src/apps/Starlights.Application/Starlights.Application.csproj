@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\platform\Starlights.Platform.Hosting\Starlights.Platform.Hosting.csproj" />
+  </ItemGroup>
+
 </Project>
