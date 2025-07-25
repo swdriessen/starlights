@@ -11,7 +11,7 @@ public static class Program
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
 
-        // add the platform services
+        // add the platform services and its modules
         builder.AddStarlightsPlatform();
 
         var app = builder.Build();
@@ -20,6 +20,9 @@ public static class Program
         {
             app.MapOpenApi();
         }
+
+        // configure the platform and its modules
+        app.UseStarlightsPlatform();
 
         app.UseHttpsRedirection();
 
