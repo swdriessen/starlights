@@ -1,6 +1,6 @@
 ﻿using Starlights.Platform.Domain;
 
-namespace Modules.Elements;
+namespace Starlights.Modules.Elements.Domain;
 
 /// <summary>
 /// Represents a base class for components of an element.

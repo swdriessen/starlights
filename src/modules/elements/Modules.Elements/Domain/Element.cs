@@ -1,6 +1,6 @@
 ﻿using Starlights.Platform.Domain;
 
-namespace Modules.Elements;
+namespace Starlights.Modules.Elements.Domain;
 
 /// <summary>
 /// Represents an element (building block) in the system, which can have multiple components.

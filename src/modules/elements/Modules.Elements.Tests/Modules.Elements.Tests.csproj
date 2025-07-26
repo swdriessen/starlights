@@ -3,6 +3,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+    <RootNamespace>Starlights.Modules.Elements.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

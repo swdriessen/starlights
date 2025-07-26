@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
+using Starlights.Modules.Elements.Domain;
 
-namespace Modules.Elements.Tests;
+namespace Starlights.Modules.Elements.Tests;
 
 [TestClass]
 public sealed class ElementTests
@@ -25,24 +26,13 @@ public sealed class ElementTests
     public void AddComponent()
     {
         // Arrange
-        var element = new Element("Test Element", "Test Type");
-        var component = new TestComponent("Test Component");
+        var element = new Element("Strength", "Ability");
+        var component = new AbilityComponent("STR");
 
         // Act
         element.AddComponent(component);
 
         // Assert
-        element.Components.Should().Contain(component);
+        element.Components.OfType<AbilityComponent>().Should().ContainSingle();
     }
-
-    private sealed class TestComponent : ElementComponentBase
-    {
-        public TestComponent(string data)
-        {
-            Data = data;
-        }
-
-        public string Data { get; }
-    }
-
 }

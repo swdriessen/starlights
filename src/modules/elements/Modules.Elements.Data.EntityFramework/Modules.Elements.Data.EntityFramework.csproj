@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>Starlights.Modules.Elements.Data.EntityFramework</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\platform\extensions\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Extensions.Platform.Data.EntityFramework.csproj" />
+		<ProjectReference Include="..\Modules.Elements\Modules.Elements.csproj" />
+	</ItemGroup>
+
+</Project>

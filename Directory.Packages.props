@@ -5,6 +5,7 @@
 	</PropertyGroup>
 	<PropertyGroup Label="Package Versions">
 		<MicrosoftExtensionsVersion>9.0.7</MicrosoftExtensionsVersion>
+		<EntityFrameworkCoreVersion>9.0.7</EntityFrameworkCoreVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftExtensionsVersion)" />
@@ -17,6 +18,9 @@
 		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="$(MicrosoftExtensionsVersion)" />
 		<PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="$(MicrosoftExtensionsVersion)" />
 		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
+	</ItemGroup>
+	<ItemGroup Label="Entity Framework">
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkCoreVersion)" />
 	</ItemGroup>
 	<ItemGroup Label="Test Projects">
 		<PackageVersion Include="Moq" Version="4.20.72" />
