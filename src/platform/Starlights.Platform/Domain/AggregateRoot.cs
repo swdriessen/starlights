@@ -9,6 +9,11 @@ public abstract class AggregateRoot<TKey> : EntityBase<TKey>, IAggregateRoot<TKe
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 
+    protected AggregateRoot(TKey id)
+        : base(id)
+    {
+    }
+
     /// <summary>
     /// Gets the domain events raised by this aggregate.
     /// </summary>

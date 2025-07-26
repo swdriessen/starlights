@@ -98,16 +98,16 @@ public sealed class DomainTests
     private sealed class TestEntity : EntityBase<int>
     {
         public TestEntity(int id)
+            : base(id)
         {
-            Id = id;
         }
     }
 
     private sealed class TestAggregateRoot : AggregateRoot<Guid>
     {
         public TestAggregateRoot(Guid id)
+            : base(id)
         {
-            Id = id;
         }
 
         public void RaiseTestEvent(IDomainEvent domainEvent)

@@ -5,6 +5,11 @@
 /// </summary>
 public abstract class EntityBase<TKey> : IEntity<TKey> where TKey : struct
 {
+    protected EntityBase(TKey id)
+    {
+        Id = id;
+    }
+
     /// <inheritdoc />
     public TKey Id { get; protected set; }
 }
