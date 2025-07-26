@@ -6,7 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -30,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E3D190F9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Tests", "src\platform\Starlights.Platform.Tests\Starlights.Platform.Tests.csproj", "{FBD827D7-BDD2-4C9B-A2A7-C1F514E427D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform", "src\platform\Starlights.Platform\Starlights.Platform.csproj", "{F53EED3F-369A-4BA2-B5DD-61082E15A9B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,10 @@ Global
 		{FBD827D7-BDD2-4C9B-A2A7-C1F514E427D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBD827D7-BDD2-4C9B-A2A7-C1F514E427D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBD827D7-BDD2-4C9B-A2A7-C1F514E427D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F53EED3F-369A-4BA2-B5DD-61082E15A9B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F53EED3F-369A-4BA2-B5DD-61082E15A9B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F53EED3F-369A-4BA2-B5DD-61082E15A9B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F53EED3F-369A-4BA2-B5DD-61082E15A9B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +74,7 @@ Global
 		{A62B6137-209E-4F1B-889C-1778C0CBA17A} = {C840D2F9-B821-4C84-B2D2-5CB18C1C9F23}
 		{E3D190F9-83DD-4164-9D06-63EE3FD45463} = {C840D2F9-B821-4C84-B2D2-5CB18C1C9F23}
 		{FBD827D7-BDD2-4C9B-A2A7-C1F514E427D7} = {E3D190F9-83DD-4164-9D06-63EE3FD45463}
+		{F53EED3F-369A-4BA2-B5DD-61082E15A9B5} = {C840D2F9-B821-4C84-B2D2-5CB18C1C9F23}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}

@@ -11,4 +11,9 @@ public interface IPlatformBuilder
     /// Gets the service collection for the platform builder.
     /// </summary>
     IServiceCollection Services { get; }
+
+    /// <summary>
+    /// Gets the options for configuring the platform builder.
+    /// </summary>
+    PlatformBuilderOptions Options { get; }
 }
