@@ -1,0 +1,12 @@
+<Project Sdk="MSTest.Sdk/3.6.4">
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.Elements\Modules.Elements.csproj" />
+  </ItemGroup>
+
+</Project>
