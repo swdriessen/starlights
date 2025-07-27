@@ -5,12 +5,12 @@ namespace Starlights.Modules.Elements.Domain;
 /// <summary>
 /// Represents an element (building block) in the system, which can have multiple components.
 /// </summary>
-public sealed class Element : AggregateRoot<Guid>
+public sealed class Element : AggregateRoot<ElementId>
 {
     private readonly List<ElementComponentBase> _components = [];
 
     private Element(string name, string type)
-        : base(Guid.CreateVersion7())
+        : base(ElementId.New())
     {
         Name = name.Trim();
         Type = type.Trim();

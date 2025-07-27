@@ -28,12 +28,27 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        var component = new AbilityComponent(Guid.CreateVersion7(), "STR");
+        var component = new AbilityComponent(element.Id, "STR");
 
         // Act
         element.AddComponent(component);
 
         // Assert
-        element.Components.OfType<AbilityComponent>().Should().ContainSingle();
+        element.Components.OfType<AbilityComponent>()
+            .Should().ContainSingle();
+    }
+
+    [TestMethod]
+    public void AddComponent_ShouldHaveOwningElement()
+    {
+        // Arrange
+        var element = Element.Create("Strength", ElementTypeConstants.Ability);
+        var component = new AbilityComponent(element.Id, "STR");
+
+        // Act
+        element.AddComponent(component);
+
+        // Assert
+        component.OwningElement.Should().Be(element.Id);
     }
 }

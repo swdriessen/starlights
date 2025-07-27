@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 
 namespace Starlights.Modules.Elements.Tests.Domain.Components;
@@ -14,7 +15,7 @@ public class DescriptionComponentTests
     {
         // Arrange
         const string expected = "A description.";
-        var id = Guid.NewGuid();
+        var id = ElementId.New();
 
         // Act
         var component = new DescriptionComponent(id, expected);
@@ -27,7 +28,7 @@ public class DescriptionComponentTests
     public void UpdateContent_UpdatesContent()
     {
         // Arrange
-        var component = new DescriptionComponent(Guid.NewGuid(), "Initial");
+        var component = new DescriptionComponent(ElementId.New(), "Initial");
         const string newContent = "Updated description.";
 
         // Act
@@ -41,8 +42,8 @@ public class DescriptionComponentTests
     public void Constructor_Throws_WhenContentIsNull()
     {
         // Arrange
-        var id = Guid.NewGuid();
-        Action actNull = () => new DescriptionComponent(id, null!);
+        var id = ElementId.New();
+        Action actNull = () => _ = new DescriptionComponent(id, null!);
 
         // Assert
         actNull.Should().Throw<ArgumentException>();
@@ -50,11 +51,8 @@ public class DescriptionComponentTests
     [TestMethod]
     public void Constructor_Allows_WhitespaceString()
     {
-        // Arrange
-        var id = Guid.NewGuid();
-
         // Act
-        var component = new DescriptionComponent(id, "   ");
+        var component = new DescriptionComponent(ElementId.New(), "   ");
 
         // Assert
         component.Content.Should().Be("   ");
@@ -62,11 +60,8 @@ public class DescriptionComponentTests
     [TestMethod]
     public void Constructor_Allows_EmptyString()
     {
-        // Arrange
-        var id = Guid.NewGuid();
-
         // Act
-        var component = new DescriptionComponent(id, "");
+        var component = new DescriptionComponent(ElementId.New(), "");
 
         // Assert
         component.Content.Should().Be("");
@@ -76,7 +71,7 @@ public class DescriptionComponentTests
     public void UpdateContent_Throws_WhenContentIsNull()
     {
         // Arrange
-        var component = new DescriptionComponent(Guid.NewGuid(), "Valid");
+        var component = new DescriptionComponent(ElementId.New(), "Valid");
 
         // Act
         Action actNull = () => component.UpdateContent(null!);
@@ -89,7 +84,7 @@ public class DescriptionComponentTests
     public void UpdateContent_Allows_WhitespaceString()
     {
         // Arrange
-        var component = new DescriptionComponent(Guid.NewGuid(), "Valid");
+        var component = new DescriptionComponent(ElementId.New(), "Valid");
 
         // Act
         component.UpdateContent("   ");
@@ -102,7 +97,7 @@ public class DescriptionComponentTests
     public void UpdateContent_Allows_EmptyString()
     {
         // Arrange
-        var component = new DescriptionComponent(Guid.NewGuid(), "Valid");
+        var component = new DescriptionComponent(ElementId.New(), "Valid");
 
         // Act
         component.UpdateContent("");

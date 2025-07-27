@@ -5,10 +5,10 @@ namespace Starlights.Modules.Elements.Domain;
 /// <summary>
 /// Represents a base class for components of an element.
 /// </summary>
-public abstract class ElementComponentBase : EntityBase<Guid>
+public abstract class ElementComponentBase : EntityBase<ElementComponentId>
 {
-    protected ElementComponentBase(Guid owningElement)
-        : base(Guid.CreateVersion7())
+    protected ElementComponentBase(ElementId owningElement)
+        : base(ElementComponentId.New())
     {
         OwningElement = owningElement;
     }
@@ -16,5 +16,5 @@ public abstract class ElementComponentBase : EntityBase<Guid>
     /// <summary>
     /// Gets the unique identifier of the element (parent) that this component belongs to.
     /// </summary>
-    public Guid OwningElement { get; protected set; }
+    public ElementId OwningElement { get; protected set; }
 }

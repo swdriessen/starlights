@@ -1,5 +1,6 @@
 ﻿
 using System.Globalization;
+
 namespace Starlights.Modules.Elements.Domain.Components;
 
 /// <summary>
@@ -7,7 +8,7 @@ namespace Starlights.Modules.Elements.Domain.Components;
 /// </summary>
 public sealed class AbilityComponent : ElementComponentBase
 {
-    public AbilityComponent(Guid owningElement, string abbreviation)
+    public AbilityComponent(ElementId owningElement, string abbreviation)
         : base(owningElement)
     {
         UpdateAbbreviation(abbreviation);

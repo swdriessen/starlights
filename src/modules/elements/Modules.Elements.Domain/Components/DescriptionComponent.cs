@@ -1,10 +1,8 @@
-using System;
 namespace Starlights.Modules.Elements.Domain.Components;
 
 /// <summary>
 /// Represents a component that holds a description for an element.
 /// </summary>
-
 public sealed class DescriptionComponent : ElementComponentBase
 {
     /// <summary>
@@ -12,7 +10,7 @@ public sealed class DescriptionComponent : ElementComponentBase
     /// </summary>
     /// <param name="owningElement">The owning element's unique identifier.</param>
     /// <param name="content">The description content.</param>
-    public DescriptionComponent(Guid owningElement, string content)
+    public DescriptionComponent(ElementId owningElement, string content)
         : base(owningElement)
     {
         UpdateContent(content);

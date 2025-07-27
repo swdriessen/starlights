@@ -5,7 +5,7 @@ using Starlights.Platform.Domain;
 namespace Starlights.Extensions.Platform.Data.EntityFramework;
 
 public abstract class RepositoryBase<TEntity> : IRepository
-    where TEntity : class, IEntity<Guid>
+    where TEntity : class, IEntity
 {
     private DbContext _context = default!;
     private DbSet<TEntity> _entities = default!;
