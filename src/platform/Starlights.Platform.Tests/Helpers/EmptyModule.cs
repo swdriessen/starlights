@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Tests.Helpers;
 
 internal sealed class EmptyModule : IPlatformModule
 {
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IHostApplicationBuilder builder)
     {
-        services.AddSingleton<EmptyService>();
+        builder.Services.AddSingleton<EmptyService>();
     }
 
     internal class EmptyService

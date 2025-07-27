@@ -12,6 +12,7 @@ public class ElementsContext : DbContext, IPersistenceContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        Console.WriteLine("OnModelCreating: ApplyConfigurationsFromAssembly");
         modelBuilder.HasDefaultSchema("dnd");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ElementsContext).Assembly);
     }

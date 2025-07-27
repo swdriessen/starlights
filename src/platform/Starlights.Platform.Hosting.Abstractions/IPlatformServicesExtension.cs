@@ -16,6 +16,5 @@ public interface IPlatformServicesExtension
     /// <summary>
     /// Configures the services for the platform module.
     /// </summary>
-    /// <param name="builder">The registration context.</param>
     void ConfigureServices(IHostApplicationBuilder builder);
 }

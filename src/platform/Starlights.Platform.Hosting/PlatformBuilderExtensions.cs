@@ -67,11 +67,16 @@ internal static class PlatformBuilderExtensions
             }
         }
 
+        if (builder.Properties["IHostApplicationBuilder"] is not IHostApplicationBuilder hostApplicationBuilder)
+        {
+            throw new InvalidOperationException("The IHostApplicationBuilder is not available in the platform builder properties.");
+        }
+
         // configure services for modules
         foreach (var module in modules)
         {
             // TODO: provide configuration through method or constructor
-            module.ConfigureServices(builder.Services);
+            module.ConfigureServices(hostApplicationBuilder);
         }
 
         return builder;
@@ -101,7 +106,7 @@ internal static class PlatformBuilderExtensions
     }
 
     /// <summary>
-    /// Invokes all platform extensions found in the current application domain.
+    /// Invokes all platform extensions found in the current application domain. These are not registered itself in the container.
     /// </summary>
     internal static IPlatformBuilder InvokePlatformServicesExtensions(this IPlatformBuilder builder)
     {
@@ -119,7 +124,6 @@ internal static class PlatformBuilderExtensions
 
             if (Activator.CreateInstance(extensionType) is IPlatformServicesExtension extension)
             {
-                Console.WriteLine($"Invoking extension: {extensionType.FullName}");
                 extensions.Add(extension);
             }
             else
@@ -137,6 +141,7 @@ internal static class PlatformBuilderExtensions
         // invoke the extensions
         foreach (var extension in extensions.OrderBy(e => e.RegistrationOrder))
         {
+            Console.WriteLine($"configure svc [order='{extension.RegistrationOrder}', name='{extension.GetType().FullName}']");
             extension.ConfigureServices(hostApplicationBuilder);
         }
 

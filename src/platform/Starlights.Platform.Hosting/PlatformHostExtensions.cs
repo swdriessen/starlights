@@ -47,7 +47,6 @@ internal static class PlatformHostExtensions
 
             if (Activator.CreateInstance(extensionType) is IPlatformApplicationExtension extension)
             {
-                Console.WriteLine($"Invoking extension: {extensionType.FullName}");
                 extensions.Add(extension);
             }
             else
@@ -60,6 +59,7 @@ internal static class PlatformHostExtensions
         // invoke the extensions
         foreach (var extension in extensions.OrderBy(e => e.RegistrationOrder))
         {
+            Console.WriteLine($"configure app [order='{extension.RegistrationOrder}', name='{extension.GetType().FullName}']");
             extension.UseExtension(platform.Host);
         }
 

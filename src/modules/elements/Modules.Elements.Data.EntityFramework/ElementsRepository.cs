@@ -33,6 +33,8 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task<IEnumerable<Element>> GetElementsByTypeAsync(string type)
     {
+        _logger.LogInformation("Retrieving elements of type {Type}.", type);
+
         return await Entities.AsNoTracking()
             .Where(element => element.Type == type)
             .ToListAsync();

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Hosting.Abstractions;
 
@@ -45,7 +44,7 @@ public static class HostingExtensions
         // TODO: initialize modules ?
         foreach (var module in host.Services.GetServices<IPlatformModule>())
         {
-            Debug.WriteLine($"Initializing module: {module.GetType().Name}");
+            Console.WriteLine($"Initializing module: {module.GetType().Name}");
         }
 
         return host;

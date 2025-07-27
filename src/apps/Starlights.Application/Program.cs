@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Starlights.Extensions.Platform.Data.EntityFramework;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
 using Starlights.Modules.Elements.Integration.Abstractions;
@@ -19,10 +18,12 @@ public static class Program
         // add the platform services and its modules
         builder.AddStarlightsPlatform(options =>
         {
+            // define assemblies in manifest or include them programmatically
+
             options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);
 
             // use entity framework for data persistence
-            options.AdditionalAssemblies.Add(typeof(ExtensionsPlatformDataEntityFrameworkModule).Assembly);
+            //options.AdditionalAssemblies.Add(typeof(Persistence).Assembly);
             options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
         });
 
@@ -34,21 +35,19 @@ public static class Program
         }
 
         // configure the platform and its modules
-        app.UseStarlightsPlatform(options =>
-        {
-            // configure
-        });
+        app.UseStarlightsPlatform();
 
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
 
-        app.MapGet("/hello", async (HttpContext _, [FromServices] IElementsModuleGateway e) =>
+        // used to test end-to-end until module offers its own API
+        app.MapGet("/api/elements/{type}", async (string type, HttpContext _, [FromServices] IElementsModuleGateway gateway) =>
         {
-            var elements = await e.GetElements("Ability");
-            return Results.Ok("Hello, World!");
+            var elements = await gateway.GetElements(type);
+            return Results.Ok(elements);
         })
-        .WithName("HelloWorld");
+        .WithName("Elements");
 
         app.Run();
     }
