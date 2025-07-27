@@ -6,7 +6,6 @@ namespace Starlights.Modules.Elements.Tests.Domain.Components;
 [TestClass]
 public class AbilityComponentTests
 {
-
     [TestMethod]
     public void Create_ShouldSetAbbreviation_TrimmedAndUppercase_WhenValidAbbreviationProvided()
     {
@@ -14,7 +13,7 @@ public class AbilityComponentTests
         const string abbreviation = " Str ";
 
         // Act
-        var component = new AbilityComponent(abbreviation);
+        var component = new AbilityComponent(Guid.CreateVersion7(), abbreviation);
 
         // Assert
         component.Abbreviation.Should().Be("STR");
@@ -27,7 +26,7 @@ public class AbilityComponentTests
         const string abbreviation = "dex";
 
         // Act
-        var component = new AbilityComponent(abbreviation);
+        var component = new AbilityComponent(Guid.CreateVersion7(), abbreviation);
 
         // Assert
         component.Abbreviation.Should().Be("DEX");
@@ -40,18 +39,17 @@ public class AbilityComponentTests
         const string abbreviation = "iNt";
 
         // Act
-        var component = new AbilityComponent(abbreviation);
+        var component = new AbilityComponent(Guid.CreateVersion7(), abbreviation);
 
         // Assert
         component.Abbreviation.Should().Be("INT");
     }
 
-
     [TestMethod]
     public void UpdateAbbreviation_ShouldUpdateAbbreviation_TrimmedAndUppercase_WhenValidAbbreviationProvided()
     {
         // Arrange
-        var component = new AbilityComponent("DEX");
+        var component = new AbilityComponent(Guid.CreateVersion7(), "DEX");
 
         // Act
         component.UpdateAbbreviation(" Int ");
@@ -64,7 +62,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldUpdateAbbreviation_Uppercase_WhenLowercaseProvided()
     {
         // Arrange
-        var component = new AbilityComponent("DEX");
+        var component = new AbilityComponent(Guid.CreateVersion7(), "DEX");
 
         // Act
         component.UpdateAbbreviation("str");
@@ -77,7 +75,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldUpdateAbbreviation_Uppercase_WhenMixedCaseProvided()
     {
         // Arrange
-        var component = new AbilityComponent("DEX");
+        var component = new AbilityComponent(Guid.CreateVersion7(), "DEX");
 
         // Act
         component.UpdateAbbreviation("wIs");
@@ -90,7 +88,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldUpdateAbbreviation_Uppercase_WhenWhitespaceAndMixedCaseProvided()
     {
         // Arrange
-        var component = new AbilityComponent("DEX");
+        var component = new AbilityComponent(Guid.CreateVersion7(), "DEX");
 
         // Act
         component.UpdateAbbreviation("  cHa  ");
@@ -103,7 +101,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldThrowArgumentException_WhenAbbreviationIsNull()
     {
         // Arrange
-        var component = new AbilityComponent("DEX");
+        var component = new AbilityComponent(Guid.CreateVersion7(), "DEX");
 
         // Act
         var act = () => component.UpdateAbbreviation(null!);
@@ -116,7 +114,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldThrowArgumentException_WhenAbbreviationIsWhitespace()
     {
         // Arrange
-        var component = new AbilityComponent("DEX");
+        var component = new AbilityComponent(Guid.CreateVersion7(), "DEX");
 
         // Act
         var act = () => component.UpdateAbbreviation("   ");

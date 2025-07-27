@@ -134,8 +134,8 @@
   - Use [DataRow] for parameterized tests.
   - Keep tests isolated and independent.
   - Use Arrange-Act-Assert (AAA) pattern.
-**Always add unit tests when creating a new component:**
-Whenever a new component (class, record, or struct) is created, you must also create a corresponding unit test class. The tests should cover:
+    **Always add unit tests when creating a new component:**
+    Whenever a new component (class, record, or struct) is created, you must also create a corresponding unit test class. The tests should cover:
   - Default values and construction
   - All public methods and properties
   - Both happy path and edge cases
@@ -160,3 +160,8 @@ Whenever a new component (class, record, or struct) is created, you must also cr
   - Keep tests fast and focused; avoid unnecessary dependencies.
   - Use [TestInitialize] and [TestCleanup] for setup/teardown logic.
   - Always build the solution and run the tests on the solution and make sure they pass before reporting that the changes are complete.
+
+## Repository Specifics
+
+- Elements Module:
+  - When creating new ElementComponents, also create the corresponding IEntityTypeConfiguration class in the Modules.Elements.Data.EntityFramework project.

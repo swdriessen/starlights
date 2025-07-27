@@ -25,7 +25,7 @@ public sealed class DomainTests
     public void AggregateRoot_ShouldInitializeWithEmptyDomainEvents()
     {
         // Arrange & Act
-        var aggregate = new TestAggregateRoot(Guid.NewGuid());
+        var aggregate = new TestAggregateRoot(Guid.CreateVersion7());
 
         // Assert
         aggregate.DomainEvents.Should().NotBeNull();
@@ -36,7 +36,7 @@ public sealed class DomainTests
     public void AggregateRoot_ShouldAddDomainEvent_WhenEventIsRaised()
     {
         // Arrange
-        var aggregate = new TestAggregateRoot(Guid.NewGuid());
+        var aggregate = new TestAggregateRoot(Guid.CreateVersion7());
         var domainEvent = new TestDomainEvent("Test message");
 
         // Act
@@ -51,7 +51,7 @@ public sealed class DomainTests
     public void AggregateRoot_ShouldAddMultipleDomainEvents()
     {
         // Arrange
-        var aggregate = new TestAggregateRoot(Guid.NewGuid());
+        var aggregate = new TestAggregateRoot(Guid.CreateVersion7());
         var event1 = new TestDomainEvent("Event 1");
         var event2 = new TestDomainEvent("Event 2");
 
@@ -69,7 +69,7 @@ public sealed class DomainTests
     public void AggregateRoot_ShouldClearDomainEvents()
     {
         // Arrange
-        var aggregate = new TestAggregateRoot(Guid.NewGuid());
+        var aggregate = new TestAggregateRoot(Guid.CreateVersion7());
         var domainEvent = new TestDomainEvent("Test message");
         aggregate.RaiseTestEvent(domainEvent);
 

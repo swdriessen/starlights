@@ -7,7 +7,8 @@ namespace Starlights.Modules.Elements.Domain.Components;
 /// </summary>
 public sealed class AbilityComponent : ElementComponentBase
 {
-    public AbilityComponent(string abbreviation)
+    public AbilityComponent(Guid owningElement, string abbreviation)
+        : base(owningElement)
     {
         UpdateAbbreviation(abbreviation);
     }

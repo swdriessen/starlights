@@ -7,8 +7,14 @@ namespace Starlights.Modules.Elements.Domain;
 /// </summary>
 public abstract class ElementComponentBase : EntityBase<Guid>
 {
-    protected ElementComponentBase()
-        : base(Guid.NewGuid())
+    protected ElementComponentBase(Guid owningElement)
+        : base(Guid.CreateVersion7())
     {
+        OwningElement = owningElement;
     }
+
+    /// <summary>
+    /// Gets the unique identifier of the element (parent) that this component belongs to.
+    /// </summary>
+    public Guid OwningElement { get; protected set; }
 }

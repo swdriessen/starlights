@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Starlights.Modules.Elements.Domain.Components;
 
 namespace Starlights.Modules.Elements.Tests.Domain.Components;
@@ -14,7 +13,7 @@ public class SortingComponentTests
     public void SortingComponent_DefaultConstructor_SetsSortingOrderToZero()
     {
         // Arrange & Act
-        var component = new SortingComponent();
+        var component = new SortingComponent(Guid.CreateVersion7());
 
         // Assert
         component.SortingOrder.Should().Be(0);
@@ -24,10 +23,10 @@ public class SortingComponentTests
     public void SortingComponent_Constructor_SetsSortingOrder()
     {
         // Arrange
-        double expected = 42.5;
+        const double expected = 42.5;
 
         // Act
-        var component = new SortingComponent(expected);
+        var component = new SortingComponent(Guid.CreateVersion7(), expected);
 
         // Assert
         component.SortingOrder.Should().Be(expected);
@@ -37,8 +36,8 @@ public class SortingComponentTests
     public void UpdateSortingOrder_UpdatesSortingOrder()
     {
         // Arrange
-        var component = new SortingComponent();
-        double newOrder = 99.9;
+        var component = new SortingComponent(Guid.CreateVersion7());
+        const double newOrder = 99.9;
 
         // Act
         component.UpdateSortingOrder(newOrder);

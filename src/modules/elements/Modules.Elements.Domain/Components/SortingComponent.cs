@@ -9,7 +9,8 @@ public sealed class SortingComponent : ElementComponentBase
     /// Initializes a new instance of the <see cref="SortingComponent"/> class.
     /// </summary>
     /// <param name="sortingOrder">The sorting order value.</param>
-    public SortingComponent(double sortingOrder = 0)
+    public SortingComponent(Guid owningElement, double sortingOrder = 0)
+        : base(owningElement)
     {
         SortingOrder = sortingOrder;
     }

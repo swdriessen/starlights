@@ -10,7 +10,7 @@ public sealed class Element : AggregateRoot<Guid>
     private readonly List<ElementComponentBase> _components = [];
 
     private Element(string name, string type)
-        : base(Guid.NewGuid())
+        : base(Guid.CreateVersion7())
     {
         Name = name.Trim();
         Type = type.Trim();

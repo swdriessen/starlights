@@ -28,7 +28,7 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        var component = new AbilityComponent("STR");
+        var component = new AbilityComponent(Guid.CreateVersion7(), "STR");
 
         // Act
         element.AddComponent(component);
