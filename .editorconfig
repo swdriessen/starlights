@@ -119,3 +119,7 @@ csharp_preserve_single_line_blocks = true
 
 # IDE0290: Use primary constructor
 csharp_style_prefer_primary_constructors = false
+
+[*.{csproj,xml}]
+indent_style = space
+indent_size = 2

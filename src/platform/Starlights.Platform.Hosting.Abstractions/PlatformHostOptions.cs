@@ -2,10 +2,10 @@
 
 namespace Starlights.Platform.Hosting.Abstractions;
 
-public class PlatformBuilderOptions
+public class PlatformHostOptions
 {
     /// <summary>
-    /// Gets or sets a value indicating whether to enable discovery of platform modules and extensions. (default: true)
+    /// Gets or sets a value indicating whether to enable discovery of platform application extensions. (default: true)
     /// </summary>
     public bool IsDiscoveryEnabled { get; set; } = true;
 

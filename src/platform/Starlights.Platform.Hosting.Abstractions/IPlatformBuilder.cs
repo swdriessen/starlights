@@ -8,6 +8,11 @@ namespace Starlights.Platform.Hosting.Abstractions;
 public interface IPlatformBuilder
 {
     /// <summary>
+    /// Gets a collection of properties that can be used to store additional data for the platform builder.
+    /// </summary>
+    Dictionary<string, object> Properties { get; }
+
+    /// <summary>
     /// Gets the service collection for the platform builder.
     /// </summary>
     IServiceCollection Services { get; }

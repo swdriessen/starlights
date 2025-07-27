@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Hosting;
 
 namespace Starlights.Platform.Hosting.Abstractions;
 
@@ -10,5 +10,5 @@ public interface IPlatformModule
     /// <summary>
     /// Configures the services for the platform module.
     /// </summary>
-    void ConfigureServices(IServiceCollection services);
+    void ConfigureServices(IHostApplicationBuilder builder);
 }

@@ -11,6 +11,8 @@ public sealed class PlatformBuilder : IPlatformBuilder
         Options = options;
     }
 
+    public Dictionary<string, object> Properties { get; } = [];
+
     public IServiceCollection Services { get; }
 
     public PlatformBuilderOptions Options { get; }
@@ -18,5 +20,6 @@ public sealed class PlatformBuilder : IPlatformBuilder
     public void Build()
     {
         this.RegisterPlatformModules();
+        this.InvokePlatformServicesExtensions();
     }
 }

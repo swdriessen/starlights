@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Mvc;
+using Starlights.Modules.Elements;
+using Starlights.Modules.Elements.Data.EntityFramework;
+using Starlights.Modules.Elements.Integration.Abstractions;
 using Starlights.Platform.Hosting;
 
 namespace Starlights.Application;
@@ -12,7 +16,16 @@ public static class Program
         builder.Services.AddOpenApi();
 
         // add the platform services and its modules
-        builder.AddStarlightsPlatform();
+        builder.AddStarlightsPlatform(options =>
+        {
+            // define assemblies in manifest or include them programmatically
+
+            options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);
+
+            // use entity framework for data persistence
+            //options.AdditionalAssemblies.Add(typeof(Persistence).Assembly);
+            options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
+        });
 
         var app = builder.Build();
 
@@ -28,8 +41,13 @@ public static class Program
 
         app.UseAuthorization();
 
-        app.MapGet("/hello", (HttpContext _) => Results.Ok("Hello, World!"))
-        .WithName("HelloWorld");
+        // used to test end-to-end until module offers its own API
+        app.MapGet("/api/elements/{type}", async (string type, HttpContext _, [FromServices] IElementsModuleGateway gateway) =>
+        {
+            var elements = await gateway.GetElements(type);
+            return Results.Ok(elements);
+        })
+        .WithName("Elements");
 
         app.Run();
     }
