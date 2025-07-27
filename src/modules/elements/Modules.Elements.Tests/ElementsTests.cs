@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Components;
 
 namespace Starlights.Modules.Elements.Tests;
 
@@ -14,7 +15,7 @@ public sealed class ElementTests
         const string elementType = "Test Type";
 
         // Act
-        var element = new Element(elementName, elementType);
+        var element = Element.Create(elementName, elementType);
 
         // Assert
         element.Name.Should().Be(elementName);
@@ -26,7 +27,7 @@ public sealed class ElementTests
     public void AddComponent()
     {
         // Arrange
-        var element = new Element("Strength", "Ability");
+        var element = Element.Create("Strength", "Ability");
         var component = new AbilityComponent("STR");
 
         // Act

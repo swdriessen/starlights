@@ -12,6 +12,7 @@
 		<ProjectReference Include="..\..\..\platform\Starlights.Platform.Data\Starlights.Platform.Data.csproj" />
 		<ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />
 		<ProjectReference Include="..\..\..\platform\Starlights.Platform\Starlights.Platform.csproj" />
+		<ProjectReference Include="..\Modules.Elements.Domain\Modules.Elements.Domain.csproj" />
 		<ProjectReference Include="..\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj" />
 	</ItemGroup>
 
