@@ -1,4 +1,6 @@
-﻿namespace Starlights.Modules.Elements.Domain.Components;
+﻿
+using System.Globalization;
+namespace Starlights.Modules.Elements.Domain.Components;
 
 /// <summary>
 /// Initializes a new instance of the <see cref="AbilityComponent"/> class.
@@ -7,13 +9,13 @@ public sealed class AbilityComponent : ElementComponentBase
 {
     public AbilityComponent(string abbreviation)
     {
-        Abbreviation = abbreviation.Trim();
+        UpdateAbbreviation(abbreviation);
     }
 
     /// <summary>
     /// Gets the abbreviation of the ability component.
     /// </summary>
-    public string Abbreviation { get; private set; }
+    public string Abbreviation { get; private set; } = string.Empty;
 
     /// <summary>
     /// Updates the abbreviation of the ability component.
@@ -25,6 +27,6 @@ public sealed class AbilityComponent : ElementComponentBase
             throw new ArgumentException("Abbreviation cannot be null or whitespace.", nameof(abbreviation));
         }
 
-        Abbreviation = abbreviation.Trim();
+        Abbreviation = abbreviation.Trim().ToUpper(CultureInfo.InvariantCulture);
     }
 }

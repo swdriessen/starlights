@@ -134,6 +134,12 @@
   - Use [DataRow] for parameterized tests.
   - Keep tests isolated and independent.
   - Use Arrange-Act-Assert (AAA) pattern.
+**Always add unit tests when creating a new component:**
+Whenever a new component (class, record, or struct) is created, you must also create a corresponding unit test class. The tests should cover:
+  - Default values and construction
+  - All public methods and properties
+  - Both happy path and edge cases
+  - Use MSTest, FluentAssertions, and Moq as described in the testing section
 - Use Moq for mocking:
   - Use strongly-typed mocks; avoid magic strings.
   - Setup method/property behaviors with .Setup().

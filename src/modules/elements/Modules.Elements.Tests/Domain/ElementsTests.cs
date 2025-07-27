@@ -2,7 +2,7 @@
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 
-namespace Starlights.Modules.Elements.Tests;
+namespace Starlights.Modules.Elements.Tests.Domain;
 
 [TestClass]
 public sealed class ElementTests
@@ -27,7 +27,7 @@ public sealed class ElementTests
     public void AddComponent()
     {
         // Arrange
-        var element = Element.Create("Strength", "Ability");
+        var element = Element.Create("Strength", ElementTypeConstants.Ability);
         var component = new AbilityComponent("STR");
 
         // Act
