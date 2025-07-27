@@ -10,5 +10,5 @@ public sealed class AbilityComponent : ElementComponentBase
     /// <summary>
     /// Gets the abbreviation of the ability component.
     /// </summary>
-    public string Abbreviation { get; }
+    public string Abbreviation { get; private set; }
 }

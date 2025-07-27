@@ -20,6 +20,7 @@ public static class HostingExtensions
 
         // register the platform services
         var platformBuilder = new PlatformBuilder(builder.Services, options);
+        platformBuilder.Properties["IHostApplicationBuilder"] = builder; // store the original builder for now here, probably need to pass this in the platform builder
         platformBuilder.Build();
 
         return builder;
@@ -28,15 +29,21 @@ public static class HostingExtensions
     /// <summary>
     /// Initializes the Starlights Platform for the host application.
     /// </summary>
-    public static THost UseStarlightsPlatform<THost>(this THost host)
+    public static THost UseStarlightsPlatform<THost>(this THost host, Action<PlatformHostOptions>? optionsAction = null)
         where THost : IHost
     {
         ArgumentNullException.ThrowIfNull(host);
 
-        // make sure the platform is initialized for now, this will be extended later
-        var registeredModules = host.Services.GetServices<IPlatformModule>();
+        var options = new PlatformHostOptions();
+        optionsAction?.Invoke(options);
 
-        foreach (var module in registeredModules)
+        var platform = new Platform(host, options);
+
+        // configure the application
+        platform.InvokeApplicationExtensions();
+
+        // TODO: initialize modules ?
+        foreach (var module in host.Services.GetServices<IPlatformModule>())
         {
             Debug.WriteLine($"Initializing module: {module.GetType().Name}");
         }
