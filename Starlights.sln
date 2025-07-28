@@ -52,6 +52,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Data", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Domain", "src\modules\elements\Modules.Elements.Domain\Modules.Elements.Domain.csproj", "{50AD13D4-A4B1-423E-88D5-9985BA9A87B7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integration", "integration", "{16CB40A1-26BB-4950-AB2E-37F37798D00A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{128F28F2-7131-4C7B-A386-8E6984195241}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +134,7 @@ Global
 		{49D2699A-427E-4388-B9DF-3C6E5EBF0146} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
 		{BF7DB35B-E014-4B73-A491-627122312C7C} = {C840D2F9-B821-4C84-B2D2-5CB18C1C9F23}
 		{50AD13D4-A4B1-423E-88D5-9985BA9A87B7} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
+		{16CB40A1-26BB-4950-AB2E-37F37798D00A} = {128F28F2-7131-4C7B-A386-8E6984195241}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}

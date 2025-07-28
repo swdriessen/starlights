@@ -1,4 +1,6 @@
-﻿namespace Starlights.Modules.Elements.Integration.Abstractions;
+﻿using Starlights.Modules.Elements.Integration.Abstractions.Models;
+
+namespace Starlights.Modules.Elements.Integration.Abstractions;
 
 /// <summary>
 /// Defines the gateway for accessing elements in the system.

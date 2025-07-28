@@ -16,8 +16,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task<Element?> GetElementAsync(Guid identifier)
     {
-        var element = await Entities.AsNoTracking()
-            .FirstOrDefaultAsync(e => e.Id == identifier);
+        var element = await Entities.FirstOrDefaultAsync(e => e.Id == identifier);
 
         if (element is null)
         {
@@ -35,7 +34,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
     {
         _logger.LogInformation("Retrieving elements of type {Type}.", type);
 
-        return await Entities.AsNoTracking()
+        return await Entities
             .Where(element => element.Type == type)
             .ToListAsync();
     }
