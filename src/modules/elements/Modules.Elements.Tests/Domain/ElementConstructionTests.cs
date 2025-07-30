@@ -27,8 +27,8 @@ public class ElementConstructionTests
     {
         // Act
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
+        element.AddComponent(new AbbreviationComponent(element.Id, "STR"));
         element.AddComponent(new DescriptionComponent(element.Id, "Strength is a measure of physical power and athleticism."));
-        element.AddComponent(new AbilityComponent(element.Id, "STR"));
 
         // Assert
         element.Should().NotBeNull();
@@ -38,14 +38,16 @@ public class ElementConstructionTests
     public void Skill()
     {
         // Arrange
-        const string associatedAbility = "Intelligence";
+        var abilityElement = Element.Create("Intelligence", ElementTypeConstants.Ability);
+        abilityElement.AddComponent(new AbbreviationComponent(abilityElement.Id, "INT"));
 
         // Act
-        var element = Element.Create("Arcana", ElementTypeConstants.Skill);
-        element.AddComponent(new DescriptionComponent(element.Id, "Arcana is a measure of magical knowledge and ability."));
+        var skillElement = Element.Create("Arcana", ElementTypeConstants.Skill);
+        skillElement.AddComponent(new PrimaryAbilityComponent(skillElement.Id, abilityElement.Id));
+        skillElement.AddComponent(new DescriptionComponent(skillElement.Id, "Arcana is a measure of magical knowledge and ability."));
 
         // Assert
-        element.Should().NotBeNull();
+        skillElement.Should().NotBeNull();
     }
 }
 
