@@ -49,6 +49,22 @@ public class ElementConstructionTests
         // Assert
         skillElement.Should().NotBeNull();
     }
+
+    [TestMethod]
+    public void SavingThrow()
+    {
+        // Arrange
+        var abilityElement = Element.Create("Intelligence", ElementTypeConstants.Ability);
+        abilityElement.AddComponent(new AbbreviationComponent(abilityElement.Id, "INT"));
+
+        // Act
+        var saveElement = Element.Create("Intelligence", ElementTypeConstants.SavingThrow);
+        saveElement.AddComponent(new PrimaryAbilityComponent(saveElement.Id, abilityElement.Id));
+        saveElement.AddComponent(new DescriptionComponent(saveElement.Id, "Intelligence saving throw is used to resist effects that target mental acuity."));
+
+        // Assert
+        saveElement.Should().NotBeNull();
+    }
 }
 
 
