@@ -17,7 +17,7 @@ public class ElementsModuleQueriesTests
     private readonly Mock<IPersistence> _persistenceMock = new();
     private readonly Mock<IElementsRepository> _elementsRepositoryMock = new();
 
-    //sut
+    // SUT
     private readonly ElementsModuleQueries _queries;
 
     public ElementsModuleQueriesTests()
@@ -33,6 +33,13 @@ public class ElementsModuleQueriesTests
 
         _elementsRepositoryMock.Setup(x => x.GetElementAsync(It.IsAny<Guid>()))
             .ReturnsAsync((Element?)null);
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+        // save never callled in queries
+        _persistenceMock.Verify(x => x.SaveChangesAsync(), Times.Never);
     }
 
     [TestMethod]

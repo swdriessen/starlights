@@ -14,6 +14,8 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
         _logger = logger;
     }
 
+    public Task AddAsync(Element element) => throw new NotImplementedException();
+
     public async Task<Element?> GetElementAsync(Guid identifier)
     {
         var element = await Entities.FirstOrDefaultAsync(e => e.Id == identifier);
