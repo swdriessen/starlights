@@ -65,6 +65,18 @@ public class ElementConstructionTests
         // Assert
         saveElement.Should().NotBeNull();
     }
+
+    [TestMethod]
+    public void Language()
+    {
+        // Act
+        var element = Element.Create("Common", ElementTypeConstants.Language);
+        element.AddComponent(new LanguageComponent(element.Id, "Sigil"));
+        element.AddComponent(new DescriptionComponent(element.Id, "Common is the most widely spoken language in the world."));
+
+        // Assert
+        element.Should().NotBeNull();
+    }
 }
 
 
