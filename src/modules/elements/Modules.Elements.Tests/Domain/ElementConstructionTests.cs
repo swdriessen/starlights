@@ -77,4 +77,21 @@ public class ElementConstructionTests
         // Assert
         element.Should().NotBeNull();
     }
+
+    [TestMethod]
+    public void ElementWithIncludeRule()
+    {
+        // Arrange
+        var freeElement = Element.Create("Free Element", "Type");
+
+        // Act
+        var element = Element.Create("Advanced Element", "Rule");
+        element.AddComponent(new IncludeRuleComponent(element.Id, freeElement.Id, 0));
+
+        // Assert
+        element.Should().NotBeNull();
+        var includeRule = element.GetComponent<IncludeRuleComponent>();
+        includeRule.IncludeElement.Should().Be(freeElement.Id);
+        includeRule.LevelRequirement.Should().Be(0);
+    }
 }
