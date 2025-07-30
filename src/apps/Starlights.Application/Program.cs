@@ -19,11 +19,9 @@ public static class Program
         builder.AddStarlightsPlatform(options =>
         {
             // define assemblies in manifest or include them programmatically
-
             options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);
 
             // use entity framework for data persistence
-            //options.AdditionalAssemblies.Add(typeof(Persistence).Assembly);
             options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
         });
 

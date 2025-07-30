@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using FluentAssertions.Primitives;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 
@@ -16,7 +15,8 @@ public class ElementConstructionTests
     {
         // Act
         var element = Element.Create("Name", ElementTypeConstants.CharacterCreation);
-        element.AddComponent(new DescriptionComponent(element.Id, "short description"));
+        element.AddComponent(new ShortDescriptionComponent(element.Id, "short description"));
+        element.AddComponent(new DescriptionComponent(element.Id, "long description"));
 
         // Assert
         element.Should().NotBeNull();
@@ -78,25 +78,3 @@ public class ElementConstructionTests
         element.Should().NotBeNull();
     }
 }
-
-
-
-
-public static class ShouldExtensions
-{
-    public static void HaveDescriptionContent(this ObjectAssertions objectAssertions, string expectedDescription)
-    {
-        if (objectAssertions.Subject is not Element element)
-        {
-            throw new ArgumentException("Expected an Element object.", nameof(objectAssertions));
-        }
-
-        element.Components.OfType<DescriptionComponent>()
-            .Should().NotBeEmpty("because the element should have a description component");
-
-        var descriptionComponent = element.GetComponent<DescriptionComponent>();
-        descriptionComponent.Should().NotBeNull();
-        descriptionComponent.Content.Should().Be(expectedDescription);
-    }
-}
-
