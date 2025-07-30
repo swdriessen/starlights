@@ -19,11 +19,9 @@ public static class Program
         builder.AddStarlightsPlatform(options =>
         {
             // define assemblies in manifest or include them programmatically
-
             options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);
 
             // use entity framework for data persistence
-            //options.AdditionalAssemblies.Add(typeof(Persistence).Assembly);
             options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
         });
 
@@ -42,9 +40,9 @@ public static class Program
         app.UseAuthorization();
 
         // used to test end-to-end until module offers its own API
-        app.MapGet("/api/elements/{type}", async (string type, HttpContext _, [FromServices] IElementsModuleGateway gateway) =>
+        app.MapGet("/api/elements", async (HttpContext _, [FromServices] IElementsModuleQueries queries) =>
         {
-            var elements = await gateway.GetElements(type);
+            var elements = await queries.GetCharacterCreationElements();
             return Results.Ok(elements);
         })
         .WithName("Elements");

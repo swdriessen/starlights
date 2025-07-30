@@ -10,16 +10,21 @@ public class ElementTypeConfiguration : IEntityTypeConfiguration<Element>
     {
         builder.ToTable("element");
 
-        builder.HasKey(c => c.Id);
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
+               .ValueGeneratedNever()
+               .HasConversion(m => m.Value, v => new ElementId(v));
 
-        builder.Property(c => c.Id)
-            .ValueGeneratedNever();
+        builder.Property(e => e.Name)
+            .IsRequired();
 
-        builder.Property(c => c.Name)
-            .IsRequired()
-            .HasMaxLength(100);
-        builder.Property(c => c.Type)
-            .IsRequired()
-            .HasMaxLength(50);
+        builder.Property(e => e.Type)
+            .IsRequired();
+
+        builder.HasMany(x => x.Components)
+            .WithOne()
+            .HasForeignKey(x => x.OwningElement)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
     }
 }

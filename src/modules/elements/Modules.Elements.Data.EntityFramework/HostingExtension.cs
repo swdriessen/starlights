@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Data;
@@ -19,10 +20,18 @@ internal class HostingExtension : IPlatformServicesExtension
         builder.Services.AddSingleton<IPersistenceContextFactory, PersistenceContextFactory>();
         builder.Services.AddDbContextFactory<ElementsContext>(options =>
         {
-            Console.WriteLine("add AddDbContextFactory service");
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            // TODO: Configure the database connection string from configuration
-            options.UseInMemoryDatabase("mem");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                Console.WriteLine("No connection string configured in appsettings.json or environment variables, using in-memory db.");
+                options.UseInMemoryDatabase("in-memory");
+            }
+            else
+            {
+                Console.WriteLine($"Using connection string: {connectionString}");
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            }
 
             if (builder.Environment.IsDevelopment())
             {

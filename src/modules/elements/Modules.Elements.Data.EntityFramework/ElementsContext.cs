@@ -12,19 +12,7 @@ public class ElementsContext : DbContext, IPersistenceContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        Console.WriteLine("OnModelCreating: ApplyConfigurationsFromAssembly");
-        modelBuilder.HasDefaultSchema("dnd");
+        modelBuilder.HasDefaultSchema("elements");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ElementsContext).Assembly);
     }
 }
-
-//internal sealed class DesignTimeElementsContextFactory : IDesignTimeDbContextFactory<ElementsContext>
-//{
-//    public ElementsContext CreateDbContext(string[] args)
-//    {
-//        var builder = new DbContextOptionsBuilder<ElementsContext>();
-//        builder.UseSqlServer(string.Empty);
-
-//        return new ElementsContext(builder.Options);
-//    }
-//}

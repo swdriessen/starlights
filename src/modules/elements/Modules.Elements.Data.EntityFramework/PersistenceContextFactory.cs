@@ -21,14 +21,3 @@ public class PersistenceContextFactory : IPersistenceContextFactory
         return _factory.CreateDbContext();
     }
 }
-
-//internal sealed class DesignTimeElementsContextFactory : IDesignTimeDbContextFactory<ElementsContext>
-//{
-//    public ElementsContext CreateDbContext(string[] args)
-//    {
-//        var builder = new DbContextOptionsBuilder<ElementsContext>();
-//        builder.UseSqlServer(string.Empty);
-
-//        return new ElementsContext(builder.Options);
-//    }
-//}

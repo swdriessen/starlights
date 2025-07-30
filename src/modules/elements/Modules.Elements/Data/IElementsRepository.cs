@@ -6,6 +6,11 @@ namespace Starlights.Modules.Elements.Data;
 public interface IElementsRepository : IRepository
 {
     /// <summary>
+    /// Adds a new element to the repository asynchronously.
+    /// </summary>
+    Task AddAsync(Element element);
+
+    /// <summary>
     /// Retrieves an element by its identifier.
     /// </summary>
     /// <param name="identifier">The unique identifier of the element.</param>
@@ -17,5 +22,5 @@ public interface IElementsRepository : IRepository
     /// </summary>
     /// <param name="type">The type of elements to retrieve.</param>
     /// <returns>A collection of elements of the specified type.</returns>
-    Task<IEnumerable<Element>> GetElementsByTypeAsync(string type);
+    Task<List<Element>> GetElementsByTypeAsync(string type);
 }

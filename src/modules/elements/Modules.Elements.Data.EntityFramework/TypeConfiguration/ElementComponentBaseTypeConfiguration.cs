@@ -9,10 +9,13 @@ public class ElementComponentBaseTypeConfiguration : IEntityTypeConfiguration<El
     public void Configure(EntityTypeBuilder<ElementComponentBase> builder)
     {
         builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
+               .ValueGeneratedNever()
+               .HasConversion(m => m.Value, v => new ElementComponentId(v));
 
-        builder.Property(s => s.Id)
-           .ValueGeneratedNever()
-           .HasConversion(m => m, v => v);
+        builder.Property(e => e.OwningElement)
+               .IsRequired()
+               .HasConversion(m => m.Value, v => new ElementId(v));
 
         builder.UseTpcMappingStrategy();
     }

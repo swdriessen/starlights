@@ -12,8 +12,17 @@
 		<ProjectReference Include="..\..\..\platform\Starlights.Platform.Data\Starlights.Platform.Data.csproj" />
 		<ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />
 		<ProjectReference Include="..\..\..\platform\Starlights.Platform\Starlights.Platform.csproj" />
+		<ProjectReference Include="..\Modules.Elements.Domain\Modules.Elements.Domain.csproj" />
 		<ProjectReference Include="..\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj" />
 	</ItemGroup>
 
 
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Modules.Elements.Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>

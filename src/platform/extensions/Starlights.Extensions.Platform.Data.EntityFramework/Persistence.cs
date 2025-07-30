@@ -24,7 +24,7 @@ public class Persistence : IPersistence
     {
         _logger.LogInformation("Retrieving repository of type {RepositoryType}", typeof(T).Name);
 
-        var repository = _serviceProvider.GetRequiredService<T>();
+        var repository = _serviceProvider.GetRequiredService<T>(); // TODO: investigate cache in case of multiple calls
 
         _persistenceContext ??= _contextFactory.CreateContext();
 

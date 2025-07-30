@@ -14,10 +14,11 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
         _logger = logger;
     }
 
+    public Task AddAsync(Element element) => throw new NotImplementedException();
+
     public async Task<Element?> GetElementAsync(Guid identifier)
     {
-        var element = await Entities.AsNoTracking()
-            .FirstOrDefaultAsync(e => e.Id == identifier);
+        var element = await Entities.FirstOrDefaultAsync(e => e.Id == identifier);
 
         if (element is null)
         {
@@ -31,11 +32,12 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
         return element;
     }
 
-    public async Task<IEnumerable<Element>> GetElementsByTypeAsync(string type)
+    public async Task<List<Element>> GetElementsByTypeAsync(string type)
     {
         _logger.LogInformation("Retrieving elements of type {Type}.", type);
 
-        return await Entities.AsNoTracking()
+        return await Entities
+            .Include(x => x.Components)
             .Where(element => element.Type == type)
             .ToListAsync();
     }

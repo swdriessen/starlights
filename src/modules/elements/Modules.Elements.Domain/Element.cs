@@ -5,12 +5,12 @@ namespace Starlights.Modules.Elements.Domain;
 /// <summary>
 /// Represents an element (building block) in the system, which can have multiple components.
 /// </summary>
-public class Element : AggregateRoot<Guid>
+public sealed class Element : AggregateRoot<ElementId>
 {
     private readonly List<ElementComponentBase> _components = [];
 
-    public Element(string name, string type)
-        : base(Guid.NewGuid())
+    private Element(string name, string type)
+        : base(ElementId.New())
     {
         Name = name.Trim();
         Type = type.Trim();
@@ -38,5 +38,31 @@ public class Element : AggregateRoot<Guid>
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
         _components.Add(component);
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Element"/> class with the specified name and type.
+    /// </summary>
+    public static Element Create(string name, string type)
+    {
+        var element = new Element(name, type);
+        // raise an 'ElementCreated' domain event here if needed
+        return element;
+    }
+
+    /// <summary>
+    /// Retrieves a component of the specified type from the element's components.
+    /// </summary>
+    public T GetComponent<T>()
+    {
+        return _components.OfType<T>().Single();
+    }
+
+    /// <summary>
+    /// Retrieves a component of the specified type from the element's components.
+    /// </summary>
+    public IEnumerable<T> GetComponents<T>()
+    {
+        return _components.OfType<T>();
     }
 }
