@@ -10,16 +10,16 @@ namespace Starlights.Modules.Elements.Tests;
 [TestClass]
 public class ElementsModuleInitializationTests
 {
-    private readonly Mock<ILogger<ElementsModuleInitialization>> _loggerMock = new();
+    private readonly Mock<ILogger<ElementsModuleInitializer>> _loggerMock = new();
     private readonly Mock<IPersistence> _persistenceMock = new();
     private readonly Mock<IElementsRepository> _elementsRepositoryMock = new();
 
     // SUT
-    private readonly ElementsModuleInitialization _initialization;
+    private readonly ElementsModuleInitializer _initialization;
 
     public ElementsModuleInitializationTests()
     {
-        _initialization = new ElementsModuleInitialization(_loggerMock.Object, _persistenceMock.Object);
+        _initialization = new ElementsModuleInitializer(_loggerMock.Object, _persistenceMock.Object);
 
         _persistenceMock.Setup(x => x.GetRepository<IElementsRepository>())
             .Returns(_elementsRepositoryMock.Object);

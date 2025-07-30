@@ -49,4 +49,20 @@ public sealed class Element : AggregateRoot<ElementId>
         // raise an 'ElementCreated' domain event here if needed
         return element;
     }
+
+    /// <summary>
+    /// Retrieves a component of the specified type from the element's components.
+    /// </summary>
+    public T GetComponent<T>()
+    {
+        return _components.OfType<T>().Single();
+    }
+
+    /// <summary>
+    /// Retrieves a component of the specified type from the element's components.
+    /// </summary>
+    public IEnumerable<T> GetComponents<T>()
+    {
+        return _components.OfType<T>();
+    }
 }

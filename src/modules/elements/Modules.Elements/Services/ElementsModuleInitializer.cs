@@ -7,12 +7,12 @@ using Starlights.Platform.Data;
 namespace Starlights.Modules.Elements.Services;
 
 // TODO: this should be in another 'extension' project that deals with the specifics of the game system
-internal class ElementsModuleInitialization : IElementsModuleInitialization
+internal class ElementsModuleInitializer : IElementsModuleInitializer
 {
-    private readonly ILogger<ElementsModuleInitialization> _logger;
+    private readonly ILogger<ElementsModuleInitializer> _logger;
     private readonly IPersistence _persistence;
 
-    public ElementsModuleInitialization(ILogger<ElementsModuleInitialization> logger, IPersistence persistence)
+    public ElementsModuleInitializer(ILogger<ElementsModuleInitializer> logger, IPersistence persistence)
     {
         _logger = logger;
         _persistence = persistence;

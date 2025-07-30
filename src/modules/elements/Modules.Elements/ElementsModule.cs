@@ -11,6 +11,6 @@ public sealed class ElementsModule : IPlatformModule
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IElementsModuleQueries, ElementsModuleQueries>();
-        builder.Services.AddScoped<IElementsModuleInitialization, ElementsModuleInitialization>();
+        builder.Services.AddScoped<IElementsModuleInitializer, ElementsModuleInitializer>();
     }
 }

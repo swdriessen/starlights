@@ -5,13 +5,13 @@
 /// </summary>
 public record CharacterCreationInfo
 {
-    public CharacterCreationInfo(Guid id, string name)
+    public CharacterCreationInfo(Guid elementId, string name)
     {
-        Id = id;
+        ElementId = elementId;
         Name = name;
     }
 
-    public Guid Id { get; init; }
+    public Guid ElementId { get; init; }
     public string Name { get; init; }
     public string? ShortDescription { get; init; }
 }

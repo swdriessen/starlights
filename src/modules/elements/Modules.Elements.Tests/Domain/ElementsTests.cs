@@ -8,6 +8,22 @@ namespace Starlights.Modules.Elements.Tests.Domain;
 public sealed class ElementTests
 {
     [TestMethod]
+    public void CreateShouldHaveDetails()
+    {
+        // Arrange
+        const string elementName = "Test Element";
+        const string elementType = "Test Type";
+
+        // Act
+        var element = Element.Create(elementName, elementType);
+
+        // Assert
+        element.Name.Should().Be(elementName);
+        element.Type.Should().Be(elementType);
+        element.Components.Should().BeEmpty();
+    }
+
+    [TestMethod]
     public void Create()
     {
         // Arrange
