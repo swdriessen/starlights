@@ -66,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Compone
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Endpoints", "src\modules\elements\Modules.Elements.Endpoints\Modules.Elements.Endpoints.csproj", "{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Data", "src\modules\elements\Modules.Elements.Data\Modules.Elements.Data.csproj", "{944257C4-9FD2-49FC-8213-8011F268F705}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +130,10 @@ Global
 		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{944257C4-9FD2-49FC-8213-8011F268F705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{944257C4-9FD2-49FC-8213-8011F268F705}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{944257C4-9FD2-49FC-8213-8011F268F705}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{944257C4-9FD2-49FC-8213-8011F268F705}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +163,7 @@ Global
 		{8BED2340-C2DE-4C9B-8CBC-E2B09165C292} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
 		{554E31B4-0DAB-47D1-BB00-C669FD63C16E} = {D42B1339-D2AE-42CB-9AF5-78612A3DFB10}
 		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
+		{944257C4-9FD2-49FC-8213-8011F268F705} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}
