@@ -6,7 +6,7 @@ using Starlights.Platform.Hosting;
 
 namespace Starlights.Application;
 
-public static class Program
+public sealed class Program
 {
     public static void Main(string[] args)
     {
