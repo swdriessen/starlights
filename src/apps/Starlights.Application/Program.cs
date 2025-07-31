@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using Modules.Elements.Endpoints;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
-using Starlights.Modules.Elements.Integration.Abstractions;
+using Starlights.Modules.Elements.Endpoints.Installation;
 using Starlights.Platform.Components.FastEndpoints;
 using Starlights.Platform.Hosting;
 
@@ -40,16 +38,7 @@ public static class Program
         app.UseStarlightsPlatform();
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
-        // used to test end-to-end until module offers its own API
-        app.MapGet("/api/elements", async (HttpContext _, [FromServices] IElementsModuleQueries queries) =>
-        {
-            var elements = await queries.GetCharacterCreationElements();
-            return Results.Ok(elements);
-        })
-        .WithName("Elements");
 
         app.Run();
     }

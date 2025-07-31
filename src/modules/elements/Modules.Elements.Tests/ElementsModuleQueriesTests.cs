@@ -57,9 +57,9 @@ public class ElementsModuleQueriesTests
     {
         // Arrange
         var element1 = Element.Create("Default Character", ElementTypeConstants.CharacterCreation);
-        element1.AddComponent(new DescriptionComponent(element1.Id, "a default description"));
+        element1.AddComponent(new ShortDescriptionComponent(element1.Id, "a default description"));
         var element2 = Element.Create("Another Character", ElementTypeConstants.CharacterCreation);
-        element2.AddComponent(new DescriptionComponent(element2.Id, "another description"));
+        element2.AddComponent(new ShortDescriptionComponent(element2.Id, "another description"));
 
         var elements = new List<Element> { element1, element2 };
 
@@ -91,7 +91,7 @@ public class ElementsModuleQueriesTests
     {
         // Arrange
         var element = Element.Create("Custom", ElementTypeConstants.CharacterCreation);
-        element.AddComponent(new DescriptionComponent(element.Id, "With Description"));
+        element.AddComponent(new ShortDescriptionComponent(element.Id, "With Description"));
         _elementsRepositoryMock.Setup(x => x.GetElementAsync(element.Id))
             .ReturnsAsync(element);
 

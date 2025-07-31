@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Integration.Abstractions;
 
-namespace Modules.Elements.Endpoints;
+namespace Starlights.Modules.Elements.Endpoints.Installation;
 
 public class InitializationEndpoint : EndpointWithoutRequest
 {
