@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework.TypeConfiguration;
@@ -9,7 +10,9 @@ public class PrimaryAbilityComponentTypeConfiguration : IEntityTypeConfiguration
     public void Configure(EntityTypeBuilder<PrimaryAbilityComponent> builder)
     {
         builder.ToTable("element_component_primary_ability");
+
         builder.Property(x => x.PrimaryAbility)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new ElementId(v));
     }
 }

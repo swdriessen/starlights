@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Modules.Elements.Endpoints;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
 using Starlights.Modules.Elements.Integration.Abstractions;
@@ -24,6 +25,7 @@ public static class Program
 
             // use entity framework for data persistence
             options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
+            options.AdditionalAssemblies.Add(typeof(InitializationEndpoint).Assembly);
             options.AdditionalAssemblies.Add(typeof(FastEndpointsComponent).Assembly);
         });
 

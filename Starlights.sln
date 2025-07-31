@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2072DE9B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Integration.Abstractions", "src\modules\elements\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj", "{150E417D-A00E-400C-A1EB-C66DA23BC16E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Extensions.Platform.Data.EntityFramework", "src\platform\extensions\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Extensions.Platform.Data.EntityFramework.csproj", "{F9A7BDB2-9DCF-4E16-9934-6BE0B83CC284}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Components.Data.EntityFramework", "src\platform\extensions\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Platform.Components.Data.EntityFramework.csproj", "{F9A7BDB2-9DCF-4E16-9934-6BE0B83CC284}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Data.EntityFramework", "src\modules\elements\Modules.Elements.Data.EntityFramework\Modules.Elements.Data.EntityFramework.csproj", "{49D2699A-427E-4388-B9DF-3C6E5EBF0146}"
 EndProject
@@ -63,6 +63,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "systems", "systems", "{8BED2340-C2DE-4C9B-8CBC-E2B09165C292}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Components.FastEndpoints", "src\platform\components\Starlights.Platform.Components.FastEndpoints\Starlights.Platform.Components.FastEndpoints.csproj", "{554E31B4-0DAB-47D1-BB00-C669FD63C16E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Endpoints", "src\modules\elements\Modules.Elements.Endpoints\Modules.Elements.Endpoints.csproj", "{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -122,6 +124,10 @@ Global
 		{554E31B4-0DAB-47D1-BB00-C669FD63C16E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{554E31B4-0DAB-47D1-BB00-C669FD63C16E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{554E31B4-0DAB-47D1-BB00-C669FD63C16E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +156,7 @@ Global
 		{8C6408C7-ACE5-4543-BF21-0C7EECFF8509} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
 		{8BED2340-C2DE-4C9B-8CBC-E2B09165C292} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
 		{554E31B4-0DAB-47D1-BB00-C669FD63C16E} = {D42B1339-D2AE-42CB-9AF5-78612A3DFB10}
+		{0ECC6BED-E1AB-4DBB-A4A3-9B72B1C2BE57} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}
