@@ -62,6 +62,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "components", "components", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "systems", "systems", "{8BED2340-C2DE-4C9B-8CBC-E2B09165C292}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Components.FastEndpoints", "src\platform\components\Starlights.Platform.Components.FastEndpoints\Starlights.Platform.Components.FastEndpoints.csproj", "{554E31B4-0DAB-47D1-BB00-C669FD63C16E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,10 @@ Global
 		{50AD13D4-A4B1-423E-88D5-9985BA9A87B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50AD13D4-A4B1-423E-88D5-9985BA9A87B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50AD13D4-A4B1-423E-88D5-9985BA9A87B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{554E31B4-0DAB-47D1-BB00-C669FD63C16E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{554E31B4-0DAB-47D1-BB00-C669FD63C16E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{554E31B4-0DAB-47D1-BB00-C669FD63C16E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{554E31B4-0DAB-47D1-BB00-C669FD63C16E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +149,7 @@ Global
 		{D42B1339-D2AE-42CB-9AF5-78612A3DFB10} = {C840D2F9-B821-4C84-B2D2-5CB18C1C9F23}
 		{8C6408C7-ACE5-4543-BF21-0C7EECFF8509} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
 		{8BED2340-C2DE-4C9B-8CBC-E2B09165C292} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
+		{554E31B4-0DAB-47D1-BB00-C669FD63C16E} = {D42B1339-D2AE-42CB-9AF5-78612A3DFB10}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}

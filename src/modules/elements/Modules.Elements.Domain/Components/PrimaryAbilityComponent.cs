@@ -1,5 +1,3 @@
-using Starlights.Modules.Elements.Domain;
-
 namespace Starlights.Modules.Elements.Domain.Components;
 
 /// <summary>
@@ -18,9 +16,6 @@ public sealed class PrimaryAbilityComponent : ElementComponentBase
         PrimaryAbility = primaryAbility;
     }
 
-    /// <summary>
-    /// Gets the primary ability identifier.
-    /// </summary>
     /// <summary>
     /// Gets the primary ability identifier.
     /// </summary>

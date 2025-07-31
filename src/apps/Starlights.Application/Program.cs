@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
 using Starlights.Modules.Elements.Integration.Abstractions;
+using Starlights.Platform.Components.FastEndpoints;
 using Starlights.Platform.Hosting;
 
 namespace Starlights.Application;
@@ -23,6 +24,7 @@ public static class Program
 
             // use entity framework for data persistence
             options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
+            options.AdditionalAssemblies.Add(typeof(FastEndpointsComponent).Assembly);
         });
 
         var app = builder.Build();

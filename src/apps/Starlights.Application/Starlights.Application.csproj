@@ -7,6 +7,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\modules\elements\Modules.Elements.Data.EntityFramework\Modules.Elements.Data.EntityFramework.csproj" />
 		<ProjectReference Include="..\..\modules\elements\Modules.Elements\Modules.Elements.csproj" />
+		<ProjectReference Include="..\..\platform\components\Starlights.Platform.Components.FastEndpoints\Starlights.Platform.Components.FastEndpoints.csproj" />
 		<ProjectReference Include="..\..\platform\extensions\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Extensions.Platform.Data.EntityFramework.csproj" />
 		<ProjectReference Include="..\..\platform\Starlights.Platform.Hosting\Starlights.Platform.Hosting.csproj" />
 	</ItemGroup>
