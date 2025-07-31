@@ -1,0 +1,89 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  # Enable version updates for NuGet packages
+  - package-ecosystem: "nuget"
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Amsterdam"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "swdriessen"
+    assignees:
+      - "swdriessen"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "nuget"
+    ignore:
+      # Explicitly exclude FluentAssertions from automatic updates
+      - dependency-name: "FluentAssertions"
+        update-types:
+          [
+            "version-update:semver-major",
+            "version-update:semver-minor",
+            "version-update:semver-patch",
+          ]
+    groups:
+      # Group Microsoft packages together
+      microsoft-packages:
+        patterns:
+          - "Microsoft.*"
+          - "System.*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Group test-related packages
+      test-packages:
+        patterns:
+          - "*Test*"
+          - "Moq*"
+          - "MSTest*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Group ASP.NET Core packages
+      aspnetcore-packages:
+        patterns:
+          - "Microsoft.AspNetCore.*"
+          - "Microsoft.Extensions.*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Group Entity Framework packages
+      entityframework-packages:
+        patterns:
+          - "Microsoft.EntityFrameworkCore.*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Enable version updates for .NET SDK in global.json
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Amsterdam"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "swdriessen"
+    assignees:
+      - "swdriessen"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
