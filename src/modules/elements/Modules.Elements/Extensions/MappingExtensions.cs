@@ -11,7 +11,7 @@ public static class ElementMappingExtensions
         ArgumentNullException.ThrowIfNull(element, nameof(element));
 
         var description = element.Components
-            .OfType<DescriptionComponent>()
+            .OfType<ShortDescriptionComponent>()
             .SingleOrDefault();
 
         return new CharacterCreationInfo(element.Id, element.Name)

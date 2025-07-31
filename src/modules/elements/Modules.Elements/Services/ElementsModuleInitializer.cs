@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Modules.Elements.Integration.Abstractions;
 using Starlights.Platform.Data;
 
@@ -20,7 +21,8 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
     public async Task<InitializationResult> InitializeAsync()
     {
-        var defaultCharacter = Element.Create("Default Character Creation", ElementTypeConstants.CharacterCreation);
+        var defaultCharacter = Element.Create("Default Character", ElementTypeConstants.CharacterCreation);
+        defaultCharacter.AddComponent(new ShortDescriptionComponent(defaultCharacter.Id, "This is a default character for testing purposes."));
 
         var repository = _persistence.GetRepository<IElementsRepository>();
 

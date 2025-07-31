@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>Starlights.Modules.Elements.Endpoints</RootNamespace>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="FastEndpoints" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

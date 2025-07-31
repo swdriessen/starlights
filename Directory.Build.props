@@ -5,6 +5,11 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<PropertyGroup Label="Test Projects" Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+		<LangVersion>latest</LangVersion>
+		<TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+	</PropertyGroup>
+
 	<ItemGroup Label="Test Projects" Condition="$(MSBuildProjectName.EndsWith('Tests'))">
 		<PackageReference Include="Moq" />
 		<PackageReference Include="FluentAssertions" />

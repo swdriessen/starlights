@@ -15,7 +15,8 @@
   </ItemGroup>
   
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\platform\extensions\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Extensions.Platform.Data.EntityFramework.csproj" />
+		<ProjectReference Include="..\..\..\platform\extensions\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Platform.Components.Data.EntityFramework.csproj" />
+		<ProjectReference Include="..\Modules.Elements.Data\Modules.Elements.Data.csproj" />
 		<ProjectReference Include="..\Modules.Elements\Modules.Elements.csproj" />
 	</ItemGroup>
 
