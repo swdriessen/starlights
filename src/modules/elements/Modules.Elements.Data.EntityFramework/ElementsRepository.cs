@@ -16,8 +16,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task AddAsync(Element element)
     {
-        _logger.LogInformation("Adding new element with identifier {Identifier}.", element.Id);
-
+        _logger.LogInformation("add element '{ElementName}' with identifier {Identifier}", element.Name, element.Id.Value);
         await Entities.AddAsync(element);
     }
 
@@ -27,11 +26,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
         if (element is null)
         {
-            _logger.LogWarning("Element with identifier {Identifier} not found.", identifier);
-        }
-        else
-        {
-            _logger.LogInformation("Element with identifier {Identifier} retrieved successfully.", identifier);
+            _logger.LogWarning("element with identifier {Identifier} not found", identifier);
         }
 
         return element;
@@ -39,11 +34,21 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task<List<Element>> GetElementsByTypeAsync(string type)
     {
-        _logger.LogInformation("Retrieving elements of type {Type}.", type);
+        _logger.LogInformation("getting elements of type [{ElementType}]", type);
 
         return await Entities
             .Include(x => x.Components)
             .Where(element => element.Type == type)
+            .ToListAsync();
+    }
+
+    public async Task<List<Element>> GetElementsByTypesAsync(IEnumerable<string> types)
+    {
+        _logger.LogInformation("getting elements of types [{ElementTypes}]", string.Join(", ", types));
+
+        return await Entities
+            .Include(x => x.Components)
+            .Where(element => types.Contains(element.Type))
             .ToListAsync();
     }
 }

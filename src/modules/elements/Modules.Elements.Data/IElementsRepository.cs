@@ -23,4 +23,9 @@ public interface IElementsRepository : IRepository
     /// <param name="type">The type of elements to retrieve.</param>
     /// <returns>A collection of elements of the specified type.</returns>
     Task<List<Element>> GetElementsByTypeAsync(string type);
+
+    /// <summary>
+    /// Retrieves all elements of specified types.
+    /// </summary>
+    Task<List<Element>> GetElementsByTypesAsync(IEnumerable<string> types);
 }
