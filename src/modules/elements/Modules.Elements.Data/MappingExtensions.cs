@@ -28,4 +28,11 @@ public static class ElementMappingExtensions
 
         return new AbilityInfo(element.Id, element.Name, abbreviationComponent.Abbreviation);
     }
+
+    public static ElementInfo AsElementInfo(this Element element)
+    {
+        ArgumentNullException.ThrowIfNull(element, nameof(element));
+
+        return new ElementInfo(element.Name, element.Type, "Internal", element.Id);
+    }
 }

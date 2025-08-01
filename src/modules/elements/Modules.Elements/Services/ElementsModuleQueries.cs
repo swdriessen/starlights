@@ -40,4 +40,19 @@ internal class ElementsModuleQueries : IElementsModuleQueries
 
         return elements.ConvertAll(element => element.AsCharacterCreationInfo());
     }
+
+    public async Task<List<ElementInfo>> GetElements()
+    {
+        var repository = _persistence.GetRepository<IElementsRepository>();
+
+        var elements = await repository.GetElementsByTypesAsync([ElementTypeConstants.CharacterCreation, ElementTypeConstants.Ability, ElementTypeConstants.Skill]);
+
+        if (elements.Count == 0)
+        {
+            _logger.LogWarning("No elements found.");
+            return [];
+        }
+
+        return elements.ConvertAll(element => element.AsElementInfo());
+    }
 }
