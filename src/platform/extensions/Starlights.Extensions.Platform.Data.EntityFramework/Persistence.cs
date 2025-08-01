@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Starlights.Platform.Data;
 
-namespace Starlights.Extensions.Platform.Data.EntityFramework;
+namespace Starlights.Platform.Components.Data.EntityFramework;
 
 public class Persistence : IPersistence
 {

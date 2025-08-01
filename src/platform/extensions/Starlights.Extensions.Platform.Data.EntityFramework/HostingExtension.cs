@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Data;
 using Starlights.Platform.Hosting.Abstractions;
 
-namespace Starlights.Extensions.Platform.Data.EntityFramework;
+namespace Starlights.Platform.Components.Data.EntityFramework;
 
 /// <summary>
 /// Hosting extension for the Starlights Platform that configures the Entity Framework services.

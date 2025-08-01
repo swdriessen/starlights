@@ -2,7 +2,7 @@
 using Starlights.Platform.Data;
 using Starlights.Platform.Domain;
 
-namespace Starlights.Extensions.Platform.Data.EntityFramework;
+namespace Starlights.Platform.Components.Data.EntityFramework;
 
 public abstract class RepositoryBase<TEntity> : IRepository
     where TEntity : class, IEntity
