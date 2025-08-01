@@ -8,6 +8,8 @@ public sealed class PrerequisitesComponentTypeConfiguration : IEntityTypeConfigu
 {
     public void Configure(EntityTypeBuilder<PrerequisitesComponent> builder)
     {
+        builder.ToTable("element_component_prerequisites");
+
         builder.Property(x => x.Prerequisites)
             .IsRequired()
             .HasMaxLength(256);

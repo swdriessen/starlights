@@ -11,6 +11,7 @@ public sealed class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.AddServiceDefaults();
 
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
@@ -28,6 +29,8 @@ public sealed class Program
         });
 
         var app = builder.Build();
+
+        app.MapDefaultEndpoints();
 
         if (app.Environment.IsDevelopment())
         {
