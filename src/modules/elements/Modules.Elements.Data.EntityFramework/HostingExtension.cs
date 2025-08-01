@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Data;
+using Starlights.Platform.Hosting;
 using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework;
@@ -20,16 +22,25 @@ internal class HostingExtension : IPlatformServicesExtension
         builder.Services.AddSingleton<IPersistenceContextFactory, PersistenceContextFactory>();
         builder.Services.AddDbContextFactory<ElementsContext>(options =>
         {
+            if (builder.Environment.IsIntegration())
+            {
+                string uniqueIdentifier = Guid.NewGuid().ToString("N");
+                Trace.WriteLine($"running inside an integration scenario, using in-memory db with unique name to avoid conflicts [uniqueIdentifier='{uniqueIdentifier}']");
+                options.UseInMemoryDatabase($"in-memory-integration-{uniqueIdentifier}");
+                options.EnableSensitiveDataLogging();
+                return;
+            }
+
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                Console.WriteLine("No connection string configured in appsettings.json or environment variables, using in-memory db.");
+                Trace.WriteLine("no 'DefaultConnection' connection string configured, using in-memory db");
                 options.UseInMemoryDatabase("in-memory");
             }
             else
             {
-                Console.WriteLine($"Using connection string: {connectionString}");
+                Trace.WriteLine($"using the provided 'DefaultConnection' connection string: {connectionString}");
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }
 

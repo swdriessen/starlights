@@ -23,7 +23,7 @@ public class GetCharacterCreationTypesEndpoint : EndpointWithoutRequest
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var elements = _queries.GetCharacterCreationElements();
+        var elements = await _queries.GetCharacterCreationElements();
         await Send.OkAsync(elements, ct);
     }
 }
