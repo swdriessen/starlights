@@ -9,6 +9,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Modules.Elements.Data\Modules.Elements.Data.csproj" />
+	  <ProjectReference Include="..\Modules.Elements.Domain\Modules.Elements.Domain.csproj" />
 	  <ProjectReference Include="..\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj" />
 	</ItemGroup>
 

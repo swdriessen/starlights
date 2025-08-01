@@ -16,4 +16,9 @@ public interface IElementsModuleQueries
     /// Retrieves a list of all character creation elements available in the system.
     /// </summary>
     Task<List<CharacterCreationInfo>> GetCharacterCreationElements();
+
+    /// <summary>
+    /// Retrieves a list of all elements available in the system.
+    /// </summary>
+    Task<List<ElementInfo>> GetElements();
 }

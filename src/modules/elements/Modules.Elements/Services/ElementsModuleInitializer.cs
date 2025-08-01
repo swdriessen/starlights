@@ -21,12 +21,41 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
     public async Task<InitializationResult> InitializeAsync()
     {
+        var repository = _persistence.GetRepository<IElementsRepository>();
+        var newElements = new List<Element>();
+
         var defaultCharacter = Element.Create("Default Character", ElementTypeConstants.CharacterCreation);
         defaultCharacter.AddComponent(new ShortDescriptionComponent(defaultCharacter.Id, "This is a default character for testing purposes."));
+        newElements.Add(defaultCharacter);
 
-        var repository = _persistence.GetRepository<IElementsRepository>();
+        var strengthAbility = Element.Create("Strength", ElementTypeConstants.Ability);
+        strengthAbility.AddComponent(new AbbreviationComponent(strengthAbility.Id, "STR"));
+        newElements.Add(strengthAbility);
 
-        await repository.AddAsync(defaultCharacter);
+        var dexterityAbility = Element.Create("Dexterity", ElementTypeConstants.Ability);
+        dexterityAbility.AddComponent(new AbbreviationComponent(dexterityAbility.Id, "DEX"));
+        newElements.Add(dexterityAbility);
+
+        var constitutionAbility = Element.Create("Constitution", ElementTypeConstants.Ability);
+        constitutionAbility.AddComponent(new AbbreviationComponent(constitutionAbility.Id, "CON"));
+        newElements.Add(constitutionAbility);
+
+        var intelligenceAbility = Element.Create("Intelligence", ElementTypeConstants.Ability);
+        intelligenceAbility.AddComponent(new AbbreviationComponent(intelligenceAbility.Id, "INT"));
+        newElements.Add(intelligenceAbility);
+
+        var wisdomAbility = Element.Create("Wisdom", ElementTypeConstants.Ability);
+        wisdomAbility.AddComponent(new AbbreviationComponent(wisdomAbility.Id, "WIS"));
+        newElements.Add(wisdomAbility);
+
+        var charismaAbility = Element.Create("Charisma", ElementTypeConstants.Ability);
+        charismaAbility.AddComponent(new AbbreviationComponent(charismaAbility.Id, "CHA"));
+        newElements.Add(charismaAbility);
+
+        foreach (var newElement in newElements)
+        {
+            await repository.AddAsync(newElement);
+        }
 
         var rows = await _persistence.SaveChangesAsync();
 

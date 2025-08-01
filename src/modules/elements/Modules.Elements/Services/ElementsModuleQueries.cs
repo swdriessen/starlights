@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
-using Starlights.Modules.Elements.Extensions;
 using Starlights.Modules.Elements.Integration.Abstractions;
 using Starlights.Modules.Elements.Integration.Abstractions.Models;
 using Starlights.Platform.Data;
@@ -40,5 +39,20 @@ internal class ElementsModuleQueries : IElementsModuleQueries
         }
 
         return elements.ConvertAll(element => element.AsCharacterCreationInfo());
+    }
+
+    public async Task<List<ElementInfo>> GetElements()
+    {
+        var repository = _persistence.GetRepository<IElementsRepository>();
+
+        var elements = await repository.GetElementsByTypesAsync([ElementTypeConstants.CharacterCreation, ElementTypeConstants.Ability, ElementTypeConstants.Skill]);
+
+        if (elements.Count == 0)
+        {
+            _logger.LogWarning("No elements found.");
+            return [];
+        }
+
+        return elements.ConvertAll(element => element.AsElementInfo());
     }
 }

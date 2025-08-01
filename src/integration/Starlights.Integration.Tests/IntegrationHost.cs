@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Starlights.Application;
 
@@ -15,7 +16,14 @@ public class IntegrationHost
     public IntegrationHost()
     {
         _factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => builder.UseEnvironment("Integration"));
+            .WithWebHostBuilder(builder =>
+            {
+                // allow separation from Development using appsettings.Integration.json
+                builder.UseEnvironment("Integration");
+
+                // preserve the execution context to ensure that the test server can handle async operations correctly
+                builder.UseTestServer(options => options.PreserveExecutionContext = true);
+            });
     }
 
     public HttpClient CreateClient()

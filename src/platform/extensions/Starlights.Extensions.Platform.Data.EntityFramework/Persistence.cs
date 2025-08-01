@@ -22,7 +22,7 @@ public class Persistence : IPersistence
 
     public T GetRepository<T>() where T : IRepository
     {
-        _logger.LogInformation("Retrieving repository of type {RepositoryType}", typeof(T).Name);
+        _logger.LogInformation("get repository [type='{RepositoryType}']", typeof(T).Name);
 
         var repository = _serviceProvider.GetRequiredService<T>(); // TODO: investigate cache in case of multiple calls
 
@@ -40,9 +40,10 @@ public class Persistence : IPersistence
             throw new ArgumentException("The provided context is not a valid DbContext.", nameof(_persistenceContext));
         }
 
-        _logger.LogInformation("Saving changes to the database.");
+
+        _logger.LogInformation("saving...");
         var result = await context.SaveChangesAsync();
-        _logger.LogInformation("Changes saved successfully. {ChangesCount} changes were made.", result);
+        _logger.LogInformation("...saved successfully [rows='{Rows}', context='{RepositoryType}']", result, context.GetType().Name);
 
         return result;
     }

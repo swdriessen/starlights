@@ -17,7 +17,7 @@ public class PersistenceContextFactory : IPersistenceContextFactory
 
     public IPersistenceContext CreateContext()
     {
-        _logger.LogInformation("Creating a new ElementsContext instance.");
+        _logger.LogInformation("creating a new context instance [name='{ContextName}']", nameof(ElementsContext));
         return _factory.CreateDbContext();
     }
 }

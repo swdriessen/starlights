@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework;
 
+[ExcludeFromCodeCoverage]
 internal sealed class DesignTimeElementsContextFactory : IDesignTimeDbContextFactory<ElementsContext>
 {
     public ElementsContext CreateDbContext(string[] args)

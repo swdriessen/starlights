@@ -7,6 +7,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\platform\Starlights.Platform.Data\Starlights.Platform.Data.csproj" />
 	  <ProjectReference Include="..\Modules.Elements.Domain\Modules.Elements.Domain.csproj" />
+	  <ProjectReference Include="..\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>
