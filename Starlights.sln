@@ -72,6 +72,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.ServiceDefaults"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "systems", "systems", "{DC912414-0EC8-4BE2-A984-246D701220D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Components.Serilog", "src\platform\components\Starlights.Platform.Components.Serilog\Starlights.Platform.Components.Serilog.csproj", "{FB56BC7F-0437-486E-9D4A-B001D506EDEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -150,6 +152,10 @@ Global
 		{3A0C4DB3-22BB-23A8-FAD3-FDAE10F71E8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A0C4DB3-22BB-23A8-FAD3-FDAE10F71E8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A0C4DB3-22BB-23A8-FAD3-FDAE10F71E8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB56BC7F-0437-486E-9D4A-B001D506EDEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB56BC7F-0437-486E-9D4A-B001D506EDEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB56BC7F-0437-486E-9D4A-B001D506EDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB56BC7F-0437-486E-9D4A-B001D506EDEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,6 +189,7 @@ Global
 		{2001E71A-E1DD-4E96-B659-33C5319CD777} = {27E01094-52D2-4E80-B911-2B6CE218F09A}
 		{3A0C4DB3-22BB-23A8-FAD3-FDAE10F71E8B} = {27E01094-52D2-4E80-B911-2B6CE218F09A}
 		{DC912414-0EC8-4BE2-A984-246D701220D2} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
+		{FB56BC7F-0437-486E-9D4A-B001D506EDEB} = {D42B1339-D2AE-42CB-9AF5-78612A3DFB10}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" />
+		<PackageReference Include="Serilog.AspNetCore" />
+		<PackageReference Include="Serilog.Sinks.OpenTelemetry" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
