@@ -2,7 +2,7 @@
 using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Modules.Elements.Integration.Abstractions.Models;
 
-namespace Starlights.Modules.Elements.Extensions;
+namespace Starlights.Modules.Elements.Data;
 
 public static class ElementMappingExtensions
 {
@@ -18,5 +18,14 @@ public static class ElementMappingExtensions
         {
             ShortDescription = description?.Content
         };
+    }
+
+    public static AbilityInfo AsAbilityInfo(this Element element)
+    {
+        ArgumentNullException.ThrowIfNull(element, nameof(element));
+
+        var abbreviationComponent = element.GetComponent<AbbreviationComponent>();
+
+        return new AbilityInfo(element.Id, element.Name, abbreviationComponent.Abbreviation);
     }
 }

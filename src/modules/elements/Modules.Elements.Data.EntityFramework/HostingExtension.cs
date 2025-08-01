@@ -29,7 +29,6 @@ internal class HostingExtension : IPlatformServicesExtension
                 string uniqueIdentifier = Guid.NewGuid().ToString("N");
                 Trace.WriteLine($"running inside an integration scenario, using in-memory db with unique name to avoid conflicts [uniqueIdentifier='{uniqueIdentifier}']");
                 options.UseInMemoryDatabase($"in-memory-integration-{uniqueIdentifier}");
-                options.EnableSensitiveDataLogging();
                 return;
             }
 
