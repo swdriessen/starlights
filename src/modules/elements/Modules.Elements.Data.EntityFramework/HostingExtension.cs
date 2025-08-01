@@ -31,7 +31,7 @@ internal class HostingExtension : IPlatformServicesExtension
                 return;
             }
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var connectionString = builder.Configuration.GetConnectionString("starlights");
 
             if (string.IsNullOrWhiteSpace(connectionString))
             {
@@ -41,7 +41,7 @@ internal class HostingExtension : IPlatformServicesExtension
             else
             {
                 Trace.WriteLine($"using the provided 'DefaultConnection' connection string: {connectionString}");
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(connectionString);
             }
 
             if (builder.Environment.IsDevelopment())
