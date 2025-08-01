@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <UserSecretsId>adc7ebe7-3832-46e9-8c46-b9b972427303</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\aspire\Starlights.ServiceDefaults\Starlights.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting\Starlights.Platform.Hosting.csproj" />
+    <ProjectReference Include="..\Modules.Elements.Data.EntityFramework\Modules.Elements.Data.EntityFramework.csproj" />
+  </ItemGroup>
+</Project>

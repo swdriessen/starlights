@@ -74,6 +74,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "systems", "systems", "{DC91
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Components.Serilog", "src\platform\components\Starlights.Platform.Components.Serilog\Starlights.Platform.Components.Serilog.csproj", "{FB56BC7F-0437-486E-9D4A-B001D506EDEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Data.EntityFramework.MigrationService", "src\modules\elements\Modules.Elements.Data.EntityFramework.MigrationService\Modules.Elements.Data.EntityFramework.MigrationService.csproj", "{2F3D88CC-2F76-A213-0B26-C72EE4C6251C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +158,10 @@ Global
 		{FB56BC7F-0437-486E-9D4A-B001D506EDEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB56BC7F-0437-486E-9D4A-B001D506EDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB56BC7F-0437-486E-9D4A-B001D506EDEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F3D88CC-2F76-A213-0B26-C72EE4C6251C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F3D88CC-2F76-A213-0B26-C72EE4C6251C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F3D88CC-2F76-A213-0B26-C72EE4C6251C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F3D88CC-2F76-A213-0B26-C72EE4C6251C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +196,7 @@ Global
 		{3A0C4DB3-22BB-23A8-FAD3-FDAE10F71E8B} = {27E01094-52D2-4E80-B911-2B6CE218F09A}
 		{DC912414-0EC8-4BE2-A984-246D701220D2} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
 		{FB56BC7F-0437-486E-9D4A-B001D506EDEB} = {D42B1339-D2AE-42CB-9AF5-78612A3DFB10}
+		{2F3D88CC-2F76-A213-0B26-C72EE4C6251C} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}
