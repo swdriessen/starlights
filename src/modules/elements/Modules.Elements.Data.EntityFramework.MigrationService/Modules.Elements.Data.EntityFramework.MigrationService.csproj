@@ -1,10 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-Modules.Elements.Data.EntityFramework.MigrationService-adc7ebe7-3832-46e9-8c46-b9b972427303</UserSecretsId>
+    <UserSecretsId>adc7ebe7-3832-46e9-8c46-b9b972427303</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
