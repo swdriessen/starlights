@@ -47,6 +47,9 @@ public static class HostingExtensions
             Platform.WriteLine($"initializing module [{module.GetType().FullName}]");
         }
 
+        // visual queue for testing
+        Platform.WriteLine("========== Starlights Platform Initialized ==========");
+
         return host;
     }
 }
