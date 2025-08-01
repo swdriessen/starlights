@@ -56,7 +56,7 @@ internal static class PlatformBuilderExtensions
 
             if (Activator.CreateInstance(moduleType) is IPlatformModule module)
             {
-                Console.WriteLine($"Registering module: {moduleType.FullName}");
+                Platform.WriteLine($"register module [name='{moduleType.FullName}']");
                 builder.Services.AddSingleton(moduleType, module);
                 modules.Add(module);
             }
@@ -75,7 +75,7 @@ internal static class PlatformBuilderExtensions
         // configure services for modules
         foreach (var module in modules)
         {
-            // TODO: provide configuration through method or constructor
+            Platform.WriteLine($"configure module [name='{module.GetType().FullName}']");
             module.ConfigureServices(hostApplicationBuilder);
         }
 
@@ -141,7 +141,7 @@ internal static class PlatformBuilderExtensions
         // invoke the extensions
         foreach (var extension in extensions.OrderBy(e => e.RegistrationOrder))
         {
-            Console.WriteLine($"configure svc [order='{extension.RegistrationOrder}', name='{extension.GetType().FullName}']");
+            Platform.WriteLine($"configure svc [order='{extension.RegistrationOrder}', name='{extension.GetType().FullName}']");
             extension.ConfigureServices(hostApplicationBuilder);
         }
 

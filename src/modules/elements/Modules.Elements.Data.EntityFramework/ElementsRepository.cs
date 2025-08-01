@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Starlights.Extensions.Platform.Data.EntityFramework;
 using Starlights.Modules.Elements.Domain;
+using Starlights.Platform.Components.Data.EntityFramework;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework;
 
