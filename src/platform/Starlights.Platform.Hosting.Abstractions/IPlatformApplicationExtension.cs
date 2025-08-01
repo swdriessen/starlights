@@ -11,7 +11,7 @@ public interface IPlatformApplicationExtension
     /// The microsoft extensions will range between 1000 and 2000. This will be detailed more once these extensions are used in the platform.
     /// This allows for extensions to be configured before, after, or in between the default services.
     /// </remarks>
-    int RegistrationOrder => 1000;
+    int RegistrationOrder { get; }
 
     /// <summary>
     /// Configures the application host for the platform module.

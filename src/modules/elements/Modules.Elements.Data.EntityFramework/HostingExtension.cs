@@ -14,6 +14,8 @@ namespace Starlights.Modules.Elements.Data.EntityFramework;
 /// </summary>
 internal class HostingExtension : IPlatformServicesExtension
 {
+    public int RegistrationOrder => 1010;
+
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IElementsRepository, ElementsRepository>();

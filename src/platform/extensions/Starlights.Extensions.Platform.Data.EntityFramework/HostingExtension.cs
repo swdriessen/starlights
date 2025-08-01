@@ -10,6 +10,8 @@ namespace Starlights.Platform.Components.Data.EntityFramework;
 /// </summary>
 public class HostingExtension : IPlatformServicesExtension
 {
+    public int RegistrationOrder => 1000;
+
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IPersistence, Persistence>();

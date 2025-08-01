@@ -14,4 +14,12 @@ public class Platform : IPlatform
     public IHost Host { get; }
 
     public PlatformHostOptions Options { get; }
+
+    /// <summary>
+    /// Writes a message to the console with a timestamp and platform prefix.
+    /// </summary>
+    internal static void WriteLine(string message)
+    {
+        Console.WriteLine($"[{DateTime.UtcNow:HH:mm:ss:fff} PLT] {message} ");
+    }
 }

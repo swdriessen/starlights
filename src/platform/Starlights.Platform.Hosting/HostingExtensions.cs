@@ -44,7 +44,7 @@ public static class HostingExtensions
         // TODO: initialize modules ?
         foreach (var module in host.Services.GetServices<IPlatformModule>())
         {
-            Console.WriteLine($"Initializing module: {module.GetType().Name}");
+            Platform.WriteLine($"initializing module [{module.GetType().FullName}]");
         }
 
         return host;
