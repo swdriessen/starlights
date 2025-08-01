@@ -31,16 +31,17 @@ internal class HostingExtension : IPlatformServicesExtension
                 return;
             }
 
-            var connectionString = builder.Configuration.GetConnectionString("starlights");
+            const string key = "starlights-db"; // 
+            var connectionString = builder.Configuration.GetConnectionString(key);
 
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                Trace.WriteLine("no 'DefaultConnection' connection string configured, using in-memory db");
+                Trace.WriteLine($"no '{key}' connection string configured, using in-memory db");
                 options.UseInMemoryDatabase("in-memory");
             }
             else
             {
-                Trace.WriteLine($"using the provided 'DefaultConnection' connection string: {connectionString}");
+                Trace.WriteLine($"using the provided '{key}' connection string: {connectionString}");
                 options.UseSqlServer(connectionString);
             }
 

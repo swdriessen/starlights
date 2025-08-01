@@ -1,8 +1,8 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var database = builder.AddSqlServer("starlights-db")
+var database = builder.AddSqlServer("sqlserver")
     .WithLifetime(ContainerLifetime.Persistent)
-    .AddDatabase("starlights");
+    .AddDatabase("starlights-db", "starlights-db");
 
 builder.AddProject<Projects.Starlights_Application>("starlights-application")
     .WithReference(database)
