@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 
-namespace Starlights.Platform.Hosting.Abstractions;
+namespace Starlights.Platform.Hosting;
 
 public interface IPlatform
 {

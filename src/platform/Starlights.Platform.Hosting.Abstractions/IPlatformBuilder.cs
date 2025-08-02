@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Starlights.Platform.Hosting.Abstractions;
+namespace Starlights.Platform.Hosting;
 
 /// <summary>
 /// Defines a builder for configuring the platform.

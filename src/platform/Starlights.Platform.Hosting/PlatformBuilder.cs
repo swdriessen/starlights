@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Hosting;
 

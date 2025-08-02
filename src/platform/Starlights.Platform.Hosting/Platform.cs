@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Hosting;
 

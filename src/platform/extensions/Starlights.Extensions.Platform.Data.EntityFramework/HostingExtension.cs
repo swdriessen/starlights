@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Data;
-using Starlights.Platform.Hosting.Abstractions;
+using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Components.Data.EntityFramework;
 

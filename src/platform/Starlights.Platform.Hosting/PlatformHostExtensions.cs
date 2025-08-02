@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Hosting;
 

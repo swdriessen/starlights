@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Starlights.Modules.Elements.Integration.Abstractions;
 using Starlights.Modules.Elements.Services;
-using Starlights.Platform.Hosting.Abstractions;
+using Starlights.Platform.Hosting;
 
 namespace Starlights.Modules.Elements;
 

@@ -9,7 +9,6 @@ public static class HostEnvironmentExtensions
     /// </summary>
     public static bool IsIntegration(this IHostEnvironment environment)
     {
-        ArgumentNullException.ThrowIfNull(environment);
         return environment.IsEnvironment("Integration");
     }
 }

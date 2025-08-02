@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Data;
 using Starlights.Platform.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework;
 

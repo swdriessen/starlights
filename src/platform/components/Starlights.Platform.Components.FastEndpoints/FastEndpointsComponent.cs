@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
+using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Components.FastEndpoints;
 

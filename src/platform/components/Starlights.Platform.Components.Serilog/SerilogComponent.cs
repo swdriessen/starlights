@@ -2,7 +2,6 @@
 using Serilog;
 using Serilog.Filters;
 using Starlights.Platform.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Components.Serilog;
 
