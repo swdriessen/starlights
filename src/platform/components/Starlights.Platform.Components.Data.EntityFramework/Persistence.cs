@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Starlights.Platform.Data;
@@ -22,6 +23,8 @@ public class Persistence : IPersistence
 
     public T GetRepository<T>() where T : IRepository
     {
+        using var _ = PersistenceTelemetry.ActivitySource.StartActivity($"GetRepository ({typeof(T).Name})", ActivityKind.Internal);
+
         _logger.LogInformation("get repository [type='{RepositoryType}']", typeof(T).Name);
 
         var repository = _serviceProvider.GetRequiredService<T>();
@@ -47,6 +50,8 @@ public class Persistence : IPersistence
 
     public async Task<int> SaveChangesAsync()
     {
+        using var activity = PersistenceTelemetry.ActivitySource.StartActivity("SaveChangesAsync", ActivityKind.Internal);
+
         var totalChanges = 0;
 
         foreach (var (contextType, context) in _contexts)
@@ -59,6 +64,8 @@ public class Persistence : IPersistence
                 _logger.LogInformation("...saved successfully [rows='{Rows}', context='{ContextType}']", changes, contextType.Name);
             }
         }
+
+        activity?.AddTag("totalChanges", totalChanges);
 
         return totalChanges;
     }

@@ -14,6 +14,9 @@ public class PlatformEntityFrameworkComponent : IPlatformServiceComponent
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(tracing => tracing.AddSource(PersistenceTelemetry.ActivitySourceName));
+
         builder.Services.AddScoped<IPersistence, Persistence>();
         builder.Services.AddSingleton<IContextFactoryRegistry, ContextFactoryRegistry>();
     }

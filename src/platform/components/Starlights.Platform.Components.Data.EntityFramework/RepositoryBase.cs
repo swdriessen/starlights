@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Starlights.Platform.Data;
 using Starlights.Platform.Domain;
 
@@ -38,6 +39,8 @@ public abstract class RepositoryBase<TEntity> : IRepository
 
     public void SetPersistenceContext(IPersistenceContext context)
     {
+        using var _ = PersistenceTelemetry.ActivitySource.StartActivity("SetPersistenceContext", ActivityKind.Internal);
+
         if (context is not DbContext dbContext)
         {
             throw new ArgumentException("The provided context is not a valid DbContext.", nameof(context));
