@@ -1,3 +1,4 @@
+using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
 using Starlights.Modules.Elements.Endpoints.Installation;
@@ -20,12 +21,15 @@ public sealed class Program
         // add the platform services and its modules
         builder.AddStarlightsPlatform(options =>
         {
-            // define assemblies in manifest or include them programmatically
-            options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);
+            // characters module
+            options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
 
-            // use entity framework for data persistence
+            // elements module
+            options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);
             options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
             options.AdditionalAssemblies.Add(typeof(InitializationEndpoint).Assembly);
+
+            // platform components
             options.AdditionalAssemblies.Add(typeof(FastEndpointsComponent).Assembly);
             options.AdditionalAssemblies.Add(typeof(SerilogComponent).Assembly);
         });

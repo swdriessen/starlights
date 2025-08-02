@@ -8,15 +8,15 @@ namespace Starlights.Platform.Components.Data.EntityFramework;
 public class Persistence : IPersistence
 {
     private readonly ILogger<Persistence> _logger;
-    private readonly IPersistenceContextFactory _contextFactory;
+    private readonly IContextFactoryRegistry _contextFactoryRegistry;
     private readonly IServiceProvider _serviceProvider;
-    private IPersistenceContext? _persistenceContext;
+    private readonly Dictionary<Type, IPersistenceContext> _contexts = [];
     private bool _disposedValue;
 
-    public Persistence(ILogger<Persistence> logger, IPersistenceContextFactory contextFactory, IServiceProvider serviceProvider)
+    public Persistence(ILogger<Persistence> logger, IContextFactoryRegistry contextFactoryRegistry, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _contextFactory = contextFactory;
+        _contextFactoryRegistry = contextFactoryRegistry;
         _serviceProvider = serviceProvider;
     }
 
@@ -24,28 +24,43 @@ public class Persistence : IPersistence
     {
         _logger.LogInformation("get repository [type='{RepositoryType}']", typeof(T).Name);
 
-        var repository = _serviceProvider.GetRequiredService<T>(); // TODO: investigate cache in case of multiple calls
+        var repository = _serviceProvider.GetRequiredService<T>();
 
-        _persistenceContext ??= _contextFactory.CreateContext();
+        // Get the appropriate context factory for this repository type
+        var contextFactory = _contextFactoryRegistry.GetContextFactory<T>();
+        var contextType = contextFactory.ContextType; // Use the ContextType property - no runtime context creation!
 
-        repository.SetPersistenceContext(_persistenceContext);
+        // Reuse existing context or create new one for this context type
+        if (!_contexts.TryGetValue(contextType, out var persistenceContext))
+        {
+            _logger.LogInformation("creating a new context instance [context='{ContextType}']", contextType.Name);
+            persistenceContext = contextFactory.CreateContext();
+            _contexts[contextType] = persistenceContext;
+        }
+
+        _logger.LogInformation("setting persistence context for repository [repository='{RepositoryType}', context='{ContextType}']", typeof(T).Name, contextType.Name);
+
+        repository.SetPersistenceContext(persistenceContext);
 
         return repository;
     }
 
     public async Task<int> SaveChangesAsync()
     {
-        if (_persistenceContext is not DbContext context)
+        var totalChanges = 0;
+
+        foreach (var (contextType, context) in _contexts)
         {
-            throw new ArgumentException("The provided context is not a valid DbContext.", nameof(_persistenceContext));
+            if (context is DbContext dbContext)
+            {
+                _logger.LogInformation("saving context [type='{ContextType}']", contextType.Name);
+                var changes = await dbContext.SaveChangesAsync();
+                totalChanges += changes;
+                _logger.LogInformation("...saved successfully [rows='{Rows}', context='{ContextType}']", changes, contextType.Name);
+            }
         }
 
-
-        _logger.LogInformation("saving...");
-        var result = await context.SaveChangesAsync();
-        _logger.LogInformation("...saved successfully [rows='{Rows}', context='{RepositoryType}']", result, context.GetType().Name);
-
-        return result;
+        return totalChanges;
     }
 
     protected virtual void Dispose(bool disposing)
@@ -54,13 +69,16 @@ public class Persistence : IPersistence
         {
             if (disposing)
             {
-                if (_persistenceContext is DbContext context)
+                foreach (var context in _contexts.Values)
                 {
-                    context.Dispose();
+                    if (context is DbContext dbContext)
+                    {
+                        dbContext.Dispose();
+                    }
                 }
+                _contexts.Clear();
             }
 
-            _persistenceContext = null;
             _disposedValue = true;
         }
     }

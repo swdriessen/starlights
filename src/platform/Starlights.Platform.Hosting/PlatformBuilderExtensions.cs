@@ -135,6 +135,8 @@ internal static class PlatformBuilderExtensions
             throw new InvalidOperationException("The IHostApplicationBuilder is not available in the platform builder properties.");
         }
 
+        Platform.WriteLine("========== Configure Service Components ==========");
+
         // invoke the components
         foreach (var component in components.OrderBy(e => e.RegistrationOrder))
         {

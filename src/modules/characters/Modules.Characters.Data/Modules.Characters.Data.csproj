@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>Starlights.Modules.Characters.Data</RootNamespace>
+	</PropertyGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\platform\Starlights.Platform.Data\Starlights.Platform.Data.csproj" />
+    <ProjectReference Include="..\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
+  </ItemGroup>
+</Project>

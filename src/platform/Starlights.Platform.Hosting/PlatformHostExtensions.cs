@@ -55,6 +55,8 @@ internal static class PlatformHostExtensions
             }
         }
 
+        Platform.WriteLine("========== Configure Application Components ==========");
+
         // invoke the components
         foreach (var component in components.OrderBy(e => e.RegistrationOrder))
         {

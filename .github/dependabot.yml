@@ -7,7 +7,7 @@ version: 2
 updates:
   # Enable version updates for NuGet packages
   - package-ecosystem: "nuget"
-    directory: "/" # Location of package manifests
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -35,7 +35,6 @@ updates:
             "version-update:semver-patch",
           ]
     groups:
-      # Group Microsoft packages together
       microsoft-packages:
         patterns:
           - "Microsoft.*"
@@ -43,7 +42,12 @@ updates:
         update-types:
           - "minor"
           - "patch"
-      # Group test-related packages
+      entityframework-packages:
+        patterns:
+          - "Microsoft.EntityFrameworkCore.*"
+        update-types:
+          - "minor"
+          - "patch"
       test-packages:
         patterns:
           - "*Test*"
@@ -52,23 +56,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
-      # Group ASP.NET Core packages
-      aspnetcore-packages:
-        patterns:
-          - "Microsoft.AspNetCore.*"
-          - "Microsoft.Extensions.*"
-        update-types:
-          - "minor"
-          - "patch"
-      # Group Entity Framework packages
-      entityframework-packages:
-        patterns:
-          - "Microsoft.EntityFrameworkCore.*"
-        update-types:
-          - "minor"
-          - "patch"
 
-  # Enable version updates for .NET SDK in global.json
+  # Enable version updates for github actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

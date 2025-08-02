@@ -10,10 +10,11 @@ namespace Starlights.Platform.Components.Data.EntityFramework;
 /// </summary>
 public class PlatformEntityFrameworkComponent : IPlatformServiceComponent
 {
-    public int RegistrationOrder => 1000;
+    public int RegistrationOrder => 500;
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IPersistence, Persistence>();
+        builder.Services.AddSingleton<IContextFactoryRegistry, ContextFactoryRegistry>();
     }
 }

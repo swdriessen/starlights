@@ -6,22 +6,22 @@ using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Components.Data.EntityFramework;
 using Starlights.Platform.Hosting;
 
-namespace Starlights.Modules.Elements.Data.EntityFramework;
+namespace Starlights.Modules.Characters.Data.EntityFramework;
 
 /// <summary>
-/// The platform component for the Elements module that configures the Entity Framework services.
+/// The platform component for the Characters module that configures the Entity Framework services.
 /// </summary>
 internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformApplicationComponent
 {
-    public int RegistrationOrder => 1010;
+    public int RegistrationOrder => 1020;
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IElementsRepository, ElementsRepository>();
+        builder.Services.AddScoped<ICharactersRepository, CharactersRepository>();
 
-        //builder.Services.AddSingleton<IPersistenceContextFactory, ElementsPersistenceContextFactory>();
-        builder.Services.AddSingleton<PersistenceElementsContextFactory>();
-        builder.Services.AddDbContextFactory<ElementsContext>(options =>
+        //builder.Services.AddSingleton<IPersistenceContextFactory, CharactersPersistenceContextFactory>();
+        builder.Services.AddSingleton<PersistenceCharactersContextFactory>();
+        builder.Services.AddDbContextFactory<CharactersContext>(options =>
         {
             if (builder.Environment.IsIntegration())
             {
@@ -54,6 +54,6 @@ internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformAp
 
     public void UseComponent(IHost host)
     {
-        host.UseRepositoryWithContext<IElementsRepository, PersistenceElementsContextFactory>();
+        host.UseRepositoryWithContext<ICharactersRepository, PersistenceCharactersContextFactory>();
     }
 }

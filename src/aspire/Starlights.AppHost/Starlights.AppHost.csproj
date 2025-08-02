@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\apps\Starlights.Application\Starlights.Application.csproj" />
+    <ProjectReference Include="..\..\modules\characters\Modules.Characters.Data.EntityFramework.MigrationService\Modules.Characters.Data.EntityFramework.MigrationService.csproj" />
     <ProjectReference Include="..\..\modules\elements\Modules.Elements.Data.EntityFramework.MigrationService\Modules.Elements.Data.EntityFramework.MigrationService.csproj" />
   </ItemGroup>
 
