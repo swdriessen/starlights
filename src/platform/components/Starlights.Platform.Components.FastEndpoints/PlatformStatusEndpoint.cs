@@ -16,15 +16,8 @@ public class PlatformStatusEndpoint : EndpointWithoutRequest
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var response = new
-        {
-            Message = "The platform is operational.",
-            Status = "Running",
-            Timestamp = DateTime.UtcNow,
-        };
-
-        await Send.OkAsync(response, ct);
+        await Send.OkAsync(new { Message = "The platform is operational.", Timestamp = DateTime.UtcNow }, cancellationToken);
     }
 }

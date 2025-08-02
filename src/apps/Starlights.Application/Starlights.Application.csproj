@@ -11,7 +11,7 @@
 		<ProjectReference Include="..\..\modules\elements\Modules.Elements\Modules.Elements.csproj" />
 		<ProjectReference Include="..\..\platform\components\Starlights.Platform.Components.FastEndpoints\Starlights.Platform.Components.FastEndpoints.csproj" />
 		<ProjectReference Include="..\..\platform\components\Starlights.Platform.Components.Serilog\Starlights.Platform.Components.Serilog.csproj" />
-		<ProjectReference Include="..\..\platform\extensions\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Platform.Components.Data.EntityFramework.csproj" />
+		<ProjectReference Include="..\..\platform\components\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Platform.Components.Data.EntityFramework.csproj" />
 		<ProjectReference Include="..\..\platform\Starlights.Platform.Hosting\Starlights.Platform.Hosting.csproj" />
 	</ItemGroup>
 

@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2072DE9B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Integration.Abstractions", "src\modules\elements\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj", "{150E417D-A00E-400C-A1EB-C66DA23BC16E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Components.Data.EntityFramework", "src\platform\extensions\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Platform.Components.Data.EntityFramework.csproj", "{F9A7BDB2-9DCF-4E16-9934-6BE0B83CC284}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Components.Data.EntityFramework", "src\platform\components\Starlights.Extensions.Platform.Data.EntityFramework\Starlights.Platform.Components.Data.EntityFramework.csproj", "{F9A7BDB2-9DCF-4E16-9934-6BE0B83CC284}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Elements.Data.EntityFramework", "src\modules\elements\Modules.Elements.Data.EntityFramework\Modules.Elements.Data.EntityFramework.csproj", "{49D2699A-427E-4388-B9DF-3C6E5EBF0146}"
 EndProject

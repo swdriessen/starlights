@@ -4,7 +4,7 @@ using Moq;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Integration.Abstractions.Models;
+using Starlights.Modules.Elements.Integration.Models;
 using Starlights.Modules.Elements.Services;
 using Starlights.Platform.Data;
 
