@@ -4,7 +4,7 @@ using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Tests.Helpers;
 
-internal class EmptyServiceExtension : IPlatformServicesExtension
+internal class EmptyServiceExtension : IPlatformServiceComponent
 {
     public virtual int RegistrationOrder => 1001;
 

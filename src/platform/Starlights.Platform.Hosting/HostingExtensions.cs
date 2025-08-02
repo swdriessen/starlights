@@ -38,7 +38,7 @@ public static class HostingExtensions
         var platform = new Platform(host, options);
 
         // configure the application
-        platform.InvokeApplicationExtensions();
+        platform.InvokeApplicationComponents();
 
         // TODO: initialize modules ?
         foreach (var module in host.Services.GetServices<IPlatformModule>())

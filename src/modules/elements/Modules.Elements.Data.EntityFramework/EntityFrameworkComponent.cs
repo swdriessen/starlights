@@ -9,9 +9,9 @@ using Starlights.Platform.Hosting;
 namespace Starlights.Modules.Elements.Data.EntityFramework;
 
 /// <summary>
-/// Hosting extension for the Elements module that configures the Entity Framework services.
+/// The platform component for the Elements module that configures the Entity Framework services.
 /// </summary>
-internal class HostingExtension : IPlatformServicesExtension
+internal class EntityFrameworkComponent : IPlatformServiceComponent
 {
     public int RegistrationOrder => 1010;
 
