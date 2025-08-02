@@ -4,16 +4,16 @@ param(
 )
 
 if (-not $Name) {
-    $Name = Read-Host "Enter migration name for the elements context"
-
+    $Name = Read-Host "Enter migration name for the characters context"
+    
     if ([string]::IsNullOrWhiteSpace($Name)) {
         Write-Host "Migration name cannot be empty. Exiting." -ForegroundColor Red
         exit
     }
 }
 
-$projectPath = "src\modules\elements\Modules.Elements.Data.EntityFramework"
-$contextName = "ElementsContext"
+$projectPath = "src\modules\characters\Modules.Characters.Data.EntityFramework"
+$contextName = "CharactersContext"
 $outputDir = "Migrations"
 
 Write-Host "Adding a new migration: '$Name' to $contextName..." -ForegroundColor Cyan

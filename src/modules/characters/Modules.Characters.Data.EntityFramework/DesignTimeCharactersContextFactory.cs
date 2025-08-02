@@ -2,12 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Starlights.Modules.Elements.Data.EntityFramework;
+namespace Starlights.Modules.Characters.Data.EntityFramework;
 
 [ExcludeFromCodeCoverage]
-internal sealed class DesignTimeElementsContextFactory : IDesignTimeDbContextFactory<ElementsContext>
+internal sealed class DesignTimeCharactersContextFactory : IDesignTimeDbContextFactory<CharactersContext>
 {
-    public ElementsContext CreateDbContext(string[] args)
+    public CharactersContext CreateDbContext(string[] args)
     {
         string connectionString = "";
         if (args.Length > 0)
@@ -16,9 +16,9 @@ internal sealed class DesignTimeElementsContextFactory : IDesignTimeDbContextFac
             connectionString = args[0];
         }
 
-        var builder = new DbContextOptionsBuilder<ElementsContext>();
+        var builder = new DbContextOptionsBuilder<CharactersContext>();
         builder.UseSqlServer(connectionString);
 
-        return new ElementsContext(builder.Options);
+        return new CharactersContext(builder.Options);
     }
 }

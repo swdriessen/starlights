@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <UserSecretsId>43f734b9-a1a3-478c-b7af-9fbb898a16b3</UserSecretsId>
@@ -10,5 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\aspire\Starlights.ServiceDefaults\Starlights.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting\Starlights.Platform.Hosting.csproj" />
+		<ProjectReference Include="..\Modules.Characters.Data.EntityFramework\Modules.Characters.Data.EntityFramework.csproj" />
   </ItemGroup>
 </Project>

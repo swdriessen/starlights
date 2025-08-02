@@ -1,0 +1,19 @@
+﻿using Starlights.Modules.Characters.Domain;
+using Starlights.Platform.Data;
+
+namespace Starlights.Modules.Characters.Data;
+
+public interface ICharactersRepository : IRepository
+{
+    /// <summary>
+    /// Adds a new character to the repository asynchronously.
+    /// </summary>
+    Task AddAsync(Character character);
+
+    /// <summary>
+    /// Retrieves a character by its identifier.
+    /// </summary>
+    /// <param name="identifier">The unique identifier of the character.</param>
+    /// <returns>The character if found; otherwise, null.</returns>
+    Task<Character?> GetCharacterAsync(Guid identifier);
+}

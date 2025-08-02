@@ -9,6 +9,11 @@
 public interface IPersistenceContextFactory
 {
     /// <summary>
+    /// Gets the type of persistence context this factory creates.
+    /// </summary>
+    Type ContextType { get; }
+
+    /// <summary>
     /// Creates a new persistence context.
     /// </summary>
     /// <returns>A new instance of <see cref="IPersistenceContext"/>.</returns>
