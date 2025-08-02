@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 using FluentAssertions;
-using Starlights.Modules.Elements.Integration.Abstractions.Models;
+using Starlights.Modules.Elements.Integration.Models;
 
 namespace Starlights.Integration.Tests.Elements;
 

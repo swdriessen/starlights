@@ -1,6 +1,6 @@
 ﻿using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Integration.Abstractions.Models;
+using Starlights.Modules.Elements.Integration.Models;
 
 namespace Starlights.Modules.Elements.Data;
 

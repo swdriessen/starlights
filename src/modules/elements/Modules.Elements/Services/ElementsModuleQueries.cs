@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
-using Starlights.Modules.Elements.Integration.Abstractions;
-using Starlights.Modules.Elements.Integration.Abstractions.Models;
+using Starlights.Modules.Elements.Integration;
+using Starlights.Modules.Elements.Integration.Models;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Services;

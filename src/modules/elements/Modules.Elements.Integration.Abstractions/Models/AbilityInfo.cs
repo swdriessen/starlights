@@ -1,4 +1,4 @@
-﻿namespace Starlights.Modules.Elements.Integration.Abstractions.Models;
+﻿namespace Starlights.Modules.Elements.Integration.Models;
 
 /// <summary>
 /// The DTO model for ability information. This is used when creating a character.

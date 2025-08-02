@@ -1,6 +1,6 @@
-﻿using Starlights.Modules.Elements.Integration.Abstractions.Models;
+﻿using Starlights.Modules.Elements.Integration.Models;
 
-namespace Starlights.Modules.Elements.Integration.Abstractions;
+namespace Starlights.Modules.Elements.Integration;
 
 /// <summary>
 /// Represents the (read-only) queries available from the Elements module, usually for character creation.

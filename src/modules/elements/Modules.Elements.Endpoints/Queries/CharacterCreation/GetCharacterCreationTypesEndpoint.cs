@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.Logging;
-using Starlights.Modules.Elements.Integration.Abstractions;
+using Starlights.Modules.Elements.Integration;
 
 namespace Starlights.Modules.Elements.Endpoints.Queries.CharacterCreation;
 
