@@ -2,11 +2,13 @@
 using Serilog;
 using Serilog.Filters;
 using Starlights.Platform.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Components.Serilog;
 
-public class SerilogComponent : IPlatformServicesExtension
+/// <summary>
+/// The component for the Starlights Platform that configures Serilog logging services.
+/// </summary>
+public class SerilogComponent : IPlatformServiceComponent
 {
     public int RegistrationOrder => 100;
 

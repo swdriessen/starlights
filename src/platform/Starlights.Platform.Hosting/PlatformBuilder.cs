@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Hosting;
 
@@ -20,6 +19,6 @@ public sealed class PlatformBuilder : IPlatformBuilder
     public void Build()
     {
         this.RegisterPlatformModules();
-        this.InvokePlatformServicesExtensions();
+        this.InvokePlatformServiceComponents();
     }
 }

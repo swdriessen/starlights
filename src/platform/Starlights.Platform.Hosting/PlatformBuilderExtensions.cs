@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Hosting;
 
@@ -44,7 +43,7 @@ internal static class PlatformBuilderExtensions
             // checks for empty constructors 
             if (moduleType.GetConstructor(Type.EmptyTypes) == null)
             {
-                throw new InvalidOperationException($"Module type '{moduleType.FullName}' must have a parameterless constructor.");
+                throw new PlatformModuleRegistrationException($"Module type '{moduleType.FullName}' must have a parameterless constructor.");
             }
 
             // check if type is registered
@@ -62,8 +61,7 @@ internal static class PlatformBuilderExtensions
             }
             else
             {
-                // TODO: create custom exceptions for platform exceptions
-                throw new InvalidOperationException($"Module type '{moduleType.FullName}' does not implement '{nameof(IPlatformModule)}' or cannot be instantiated.");
+                throw new PlatformModuleRegistrationException($"Module type '{moduleType.FullName}' does not implement '{nameof(IPlatformModule)}' or cannot be instantiated.");
             }
         }
 
@@ -83,9 +81,9 @@ internal static class PlatformBuilderExtensions
     }
 
     /// <summary>
-    /// Discovers all platform modules in the current application domain.
+    /// Discovers all platform service components in the current application domain.
     /// </summary>
-    internal static (IEnumerable<Assembly>, IEnumerable<Type>) GetPlatformServicesExtension(this IPlatformBuilder builder)
+    internal static (IEnumerable<Assembly>, IEnumerable<Type>) GetPlatformServiceComponents(this IPlatformBuilder builder)
     {
         var assemblies = new List<Assembly>();
         var types = new List<Type>();
@@ -96,7 +94,7 @@ internal static class PlatformBuilderExtensions
             assemblies.AddRange(builder.Options.AdditionalAssemblies);
 
             var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
-                .Where(t => typeof(IPlatformServicesExtension).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
+                .Where(t => typeof(IPlatformServiceComponent).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
                 .Distinct();
 
             types.AddRange(discoveredTypes);
@@ -106,30 +104,29 @@ internal static class PlatformBuilderExtensions
     }
 
     /// <summary>
-    /// Invokes all platform extensions found in the current application domain. These are not registered itself in the container.
+    /// Invokes all platform service components found in the current application domain. These are not registered itself in the container.
     /// </summary>
-    internal static IPlatformBuilder InvokePlatformServicesExtensions(this IPlatformBuilder builder)
+    internal static IPlatformBuilder InvokePlatformServiceComponents(this IPlatformBuilder builder)
     {
-        var extensions = new List<IPlatformServicesExtension>();
+        var components = new List<IPlatformServiceComponent>();
 
-        var (_, types) = builder.GetPlatformServicesExtension();
+        var (_, types) = builder.GetPlatformServiceComponents();
 
-        foreach (var extensionType in types)
+        foreach (var componentType in types)
         {
             // checks for empty constructors 
-            if (extensionType.GetConstructor(Type.EmptyTypes) == null)
+            if (componentType.GetConstructor(Type.EmptyTypes) == null)
             {
-                throw new InvalidOperationException($"Extension type '{extensionType.FullName}' must have a parameterless constructor.");
+                throw new PlatformComponentRegistrationException($"Component type '{componentType.FullName}' must have a parameterless constructor.");
             }
 
-            if (Activator.CreateInstance(extensionType) is IPlatformServicesExtension extension)
+            if (Activator.CreateInstance(componentType) is IPlatformServiceComponent component)
             {
-                extensions.Add(extension);
+                components.Add(component);
             }
             else
             {
-                // TODO: create custom exceptions for platform exceptions
-                throw new InvalidOperationException($"Extension type '{extensionType.FullName}' does not implement '{nameof(IPlatformServicesExtension)}' or cannot be instantiated.");
+                throw new PlatformComponentRegistrationException($"Component type '{componentType.FullName}' does not implement '{nameof(IPlatformServiceComponent)}' or cannot be instantiated.");
             }
         }
 
@@ -138,11 +135,11 @@ internal static class PlatformBuilderExtensions
             throw new InvalidOperationException("The IHostApplicationBuilder is not available in the platform builder properties.");
         }
 
-        // invoke the extensions
-        foreach (var extension in extensions.OrderBy(e => e.RegistrationOrder))
+        // invoke the components
+        foreach (var component in components.OrderBy(e => e.RegistrationOrder))
         {
-            Platform.WriteLine($"configure svc [order='{extension.RegistrationOrder}', name='{extension.GetType().FullName}']");
-            extension.ConfigureServices(hostApplicationBuilder);
+            Platform.WriteLine($"configure svc [order='{component.RegistrationOrder}', component='{component.GetType().FullName}']");
+            component.ConfigureServices(hostApplicationBuilder);
         }
 
         return builder;

@@ -1,14 +1,13 @@
 ﻿using System.Reflection;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Hosting;
 
 internal static class PlatformHostExtensions
 {
     /// <summary>
-    /// Discovers all platform modules in the current application domain.
+    /// Discovers all platform components in the current application domain.
     /// </summary>
-    internal static (IEnumerable<Assembly>, IEnumerable<Type>) GetPlatformExtensions<T>(this IPlatform platform)
+    internal static (IEnumerable<Assembly>, IEnumerable<Type>) GetPlatformComponents<T>(this IPlatform platform)
     {
         var assemblies = new List<Assembly>();
         var types = new List<Type>();
@@ -29,38 +28,38 @@ internal static class PlatformHostExtensions
     }
 
     /// <summary>
-    /// Invokes all platform extensions found in the current application domain.
+    /// Invokes all platform application components found in the current application domain.
     /// </summary>
-    internal static IPlatform InvokeApplicationExtensions(this IPlatform platform)
+    internal static IPlatform InvokeApplicationComponents(this IPlatform platform)
     {
-        var extensions = new List<IPlatformApplicationExtension>();
+        var components = new List<IPlatformApplicationComponent>();
 
-        var (_, types) = platform.GetPlatformExtensions<IPlatformApplicationExtension>();
+        var (_, types) = platform.GetPlatformComponents<IPlatformApplicationComponent>();
 
-        foreach (var extensionType in types)
+        foreach (var componentType in types)
         {
             // checks for empty constructors 
-            if (extensionType.GetConstructor(Type.EmptyTypes) == null)
+            if (componentType.GetConstructor(Type.EmptyTypes) == null)
             {
-                throw new InvalidOperationException($"Extension type '{extensionType.FullName}' must have a parameterless constructor.");
+                throw new InvalidOperationException($"Component type '{componentType.FullName}' must have a parameterless constructor.");
             }
 
-            if (Activator.CreateInstance(extensionType) is IPlatformApplicationExtension extension)
+            if (Activator.CreateInstance(componentType) is IPlatformApplicationComponent component)
             {
-                extensions.Add(extension);
+                components.Add(component);
             }
             else
             {
                 // TODO: create custom exceptions for platform exceptions
-                throw new InvalidOperationException($"Extension type '{extensionType.FullName}' does not implement '{nameof(IPlatformApplicationExtension)}' or cannot be instantiated.");
+                throw new InvalidOperationException($"Component type '{componentType.FullName}' does not implement '{nameof(IPlatformApplicationComponent)}' or cannot be instantiated.");
             }
         }
 
-        // invoke the extensions
-        foreach (var extension in extensions.OrderBy(e => e.RegistrationOrder))
+        // invoke the components
+        foreach (var component in components.OrderBy(e => e.RegistrationOrder))
         {
-            Platform.WriteLine($"configure app [order='{extension.RegistrationOrder}', name='{extension.GetType().FullName}']");
-            extension.UseExtension(platform.Host);
+            Platform.WriteLine($"configure app [order='{component.RegistrationOrder}', component='{component.GetType().FullName}']");
+            component.UseComponent(platform.Host);
         }
 
         return platform;

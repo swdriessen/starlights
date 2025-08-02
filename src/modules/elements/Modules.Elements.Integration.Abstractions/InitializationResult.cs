@@ -1,3 +1,3 @@
-﻿namespace Starlights.Modules.Elements.Integration.Abstractions;
+﻿namespace Starlights.Modules.Elements.Integration;
 
 public record InitializationResult(int NewElementsCount);

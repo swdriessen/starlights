@@ -2,7 +2,7 @@
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Integration.Abstractions;
+using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Services;

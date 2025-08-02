@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Starlights.Platform.Hosting.Abstractions;
+namespace Starlights.Platform.Hosting;
 
 public class PlatformHostOptions
 {

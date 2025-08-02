@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
+using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Tests.Helpers;
 
-internal class EmptyServiceExtension : IPlatformServicesExtension
+internal class EmptyServiceExtension : IPlatformServiceComponent
 {
     public virtual int RegistrationOrder => 1001;
 

@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
+using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Tests.Helpers;
 
-internal class EmptyApplicationExtension : IPlatformApplicationExtension
+internal class EmptyApplicationExtension : IPlatformApplicationComponent
 {
     public virtual int RegistrationOrder => 1000;
 
-    public void UseExtension(IHost host)
+    public void UseComponent(IHost host)
     {
         // build the service provider to invoke the mock in order to verify the extension is invoked        
         var service = host.Services.GetService<IEmptyVerificationService>();

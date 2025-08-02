@@ -5,14 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Data;
 using Starlights.Platform.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework;
 
 /// <summary>
-/// Hosting extension for the Elements module that configures the Entity Framework services.
+/// The platform component for the Elements module that configures the Entity Framework services.
 /// </summary>
-internal class HostingExtension : IPlatformServicesExtension
+internal class EntityFrameworkComponent : IPlatformServiceComponent
 {
     public int RegistrationOrder => 1010;
 

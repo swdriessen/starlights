@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 
-namespace Starlights.Platform.Hosting.Abstractions;
+namespace Starlights.Platform.Hosting;
 
 /// <summary>
 /// Defines a module that can be used to configure services in the platform.

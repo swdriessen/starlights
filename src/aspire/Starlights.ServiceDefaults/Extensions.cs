@@ -4,18 +4,20 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ServiceDiscovery;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.Extensions.Hosting;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 // Adds common .NET Aspire services: service discovery, resilience, health checks, and OpenTelemetry.
 // This project should be referenced by each service project in your solution.
 // To learn more about using this project, see https://aka.ms/dotnet/aspire/service-defaults
 
 [ExcludeFromCodeCoverage]
+[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "These extensions are generated from the aspire project. Leaving them as is for now.")]
 public static class Extensions
 {
     private const string HealthEndpointPath = "/health";

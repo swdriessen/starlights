@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Starlights.Platform.Hosting.Abstractions;
 
 namespace Starlights.Platform.Hosting;
 
@@ -39,7 +38,7 @@ public static class HostingExtensions
         var platform = new Platform(host, options);
 
         // configure the application
-        platform.InvokeApplicationExtensions();
+        platform.InvokeApplicationComponents();
 
         // TODO: initialize modules ?
         foreach (var module in host.Services.GetServices<IPlatformModule>())
