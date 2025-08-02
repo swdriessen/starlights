@@ -43,7 +43,7 @@ internal static class PlatformBuilderExtensions
             // checks for empty constructors 
             if (moduleType.GetConstructor(Type.EmptyTypes) == null)
             {
-                throw new InvalidOperationException($"Module type '{moduleType.FullName}' must have a parameterless constructor.");
+                throw new PlatformModuleRegistrationException($"Module type '{moduleType.FullName}' must have a parameterless constructor.");
             }
 
             // check if type is registered
@@ -61,8 +61,7 @@ internal static class PlatformBuilderExtensions
             }
             else
             {
-                // TODO: create custom exceptions for platform exceptions
-                throw new InvalidOperationException($"Module type '{moduleType.FullName}' does not implement '{nameof(IPlatformModule)}' or cannot be instantiated.");
+                throw new PlatformModuleRegistrationException($"Module type '{moduleType.FullName}' does not implement '{nameof(IPlatformModule)}' or cannot be instantiated.");
             }
         }
 
@@ -118,7 +117,7 @@ internal static class PlatformBuilderExtensions
             // checks for empty constructors 
             if (componentType.GetConstructor(Type.EmptyTypes) == null)
             {
-                throw new InvalidOperationException($"Component type '{componentType.FullName}' must have a parameterless constructor.");
+                throw new PlatformComponentRegistrationException($"Component type '{componentType.FullName}' must have a parameterless constructor.");
             }
 
             if (Activator.CreateInstance(componentType) is IPlatformServiceComponent component)
@@ -127,8 +126,7 @@ internal static class PlatformBuilderExtensions
             }
             else
             {
-                // TODO: create custom exceptions for platform exceptions
-                throw new InvalidOperationException($"Component type '{componentType.FullName}' does not implement '{nameof(IPlatformServiceComponent)}' or cannot be instantiated.");
+                throw new PlatformComponentRegistrationException($"Component type '{componentType.FullName}' does not implement '{nameof(IPlatformServiceComponent)}' or cannot be instantiated.");
             }
         }
 
