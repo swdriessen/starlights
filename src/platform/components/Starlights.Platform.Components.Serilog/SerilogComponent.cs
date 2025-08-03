@@ -22,7 +22,7 @@ public class SerilogComponent : IPlatformServiceComponent
             configuration.WriteTo.OpenTelemetry()
                 .MinimumLevel.Information();
 
-            if (builder.Environment.IsIntegration())
+            if (builder.Environment.IsIntegration() || builder.Environment.IsDevelopment())
             {
                 // minimize logging noise in integration environments for now, TODO: use appsettings.Integration.json for this
                 configuration.Filter.ByExcluding(Matching.FromSource("Microsoft.EntityFrameworkCore.Database.Command"));

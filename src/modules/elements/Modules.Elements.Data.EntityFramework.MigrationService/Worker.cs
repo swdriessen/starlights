@@ -22,7 +22,7 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var activity = _activitySource.StartActivity("ExecuteAsync", ActivityKind.Internal);
+        using var activity = _activitySource.StartActivity("ExecuteAsync");
 
         _logger.LogInformation("starting migration... [EnvironmentName='{EnvironmentName}']", _environment.EnvironmentName);
 
@@ -33,7 +33,7 @@ public class Worker : BackgroundService
 
             await elementsContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
             {
-                using var _ = _activitySource.StartActivity("Migrate ElementsContext", ActivityKind.Internal);
+                using var _ = _activitySource.StartActivity("Migrate ElementsContext");
                 _logger.LogInformation("migrating database...");
                 await elementsContext.Database.MigrateAsync(stoppingToken);
             });

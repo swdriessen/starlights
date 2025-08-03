@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Starlights.Platform.Data;
 using Starlights.Platform.Domain;
 
@@ -39,7 +38,7 @@ public abstract class RepositoryBase<TEntity> : IRepository
 
     public void SetPersistenceContext(IPersistenceContext context)
     {
-        using var _ = PersistenceTelemetry.ActivitySource.StartActivity("SetPersistenceContext", ActivityKind.Internal);
+        using var _ = PersistenceInstrumentation.StartActivity("SetPersistenceContext");
 
         if (context is not DbContext dbContext)
         {
