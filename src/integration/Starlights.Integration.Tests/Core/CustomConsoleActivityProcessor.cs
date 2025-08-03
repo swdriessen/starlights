@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using OpenTelemetry;
 
-namespace Starlights.Integration.Tests;
+namespace Starlights.Integration.Tests.Core;
 
 /// <summary>
 /// Custom activity processor that outputs simplified telemetry information to console.

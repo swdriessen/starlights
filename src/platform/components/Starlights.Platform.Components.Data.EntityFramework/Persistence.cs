@@ -79,6 +79,7 @@ public class Persistence : IPersistence
                 {
                     if (context is DbContext dbContext)
                     {
+                        _logger.LogInformation("disposing DbContext [type='{ContextType}']", dbContext.GetType().Name);
                         dbContext.Dispose();
                     }
                 }

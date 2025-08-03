@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using Starlights.Integration.Tests.Core;
 using Starlights.Modules.Elements.Endpoints.Entities.Abilities.GetAbilities;
 
 namespace Starlights.Integration.Tests.Elements;

@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\platform\Starlights.Platform.Data\Starlights.Platform.Data.csproj" />
+	  <ProjectReference Include="..\..\elements\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj" />
 	  <ProjectReference Include="..\Modules.Characters.Data\Modules.Characters.Data.csproj" />
 	  <ProjectReference Include="..\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
 	</ItemGroup>

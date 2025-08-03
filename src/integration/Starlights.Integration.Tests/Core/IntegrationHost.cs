@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Trace;
 using Starlights.Application;
 
-namespace Starlights.Integration.Tests;
+namespace Starlights.Integration.Tests.Core;
 
 /// <summary>
 /// Integration host for running integration tests against the Starlights application.

@@ -7,6 +7,16 @@ namespace Aspire.Hosting;
 public static class CommandExtensions
 {
     /// <summary>
+    /// Adds a scalar URL to the project resource.
+    /// </summary>
+    public static IResourceBuilder<ProjectResource> WithScalarUrl(this IResourceBuilder<ProjectResource> resource)
+    {
+        var httpsEndpoint = resource.GetEndpoint("https");
+        resource.WithUrl($"{httpsEndpoint}/scalar/v1", "Scalar UI");
+        return resource;
+    }
+
+    /// <summary>
     /// Adds a command to the project resource that opens the Scalar UI in a web browser.
     /// </summary>
     public static IResourceBuilder<ProjectResource> WithScalarCommand(this IResourceBuilder<ProjectResource> resource)
