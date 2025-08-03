@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Starlights.Modules.Elements.Data.EntityFramework;
+using Starlights.Modules.Elements.Domain;
 
 namespace Modules.Elements.Data.EntityFramework.MigrationService;
 
@@ -10,7 +10,6 @@ public class Worker : BackgroundService
     private readonly IServiceProvider _services;
     private readonly IHostEnvironment _environment;
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
-    private readonly ActivitySource _activitySource = new("Starlights.Modules.Elements");
 
     public Worker(ILogger<Worker> logger, IServiceProvider services, IHostEnvironment environment, IHostApplicationLifetime hostApplicationLifetime)
     {
@@ -22,7 +21,7 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var activity = _activitySource.StartActivity("ExecuteAsync");
+        using var activity = ElementsInstrumentation.StartActivity("ExecuteAsync");
 
         _logger.LogInformation("starting migration... [EnvironmentName='{EnvironmentName}']", _environment.EnvironmentName);
 
@@ -33,7 +32,7 @@ public class Worker : BackgroundService
 
             await elementsContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
             {
-                using var _ = _activitySource.StartActivity("Migrate ElementsContext");
+                using var _ = ElementsInstrumentation.StartActivity("Migrate ElementsContext");
                 _logger.LogInformation("migrating database...");
                 await elementsContext.Database.MigrateAsync(stoppingToken);
             });

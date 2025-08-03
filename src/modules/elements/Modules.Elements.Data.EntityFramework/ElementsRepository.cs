@@ -16,12 +16,16 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task AddAsync(Element element)
     {
+        using var _ = ElementsInstrumentation.StartActivity();
+
         _logger.LogInformation("add element '{ElementName}' with identifier {Identifier}", element.Name, element.Id.Value);
         await Entities.AddAsync(element);
     }
 
     public async Task<Element?> GetElementAsync(Guid identifier)
     {
+        using var _ = ElementsInstrumentation.StartActivity();
+
         var element = await Entities.FirstOrDefaultAsync(e => e.Id == identifier);
 
         if (element is null)
@@ -34,6 +38,8 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task<List<Element>> GetElementsByTypeAsync(string type)
     {
+        using var _ = ElementsInstrumentation.StartActivity();
+
         _logger.LogInformation("getting elements of type [{ElementType}]", type);
 
         return await Entities
@@ -44,6 +50,8 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task<List<Element>> GetElementsByTypesAsync(IEnumerable<string> types)
     {
+        using var _ = ElementsInstrumentation.StartActivity();
+
         _logger.LogInformation("getting elements of types [{ElementTypes}]", string.Join(", ", types));
 
         return await Entities
