@@ -49,8 +49,9 @@ public sealed class CharacterCreationTests
 
         var request = new CreateCharacterRequest
         {
-            // CharacterCreationId
-            Name = "Test Character"
+            CharacterCreationOptionId = _options[0].Id,
+            Name = "Test Character",
+            PortraitUrl = _portraits[0]?.Url
         };
 
         // Act

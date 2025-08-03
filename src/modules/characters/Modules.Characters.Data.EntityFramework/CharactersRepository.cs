@@ -5,10 +5,10 @@ namespace Starlights.Modules.Characters.Data.EntityFramework;
 
 internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepository
 {
-    public async Task AddAsync(Character character)
+    public void Add(Character character)
     {
         using var _ = CharactersInstrumentation.StartActivity();
-        await Entities.AddAsync(character);
+        Entities.Add(character);
     }
 
     public async Task<Character?> GetCharacterAsync(Guid identifier)

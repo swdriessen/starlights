@@ -33,7 +33,7 @@ public class CreateAbilityEndpoint : Endpoint<CreateAbilityRequest, CreateAbilit
 
         var repository = _persistence.GetRepository<IElementsRepository>();
 
-        await repository.AddAsync(element);
+        repository.Add(element);
 
         var rows = await _persistence.SaveChangesAsync();
 

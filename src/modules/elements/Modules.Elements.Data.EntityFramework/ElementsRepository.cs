@@ -14,19 +14,19 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
         _logger = logger;
     }
 
-    public async Task AddAsync(Element element)
+    public void Add(Element element)
     {
         using var _ = ElementsInstrumentation.StartActivity();
 
         _logger.LogInformation("add element '{ElementName}' with identifier {Identifier}", element.Name, element.Id.Value);
-        await Entities.AddAsync(element);
+        Entities.Add(element);
     }
 
     public async Task<Element?> GetElementAsync(Guid identifier)
     {
         using var _ = ElementsInstrumentation.StartActivity();
 
-        var element = await Entities.FirstOrDefaultAsync(e => e.Id == identifier);
+        var element = await Entities.SingleOrDefaultAsync(e => e.Id == identifier);
 
         if (element is null)
         {

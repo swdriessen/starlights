@@ -24,11 +24,14 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
     {
         using var _ = CharactersInstrumentation.StartActivity();
 
+        // create a 'CharacterCreationService' in the application layer
+        // e.g. when creating a character, it should ensure an appearance entity is also created 
+
         var character = new Character(req.Name);
 
         var repository = _persistence.GetRepository<ICharactersRepository>();
 
-        await repository.AddAsync(character);
+        repository.Add(character);
 
         await _persistence.SaveChangesAsync();
 
@@ -40,7 +43,9 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
 
 public record CreateCharacterRequest
 {
+    public Guid CharacterCreationOptionId { get; init; }
     public string Name { get; init; } = string.Empty;
+    public string? PortraitUrl { get; init; }
 }
 
 public record CreateCharacterResponse(Guid Id);
