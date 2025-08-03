@@ -1,17 +1,17 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Starlights.Modules.Elements.Domain;
+namespace Starlights.Modules.Characters.Domain;
 
-public static class ElementsInstrumentation
+public static class CharactersInstrumentation
 {
     /// <summary>
-    /// The name of the ActivitySource used for telemetry in the elements module.
+    /// The name of the ActivitySource used for telemetry in the characters module.
     /// </summary>
-    public static readonly string ActivitySourceName = "Starlights.Modules.Elements";
+    public static readonly string ActivitySourceName = "Starlights.Modules.Characters";
 
     /// <summary>
-    /// The ActivitySource instance used for telemetry in the elements module.
+    /// The ActivitySource instance used for telemetry in the characters module.
     /// </summary>
     public static ActivitySource ActivitySource { get; } = new(ActivitySourceName);
 

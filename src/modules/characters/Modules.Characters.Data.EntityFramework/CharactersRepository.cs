@@ -7,11 +7,13 @@ internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepo
 {
     public async Task AddAsync(Character character)
     {
+        using var _ = CharactersInstrumentation.StartActivity();
         await Entities.AddAsync(character);
     }
 
     public async Task<Character?> GetCharacterAsync(Guid identifier)
     {
+        using var _ = CharactersInstrumentation.StartActivity();
         return await Entities.FindAsync(identifier);
     }
 }
