@@ -1,0 +1,49 @@
+using Starlights.Platform.Domain;
+
+namespace Starlights.Modules.Characters.Domain;
+
+/// <summary>
+/// Represents the appearance details of a character.
+/// </summary>
+public sealed class Appearance : AggregateRoot<AppearanceId>
+{
+    public Appearance(CharacterId characterId, string? portraitUrl = null)
+        : base(AppearanceId.New())
+    {
+        CharacterId = characterId;
+        PortraitUrl = portraitUrl;
+    }
+
+    /// <summary>
+    /// Gets the character ID that this appearance belongs to.
+    /// </summary>
+    public CharacterId CharacterId { get; private set; }
+
+    /// <summary>
+    /// Gets the portrait URL for this appearance.
+    /// </summary>
+    public string? PortraitUrl { get; private set; }
+
+    /// <summary>
+    /// Updates the portrait URL.
+    /// </summary>
+    /// <param name="portraitUrl">The new portrait URL. Cannot be null, empty, or whitespace.</param>
+    /// <exception cref="ArgumentException">Thrown when the portrait URL is null, empty, or whitespace.</exception>
+    public void UpdatePortraitUrl(string portraitUrl)
+    {
+        if (string.IsNullOrWhiteSpace(portraitUrl))
+        {
+            throw new ArgumentException("Portrait URL cannot be null, empty, or whitespace.", nameof(portraitUrl));
+        }
+
+        PortraitUrl = portraitUrl;
+    }
+
+    /// <summary>
+    /// Removes the portrait by setting the portrait URL to null.
+    /// </summary>
+    public void RemovePortrait()
+    {
+        PortraitUrl = null;
+    }
+}
