@@ -16,8 +16,9 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
 
     public override void Configure()
     {
-        Post("characters/create");
+        Post("/create");
         AllowAnonymous();
+        Group<CharactersGroup>();
     }
     public override async Task HandleAsync(CreateCharacterRequest req, CancellationToken ct)
     {

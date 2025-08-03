@@ -18,8 +18,9 @@ public class InitializationEndpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Get("/elements/initialize");
+        Get("/initialize");
         AllowAnonymous();
+        Group<ElementsGroup>();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

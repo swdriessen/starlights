@@ -20,8 +20,9 @@ public class CreateAbilityEndpoint : Endpoint<CreateAbilityRequest, CreateAbilit
 
     public override void Configure()
     {
-        Post("elements/abilities/create");
+        Post("/abilities/create");
         AllowAnonymous();
+        Group<ElementsGroup>();
     }
     public override async Task HandleAsync(CreateAbilityRequest req, CancellationToken ct)
     {

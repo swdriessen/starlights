@@ -16,8 +16,9 @@ public sealed class GetAbilitiesEndpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Get("/elements/abilities");
+        Get("/abilities");
         AllowAnonymous();
+        Group<ElementsGroup>();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Microsoft.AspNetCore.Http;
 
 namespace Starlights.Platform.Components.FastEndpoints;
 
@@ -14,6 +15,7 @@ public class PlatformStatusEndpoint : EndpointWithoutRequest
     {
         Get("/platform/status");
         AllowAnonymous();
+        Description(d => d.WithTags("Starlights Platform"));
     }
 
     public override async Task HandleAsync(CancellationToken cancellationToken)

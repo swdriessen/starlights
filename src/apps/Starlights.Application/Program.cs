@@ -20,6 +20,22 @@ public sealed class Program
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder
+                    .SetIsOriginAllowed(_ =>
+                    {
+                        // Allow all origins for development purposes
+                        return true;
+                    })
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .AllowAnyMethod();
+            });
+        });
+
         // add the platform services and its modules
         builder.AddStarlightsPlatform(options =>
         {
@@ -48,15 +64,17 @@ public sealed class Program
             {
                 options.Servers = [];
                 options.WithTitle("Starlights API")
+                    .WithClientButton(false)
                     .WithLayout(ScalarLayout.Modern)
                     .WithTheme(ScalarTheme.Alternate)
-                    .WithForceThemeMode(ThemeMode.Light)
+                    .WithDarkMode(true)
                     .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
             });
         }
 
         // configure the platform and its modules
         app.UseStarlightsPlatform();
+        app.UseCors();
 
         app.UseHttpsRedirection();
         app.UseAuthorization();
