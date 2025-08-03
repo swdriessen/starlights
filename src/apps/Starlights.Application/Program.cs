@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
 using Starlights.Modules.Elements;
@@ -43,6 +44,15 @@ public sealed class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            app.MapScalarApiReference(options =>
+            {
+                options.Servers = [];
+                options.WithTitle("Starlights API")
+                    .WithLayout(ScalarLayout.Modern)
+                    .WithTheme(ScalarTheme.Alternate)
+                    .WithForceThemeMode(ThemeMode.Light)
+                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+            });
         }
 
         // configure the platform and its modules

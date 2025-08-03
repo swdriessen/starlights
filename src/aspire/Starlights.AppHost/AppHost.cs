@@ -5,6 +5,7 @@ var database = builder.AddSqlServer("sql-server")
     .AddDatabase("starlights-db", "starlights-db-env");
 
 var application = builder.AddProject<Projects.Starlights_Application>("starlights-backend")
+    .WithScalarCommand()
     .WithReference(database)
     .WaitFor(database);
 
@@ -26,3 +27,4 @@ if (builder.ExecutionContext.IsRunMode)
 }
 
 builder.Build().Run();
+
