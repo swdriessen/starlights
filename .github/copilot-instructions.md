@@ -156,13 +156,18 @@
   - Prefer expressive assertions (e.g., Should().Be(), Should().Contain(), Should().Throw()).
   - Use custom assertions for domain-specific checks.
 - When adding or updating tests:
-  - Ensure tests cover both happy path and edge cases.
+  - Ensure tests cover both happy path first and ask for test that cover edge cases.
   - Use descriptive test names that explain the scenario.
   - Keep tests fast and focused; avoid unnecessary dependencies.
   - Use [TestInitialize] and [TestCleanup] for setup/teardown logic.
   - Always build the solution and run the tests on the solution and make sure they pass before reporting that the changes are complete.
+  - When adding tests for new components or features, ask first if the implementation is correct or needs adjustments. If the implementation is not correct, do not create tests until the implementation is fixed.
 
 ## Repository Specifics
 
+- Characters Module:
+
+  - When creating new Entities, also create the corresponding IEntityTypeConfiguration class in the Modules.Characters.Data.EntityFramework project.
+
 - Elements Module:
-  - When creating new ElementComponents, also create the corresponding IEntityTypeConfiguration class in the Modules.Elements.Data.EntityFramework project.
+  - When creating new Entities or ElementComponents, also create the corresponding IEntityTypeConfiguration class in the Modules.Elements.Data.EntityFramework project.

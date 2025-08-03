@@ -13,7 +13,7 @@ public sealed class CharacterTests
         const string name = "Test Character";
 
         // Act
-        var character = new Character(name);
+        var character = Character.Create(name);
 
         // Assert
         character.Name.Should().Be(name);

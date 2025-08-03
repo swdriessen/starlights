@@ -18,6 +18,7 @@ internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformAp
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<ICharactersRepository, CharactersRepository>();
+        builder.Services.AddScoped<IAppearanceRepository, AppearanceRepository>();
 
         //builder.Services.AddSingleton<IPersistenceContextFactory, CharactersPersistenceContextFactory>();
         builder.Services.AddSingleton<PersistenceCharactersContextFactory>();
@@ -55,5 +56,6 @@ internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformAp
     public void UseComponent(IHost host)
     {
         host.UseRepositoryWithContext<ICharactersRepository, PersistenceCharactersContextFactory>();
+        host.UseRepositoryWithContext<IAppearanceRepository, PersistenceCharactersContextFactory>();
     }
 }

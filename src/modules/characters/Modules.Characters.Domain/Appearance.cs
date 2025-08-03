@@ -7,7 +7,7 @@ namespace Starlights.Modules.Characters.Domain;
 /// </summary>
 public sealed class Appearance : AggregateRoot<AppearanceId>
 {
-    public Appearance(CharacterId characterId, string? portraitUrl = null)
+    private Appearance(CharacterId characterId, string? portraitUrl = null)
         : base(AppearanceId.New())
     {
         CharacterId = characterId;
@@ -25,15 +25,14 @@ public sealed class Appearance : AggregateRoot<AppearanceId>
     public string? PortraitUrl { get; private set; }
 
     /// <summary>
-    /// Updates the portrait URL.
+    /// Updates the portrait for the character appearance.
     /// </summary>
-    /// <param name="portraitUrl">The new portrait URL. Cannot be null, empty, or whitespace.</param>
     /// <exception cref="ArgumentException">Thrown when the portrait URL is null, empty, or whitespace.</exception>
     public void UpdatePortraitUrl(string portraitUrl)
     {
         if (string.IsNullOrWhiteSpace(portraitUrl))
         {
-            throw new ArgumentException("Portrait URL cannot be null, empty, or whitespace.", nameof(portraitUrl));
+            throw new ArgumentException("The portrait url cannot be null, empty, or whitespace.", nameof(portraitUrl));
         }
 
         PortraitUrl = portraitUrl;
@@ -45,5 +44,13 @@ public sealed class Appearance : AggregateRoot<AppearanceId>
     public void RemovePortrait()
     {
         PortraitUrl = null;
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Appearance"/> class for the specified character.
+    /// </summary>
+    public static Appearance Create(CharacterId characterId)
+    {
+        return new Appearance(characterId);
     }
 }

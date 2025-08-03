@@ -7,7 +7,7 @@ namespace Starlights.Modules.Characters.Domain;
 /// </summary>
 public sealed class Character : AggregateRoot<CharacterId>
 {
-    public Character(string name)
+    private Character(string name)
         : base(CharacterId.New())
     {
         Name = name;
@@ -17,4 +17,12 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// Gets the name of the character.
     /// </summary>
     public string Name { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Character"/> class with the specified name.
+    /// </summary>
+    public static Character Create(string name)
+    {
+        return new Character(name);
+    }
 }

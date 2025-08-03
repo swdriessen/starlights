@@ -27,13 +27,24 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
         // create a 'CharacterCreationService' in the application layer
         // e.g. when creating a character, it should ensure an appearance entity is also created 
 
-        var character = new Character(req.Name);
+        var character = Character.Create(req.Name);
+        var appearance = Appearance.Create(character.Id);
+
+        if (!string.IsNullOrWhiteSpace(req.PortraitUrl))
+        {
+            appearance.UpdatePortraitUrl(req.PortraitUrl);
+        }
 
         var repository = _persistence.GetRepository<ICharactersRepository>();
+        var appearanceRepository = _persistence.GetRepository<IAppearanceRepository>();
 
         repository.Add(character);
+        appearanceRepository.Add(appearance);
 
         await _persistence.SaveChangesAsync();
+
+        // start processing the character now that it is created with the character creation option
+        // this element will grant the things like abilities, saving throws, skills, etc.
 
         var response = new CreateCharacterResponse(character.Id);
 
