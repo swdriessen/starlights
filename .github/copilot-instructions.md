@@ -117,7 +117,7 @@
   - Use dependency injection for services and repositories.
   - Prefer constructor injection for dependencies.
   - Use async Task for endpoint handlers.
-  - Validate input using built-in validation features.
+  - Validate input using built-in validation features. e.g. Create a Validator<T> class for each request type (it will be automatically used by FastEndpoints).
   - Use attribute-free endpoint definitions for clarity.
   - Secure endpoints by default; use AllowAnonymous only when needed.
   - Use policy/role/claim-based authorization.
@@ -125,6 +125,7 @@
   - Use API versioning if needed.
   - Enable CORS globally.
   - Use Identity for authentication and authorization (cookies for auth, GitHub for OAuth).
+  - At this time, fastendpoints will be tested using integration tests only, not unit tests. Do not create unit tests for FastEndpoints.
 
 ## Unit Testing (C#)
 

@@ -2,7 +2,7 @@ using FastEndpoints;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Elements.Integration;
 
-namespace Starlights.Modules.Characters.Endpoints.Queries.CreationOptions;
+namespace Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 
 public sealed class GetCharacterCreationOptionsEndpoint : EndpointWithoutRequest<GetCharacterCreationOptionsResponse>
 {

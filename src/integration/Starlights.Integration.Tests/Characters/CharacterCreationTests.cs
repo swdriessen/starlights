@@ -3,7 +3,8 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using Starlights.Integration.Tests.Core;
 using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
-using Starlights.Modules.Characters.Endpoints.Queries.CreationOptions;
+using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
+using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
 
 namespace Starlights.Integration.Tests.Characters;
 
@@ -12,6 +13,7 @@ public sealed class CharacterCreationTests
 {
     private readonly IntegrationHost _integration;
     private readonly List<CharacterCreationOption> _options = [];
+    private readonly List<CharacterPortraitOption> _portraits = [];
 
     public CharacterCreationTests()
     {
@@ -31,6 +33,12 @@ public sealed class CharacterCreationTests
         responseJson?.Options.Should().NotBeEmpty("expected at least one character creation option to be available");
 
         _options.AddRange(responseJson!.Options);
+
+        var portraitResponse = await client.GetAsync("/api/characters/portrait-options", CancellationToken.None);
+        var portraitResponseJson = await portraitResponse.Content.ReadFromJsonAsync<GetCharacterPortraitOptionsResponse>(CancellationToken.None);
+        portraitResponseJson?.Portraits.Should().NotBeEmpty("expected at least one character portrait option to be available");
+
+        _portraits.AddRange(portraitResponseJson!.Portraits);
     }
 
     [TestMethod]

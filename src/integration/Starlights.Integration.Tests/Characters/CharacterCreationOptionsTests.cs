@@ -1,8 +1,7 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using FluentAssertions;
 using Starlights.Integration.Tests.Core;
-using Starlights.Modules.Characters.Endpoints.Queries.CreationOptions;
+using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 
 namespace Starlights.Integration.Tests.Characters;
 
@@ -35,7 +34,7 @@ public sealed class CharacterCreationOptionsTests
         var response = await client.GetAsync("/api/characters/creation-options", CancellationToken.None);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.EnsureSuccessStatusCode();
         var responseJson = await response.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>(CancellationToken.None);
         responseJson?.Options.Should().NotBeEmpty();
     }

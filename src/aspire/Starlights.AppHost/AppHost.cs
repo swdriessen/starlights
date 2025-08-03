@@ -4,7 +4,7 @@ var database = builder.AddSqlServer("sql-server")
     .WithLifetime(ContainerLifetime.Persistent)
     .AddDatabase("starlights-db", "starlights-db-env");
 
-var application = builder.AddProject<Projects.Starlights_Application>("starlights-backend")
+var application = builder.AddProject<Projects.Starlights_Application>("backend")
     .WithScalarCommand()
     .WithScalarUrl()
     .WithReference(database)
