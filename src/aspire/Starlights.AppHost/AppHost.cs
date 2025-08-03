@@ -1,7 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var database = builder.AddSqlServer("sqlserver")
-    .WithLifetime(ContainerLifetime.Persistent)
+    .WithLifetime(ContainerLifetime.Session)
     .AddDatabase("starlights-db", "starlights-db");
 
 var application = builder.AddProject<Projects.Starlights_Application>("starlights-application")
@@ -10,15 +10,14 @@ var application = builder.AddProject<Projects.Starlights_Application>("starlight
 
 if (builder.ExecutionContext.IsRunMode)
 {
-    // run migrations in development environment to ensure the database is up-to-date
-    var elementsMigrationService = builder.AddProject<Projects.Modules_Elements_Data_EntityFramework_MigrationService>("elements-migrations")
+    var migrationResource = builder.AddMigrationsResource("migrations");
+
+    var elementsMigrationService = migrationResource.WithMigrationWorker<Projects.Modules_Elements_Data_EntityFramework_MigrationService>("elements-context")
         .WithReference(database)
-        .WithParentRelationship(database)
         .WaitFor(database);
 
-    var charactersMigrationService = builder.AddProject<Projects.Modules_Characters_Data_EntityFramework_MigrationService>("characters-migrations")
+    var charactersMigrationService = migrationResource.WithMigrationWorker<Projects.Modules_Characters_Data_EntityFramework_MigrationService>("characters-context")
         .WithReference(database)
-        .WithParentRelationship(database)
         .WaitFor(database);
 
     // wait for the migration services to complete before starting the application
