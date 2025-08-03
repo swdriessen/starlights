@@ -22,6 +22,8 @@ public class Persistence : IPersistence
 
     public T GetRepository<T>() where T : IRepository
     {
+        using var _ = PersistenceInstrumentation.StartActivity($"GetRepository ({typeof(T).Name})");
+
         _logger.LogInformation("get repository [type='{RepositoryType}']", typeof(T).Name);
 
         var repository = _serviceProvider.GetRequiredService<T>();
@@ -47,6 +49,8 @@ public class Persistence : IPersistence
 
     public async Task<int> SaveChangesAsync()
     {
+        using var activity = PersistenceInstrumentation.StartActivity();
+
         var totalChanges = 0;
 
         foreach (var (contextType, context) in _contexts)
@@ -59,6 +63,8 @@ public class Persistence : IPersistence
                 _logger.LogInformation("...saved successfully [rows='{Rows}', context='{ContextType}']", changes, contextType.Name);
             }
         }
+
+        activity?.AddTag("totalChanges", totalChanges);
 
         return totalChanges;
     }

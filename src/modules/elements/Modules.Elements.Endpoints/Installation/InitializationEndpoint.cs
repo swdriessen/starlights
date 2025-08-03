@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.Logging;
+using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Integration;
 
 namespace Starlights.Modules.Elements.Endpoints.Installation;
@@ -23,6 +24,8 @@ public class InitializationEndpoint : EndpointWithoutRequest
 
     public override async Task HandleAsync(CancellationToken ct)
     {
+        using var _ = ElementsInstrumentation.StartActivity();
+
         _logger.LogInformation("Initializing Elements module...");
 
         var result = await _initializer.InitializeAsync();

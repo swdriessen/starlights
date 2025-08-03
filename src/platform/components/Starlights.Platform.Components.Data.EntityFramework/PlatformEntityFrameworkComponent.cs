@@ -14,6 +14,10 @@ public class PlatformEntityFrameworkComponent : IPlatformServiceComponent
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
+        // TODO: move this to service defaults (maybe register the name with a instrumentation provider / configuration)
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(tracing => tracing.AddSource(PersistenceInstrumentation.ActivitySourceName));
+
         builder.Services.AddScoped<IPersistence, Persistence>();
         builder.Services.AddSingleton<IContextFactoryRegistry, ContextFactoryRegistry>();
     }

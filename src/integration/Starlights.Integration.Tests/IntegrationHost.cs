@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Trace;
 using Starlights.Application;
 
 namespace Starlights.Integration.Tests;
@@ -13,8 +14,11 @@ public class IntegrationHost
 {
     private readonly WebApplicationFactory<Program> _factory;
 
-    public IntegrationHost()
+    public IntegrationHost(Action<IntegrationHostOptions>? configure = null)
     {
+        var options = new IntegrationHostOptions();
+        configure?.Invoke(options);
+
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
@@ -23,6 +27,16 @@ public class IntegrationHost
 
                 // preserve the execution context to ensure that the test server can handle async operations correctly
                 builder.UseTestServer(options => options.PreserveExecutionContext = true);
+
+                // configure additional services for integration tests
+                builder.ConfigureTestServices(services =>
+                {
+                    if (options.UseConsoleActivityProcessor)
+                    {
+                        services.AddOpenTelemetry()
+                            .WithTracing(tracing => tracing.AddProcessor<CustomConsoleActivityProcessor>());
+                    }
+                });
             });
     }
 

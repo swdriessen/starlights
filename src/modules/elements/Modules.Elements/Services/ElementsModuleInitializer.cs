@@ -21,6 +21,8 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
     public async Task<InitializationResult> InitializeAsync()
     {
+        using var _ = ElementsInstrumentation.StartActivity();
+
         var repository = _persistence.GetRepository<IElementsRepository>();
         var newElements = new List<Element>();
 

@@ -26,7 +26,7 @@ internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformAp
             if (builder.Environment.IsIntegration())
             {
                 string uniqueIdentifier = Guid.NewGuid().ToString("N");
-                Trace.WriteLine($"running inside an integration scenario, using in-memory db with unique name to avoid conflicts [uniqueIdentifier='{uniqueIdentifier}']");
+                Trace.WriteLine($"running inside an integration scenario, using in-memory db with unique name to avoid conflicts [uniqueIdentifier='{uniqueIdentifier}', context='{nameof(CharactersContext)}']");
                 options.UseInMemoryDatabase($"in-memory-integration-{uniqueIdentifier}");
                 return;
             }

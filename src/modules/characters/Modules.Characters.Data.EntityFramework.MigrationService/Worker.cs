@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Starlights.Modules.Characters.Data.EntityFramework;
+using Starlights.Modules.Characters.Domain;
 
 namespace Modules.Characters.Data.EntityFramework.MigrationService;
 
@@ -20,6 +21,8 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        using var activity = CharactersInstrumentation.StartActivity("ExecuteAsync");
+
         _logger.LogInformation("starting migration... [EnvironmentName='{EnvironmentName}']", _environment.EnvironmentName);
 
         try
@@ -29,12 +32,14 @@ public class Worker : BackgroundService
 
             await elementsContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
             {
+                using var _ = CharactersInstrumentation.StartActivity("Migrate CharactersContext");
                 _logger.LogInformation("migrating database...");
                 await elementsContext.Database.MigrateAsync(stoppingToken);
             });
         }
         catch (Exception ex)
         {
+            activity?.AddException(ex);
             _logger.LogError(ex, "an error occurred while migrating the database: {ErrorMessage}", ex.Message);
             throw;
         }

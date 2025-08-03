@@ -66,7 +66,7 @@ public static class Extensions
             })
             .WithTracing(tracing =>
             {
-                tracing.AddSource(builder.Environment.ApplicationName)
+                tracing.AddSource(builder.Environment.ApplicationName, "Starlights.Modules.Characters", "Starlights.Modules.Elements") // TODO: use configuration or something from the platform
                     .AddAspNetCoreInstrumentation(tracing =>
                         // Exclude health check requests from tracing
                         tracing.Filter = context =>
