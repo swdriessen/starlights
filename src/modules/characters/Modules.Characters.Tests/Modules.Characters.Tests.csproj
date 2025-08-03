@@ -1,3 +1,12 @@
 <Project Sdk="MSTest.Sdk/3.10.0">
 
+  <PropertyGroup>
+    <RootNamespace>Starlights.Modules.Characters.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
+    <ProjectReference Include="..\..\..\platform\Starlights.Platform\Starlights.Platform.csproj" />
+  </ItemGroup>
+
 </Project>

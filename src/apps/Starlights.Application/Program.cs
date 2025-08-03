@@ -1,4 +1,5 @@
 using Starlights.Modules.Characters.Data.EntityFramework;
+using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
 using Starlights.Modules.Elements.Endpoints.Installation;
@@ -23,6 +24,7 @@ public sealed class Program
         {
             // characters module
             options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
+            options.AdditionalAssemblies.Add(typeof(CreateCharacterEndpoint).Assembly);
 
             // elements module
             options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);

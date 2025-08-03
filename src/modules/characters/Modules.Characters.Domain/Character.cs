@@ -10,7 +10,7 @@ public sealed class Character : AggregateRoot<CharacterId>
     public Character(string name)
         : base(CharacterId.New())
     {
-        Name = name.Trim();
+        Name = name;
     }
 
     /// <summary>
