@@ -16,6 +16,13 @@
 - Use dependency injection for all services and abstractions.
 - Prefer using records for simple data containers.
 - Use nullability annotations and avoid null reference exceptions.
+- **Nullable Reference Types**: Rely on .NET's nullable reference type system instead of manual null checks:
+  - Use nullable annotations (`?`) for optional parameters and properties.
+  - **Avoid manual null checks in constructors and most methods**: Do not add `ArgumentNullException.ThrowIfNull()` or manual null checks in constructors for required dependencies, or for parameters that are properly typed as non-nullable.
+  - Let the compiler warn about potential null assignments at compile time.
+  - Only use explicit null checks (`ArgumentNullException.ThrowIfNull()`) for method parameters when the null value would cause runtime issues beyond what nullable reference types can prevent (e.g., when null would cause data corruption or security issues).
+  - Trust the dependency injection container and nullable reference type system to provide non-null dependencies.
+  - Focus on business logic validation rather than null checks for properly typed parameters.
 - Write XML or summary comments for public APIs.
 - When implementing an interface, use <inheritdoc /> for XML documentation if the interface already has the comment.
 - Use string interpolation over concatenation.
@@ -141,6 +148,7 @@
   - All public methods and properties
   - Both happy path and edge cases
   - Use MSTest, FluentAssertions, and Moq as described in the testing section
+  - **Nullable Reference Types in Tests**: When testing nullable reference types, avoid creating tests that check for `ArgumentNullException` when the parameter is properly marked as non-nullable. Instead, focus on testing business logic and edge cases that matter for the functionality.
 - Use Moq for mocking:
   - Use strongly-typed mocks; avoid magic strings.
   - Setup method/property behaviors with .Setup().
