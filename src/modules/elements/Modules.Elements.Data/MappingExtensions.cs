@@ -14,7 +14,7 @@ public static class ElementMappingExtensions
             .OfType<ShortDescriptionComponent>()
             .SingleOrDefault();
 
-        return new CharacterCreationInfo(element.Id, element.Name)
+        return new CharacterCreationInfo(element.Id, element.Name, element.Type)
         {
             ShortDescription = description?.Content
         };

@@ -23,6 +23,7 @@ public abstract class RepositoryBase<TEntity> : IRepository
         }
         private set => _context = value;
     }
+
     protected DbSet<TEntity> Entities
     {
         get
@@ -38,7 +39,7 @@ public abstract class RepositoryBase<TEntity> : IRepository
 
     public void SetPersistenceContext(IPersistenceContext context)
     {
-        using var _ = PersistenceInstrumentation.StartActivity("SetPersistenceContext");
+        //using var _ = PersistenceInstrumentation.StartActivity("SetPersistenceContext");
 
         if (context is not DbContext dbContext)
         {

@@ -47,12 +47,7 @@ public sealed class CharacterCreationTests
         // Arrange
         var client = _integration.CreateClient();
 
-        var request = new CreateCharacterRequest
-        {
-            CharacterCreationOptionId = _options[0].Id,
-            Name = "Test Character",
-            PortraitUrl = _portraits[0]?.Url
-        };
+        var request = new CreateCharacterRequest(_options[0].Id, "Test Character", _portraits[0]?.Url);
 
         // Act
         var response = await client.PostAsJsonAsync("/api/characters/create", request, CancellationToken.None);

@@ -8,7 +8,7 @@ internal class AppearanceRepository : RepositoryBase<Appearance>, IAppearanceRep
 {
     public void Add(Appearance appearance)
     {
-        using var _ = CharactersInstrumentation.StartActivity();
+        using var _ = CharactersInstrumentation.StartActivity("Add Appearance");
         Entities.Add(appearance);
     }
 

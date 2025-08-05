@@ -99,7 +99,7 @@ public class ElementsModuleQueriesTests
         var result = await _queries.GetCharacterCreationElement(element.Id);
 
         // Assert
-        result.Should().BeEquivalentTo(new CharacterCreationInfo(element.Id, "Custom") { ShortDescription = "With Description" });
+        result.Should().BeEquivalentTo(new CharacterCreationInfo(element.Id, element.Name, element.Type) { ShortDescription = "With Description" });
     }
 
     [TestMethod]
@@ -114,6 +114,6 @@ public class ElementsModuleQueriesTests
         var result = await _queries.GetCharacterCreationElement(element.Id);
 
         // Assert
-        result.Should().BeEquivalentTo(new CharacterCreationInfo(element.Id, "Custom"));
+        result.Should().BeEquivalentTo(new CharacterCreationInfo(element.Id, element.Name, element.Type));
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Filters;
+using Serilog.Events;
 using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Components.Serilog;
@@ -10,24 +10,41 @@ namespace Starlights.Platform.Components.Serilog;
 /// </summary>
 public class SerilogComponent : IPlatformServiceComponent
 {
+    public const string ConsoleOutputTemplate = "[{Timestamp:HH:mm:ss:fff} {Level:u3}] {Message:lj}{NewLine}{Exception}";
     public int RegistrationOrder => 100;
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddSerilog(configuration =>
         {
-            configuration.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss:fff} {Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .MinimumLevel.Information();
-
-            configuration.WriteTo.OpenTelemetry()
-                .MinimumLevel.Information();
-
-            if (builder.Environment.IsIntegration() || builder.Environment.IsDevelopment())
+            if (builder.Environment.IsProduction())
             {
-                // minimize logging noise in integration environments for now, TODO: use appsettings.Integration.json for this
-                configuration.Filter.ByExcluding(Matching.FromSource("Microsoft.EntityFrameworkCore.Database.Command"));
-                configuration.Filter.ByExcluding(Matching.FromSource("Microsoft.AspNetCore"));
+                // production logging
+                configuration.MinimumLevel.Information();
             }
+            else
+            {
+                configuration.MinimumLevel.Debug();
+
+                configuration.Filter.ByExcluding(e =>
+                {
+                    // filter out debug logs from EF / MS
+                    if (e.Level == LogEventLevel.Debug || e.Level == LogEventLevel.Information)
+                    {
+                        if (e.Properties.TryGetValue("SourceContext", out var sourceContext))
+                        {
+                            return sourceContext.ToString().Contains("Microsoft.EntityFrameworkCore", StringComparison.OrdinalIgnoreCase) ||
+                            sourceContext.ToString().Contains("Microsoft.AspNetCore", StringComparison.OrdinalIgnoreCase) ||
+                            sourceContext.ToString().Contains("Microsoft.Extensions", StringComparison.OrdinalIgnoreCase);
+                        }
+                    }
+
+                    return false;
+                });
+            }
+
+            configuration.WriteTo.OpenTelemetry();
+            configuration.WriteTo.Console(outputTemplate: ConsoleOutputTemplate);
         });
     }
 }

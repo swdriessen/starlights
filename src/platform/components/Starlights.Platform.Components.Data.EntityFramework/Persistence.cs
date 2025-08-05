@@ -22,9 +22,9 @@ public class Persistence : IPersistence
 
     public T GetRepository<T>() where T : IRepository
     {
-        using var _ = PersistenceInstrumentation.StartActivity($"GetRepository ({typeof(T).Name})");
+        using var activity = PersistenceInstrumentation.StartActivity($"GetRepository ({typeof(T).Name})");
 
-        _logger.LogInformation("get repository [type='{RepositoryType}']", typeof(T).Name);
+        _logger.LogDebug("get repository [type='{RepositoryType}']", typeof(T).Name);
 
         var repository = _serviceProvider.GetRequiredService<T>();
 
@@ -35,13 +35,12 @@ public class Persistence : IPersistence
         // Reuse existing context or create new one for this context type
         if (!_contexts.TryGetValue(contextType, out var persistenceContext))
         {
-            _logger.LogInformation("creating a new context instance [context='{ContextType}']", contextType.Name);
+            _logger.LogDebug("creating a new context instance [context='{ContextType}']", contextType.Name);
             persistenceContext = contextFactory.CreateContext();
             _contexts[contextType] = persistenceContext;
         }
 
-        _logger.LogInformation("setting persistence context for repository [repository='{RepositoryType}', context='{ContextType}']", typeof(T).Name, contextType.Name);
-
+        _logger.LogDebug("setting persistence context for repository [repository='{RepositoryType}', context='{ContextType}']", typeof(T).Name, contextType.Name);
         repository.SetPersistenceContext(persistenceContext);
 
         return repository;
@@ -57,7 +56,6 @@ public class Persistence : IPersistence
         {
             if (context is DbContext dbContext)
             {
-                _logger.LogInformation("saving context [type='{ContextType}']", contextType.Name);
                 var changes = await dbContext.SaveChangesAsync();
                 totalChanges += changes;
                 _logger.LogInformation("...saved successfully [rows='{Rows}', context='{ContextType}']", changes, contextType.Name);
@@ -79,7 +77,7 @@ public class Persistence : IPersistence
                 {
                     if (context is DbContext dbContext)
                     {
-                        _logger.LogInformation("disposing DbContext [type='{ContextType}']", dbContext.GetType().Name);
+                        _logger.LogDebug("disposing DbContext [type='{ContextType}']", dbContext.GetType().Name);
                         dbContext.Dispose();
                     }
                 }

@@ -8,7 +8,7 @@ internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepo
 {
     public void Add(Character character)
     {
-        using var _ = CharactersInstrumentation.StartActivity();
+        using var _ = CharactersInstrumentation.StartActivity("Add Character");
         Entities.Add(character);
     }
 
