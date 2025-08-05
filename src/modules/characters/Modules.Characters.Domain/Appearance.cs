@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Characters.Domain;
@@ -5,6 +6,7 @@ namespace Starlights.Modules.Characters.Domain;
 /// <summary>
 /// Represents the appearance details of a character.
 /// </summary>
+[DebuggerDisplay("Id = {Id}, CharacterId = {CharacterId}")]
 public sealed class Appearance : AggregateRoot<AppearanceId>
 {
     private Appearance(CharacterId characterId, string? portraitUrl = null)

@@ -1,10 +1,12 @@
-﻿using Starlights.Platform.Domain;
+﻿using System.Diagnostics;
+using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Characters.Domain;
 
 /// <summary>
 /// Represents a character in the system.
 /// </summary>
+[DebuggerDisplay("Id = {Id}, Name = {Name}")]
 public sealed class Character : AggregateRoot<CharacterId>
 {
     private Character(string name)
