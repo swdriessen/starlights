@@ -7,6 +7,7 @@ var database = builder.AddSqlServer("sql-server")
 var application = builder.AddProject<Projects.Starlights_Application>("backend")
     .WithScalarCommand()
     .WithScalarUrl()
+    .WithInitializeDatabaseCommand()
     .WithReference(database)
     .WaitFor(database);
 

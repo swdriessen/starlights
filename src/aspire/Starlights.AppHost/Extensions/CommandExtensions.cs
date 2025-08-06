@@ -46,4 +46,23 @@ public static class CommandExtensions
             }
         }, commandOptions: options);
     }
+
+    /// <summary>
+    /// Adds a command to the project resource that initializes the database.
+    /// </summary>
+    public static IResourceBuilder<ProjectResource> WithInitializeDatabaseCommand(this IResourceBuilder<ProjectResource> resource)
+    {
+        return resource.WithHttpCommand(path: "/api/elements/initialize",
+            displayName: "Initialize Database",
+            commandOptions: new HttpCommandOptions()
+            {
+                Description = "Initialize the elements in the database.",
+                Method = HttpMethod.Get,
+                PrepareRequest = (_) => Task.CompletedTask,
+                EndpointSelector = () => resource.GetEndpoint("https"),
+                IconName = "DatabaseLightning",
+                IconVariant = IconVariant.Regular,
+                IsHighlighted = false
+            });
+    }
 }
