@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Starlights.Modules.Characters.Domain;
+namespace Starlights.Modules.Characters.Domain.Registrations;
 
 /// <summary>
 /// Represents a unique identifier for Registration entities.

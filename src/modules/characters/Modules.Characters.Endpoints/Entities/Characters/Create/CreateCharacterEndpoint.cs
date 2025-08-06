@@ -1,6 +1,8 @@
 ﻿using FastEndpoints;
+using Modules.Characters.Services.Processing;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
@@ -10,11 +12,13 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _queries;
+    private readonly IRegistrationManager _registrationManager;
 
-    public CreateCharacterEndpoint(IPersistence persistence, IElementsModuleQueries queries)
+    public CreateCharacterEndpoint(IPersistence persistence, IElementsModuleQueries queries, IRegistrationManager registrationManager)
     {
         _persistence = persistence;
         _queries = queries;
+        _registrationManager = registrationManager;
     }
 
     public override void Configure()
@@ -60,5 +64,8 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
         var reponse = new CreateCharacterResponse(newCharacter.Id);
 
         await Send.CreatedAtAsync($"/api/characters/{newCharacter.Id}", reponse, cancellation: ct);
+
+        // publish event and trigger registration processing
+        await _registrationManager.ProcessRegistration(newRegistration.Id);
     }
 }

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />
+    <ProjectReference Include="..\..\elements\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj" />
+    <ProjectReference Include="..\Modules.Characters.Data\Modules.Characters.Data.csproj" />
+    <ProjectReference Include="..\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -55,4 +55,13 @@ internal class ElementsModuleQueries : IElementsModuleQueries
 
         return elements.ConvertAll(element => element.AsElementInfo());
     }
+
+    public async Task<ElementDataModel> GetElementWithRules(Guid elementId)
+    {
+        var repository = _persistence.GetRepository<IElementsRepository>();
+
+        var element = await repository.GetElementAsync(elementId);
+
+        return element.AsElementDataModel();
+    }
 }

@@ -26,7 +26,9 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
     {
         using var _ = ElementsInstrumentation.StartActivity();
 
-        var element = await Entities.SingleOrDefaultAsync(e => e.Id == identifier);
+        var element = await Entities
+            .Include(x => x.Components)
+            .SingleOrDefaultAsync(e => e.Id == identifier);
 
         if (element is null)
         {

@@ -9,6 +9,7 @@
 		<ProjectReference Include="..\..\aspire\Starlights.ServiceDefaults\Starlights.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\..\modules\characters\Modules.Characters.Data.EntityFramework\Modules.Characters.Data.EntityFramework.csproj" />
 		<ProjectReference Include="..\..\modules\characters\Modules.Characters.Endpoints\Modules.Characters.Endpoints.csproj" />
+		<ProjectReference Include="..\..\modules\characters\Modules.Characters\Modules.Characters.csproj" />
 		<ProjectReference Include="..\..\modules\elements\Modules.Elements.Data.EntityFramework\Modules.Elements.Data.EntityFramework.csproj" />
 		<ProjectReference Include="..\..\modules\elements\Modules.Elements.Endpoints\Modules.Elements.Endpoints.csproj" />
 		<ProjectReference Include="..\..\modules\elements\Modules.Elements\Modules.Elements.csproj" />

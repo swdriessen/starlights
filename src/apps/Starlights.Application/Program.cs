@@ -1,3 +1,4 @@
+using Modules.Characters.Services.Processing;
 using Scalar.AspNetCore;
 using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
@@ -42,6 +43,7 @@ public sealed class Program
             // characters module
             options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
             options.AdditionalAssemblies.Add(typeof(CreateCharacterEndpoint).Assembly);
+            options.AdditionalAssemblies.Add(typeof(RegistrationManager).Assembly);
 
             // elements module
             options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);

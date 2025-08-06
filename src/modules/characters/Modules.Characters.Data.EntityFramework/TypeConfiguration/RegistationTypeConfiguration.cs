@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
 
@@ -15,15 +16,21 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
                .ValueGeneratedNever()
                .HasConversion(m => m.Value, v => new RegistrationId(v));
 
+        builder.Property(e => e.ParentRegistrationId)
+               .IsRequired(false)
+               .HasConversion(
+                m => m.HasValue ? m.Value.Value : (Guid?)null,
+                v => v.HasValue ? new RegistrationId(v.Value) : null);
+
         builder.Property(e => e.CharacterId)
                .IsRequired()
                .HasConversion(m => m.Value, v => new CharacterId(v));
 
-        builder.Property(e => e.ElementId)
+        builder.Property(e => e.AssociatedElementId)
                .IsRequired()
                .HasConversion(m => m.Value, v => new ElementId(v));
 
-        builder.Property(e => e.ElementName)
+        builder.Property(e => e.AssociatedElementName)
                .HasMaxLength(128);
 
         // Foreign key relationship to Character
