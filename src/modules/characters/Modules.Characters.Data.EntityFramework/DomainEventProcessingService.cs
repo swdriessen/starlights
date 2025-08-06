@@ -9,10 +9,14 @@ using Starlights.Platform.Eventing;
 namespace Starlights.Modules.Characters.Data.EntityFramework;
 
 /// <summary>
-/// A simple background service that processes domain events from the database. Good enough for the current state.
+/// A simple background service that processes domain events from the database. 
+/// The polling is good enough for the current state.
 /// </summary>
 internal sealed class DomainEventProcessingService : BackgroundService
 {
+    internal const int MaximumInterval = 10;
+    internal const int BatchSize = 100;
+
     private readonly ILogger<DomainEventProcessingService> _logger;
     private readonly IServiceScopeFactory _factory;
 
@@ -27,10 +31,10 @@ internal sealed class DomainEventProcessingService : BackgroundService
         await Task.Delay(5000, stoppingToken);
         _logger.LogInformation("Domain event processing service started.");
 
+        var interval = TimeSpan.FromSeconds(1);
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogDebug("Processing domain events...");
-
             using var scope = _factory.CreateScope();
             {
                 var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<CharactersContext>>();
@@ -40,7 +44,7 @@ internal sealed class DomainEventProcessingService : BackgroundService
                 List<EventMessage> newEvents = await context.Set<EventMessage>()
                     .Where(x => x.ProcessedOn == null)
                     .OrderBy(x => x.OccurredOn)
-                    .Take(3)
+                    .Take(BatchSize)
                     .ToListAsync(cancellationToken: stoppingToken);
 
                 foreach (var item in newEvents)
@@ -48,9 +52,6 @@ internal sealed class DomainEventProcessingService : BackgroundService
                     _logger.LogDebug("Processing domain event: {EventId} ({EventType})", item.Id, item.EventType);
 
                     var eventType = ResolveEventType(item.EventType);
-
-                    //eventType = ResolveEventType("Starlights.Modules.Characters.Domain.Registrations.RegistrationCreatedEvent");
-                    // Starlights.Modules.Characters.Domain.Registrations.RegistrationCreatedEvent
 
                     if (eventType == null)
                     {
@@ -62,8 +63,6 @@ internal sealed class DomainEventProcessingService : BackgroundService
 
                     if (deserialized is IDomainEvent domainEvent)
                     {
-                        // Here you would typically handle the event, e.g., by publishing it to a message bus or processing it directly.
-
                         _logger.LogInformation("Publishing domain event: {EventId} ({EventType})", item.Id, item.EventType);
                         await publisher.PublishAsync(domainEvent);
 
@@ -72,11 +71,16 @@ internal sealed class DomainEventProcessingService : BackgroundService
                         await context.SaveChangesAsync(stoppingToken);
                     }
                 }
+
+                interval = newEvents.Count switch
+                {
+                    > 0 => TimeSpan.FromSeconds(1),
+                    _ => TimeSpan.FromSeconds(Math.Min(interval.TotalSeconds * 2, MaximumInterval)),
+                };
             }
 
-            // process domain events
-            _logger.LogDebug("waiting... [IsCancellationRequested={IsCancellationRequested}]", stoppingToken.IsCancellationRequested);
-            await Task.Delay(5000, stoppingToken);
+            _logger.LogDebug("Waiting {Delay}s until next processing check... [IsCancellationRequested={IsCancellationRequested}]", interval.TotalSeconds, stoppingToken.IsCancellationRequested);
+            await Task.Delay(interval, stoppingToken);
         }
 
         _logger.LogWarning("Domain event processing service is stopping.");

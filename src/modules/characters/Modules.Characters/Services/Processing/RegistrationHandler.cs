@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Eventing;
 
@@ -17,7 +18,7 @@ public sealed class RegistrationCreatedEventHandler : IDomainEventHandler<Regist
 
     public async Task HandleAsync(RegistrationCreatedEvent domainEvent)
     {
-        _logger.LogWarning("TODO: Handling RegistrationCreatedEvent for RegistrationId: {RegistrationId}", domainEvent.RegistrationId);
+        using var _ = CharactersInstrumentation.StartActivity("HandleRegistrationCreatedEvent");
         await _registrationManager.ProcessRegistration(new(domainEvent.RegistrationId));
     }
 }
