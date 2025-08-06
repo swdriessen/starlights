@@ -48,7 +48,7 @@ public sealed class EventMessage : EntityBase<Guid>
         return new EventMessage
         {
             OccurredOn = @event.OccurredOn,
-            EventType = eventType.Name,
+            EventType = eventType.FullName ?? eventType.Name,
             Payload = jsonPayload
         };
     }

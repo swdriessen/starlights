@@ -1,6 +1,6 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var database = builder.AddSqlServer("sql-server")
+var database = builder.AddSqlServer("sql-server", port: 61070) // static port for now, easier to view database in SSMS
     .WithLifetime(ContainerLifetime.Persistent)
     .AddDatabase("starlights-db", "starlights-db-env");
 
