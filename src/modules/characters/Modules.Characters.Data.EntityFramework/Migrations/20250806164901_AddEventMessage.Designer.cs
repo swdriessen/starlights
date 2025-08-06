@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Starlights.Modules.Characters.Data.EntityFramework;
 
@@ -11,9 +12,11 @@ using Starlights.Modules.Characters.Data.EntityFramework;
 namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 {
     [DbContext(typeof(CharactersContext))]
-    partial class CharactersContextModelSnapshot : ModelSnapshot
+    [Migration("20250806164901_AddEventMessage")]
+    partial class AddEventMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,7 +137,7 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("event_messages", "characters");
+                    b.ToTable("EventMessage", "characters");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationIncludeRule", b =>

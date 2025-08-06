@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Starlights.Platform.Data;
+using Starlights.Platform.Eventing;
 
 namespace Starlights.Platform.Components.Data.EntityFramework;
 
@@ -51,18 +53,48 @@ public class Persistence : IPersistence
         using var activity = PersistenceInstrumentation.StartActivity();
 
         var totalChanges = 0;
+        var totalEventMessages = 0;
 
         foreach (var (contextType, context) in _contexts)
         {
-            if (context is DbContext dbContext)
+            if (context is DbContext database)
             {
-                var changes = await dbContext.SaveChangesAsync();
-                totalChanges += changes;
-                _logger.LogInformation("...saved successfully [rows='{Rows}', context='{ContextType}']", changes, contextType.Name);
+                // create the outbox entities for each domain event
+                var (domainEntities, domainEvents) = GetEntitiesWithEvents(database);
+
+                if (domainEvents.Count > 0)
+                {
+                    using var eventsActivity = PersistenceInstrumentation.StartActivity("Store Domain Events");
+
+                    _logger.LogDebug("...found {EventCount} domain events in context '{ContextType}'", domainEvents.Count, contextType.Name);
+
+                    foreach (var domainEvent in domainEvents)
+                    {
+                        var json = JsonSerializer.Serialize(domainEvent, domainEvent.GetType());
+                        var message = EventMessage.Create(domainEvent, domainEvent.GetType(), json);
+                        database.Add(message);
+                    }
+
+                    domainEntities.ForEach(entity => entity.ClearDomainEvents());
+                }
+                else
+                {
+                    _logger.LogDebug("...no domain events found in context '{ContextType}'", contextType.Name);
+                }
+
+                var affectedRows = await database.SaveChangesAsync();
+
+                var actualChanges = affectedRows - domainEvents.Count; // subtract the number of domain events saved as outbox messages
+
+                totalChanges += actualChanges;
+                totalEventMessages += domainEvents.Count;
+
+                _logger.LogInformation("...saved successfully [rows='{Rows}', events='{EventCount}', context='{ContextType}']", actualChanges, domainEvents.Count, contextType.Name);
             }
         }
 
         activity?.AddTag("totalChanges", totalChanges);
+        activity?.AddTag("totalEventMessages", totalEventMessages);
 
         return totalChanges;
     }
@@ -92,5 +124,21 @@ public class Persistence : IPersistence
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Get the entities that have events, and the entire collection of events.
+    /// </summary>
+    private static (List<IEventEntity> Entities, List<IDomainEvent> Events) GetEntitiesWithEvents(DbContext context)
+    {
+        var entities = context.ChangeTracker.Entries()
+            .Select(entry => entry.Entity)
+            .OfType<IEventEntity>()
+            .Where(x => x.DomainEvents.Count > 0)
+            .ToList();
+
+        var events = entities.SelectMany(entity => entity.DomainEvents).ToList();
+
+        return (entities, events);
     }
 }

@@ -45,14 +45,6 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public string AssociatedElementName { get; }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
-    /// </summary>
-    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName)
-    {
-        return new Registration(characterId, associatedElementId, associatedElementName);
-    }
-
-    /// <summary>
     /// Updates the parent registration ID for this registration.
     /// </summary>
     public void UpdateParentRegistration(Registration parentRegistration)
@@ -61,14 +53,22 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     }
 
     /// <summary>
+    /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
+    /// </summary>
+    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName)
+    {
+        var newRegistration = new Registration(characterId, associatedElementId, associatedElementName);
+        newRegistration.AddDomainEvent(new RegistrationCreatedEvent() { RegistrationId = newRegistration.Id });
+        return newRegistration;
+    }
+
+    /// <summary>
     /// Creates a new include rule for this registration.
     /// </summary>
     public RegistrationIncludeRule CreateIncludeRule(ElementComponentId associatedIncludeRuleId, ElementId includedElementId, string includedElementName)
     {
         var newIncludeRule = RegistrationIncludeRule.Create(Id, associatedIncludeRuleId, includedElementId, includedElementName);
-
         _includeRules.Add(newIncludeRule);
-
         return newIncludeRule;
     }
 }
