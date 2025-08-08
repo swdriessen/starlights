@@ -14,12 +14,13 @@ public sealed class Registration : AggregateRoot<RegistrationId>
 {
     private readonly List<RegistrationIncludeRule> _includeRules = [];
 
-    private Registration(CharacterId characterId, ElementId associatedElementId, string associatedElementName)
+    private Registration(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
         : base(RegistrationId.New())
     {
         CharacterId = characterId;
         AssociatedElementId = associatedElementId;
         AssociatedElementName = associatedElementName;
+        AssociatedElementType = associatedElementType;
     }
 
     /// <summary>
@@ -46,6 +47,11 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// Gets the name of the element associated with this registration. This is used for display purposes and may not be unique.
     /// </summary>
     public string AssociatedElementName { get; }
+
+    /// <summary>
+    /// Gets the type of the element associated with this registration. This is used to determine how to handle the registration.
+    /// </summary>
+    public string AssociatedElementType { get; }
 
     /// <summary>
     /// Updates the parent registration ID for this registration.
@@ -84,15 +90,16 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// <summary>
     /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
     /// </summary>
-    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName)
+    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
     {
-        var newRegistration = new Registration(characterId, associatedElementId, associatedElementName);
+        var newRegistration = new Registration(characterId, associatedElementId, associatedElementName, associatedElementType);
 
         newRegistration.AddDomainEvent(new RegistrationCreated
         {
             CharacterId = newRegistration.CharacterId,
             RegistrationId = newRegistration.Id,
-            AssociatedElementName = associatedElementName
+            AssociatedElementName = associatedElementName,
+            AssociatedElementType = associatedElementType
         });
 
         return newRegistration;

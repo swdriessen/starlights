@@ -1,6 +1,6 @@
 using FluentAssertions;
-using Moq;
 using Modules.Characters.Services.Processing;
+using Moq;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
@@ -59,7 +59,7 @@ public sealed class RegistrationManagerTests
         var sut = CreateSut();
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
-        var registration = Registration.Create(characterId, new(baseElementId), "Base");
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
         var registrationId = registration.Id;
 
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
@@ -74,16 +74,19 @@ public sealed class RegistrationManagerTests
                  {
                      Id = baseElementId,
                      Name = "Base",
+                     Type = "Type",
                      IncludeRules = [new IncludeRuleDataModel(includeRuleId, includedElementId, 0)]
                  });
 
         // the included element resolved by the rule
         const string includedName = "Included-1";
+        const string includedType = "IncludedType-1";
         _elements.Setup(m => m.GetElementWithRules(includedElementId))
                  .ReturnsAsync(new ElementDataModel
                  {
                      Id = includedElementId,
                      Name = includedName,
+                     Type = includedType,
                      IncludeRules = []
                  });
 
@@ -107,6 +110,7 @@ public sealed class RegistrationManagerTests
         addedRegistration!.ParentRegistrationId.Should().Be(registration.Id);
         addedRegistration.AssociatedElementId.Value.Should().Be(includedElementId);
         addedRegistration.AssociatedElementName.Should().Be(includedName);
+        addedRegistration.AssociatedElementType.Should().Be(includedType);
 
         _registrations.Verify(r => r.Add(It.IsAny<Registration>()), Times.Once);
         _persistence.Verify(p => p.SaveChangesAsync(), Times.Once);
@@ -119,7 +123,7 @@ public sealed class RegistrationManagerTests
         var sut = CreateSut();
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
-        var registration = Registration.Create(characterId, new(baseElementId), "Base");
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
         var registrationId = registration.Id;
 
         var includeRuleId = Guid.NewGuid();

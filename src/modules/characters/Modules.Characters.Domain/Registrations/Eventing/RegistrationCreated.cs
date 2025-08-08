@@ -3,4 +3,5 @@
 public record RegistrationCreated : RegistrationEventBase
 {
     public required string AssociatedElementName { get; init; }
+    public required string AssociatedElementType { get; init; }
 }

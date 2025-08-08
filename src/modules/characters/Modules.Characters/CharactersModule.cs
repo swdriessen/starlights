@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Modules.Characters.Services.EventHandlers;
 using Modules.Characters.Services.Processing;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Platform.Eventing;
@@ -16,5 +17,6 @@ internal class CharactersModule : IPlatformServiceComponent
         builder.Services.AddScoped<IRegistrationManager, RegistrationManager>();
 
         builder.Services.AddTransient<IDomainEventHandler<RegistrationCreated>, RegistrationCreatedEventHandler>();
+        builder.Services.AddTransient<IDomainEventHandler<RegistrationCreated>, CreateAbilityScoreEventHandler>();
     }
 }

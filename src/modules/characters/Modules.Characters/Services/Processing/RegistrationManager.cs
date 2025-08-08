@@ -69,7 +69,7 @@ public class RegistrationManager : IRegistrationManager
             var newIncludeElement = await _elements.GetElementWithRules(rule.IncludedElementId);
 
             // create the new registration for the included element
-            var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name);
+            var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name, newIncludeElement.Type);
             newRegistration.UpdateParentRegistration(currentRegistration);
 
             // create the new registration include rule, this is to keep track of the rules applied

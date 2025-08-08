@@ -18,7 +18,7 @@ public sealed class RegistrationCreatedEventHandler : IDomainEventHandler<Regist
 
     public async Task HandleAsync(RegistrationCreated raisedEvent)
     {
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(RegistrationCreatedEventHandler)} ({raisedEvent.AssociatedElementName})");
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(RegistrationCreatedEventHandler)} | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
         await _registrationManager.ProcessRegistration(new(raisedEvent.RegistrationId));
     }
 }

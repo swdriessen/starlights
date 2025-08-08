@@ -60,7 +60,7 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
         appearances.Add(newAppearance);
 
         // registration of the root element used in character creation, this will grant abilities, skills, etc.
-        var newRegistration = Registration.Create(newCharacter.Id, new ElementId(rootElement.ElementId), rootElement.Name);
+        var newRegistration = Registration.Create(newCharacter.Id, new ElementId(rootElement.ElementId), rootElement.Name, rootElement.Type);
 
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
         registrations.Add(newRegistration);

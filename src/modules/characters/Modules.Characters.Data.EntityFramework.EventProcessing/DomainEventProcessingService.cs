@@ -53,6 +53,7 @@ public sealed class DomainEventProcessingService : BackgroundService
                     using var _ = CharactersInstrumentation.StartActivity($"Process Event Messages ({newEvents.Count})", a => a.AddTag("newEvents", newEvents.Count));
 
                     var publisher = scope.ServiceProvider.GetRequiredService<IDomainEventPublisher>();
+
                     foreach (var item in newEvents)
                     {
                         _logger.LogDebug("Processing domain event: {EventId} ({EventType})", item.Id, item.EventType);
