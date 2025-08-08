@@ -32,7 +32,7 @@ public class ElementsModuleInitializationTests
         var result = await _initialization.InitializeAsync();
 
         // Assert
-        _elementsRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Element>()), Times.AtLeastOnce);
+        _elementsRepositoryMock.Verify(x => x.Add(It.IsAny<Element>()), Times.AtLeastOnce);
         _persistenceMock.Verify(x => x.SaveChangesAsync(), Times.Once);
     }
 }

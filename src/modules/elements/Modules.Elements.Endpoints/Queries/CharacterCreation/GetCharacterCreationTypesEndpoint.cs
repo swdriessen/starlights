@@ -17,8 +17,9 @@ public class GetCharacterCreationTypesEndpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Get("/elements/types/character-creation");
+        Get("/types/character-creation");
         AllowAnonymous();
+        Group<ElementsGroup>();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

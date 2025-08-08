@@ -1,4 +1,8 @@
+using Modules.Characters.Data.EntityFramework.EventProcessing;
+using Modules.Characters.Services.Processing;
+using Scalar.AspNetCore;
 using Starlights.Modules.Characters.Data.EntityFramework;
+using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
 using Starlights.Modules.Elements.Endpoints.Installation;
@@ -18,11 +22,30 @@ public sealed class Program
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder
+                    .SetIsOriginAllowed(_ =>
+                    {
+                        // Allow all origins for development purposes
+                        return true;
+                    })
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .AllowAnyMethod();
+            });
+        });
+
         // add the platform services and its modules
         builder.AddStarlightsPlatform(options =>
         {
             // characters module
             options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
+            options.AdditionalAssemblies.Add(typeof(CreateCharacterEndpoint).Assembly);
+            options.AdditionalAssemblies.Add(typeof(RegistrationManager).Assembly);
+            options.AddEventProcessingComponent();
 
             // elements module
             options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);
@@ -41,10 +64,21 @@ public sealed class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            app.MapScalarApiReference(options =>
+            {
+                options.Servers = [];
+                options.WithTitle("Starlights API")
+                    .WithClientButton(false)
+                    .WithLayout(ScalarLayout.Modern)
+                    .WithTheme(ScalarTheme.Alternate)
+                    .WithDarkMode(true)
+                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+            });
         }
 
         // configure the platform and its modules
         app.UseStarlightsPlatform();
+        app.UseCors();
 
         app.UseHttpsRedirection();
         app.UseAuthorization();

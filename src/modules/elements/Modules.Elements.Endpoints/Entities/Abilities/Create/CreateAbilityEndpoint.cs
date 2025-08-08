@@ -20,8 +20,9 @@ public class CreateAbilityEndpoint : Endpoint<CreateAbilityRequest, CreateAbilit
 
     public override void Configure()
     {
-        Post("elements/abilities/create");
+        Post("/abilities/create");
         AllowAnonymous();
+        Group<ElementsGroup>();
     }
     public override async Task HandleAsync(CreateAbilityRequest req, CancellationToken ct)
     {
@@ -32,7 +33,7 @@ public class CreateAbilityEndpoint : Endpoint<CreateAbilityRequest, CreateAbilit
 
         var repository = _persistence.GetRepository<IElementsRepository>();
 
-        await repository.AddAsync(element);
+        repository.Add(element);
 
         var rows = await _persistence.SaveChangesAsync();
 

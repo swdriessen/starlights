@@ -23,7 +23,26 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Character", b =>
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Characters.Appearance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CharacterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PortraitUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("appearance", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Characters.Character", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -35,6 +54,100 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("character", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AssociatedElementId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AssociatedElementName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<Guid>("CharacterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsProcessed")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ParentRegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("registration", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationIncludeRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AssociatedIncludeRuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IncludedElementId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("IncludedElementName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ParentRegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentRegistrationId");
+
+                    b.ToTable("registration_include_rules", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Platform.Components.Data.EntityFramework.EventMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OccurredOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ProcessedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("event_messages", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationIncludeRule", b =>
+                {
+                    b.HasOne("Starlights.Modules.Characters.Domain.Registrations.Registration", null)
+                        .WithMany("IncludeRules")
+                        .HasForeignKey("ParentRegistrationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>
+                {
+                    b.Navigation("IncludeRules");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>Starlights.Modules.Characters.Data.EntityFramework.EventProcessing</RootNamespace>
+	</PropertyGroup>
+	
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.Characters.Data.EntityFramework\Modules.Characters.Data.EntityFramework.csproj" />
+  </ItemGroup>
+
+</Project>

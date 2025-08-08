@@ -9,6 +9,6 @@ public interface IDomainEventHandler<TEvent> where TEvent : IDomainEvent
     /// <summary>
     /// Handles the domain event asynchronously.
     /// </summary>
-    /// <param name="domainEvent">The domain event to handle.</param>
-    Task HandleAsync(TEvent domainEvent);
+    /// <param name="raisedEvent">The domain event to handle.</param>
+    Task HandleAsync(TEvent raisedEvent);
 }

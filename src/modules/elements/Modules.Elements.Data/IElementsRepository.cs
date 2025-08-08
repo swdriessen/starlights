@@ -6,9 +6,9 @@ namespace Starlights.Modules.Elements.Data;
 public interface IElementsRepository : IRepository
 {
     /// <summary>
-    /// Adds a new element to the repository asynchronously.
+    /// Adds a new element to the repository.
     /// </summary>
-    Task AddAsync(Element element);
+    void Add(Element element);
 
     /// <summary>
     /// Retrieves an element by its identifier.

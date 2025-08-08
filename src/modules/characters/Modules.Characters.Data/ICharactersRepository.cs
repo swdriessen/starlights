@@ -1,4 +1,4 @@
-﻿using Starlights.Modules.Characters.Domain;
+﻿using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Data;
@@ -6,9 +6,9 @@ namespace Starlights.Modules.Characters.Data;
 public interface ICharactersRepository : IRepository
 {
     /// <summary>
-    /// Adds a new character to the repository asynchronously.
+    /// Adds a new character to the repository.
     /// </summary>
-    Task AddAsync(Character character);
+    void Add(Character character);
 
     /// <summary>
     /// Retrieves a character by its identifier.

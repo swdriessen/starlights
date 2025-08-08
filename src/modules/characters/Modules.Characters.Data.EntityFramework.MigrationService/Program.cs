@@ -1,4 +1,5 @@
 using Starlights.Modules.Characters.Data.EntityFramework;
+using Starlights.Platform.Components.Serilog;
 using Starlights.Platform.Hosting;
 
 namespace Modules.Characters.Data.EntityFramework.MigrationService;
@@ -9,7 +10,13 @@ public sealed class Program
     {
         var builder = Host.CreateApplicationBuilder(args);
         builder.AddServiceDefaults();
-        builder.AddStarlightsPlatform(options => options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly));
+
+        builder.AddStarlightsPlatform(options =>
+        {
+            options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
+            options.AdditionalAssemblies.Add(typeof(SerilogComponent).Assembly);
+        });
+
         builder.Services.AddHostedService<Worker>();
 
         var host = builder.Build();

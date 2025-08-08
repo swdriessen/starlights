@@ -1,4 +1,4 @@
-﻿namespace Starlights.Integration.Tests;
+﻿namespace Starlights.Integration.Tests.Core;
 
 public class IntegrationHostOptions
 {

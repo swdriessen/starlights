@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\aspire\Starlights.ServiceDefaults\Starlights.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\..\platform\components\Starlights.Platform.Components.Serilog\Starlights.Platform.Components.Serilog.csproj" />
 		<ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting\Starlights.Platform.Hosting.csproj" />
 		<ProjectReference Include="..\Modules.Characters.Data.EntityFramework\Modules.Characters.Data.EntityFramework.csproj" />
   </ItemGroup>

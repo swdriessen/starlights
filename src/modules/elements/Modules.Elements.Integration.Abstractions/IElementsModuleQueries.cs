@@ -8,9 +8,9 @@ namespace Starlights.Modules.Elements.Integration;
 public interface IElementsModuleQueries
 {
     /// <summary>
-    /// Retrieves a character creation element by its unique identifier (UIID).
+    /// Retrieves a character creation element by its unique identifier.
     /// </summary>
-    Task<CharacterCreationInfo?> GetCharacterCreationElement(Guid uiid);
+    Task<CharacterCreationInfo?> GetCharacterCreationElement(Guid elementId);
 
     /// <summary>
     /// Retrieves a list of all character creation elements available in the system.
@@ -21,4 +21,14 @@ public interface IElementsModuleQueries
     /// Retrieves a list of all elements available in the system.
     /// </summary>
     Task<List<ElementInfo>> GetElements();
+
+    /// <summary>
+    /// Retrieves an element header with rules by its unique identifier.
+    /// </summary>
+    Task<ElementDataModel> GetElementWithRules(Guid elementId);
+
+    /// <summary>
+    /// Retrieves a list of include rules for a specific element by its unique identifier.
+    /// </summary>
+    Task<List<IncludeRuleDataModel>> GetElementIncludeRules(Guid elementId);
 }

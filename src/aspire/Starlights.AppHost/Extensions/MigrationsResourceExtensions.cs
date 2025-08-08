@@ -1,13 +1,6 @@
-#pragma warning disable IDE0130 // Namespace does not match folder structure: aspire convention, avoid namespaces in apphost.cs
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Aspire.Hosting;
-
-public sealed class MigrationsResource : Resource
-{
-    public MigrationsResource(string name)
-        : base(name)
-    {
-    }
-}
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 public static class MigrationsResourceExtensions
 {
