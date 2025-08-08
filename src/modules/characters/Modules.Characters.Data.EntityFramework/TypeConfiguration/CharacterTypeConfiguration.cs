@@ -18,5 +18,12 @@ public class CharacterTypeConfiguration : IEntityTypeConfiguration<Character>
 
         builder.Property(e => e.Name)
             .IsRequired();
+
+        // Configure one-to-many relationship to AbilityScores with cascade delete
+        builder.HasMany(x => x.AbilityScores)
+               .WithOne()
+               .HasForeignKey("CharacterId")
+                   .OnDelete(DeleteBehavior.Cascade)
+                   .IsRequired();
     }
 }
