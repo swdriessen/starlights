@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Starlights.Modules.Characters.Data.EntityFramework;
 
@@ -11,9 +12,11 @@ using Starlights.Modules.Characters.Data.EntityFramework;
 namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 {
     [DbContext(typeof(CharactersContext))]
-    partial class CharactersContextModelSnapshot : ModelSnapshot
+    [Migration("20250808090309_AddRegistrationProcessed")]
+    partial class AddRegistrationProcessed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +106,12 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.Property<Guid>("ParentRegistrationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("RegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentRegistrationId");
+                    b.HasIndex("RegistrationId");
 
                     b.ToTable("registration_include_rules", "characters");
                 });
@@ -141,8 +147,7 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                 {
                     b.HasOne("Starlights.Modules.Characters.Domain.Registrations.Registration", null)
                         .WithMany("IncludeRules")
-                        .HasForeignKey("ParentRegistrationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RegistrationId");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>

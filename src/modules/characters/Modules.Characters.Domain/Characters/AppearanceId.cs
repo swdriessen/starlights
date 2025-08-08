@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Starlights.Modules.Characters.Domain;
+namespace Starlights.Modules.Characters.Domain.Characters;
 
 /// <summary>
 /// Represents a unique identifier for Appearance entities.

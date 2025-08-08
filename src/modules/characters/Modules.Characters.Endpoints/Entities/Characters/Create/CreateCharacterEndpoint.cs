@@ -2,6 +2,8 @@
 using Modules.Characters.Services.Processing;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;

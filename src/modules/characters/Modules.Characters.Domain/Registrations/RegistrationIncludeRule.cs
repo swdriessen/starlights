@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;

@@ -26,4 +26,9 @@ public interface IElementsModuleQueries
     /// Retrieves an element header with rules by its unique identifier.
     /// </summary>
     Task<ElementDataModel> GetElementWithRules(Guid elementId);
+
+    /// <summary>
+    /// Retrieves a list of include rules for a specific element by its unique identifier.
+    /// </summary>
+    Task<List<IncludeRuleDataModel>> GetElementIncludeRules(Guid elementId);
 }

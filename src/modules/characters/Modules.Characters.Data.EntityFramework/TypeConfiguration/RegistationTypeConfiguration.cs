@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
@@ -32,6 +33,12 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
 
         builder.Property(e => e.AssociatedElementName)
                .HasMaxLength(128);
+
+        builder.HasMany(x => x.IncludeRules)
+            .WithOne()
+            .HasForeignKey(x => x.ParentRegistrationId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
 
         // Foreign key relationship to Character
         builder.HasIndex(e => e.CharacterId);

@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics;
+using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Elements;
+using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;
@@ -53,12 +56,45 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     }
 
     /// <summary>
+    /// Indicates whether this registration has been processed after it has been added.
+    /// </summary>
+    public bool IsProcessed { get; private set; }
+
+    /// <summary>
+    /// Marks this registration as processed, indicating that it has been initially processed after registration.
+    /// </summary>
+    public void Processed()
+    {
+        IsProcessed = true;
+        AddDomainEvent(new RegistrationProcessedEvent { CharacterId = CharacterId, RegistrationId = Id });
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this registration has a specific include rule by its associated rule ID.
+    /// </summary>
+    public bool HasAssociatedRule(Guid associatedRuleId)
+    {
+        var hasRule = _includeRules.Any(x => x.AssociatedIncludeRuleId.Value == associatedRuleId);
+
+        // TODO: add checks once we have multiple rule types e.g. selection, statistic, etc.
+
+        return hasRule;
+    }
+
+    /// <summary>
     /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
     /// </summary>
     public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName)
     {
         var newRegistration = new Registration(characterId, associatedElementId, associatedElementName);
-        newRegistration.AddDomainEvent(new RegistrationCreatedEvent() { RegistrationId = newRegistration.Id });
+
+        newRegistration.AddDomainEvent(new RegistrationCreatedEvent
+        {
+            CharacterId = newRegistration.CharacterId,
+            RegistrationId = newRegistration.Id,
+            AssociatedElementName = associatedElementName
+        });
+
         return newRegistration;
     }
 
@@ -71,4 +107,5 @@ public sealed class Registration : AggregateRoot<RegistrationId>
         _includeRules.Add(newIncludeRule);
         return newIncludeRule;
     }
+
 }

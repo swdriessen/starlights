@@ -19,7 +19,7 @@ public class RegistrationManager : IRegistrationManager
 
     public async Task<int> ProcessRegistration(RegistrationId registrationId)
     {
-        using var _ = CharactersInstrumentation.StartActivity();
+        using var processActivity = CharactersInstrumentation.StartActivity();
 
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
         var registration = await registrations.GetRegistrationAsync(registrationId);
@@ -31,42 +31,51 @@ public class RegistrationManager : IRegistrationManager
 
         var context = new RegistrationProcessContext(registrations, registration);
 
-        // process include rules
+        // step 1 process the registration, this can be a pipeline of steps
         await ProcessIncludeRules(context);
 
-        return await _persistence.SaveChangesAsync();
+        // step 2 process registration hooks
+        // lets first keep it simple and hook into the events
+
+        // step 3 mark as processed (raise domain event)
+        registration.Processed();
+
+        // step 4 save the registration
+        var affectedRows = await _persistence.SaveChangesAsync();
+
+        processActivity?.SetTag("affectedRows", affectedRows);
+
+        return affectedRows;
     }
 
     private async Task ProcessIncludeRules(RegistrationProcessContext context)
     {
         using var _ = CharactersInstrumentation.StartActivity();
 
-        var registration = context.Registration;
+        var currentRegistration = context.Registration;
 
-        // get full element with rules
-        var element = await _elements.GetElementWithRules(registration.AssociatedElementId);
+        var currentElement = await _elements.GetElementWithRules(currentRegistration.AssociatedElementId);
 
-        foreach (var rule in element.IncludeRules)
+        // if the current element has no include rules, we can skip processing
+
+        foreach (var rule in currentElement.IncludeRules)
         {
-            if (registration.IncludeRules.Any(r => r.AssociatedIncludeRuleId == rule.RuleId))
+            if (currentRegistration.HasAssociatedRule(rule.RuleId))
             {
-                // Skip if the rule already exists
                 continue;
             }
 
-            // include meets requirements, create new registration for the included element
+            // when all requirements are met, we can include the element
             var newIncludeElement = await _elements.GetElementWithRules(rule.IncludedElementId);
 
-            // create the new registration include rule
-            registration.CreateIncludeRule(new(rule.RuleId), new(newIncludeElement.Id), newIncludeElement.Name);
-
             // create the new registration for the included element
-            var newRegistration = Registration.Create(registration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name);
-            newRegistration.UpdateParentRegistration(context.Registration);
+            var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name);
+            newRegistration.UpdateParentRegistration(currentRegistration);
+
+            // create the new registration include rule, this is to keep track of the rules applied
+            currentRegistration.CreateIncludeRule(new(rule.RuleId), new(newIncludeElement.Id), newIncludeElement.Name);
 
             context.Repository.Add(newRegistration);
-
-            // when persistence is saved, domain events will process the new registration
         }
     }
 }

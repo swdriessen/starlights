@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Starlights.Platform.Domain;
 
-namespace Starlights.Modules.Characters.Domain;
+namespace Starlights.Modules.Characters.Domain.Characters;
 
 /// <summary>
 /// Represents the appearance details of a character.

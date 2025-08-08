@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
@@ -30,6 +30,10 @@ public class RegistrationIncludeRuleTypeConfiguration : IEntityTypeConfiguration
 
         builder.Property(e => e.IncludedElementName)
                .IsRequired();
+
+
+        // Foreign key relationship to Registration
+        builder.HasIndex(e => e.ParentRegistrationId);
 
     }
 }

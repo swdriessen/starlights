@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Domain;
-using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Platform.Eventing;
 
 namespace Modules.Characters.Services.Processing;
@@ -16,9 +16,9 @@ public sealed class RegistrationCreatedEventHandler : IDomainEventHandler<Regist
         _registrationManager = registrationManager;
     }
 
-    public async Task HandleAsync(RegistrationCreatedEvent domainEvent)
+    public async Task HandleAsync(RegistrationCreatedEvent raisedEvent)
     {
-        using var _ = CharactersInstrumentation.StartActivity("HandleRegistrationCreatedEvent");
-        await _registrationManager.ProcessRegistration(new(domainEvent.RegistrationId));
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(RegistrationCreatedEventHandler)} ({raisedEvent.AssociatedElementName})");
+        await _registrationManager.ProcessRegistration(new(raisedEvent.RegistrationId));
     }
 }

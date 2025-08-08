@@ -1,4 +1,4 @@
-﻿using Starlights.Modules.Characters.Domain;
+﻿using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Data;
 

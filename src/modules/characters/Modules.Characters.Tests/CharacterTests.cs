@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Characters;
 
 namespace Starlights.Modules.Characters.Tests;
 
