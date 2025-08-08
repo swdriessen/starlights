@@ -3,6 +3,7 @@ using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Platform.Domain;
+using Starlights.Platform.Eventing;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;
 
@@ -90,7 +91,7 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// <summary>
     /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
     /// </summary>
-    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
+    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType, Func<Registration, IEnumerable<IDomainEvent>>? eventInjector = null)
     {
         var newRegistration = new Registration(characterId, associatedElementId, associatedElementName, associatedElementType);
 
@@ -101,6 +102,14 @@ public sealed class Registration : AggregateRoot<RegistrationId>
             AssociatedElementName = associatedElementName,
             AssociatedElementType = associatedElementType
         });
+
+        if (eventInjector is not null)
+        {
+            foreach (var additionalEvent in eventInjector(newRegistration))
+            {
+                newRegistration.AddDomainEvent(additionalEvent);
+            }
+        }
 
         return newRegistration;
     }
@@ -114,5 +123,4 @@ public sealed class Registration : AggregateRoot<RegistrationId>
         _includeRules.Add(newIncludeRule);
         return newIncludeRule;
     }
-
 }

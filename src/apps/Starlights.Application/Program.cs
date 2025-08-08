@@ -8,6 +8,7 @@ using Starlights.Modules.Elements.Data.EntityFramework;
 using Starlights.Modules.Elements.Endpoints.Installation;
 using Starlights.Platform.Components.FastEndpoints;
 using Starlights.Platform.Components.Serilog;
+using Starlights.Platform.Eventing.EventPublisher;
 using Starlights.Platform.Hosting;
 
 namespace Starlights.Application;
@@ -55,6 +56,7 @@ public sealed class Program
             // platform components
             options.AdditionalAssemblies.Add(typeof(FastEndpointsComponent).Assembly);
             options.AdditionalAssemblies.Add(typeof(SerilogComponent).Assembly);
+            options.AdditionalAssemblies.Add(typeof(EventPublisherComponent).Assembly);
         });
 
         var app = builder.Build();

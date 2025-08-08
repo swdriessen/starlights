@@ -2,6 +2,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Starlights.Platform.Eventing;
+using Starlights.Platform.Eventing.EventPublisher;
 
 namespace Starlights.Platform.Components.Data.EntityFramework.Tests;
 

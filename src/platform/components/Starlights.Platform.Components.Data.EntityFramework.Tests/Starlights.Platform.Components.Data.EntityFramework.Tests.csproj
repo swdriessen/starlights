@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Starlights.Platform.Components.Data.EntityFramework\Starlights.Platform.Components.Data.EntityFramework.csproj" />
+    <ProjectReference Include="..\Starlights.Platform.Eventing.EventPublisher\Starlights.Platform.Eventing.EventPublisher.csproj" />
   </ItemGroup>
 
 </Project>

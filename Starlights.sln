@@ -104,6 +104,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Characters.Data.EntityFramework.EventProcessing", "src\modules\characters\Modules.Characters.Data.EntityFramework.EventProcessing\Modules.Characters.Data.EntityFramework.EventProcessing.csproj", "{2B6ED49B-6794-4567-ACB5-3784BD92D434}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.Eventing.EventPublisher", "src\platform\components\Starlights.Platform.Eventing.EventPublisher\Starlights.Platform.Eventing.EventPublisher.csproj", "{A9A716F9-0DCF-40E2-99BE-A5F878D49B3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -226,6 +228,10 @@ Global
 		{2B6ED49B-6794-4567-ACB5-3784BD92D434}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B6ED49B-6794-4567-ACB5-3784BD92D434}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B6ED49B-6794-4567-ACB5-3784BD92D434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9A716F9-0DCF-40E2-99BE-A5F878D49B3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9A716F9-0DCF-40E2-99BE-A5F878D49B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9A716F9-0DCF-40E2-99BE-A5F878D49B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9A716F9-0DCF-40E2-99BE-A5F878D49B3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,6 +281,7 @@ Global
 		{D7F45757-69AC-4B4C-8404-4CF3E3D99F8A} = {D32CB1E6-C9AE-47A2-BDD7-F7D26F1FA1A9}
 		{4ACA69DC-08F2-4FAF-943B-6904C86F4A7A} = {6ED99F10-9BC8-4FE3-B34C-AB17B8F00D61}
 		{2B6ED49B-6794-4567-ACB5-3784BD92D434} = {D7F45757-69AC-4B4C-8404-4CF3E3D99F8A}
+		{A9A716F9-0DCF-40E2-99BE-A5F878D49B3E} = {D42B1339-D2AE-42CB-9AF5-78612A3DFB10}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}

@@ -17,6 +17,7 @@
 		<ProjectReference Include="..\..\platform\components\Starlights.Platform.Components.FastEndpoints\Starlights.Platform.Components.FastEndpoints.csproj" />
 		<ProjectReference Include="..\..\platform\components\Starlights.Platform.Components.Serilog\Starlights.Platform.Components.Serilog.csproj" />
 		<ProjectReference Include="..\..\platform\components\Starlights.Platform.Components.Data.EntityFramework\Starlights.Platform.Components.Data.EntityFramework.csproj" />
+		<ProjectReference Include="..\..\platform\components\Starlights.Platform.Eventing.EventPublisher\Starlights.Platform.Eventing.EventPublisher.csproj" />
 		<ProjectReference Include="..\..\platform\Starlights.Platform.Hosting\Starlights.Platform.Hosting.csproj" />
 	</ItemGroup>
 

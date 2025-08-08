@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Starlights.Modules.Characters.Domain.Abilities;
+using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Characters.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Domain;

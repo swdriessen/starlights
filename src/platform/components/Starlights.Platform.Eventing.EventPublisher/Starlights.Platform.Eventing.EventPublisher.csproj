@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Starlights.Platform\Starlights.Platform.csproj" />
+  </ItemGroup>
+
+</Project>

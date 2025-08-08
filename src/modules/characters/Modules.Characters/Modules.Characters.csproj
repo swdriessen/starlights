@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\platform\components\Starlights.Platform.Eventing.EventPublisher\Starlights.Platform.Eventing.EventPublisher.csproj" />
     <ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />
     <ProjectReference Include="..\..\elements\Modules.Elements.Integration.Abstractions\Modules.Elements.Integration.Abstractions.csproj" />
     <ProjectReference Include="..\Modules.Characters.Data\Modules.Characters.Data.csproj" />

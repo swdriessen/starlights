@@ -1,31 +1,26 @@
 ﻿using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
-using Starlights.Modules.Characters.Domain.Registrations.Eventing;
+using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 using Starlights.Platform.Eventing;
 
 namespace Modules.Characters.Services.EventHandlers;
 
-public sealed class CreateAbilityScoreEventHandler : IDomainEventHandler<RegistrationCreated>
+public sealed class AbilityRegistrationCompletedEventHandler : IDomainEventHandler<AbilityRegistrationCompleted>
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
 
-    public CreateAbilityScoreEventHandler(IPersistence persistence, IElementsModuleQueries elements)
+    public AbilityRegistrationCompletedEventHandler(IPersistence persistence, IElementsModuleQueries elements)
     {
         _persistence = persistence;
         _elements = elements;
     }
 
-    public async Task HandleAsync(RegistrationCreated raisedEvent)
+    public async Task HandleAsync(AbilityRegistrationCompleted raisedEvent)
     {
-        if (raisedEvent.AssociatedElementType != "Ability") // TODO: create 'AbilityRegistered' event type      
-        {
-            return;
-        }
-
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(CreateAbilityScoreEventHandler)} | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(AbilityRegistrationCompletedEventHandler)} | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
 
         // get the registration
         var registrations = _persistence.GetRepository<IRegistrationRepository>();

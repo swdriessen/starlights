@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Starlights.Platform.Eventing;
 
-namespace Starlights.Platform.Components.Data.EntityFramework;
+namespace Starlights.Platform.Eventing.EventPublisher;
 
 public class DomainEventPublisher : IDomainEventPublisher
 {
@@ -15,43 +14,32 @@ public class DomainEventPublisher : IDomainEventPublisher
     /// <inheritdoc />
     public async Task PublishAsync(IDomainEvent domainEvent)
     {
-        // TODO: refactor this / use a more efficient approach to resolve handlers
-
-        // each handler is resolved in it's own scope to ensure scoped dependencies are isolated (e.g. persistence contexts)
+        // Handlers are registered as IDomainEventHandler<T> (wrappers create a scope per call)
         var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(domainEvent.GetType());
         var handlerTypeCollection = typeof(IEnumerable<>).MakeGenericType(handlerType); // to support multiple handlers of the same event type
 
-        // find the concrete handlers for a specific event type
         using var discoveryScope = _scopeFactory.CreateScope();
         var discoveredHandlers = (discoveryScope.ServiceProvider.GetService(handlerTypeCollection) as IEnumerable<object> ?? []).ToList();
 
+        if (discoveredHandlers.Count == 0)
+        {
+            return;
+        }
+
+        var handleMethod = handlerType.GetMethod(nameof(IDomainEventHandler<IDomainEvent>.HandleAsync));
+        if (handleMethod is null)
+        {
+            return;
+        }
+
         var tasks = new List<Task>(discoveredHandlers.Count);
-
-        for (var index = 0; index < discoveredHandlers.Count; index++)
+        foreach (var handler in discoveredHandlers)
         {
-            var handlerIndex = index; // capture for closure
-            tasks.Add(InvokeInOwnScope(handlerIndex));
+            var task = (Task)handleMethod.Invoke(handler, new object[] { domainEvent })!;
+            tasks.Add(task);
         }
 
-        if (tasks.Count > 0)
-        {
-            await Task.WhenAll(tasks);
-        }
-
-        async Task InvokeInOwnScope(int handlerIndex)
-        {
-            using var handlerScope = _scopeFactory.CreateScope();
-            var scopedHandlers = (handlerScope.ServiceProvider.GetService(handlerTypeCollection) as IEnumerable<object> ?? []).ToList();
-
-            object handler = scopedHandlers[handlerIndex];
-
-            var handleMethod = handlerType.GetMethod(nameof(IDomainEventHandler<IDomainEvent>.HandleAsync));
-            if (handleMethod != null)
-            {
-                var task = (Task)handleMethod.Invoke(handler, [domainEvent])!;
-                await task.ConfigureAwait(false);
-            }
-        }
+        await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

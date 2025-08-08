@@ -1,5 +1,6 @@
 ﻿using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
@@ -22,12 +23,7 @@ public class RegistrationManager : IRegistrationManager
         using var processActivity = CharactersInstrumentation.StartActivity();
 
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
-        var registration = await registrations.GetRegistrationAsync(registrationId);
-
-        if (registration is null)
-        {
-            throw new InvalidOperationException($"Registration with ID {registrationId} not found.");
-        }
+        var registration = await registrations.GetRegistrationAsync(registrationId) ?? throw new InvalidOperationException($"Registration with ID {registrationId} not found.");
 
         var context = new RegistrationProcessContext(registrations, registration);
 
@@ -69,7 +65,24 @@ public class RegistrationManager : IRegistrationManager
             var newIncludeElement = await _elements.GetElementWithRules(rule.IncludedElementId);
 
             // create the new registration for the included element
-            var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name, newIncludeElement.Type);
+            var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name, newIncludeElement.Type,
+
+                r =>
+                {
+                    if (r.AssociatedElementType == "Ability")
+                    {
+                        return [new AbilityRegistrationCompleted
+                        {
+                            CharacterId = r.CharacterId,
+                            RegistrationId = r.Id,
+                            AssociatedElementName = r.AssociatedElementName,
+                            AssociatedElementType = r.AssociatedElementType
+                        }];
+                    }
+
+                    return [];
+                }
+                );
             newRegistration.UpdateParentRegistration(currentRegistration);
 
             // create the new registration include rule, this is to keep track of the rules applied
