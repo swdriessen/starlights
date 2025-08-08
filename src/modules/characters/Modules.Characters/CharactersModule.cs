@@ -13,10 +13,6 @@ internal class CharactersModule : IPlatformServiceComponent
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IRegistrationManager, RegistrationManager>();
-
-        //builder.Services.AddTransient<IDomainEventHandler<RegistrationCreated>, RegistrationCompletedEventHandler>();
-        //builder.Services.AddTransient<IDomainEventHandler<AbilityRegistrationCompleted>, AbilityRegistrationCompletedEventHandler>();
-
         builder.Services.AddDomainEventHandlersFrom(typeof(CharactersModule).Assembly);
     }
 }

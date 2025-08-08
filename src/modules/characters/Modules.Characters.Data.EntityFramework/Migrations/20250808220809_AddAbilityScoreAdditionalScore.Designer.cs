@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Starlights.Modules.Characters.Data.EntityFramework;
 
@@ -11,9 +12,11 @@ using Starlights.Modules.Characters.Data.EntityFramework;
 namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 {
     [DbContext(typeof(CharactersContext))]
-    partial class CharactersContextModelSnapshot : ModelSnapshot
+    [Migration("20250808220809_AddAbilityScoreAdditionalScore")]
+    partial class AddAbilityScoreAdditionalScore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,16 +44,6 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("BaseScore")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(10);
-
-                    b.Property<int>("CalculatedModifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int>("CalculatedScore")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(10);

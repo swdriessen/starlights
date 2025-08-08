@@ -35,7 +35,7 @@ public class DomainEventPublisher : IDomainEventPublisher
         var tasks = new List<Task>(discoveredHandlers.Count);
         foreach (var handler in discoveredHandlers)
         {
-            var task = (Task)handleMethod.Invoke(handler, new object[] { domainEvent })!;
+            var task = (Task)handleMethod.Invoke(handler, [domainEvent])!;
             tasks.Add(task);
         }
 

@@ -39,5 +39,14 @@ public class AbilityScoreTypeConfiguration : IEntityTypeConfiguration<AbilitySco
 
         builder.Property(e => e.BaseScore)
                .HasDefaultValue(10);
+
+        builder.Property(e => e.AdditionalScore)
+               .HasDefaultValue(0);
+
+        builder.Property(e => e.CalculatedScore)
+               .HasDefaultValue(10);
+
+        builder.Property(e => e.CalculatedModifier)
+               .HasDefaultValue(0);
     }
 }
