@@ -1,7 +1,9 @@
 using System.Diagnostics;
+using Starlights.Modules.Characters.Domain.Appearances.Eventing;
+using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Domain;
 
-namespace Starlights.Modules.Characters.Domain.Characters;
+namespace Starlights.Modules.Characters.Domain.Appearances;
 
 /// <summary>
 /// Represents the appearance details of a character.
@@ -53,6 +55,8 @@ public sealed class Appearance : AggregateRoot<AppearanceId>
     /// </summary>
     public static Appearance Create(CharacterId characterId)
     {
-        return new Appearance(characterId);
+        var newAppearance = new Appearance(characterId);
+        newAppearance.AddDomainEvent(new AppearanceCreated { AppearanceId = newAppearance.Id, CharacterId = characterId });
+        return newAppearance;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Starlights.Modules.Characters.Domain.Characters;
+﻿using Starlights.Modules.Characters.Domain.Appearances;
+using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Data;

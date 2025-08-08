@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Starlights.Modules.Characters.Domain.Characters.Eventing;
 using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Characters.Domain.Characters;
@@ -25,6 +26,8 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// </summary>
     public static Character Create(string name)
     {
-        return new Character(name);
+        var newCharacter = new Character(name);
+        newCharacter.AddDomainEvent(new CharacterCreated() { CharacterId = newCharacter.Id });
+        return newCharacter;
     }
 }

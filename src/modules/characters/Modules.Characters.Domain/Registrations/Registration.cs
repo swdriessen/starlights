@@ -66,7 +66,7 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public void Processed()
     {
         IsProcessed = true;
-        AddDomainEvent(new RegistrationProcessedEvent { CharacterId = CharacterId, RegistrationId = Id });
+        AddDomainEvent(new RegistrationProcessed { CharacterId = CharacterId, RegistrationId = Id });
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     {
         var newRegistration = new Registration(characterId, associatedElementId, associatedElementName);
 
-        newRegistration.AddDomainEvent(new RegistrationCreatedEvent
+        newRegistration.AddDomainEvent(new RegistrationCreated
         {
             CharacterId = newRegistration.CharacterId,
             RegistrationId = newRegistration.Id,

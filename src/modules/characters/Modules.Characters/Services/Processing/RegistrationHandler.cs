@@ -5,7 +5,7 @@ using Starlights.Platform.Eventing;
 
 namespace Modules.Characters.Services.Processing;
 
-public sealed class RegistrationCreatedEventHandler : IDomainEventHandler<RegistrationCreatedEvent>
+public sealed class RegistrationCreatedEventHandler : IDomainEventHandler<RegistrationCreated>
 {
     private readonly ILogger<RegistrationCreatedEventHandler> _logger;
     private readonly IRegistrationManager _registrationManager;
@@ -16,7 +16,7 @@ public sealed class RegistrationCreatedEventHandler : IDomainEventHandler<Regist
         _registrationManager = registrationManager;
     }
 
-    public async Task HandleAsync(RegistrationCreatedEvent raisedEvent)
+    public async Task HandleAsync(RegistrationCreated raisedEvent)
     {
         using var _ = CharactersInstrumentation.StartActivity($"{nameof(RegistrationCreatedEventHandler)} ({raisedEvent.AssociatedElementName})");
         await _registrationManager.ProcessRegistration(new(raisedEvent.RegistrationId));

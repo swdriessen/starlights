@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Appearances;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Components.Data.EntityFramework;
 

@@ -15,6 +15,6 @@ internal class CharactersModule : IPlatformServiceComponent
     {
         builder.Services.AddScoped<IRegistrationManager, RegistrationManager>();
 
-        builder.Services.AddTransient<IDomainEventHandler<RegistrationCreatedEvent>, RegistrationCreatedEventHandler>();
+        builder.Services.AddTransient<IDomainEventHandler<RegistrationCreated>, RegistrationCreatedEventHandler>();
     }
 }
