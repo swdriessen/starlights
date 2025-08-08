@@ -3,19 +3,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Starlights.Modules.Characters.Domain;
 using Starlights.Platform.Components.Data.EntityFramework;
 using Starlights.Platform.Eventing;
 
-namespace Starlights.Modules.Characters.Data.EntityFramework;
+namespace Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
 
 /// <summary>
 /// A simple background service that processes domain events from the database. 
 /// The polling is good enough for the current state.
 /// </summary>
-internal sealed class DomainEventProcessingService : BackgroundService
+public sealed class DomainEventProcessingService : BackgroundService
 {
-    internal const int MaximumInterval = 10;
-    internal const int BatchSize = 100;
+    internal const int InitialInterval = 100;
+    internal const int MaximumInterval = 10_000;
+    internal const int BatchSize = 25;
 
     private readonly ILogger<DomainEventProcessingService> _logger;
     private readonly IServiceScopeFactory _factory;
@@ -28,62 +30,68 @@ internal sealed class DomainEventProcessingService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(5000, stoppingToken);
-        _logger.LogInformation("Domain event processing service started.");
+        _logger.LogInformation("starting EventProcessing service... [batch='{BatchSize}', max-interval='{MaximumInterval}ms']", BatchSize, MaximumInterval);
 
-        var interval = TimeSpan.FromSeconds(1);
+        var interval = TimeSpan.FromMilliseconds(InitialInterval);
 
         while (!stoppingToken.IsCancellationRequested)
         {
             using var scope = _factory.CreateScope();
             {
                 var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<CharactersContext>>();
+
                 await using var context = await contextFactory.CreateDbContextAsync(stoppingToken);
 
-                var publisher = scope.ServiceProvider.GetRequiredService<IDomainEventPublisher>();
-                List<EventMessage> newEvents = await context.Set<EventMessage>()
+                var newEvents = await context.Set<EventMessage>()
                     .Where(x => x.ProcessedOn == null)
                     .OrderBy(x => x.OccurredOn)
                     .Take(BatchSize)
                     .ToListAsync(cancellationToken: stoppingToken);
 
-                foreach (var item in newEvents)
+                if (newEvents.Count > 0)
                 {
-                    _logger.LogDebug("Processing domain event: {EventId} ({EventType})", item.Id, item.EventType);
+                    using var _ = CharactersInstrumentation.StartActivity($"Process Event Messages ({newEvents.Count})", a => a.AddTag("newEvents", newEvents.Count));
 
-                    var eventType = ResolveEventType(item.EventType);
-
-                    if (eventType == null)
+                    var publisher = scope.ServiceProvider.GetRequiredService<IDomainEventPublisher>();
+                    foreach (var item in newEvents)
                     {
-                        _logger.LogError("Event type '{EventType}' could not be resolved.", item.EventType);
-                        continue;
-                    }
+                        _logger.LogDebug("Processing domain event: {EventId} ({EventType})", item.Id, item.EventType);
 
-                    var deserialized = JsonSerializer.Deserialize(item.Payload, eventType);
+                        var eventType = ResolveEventType(item.EventType);
 
-                    if (deserialized is IDomainEvent domainEvent)
-                    {
-                        _logger.LogInformation("Publishing domain event: {EventId} ({EventType})", item.Id, item.EventType);
-                        await publisher.PublishAsync(domainEvent);
+                        if (eventType == null)
+                        {
+                            _logger.LogError("Event type '{EventType}' could not be resolved.", item.EventType);
+                            continue;
+                        }
 
-                        // Mark the event as processed
-                        item.ProcessedOn = DateTime.UtcNow;
-                        await context.SaveChangesAsync(stoppingToken);
+                        var deserialized = JsonSerializer.Deserialize(item.Payload, eventType);
+
+                        if (deserialized is IDomainEvent domainEvent)
+                        {
+                            _logger.LogInformation("Publishing domain event: {EventId} ({EventType})", item.Id, item.EventType);
+                            await publisher.PublishAsync(domainEvent);
+
+                            // Mark the event as processed
+                            item.ProcessedOn = DateTime.UtcNow;
+                            await context.SaveChangesAsync(stoppingToken);
+                        }
                     }
                 }
 
                 interval = newEvents.Count switch
                 {
-                    > 0 => TimeSpan.FromSeconds(1),
-                    _ => TimeSpan.FromSeconds(Math.Min(interval.TotalSeconds * 2, MaximumInterval)),
+                    BatchSize => TimeSpan.FromMilliseconds(0), // if we processed a full batch, reset the interval to 0 to poll immediately
+                    > 0 => TimeSpan.FromMilliseconds(InitialInterval),
+                    _ => TimeSpan.FromMilliseconds(Math.Min(interval.TotalMilliseconds * 2, MaximumInterval)),
                 };
             }
 
-            _logger.LogDebug("Waiting {Delay}s until next processing check... [IsCancellationRequested={IsCancellationRequested}]", interval.TotalSeconds, stoppingToken.IsCancellationRequested);
+            _logger.LogDebug("service waiting... [interval='{Interval}ms', IsCancellationRequested={IsCancellationRequested}]", interval.TotalMilliseconds, stoppingToken.IsCancellationRequested);
             await Task.Delay(interval, stoppingToken);
         }
 
-        _logger.LogWarning("Domain event processing service is stopping.");
+        _logger.LogWarning("stopping EventProcessing service...");
     }
 
     private static Type? ResolveEventType(string eventTypeName)

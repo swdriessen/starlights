@@ -52,9 +52,6 @@ internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformAp
                 options.EnableSensitiveDataLogging();
             }
         });
-
-        // processing domain events
-        builder.Services.AddHostedService<DomainEventProcessingService>();
     }
 
     public void UseComponent(IHost host)

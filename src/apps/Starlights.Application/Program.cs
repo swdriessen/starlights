@@ -1,3 +1,4 @@
+using Modules.Characters.Data.EntityFramework.EventProcessing;
 using Modules.Characters.Services.Processing;
 using Scalar.AspNetCore;
 using Starlights.Modules.Characters.Data.EntityFramework;
@@ -44,6 +45,7 @@ public sealed class Program
             options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
             options.AdditionalAssemblies.Add(typeof(CreateCharacterEndpoint).Assembly);
             options.AdditionalAssemblies.Add(typeof(RegistrationManager).Assembly);
+            options.AddEventProcessingComponent();
 
             // elements module
             options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);

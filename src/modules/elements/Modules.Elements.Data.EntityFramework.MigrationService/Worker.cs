@@ -43,6 +43,10 @@ public class Worker : BackgroundService
             _logger.LogError(ex, "an error occurred while migrating the database: {ErrorMessage}", ex.Message);
             throw;
         }
+        finally
+        {
+            _logger.LogInformation("stopping migration worker... [EnvironmentName='{EnvironmentName}']", _environment.EnvironmentName);
+        }
 
         _hostApplicationLifetime.StopApplication();
     }

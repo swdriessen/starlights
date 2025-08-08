@@ -17,14 +17,15 @@ internal static class PlatformBuilderExtensions
         if (builder.Options.IsDiscoveryEnabled)
         {
             assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies());
-            assemblies.AddRange(builder.Options.AdditionalAssemblies);
-
-            var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
-                .Where(t => typeof(IPlatformModule).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
-                .Distinct();
-
-            types.AddRange(discoveredTypes);
         }
+
+        assemblies.AddRange(builder.Options.AdditionalAssemblies);
+
+        var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
+            .Where(t => typeof(IPlatformModule).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
+            .Distinct();
+
+        types.AddRange(discoveredTypes);
 
         return (assemblies, types);
     }
@@ -91,14 +92,15 @@ internal static class PlatformBuilderExtensions
         if (builder.Options.IsDiscoveryEnabled)
         {
             assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies());
-            assemblies.AddRange(builder.Options.AdditionalAssemblies);
-
-            var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
-                .Where(t => typeof(IPlatformServiceComponent).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
-                .Distinct();
-
-            types.AddRange(discoveredTypes);
         }
+
+        assemblies.AddRange(builder.Options.AdditionalAssemblies);
+
+        var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
+            .Where(t => typeof(IPlatformServiceComponent).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
+            .Distinct();
+
+        types.AddRange(discoveredTypes);
 
         return (assemblies, types);
     }

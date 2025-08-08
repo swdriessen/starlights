@@ -1,4 +1,5 @@
 using Starlights.Modules.Characters.Data.EntityFramework;
+using Starlights.Platform.Components.Serilog;
 using Starlights.Platform.Hosting;
 
 namespace Modules.Characters.Data.EntityFramework.MigrationService;
@@ -9,17 +10,13 @@ public sealed class Program
     {
         var builder = Host.CreateApplicationBuilder(args);
         builder.AddServiceDefaults();
+
         builder.AddStarlightsPlatform(options =>
         {
-            // BUG: this starts up the domain event processor too
-            // this should not start in the context of the migration service...
-
-            // how to configure a module to ...
-            // split off the DomainEventProcessingService into it's own module/project?
-            // and not load it in the migration service?
-
             options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
+            options.AdditionalAssemblies.Add(typeof(SerilogComponent).Assembly);
         });
+
         builder.Services.AddHostedService<Worker>();
 
         var host = builder.Build();
