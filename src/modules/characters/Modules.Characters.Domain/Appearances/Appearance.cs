@@ -56,7 +56,7 @@ public sealed class Appearance : AggregateRoot<AppearanceId>
     public static Appearance Create(CharacterId characterId)
     {
         var newAppearance = new Appearance(characterId);
-        newAppearance.AddDomainEvent(new AppearanceCreated { AppearanceId = newAppearance.Id, CharacterId = characterId });
+        newAppearance.AddDomainEvent(new AppearanceCreatedEvent { AppearanceId = newAppearance.Id, CharacterId = characterId });
         return newAppearance;
     }
 }

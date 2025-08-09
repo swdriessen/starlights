@@ -2,7 +2,7 @@
 
 namespace Starlights.Modules.Characters.Domain.Abilities.Eventing;
 
-public record AbilityScoreRemoved : CharacterEventBase
+public record AbilityScoreRemovedEvent : CharacterEventBase
 {
     public AbilityScoreId AbilityScoreId { get; init; }
 }

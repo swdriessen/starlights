@@ -43,6 +43,8 @@ public sealed class AbilityScoresEndpointsTests
     {
         // Arrange
         var client = _integration.CreateClient();
+        const int expectedScore = 10;
+        const int expectedModifier = 0;
 
         // Act
         var abilities = await client.GetAbilityScoresAsync(_characterId, CancellationToken.None);
@@ -55,8 +57,8 @@ public sealed class AbilityScoresEndpointsTests
         first.AbilityScoreId.Should().NotBe(Guid.Empty);
         first.Name.Should().NotBeNullOrWhiteSpace();
         first.Abbreviation.Should().NotBeNullOrWhiteSpace();
-        first.CalculatedScore.Should().Be(first.BaseScore + first.AdditionalScore);
-        first.CalculatedModifier.Should().Be((int)Math.Floor((first.CalculatedScore - 10) / 2.0));
+        first.CalculatedScore.Should().Be(expectedScore);
+        first.CalculatedModifier.Should().Be(expectedModifier);
     }
 
     [TestMethod]

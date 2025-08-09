@@ -73,7 +73,7 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public void Processed()
     {
         IsProcessed = true;
-        AddDomainEvent(new RegistrationProcessed { CharacterId = CharacterId, RegistrationId = Id });
+        AddDomainEvent(new RegistrationProcessedEvent { CharacterId = CharacterId, RegistrationId = Id });
     }
 
     /// <summary>
@@ -91,25 +91,17 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// <summary>
     /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
     /// </summary>
-    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType, Func<Registration, IEnumerable<IDomainEvent>>? eventInjector = null)
+    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
     {
         var newRegistration = new Registration(characterId, associatedElementId, associatedElementName, associatedElementType);
 
-        newRegistration.AddDomainEvent(new RegistrationCreated
+        newRegistration.AddDomainEvent(new RegistrationCreatedEvent
         {
             CharacterId = newRegistration.CharacterId,
             RegistrationId = newRegistration.Id,
             AssociatedElementName = associatedElementName,
             AssociatedElementType = associatedElementType
         });
-
-        if (eventInjector is not null)
-        {
-            foreach (var additionalEvent in eventInjector(newRegistration))
-            {
-                newRegistration.AddDomainEvent(additionalEvent);
-            }
-        }
 
         return newRegistration;
     }
@@ -122,5 +114,23 @@ public sealed class Registration : AggregateRoot<RegistrationId>
         var newIncludeRule = RegistrationIncludeRule.Create(Id, associatedIncludeRuleId, includedElementId, includedElementName);
         _includeRules.Add(newIncludeRule);
         return newIncludeRule;
+    }
+
+    /// <summary>
+    /// Attaches a domain event to this registration. This is used to raise events related to the registration process.
+    /// </summary>
+    /// <remarks>
+    /// This is currently used to raise type specific events, such as when an ability registration is completed. This should be refactored.
+    /// </remarks>
+    public void WithAdditionalEvent(IDomainEvent domainEvent)
+    {
+        ArgumentNullException.ThrowIfNull(domainEvent, nameof(domainEvent));
+
+        if (IsProcessed)
+        {
+            throw new InvalidOperationException("You cannot attach domain events to a processed registration. This is only for new registration events.");
+        }
+
+        AddDomainEvent(domainEvent);
     }
 }

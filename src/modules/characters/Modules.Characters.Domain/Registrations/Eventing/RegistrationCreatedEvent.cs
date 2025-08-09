@@ -1,6 +1,6 @@
 ﻿namespace Starlights.Modules.Characters.Domain.Registrations.Eventing;
 
-public record RegistrationCreated : RegistrationEventBase
+public record RegistrationCreatedEvent : RegistrationEventBase
 {
     public required string AssociatedElementName { get; init; }
     public required string AssociatedElementType { get; init; }

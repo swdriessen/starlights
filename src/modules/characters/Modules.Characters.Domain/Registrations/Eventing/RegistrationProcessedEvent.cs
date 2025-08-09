@@ -1,3 +1,3 @@
 ﻿namespace Starlights.Modules.Characters.Domain.Registrations.Eventing;
 
-public record RegistrationProcessed : RegistrationEventBase;
+public record RegistrationProcessedEvent : RegistrationEventBase;

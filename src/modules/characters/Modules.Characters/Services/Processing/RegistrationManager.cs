@@ -1,6 +1,5 @@
 ﻿using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
-using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
@@ -65,25 +64,11 @@ public class RegistrationManager : IRegistrationManager
             var newIncludeElement = await _elements.GetElementWithRules(rule.IncludedElementId);
 
             // create the new registration for the included element
-            var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name, newIncludeElement.Type,
-
-                r =>
-                {
-                    if (r.AssociatedElementType == "Ability")
-                    {
-                        return [new AbilityRegistrationCompleted
-                        {
-                            CharacterId = r.CharacterId,
-                            RegistrationId = r.Id,
-                            AssociatedElementName = r.AssociatedElementName,
-                            AssociatedElementType = r.AssociatedElementType
-                        }];
-                    }
-
-                    return [];
-                }
-                );
+            var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name, newIncludeElement.Type);
             newRegistration.UpdateParentRegistration(currentRegistration);
+
+            // add specific events based on the type of the included element (TODO: inject something instead)
+            newRegistration.IncludeSpecificEvents();
 
             // create the new registration include rule, this is to keep track of the rules applied
             currentRegistration.CreateIncludeRule(new(rule.RuleId), new(newIncludeElement.Id), newIncludeElement.Name);

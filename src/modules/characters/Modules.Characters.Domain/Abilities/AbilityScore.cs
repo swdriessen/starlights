@@ -37,7 +37,7 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// <summary>
     /// Additional bonus or penalty applied to the base score. Defaults to 0.
     /// </summary>
-    public int AdditionalScore { get; private set; } = 0;
+    public int AdditionalScore { get; private set; }
 
     /// <summary>
     /// Derived total: BaseScore + AdditionalScore. Persisted and updated when inputs change.
@@ -80,7 +80,7 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// <summary>
     /// Factory method to create a new <see cref="AbilityScore"/>.
     /// </summary>
-    public static AbilityScore Create(RegistrationId associatedRegistrationId, string name, string abbreviation)
+    internal static AbilityScore Create(RegistrationId associatedRegistrationId, string name, string abbreviation)
     {
         return new AbilityScore(associatedRegistrationId, name, abbreviation);
     }

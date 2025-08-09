@@ -37,7 +37,7 @@ public sealed class Character : AggregateRoot<CharacterId>
     public static Character Create(string name)
     {
         var newCharacter = new Character(name);
-        newCharacter.AddDomainEvent(new CharacterCreated() { CharacterId = newCharacter.Id });
+        newCharacter.AddDomainEvent(new CharacterCreatedEvent() { CharacterId = newCharacter.Id });
         return newCharacter;
     }
 
@@ -49,7 +49,7 @@ public sealed class Character : AggregateRoot<CharacterId>
         var abilityScore = AbilityScore.Create(associatedRegistrationId, name, abbreviation);
         _abilityScores.Add(abilityScore);
 
-        AddDomainEvent(new AbilityScoreCreated() { CharacterId = Id, AbilityScoreId = abilityScore.Id });
+        AddDomainEvent(new AbilityScoreCreatedEvent() { CharacterId = Id, AbilityScoreId = abilityScore.Id });
 
         return abilityScore;
     }

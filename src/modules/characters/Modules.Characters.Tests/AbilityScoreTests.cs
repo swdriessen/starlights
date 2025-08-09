@@ -1,9 +1,8 @@
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Registrations;
 
-namespace Modules.Characters.Tests;
+namespace Starlights.Modules.Characters.Tests;
 
 [TestClass]
 public class AbilityScoreTests
@@ -75,6 +74,18 @@ public class AbilityScoreTests
     [DataRow(16, 3)]
     [DataRow(17, 3)]
     [DataRow(18, 4)]
+    [DataRow(19, 4)]
+    [DataRow(20, 5)]
+    [DataRow(21, 5)]
+    [DataRow(22, 6)]
+    [DataRow(23, 6)]
+    [DataRow(24, 7)]
+    [DataRow(25, 7)]
+    [DataRow(26, 8)]
+    [DataRow(27, 8)]
+    [DataRow(28, 9)]
+    [DataRow(29, 9)]
+    [DataRow(30, 10)]
     public void Modifier_Table_Matches(int totalScore, int expectedMod)
     {
         // Arrange

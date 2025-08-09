@@ -7,20 +7,20 @@ using Starlights.Platform.Eventing;
 
 namespace Modules.Characters.Services.EventHandlers;
 
-public sealed class AbilityRegistrationCompletedEventHandler : IDomainEventHandler<AbilityRegistrationCompleted>
+public sealed class AbilityRegistrationCreatedEventHandler : IDomainEventHandler<AbilityRegistrationCreatedEvent>
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
 
-    public AbilityRegistrationCompletedEventHandler(IPersistence persistence, IElementsModuleQueries elements)
+    public AbilityRegistrationCreatedEventHandler(IPersistence persistence, IElementsModuleQueries elements)
     {
         _persistence = persistence;
         _elements = elements;
     }
 
-    public async Task HandleAsync(AbilityRegistrationCompleted raisedEvent)
+    public async Task HandleAsync(AbilityRegistrationCreatedEvent raisedEvent)
     {
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(AbilityRegistrationCompletedEventHandler)} | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(AbilityRegistrationCreatedEventHandler)} | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
 
         // get the registration
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
