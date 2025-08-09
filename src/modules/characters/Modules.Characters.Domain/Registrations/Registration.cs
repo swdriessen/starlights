@@ -3,6 +3,7 @@ using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Platform.Domain;
+using Starlights.Platform.Eventing;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;
 
@@ -14,12 +15,13 @@ public sealed class Registration : AggregateRoot<RegistrationId>
 {
     private readonly List<RegistrationIncludeRule> _includeRules = [];
 
-    private Registration(CharacterId characterId, ElementId associatedElementId, string associatedElementName)
+    private Registration(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
         : base(RegistrationId.New())
     {
         CharacterId = characterId;
         AssociatedElementId = associatedElementId;
         AssociatedElementName = associatedElementName;
+        AssociatedElementType = associatedElementType;
     }
 
     /// <summary>
@@ -48,6 +50,11 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public string AssociatedElementName { get; }
 
     /// <summary>
+    /// Gets the type of the element associated with this registration. This is used to determine how to handle the registration.
+    /// </summary>
+    public string AssociatedElementType { get; }
+
+    /// <summary>
     /// Updates the parent registration ID for this registration.
     /// </summary>
     public void UpdateParentRegistration(Registration parentRegistration)
@@ -66,7 +73,7 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public void Processed()
     {
         IsProcessed = true;
-        AddDomainEvent(new RegistrationProcessed { CharacterId = CharacterId, RegistrationId = Id });
+        AddDomainEvent(new RegistrationProcessedEvent { CharacterId = CharacterId, RegistrationId = Id });
     }
 
     /// <summary>
@@ -84,15 +91,16 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// <summary>
     /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
     /// </summary>
-    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName)
+    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
     {
-        var newRegistration = new Registration(characterId, associatedElementId, associatedElementName);
+        var newRegistration = new Registration(characterId, associatedElementId, associatedElementName, associatedElementType);
 
-        newRegistration.AddDomainEvent(new RegistrationCreated
+        newRegistration.AddDomainEvent(new RegistrationCreatedEvent
         {
             CharacterId = newRegistration.CharacterId,
             RegistrationId = newRegistration.Id,
-            AssociatedElementName = associatedElementName
+            AssociatedElementName = associatedElementName,
+            AssociatedElementType = associatedElementType
         });
 
         return newRegistration;
@@ -108,4 +116,21 @@ public sealed class Registration : AggregateRoot<RegistrationId>
         return newIncludeRule;
     }
 
+    /// <summary>
+    /// Attaches a domain event to this registration. This is used to raise events related to the registration process.
+    /// </summary>
+    /// <remarks>
+    /// This is currently used to raise type specific events, such as when an ability registration is completed. This should be refactored.
+    /// </remarks>
+    public void WithAdditionalEvent(IDomainEvent domainEvent)
+    {
+        ArgumentNullException.ThrowIfNull(domainEvent, nameof(domainEvent));
+
+        if (IsProcessed)
+        {
+            throw new InvalidOperationException("You cannot attach domain events to a processed registration. This is only for new registration events.");
+        }
+
+        AddDomainEvent(domainEvent);
+    }
 }

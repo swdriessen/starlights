@@ -17,7 +17,7 @@ public sealed class DomainEventProcessingService : BackgroundService
 {
     internal const int InitialInterval = 100;
     internal const int MaximumInterval = 10_000;
-    internal const int BatchSize = 25;
+    internal const int BatchSize = 100;
 
     private readonly ILogger<DomainEventProcessingService> _logger;
     private readonly IServiceScopeFactory _factory;
@@ -52,11 +52,12 @@ public sealed class DomainEventProcessingService : BackgroundService
                 {
                     using var _ = CharactersInstrumentation.StartActivity($"Process Event Messages ({newEvents.Count})", a => a.AddTag("newEvents", newEvents.Count));
 
+                    _logger.LogDebug("processing {Count} new domain events", newEvents.Count);
+
                     var publisher = scope.ServiceProvider.GetRequiredService<IDomainEventPublisher>();
+
                     foreach (var item in newEvents)
                     {
-                        _logger.LogDebug("Processing domain event: {EventId} ({EventType})", item.Id, item.EventType);
-
                         var eventType = ResolveEventType(item.EventType);
 
                         if (eventType == null)
@@ -65,11 +66,12 @@ public sealed class DomainEventProcessingService : BackgroundService
                             continue;
                         }
 
-                        var deserialized = JsonSerializer.Deserialize(item.Payload, eventType);
+                        _logger.LogDebug("processing event: {EventType} ({EventId})", eventType.Name, item.Id);
 
+                        var deserialized = JsonSerializer.Deserialize(item.Payload, eventType);
                         if (deserialized is IDomainEvent domainEvent)
                         {
-                            _logger.LogInformation("Publishing domain event: {EventId} ({EventType})", item.Id, item.EventType);
+                            _logger.LogInformation("publishing event: {EventType} ({EventId})", eventType.Name, item.Id);
                             await publisher.PublishAsync(domainEvent);
 
                             // Mark the event as processed

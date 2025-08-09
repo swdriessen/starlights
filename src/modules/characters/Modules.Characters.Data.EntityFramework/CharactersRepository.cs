@@ -16,6 +16,8 @@ internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepo
     public async Task<Character?> GetCharacterAsync(Guid identifier)
     {
         using var _ = CharactersInstrumentation.StartActivity();
-        return await Entities.SingleOrDefaultAsync(a => a.Id == identifier);
+        return await Entities
+            .Include(c => c.AbilityScores)
+            .SingleOrDefaultAsync(a => a.Id == identifier);
     }
 }

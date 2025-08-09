@@ -74,4 +74,12 @@ internal class ElementsModuleQueries : IElementsModuleQueries
         return element.AsElementDataModel().IncludeRules;
     }
 
+    public async Task<AbilityDataModel> GetAbilityModel(Guid elementId)
+    {
+        var repository = _persistence.GetRepository<IElementsRepository>();
+
+        var element = await repository.GetElementAsync(elementId);
+
+        return element.AsAbilityDataModel();
+    }
 }

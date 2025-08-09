@@ -23,7 +23,55 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Characters.Appearance", b =>
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Abbreviation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AdditionalScore")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<Guid>("AssociatedRegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("BaseScore")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(10);
+
+                    b.Property<int>("CalculatedModifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("CalculatedScore")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(10);
+
+                    b.Property<Guid>("CharacterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssociatedRegistrationId");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("ability_scores", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Appearances.Appearance", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -65,6 +113,11 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AssociatedElementName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("AssociatedElementType")
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
@@ -137,12 +190,26 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.ToTable("event_messages", "characters");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>
+                {
+                    b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", null)
+                        .WithMany("AbilityScores")
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationIncludeRule", b =>
                 {
                     b.HasOne("Starlights.Modules.Characters.Domain.Registrations.Registration", null)
                         .WithMany("IncludeRules")
                         .HasForeignKey("ParentRegistrationId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Characters.Character", b =>
+                {
+                    b.Navigation("AbilityScores");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>

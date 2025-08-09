@@ -15,15 +15,17 @@ public sealed class RegistrationTests
         var characterId = CharacterId.New();
         var elementId = new ElementId(Guid.NewGuid());
         const string elementName = "Test Element";
+        const string elementType = "Test Type";
 
         // Act
-        var registration = Registration.Create(characterId, elementId, elementName);
+        var registration = Registration.Create(characterId, elementId, elementName, elementType);
 
         // Assert
         registration.Id.Value.Should().NotBeEmpty();
         registration.CharacterId.Should().Be(characterId);
         registration.AssociatedElementId.Should().Be(elementId);
         registration.AssociatedElementName.Should().Be(elementName);
+        registration.AssociatedElementType.Should().Be(elementType);
         registration.IsProcessed.Should().BeFalse();
         registration.ParentRegistrationId.Should().BeNull();
         registration.IncludeRules.Should().BeEmpty();
@@ -34,8 +36,8 @@ public sealed class RegistrationTests
     {
         // Arrange
         var characterId = CharacterId.New();
-        var parent = Registration.Create(characterId, new ElementId(Guid.NewGuid()), "Parent");
-        var child = Registration.Create(characterId, new ElementId(Guid.NewGuid()), "Child");
+        var parent = Registration.Create(characterId, new ElementId(Guid.NewGuid()), "Parent", "Type");
+        var child = Registration.Create(characterId, new ElementId(Guid.NewGuid()), "Child", "Type");
 
         // Act
         child.UpdateParentRegistration(parent);
@@ -48,7 +50,7 @@ public sealed class RegistrationTests
     public void Registration_Processed_SetsIsProcessedTrue()
     {
         // Arrange
-        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem");
+        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem", "Type");
 
         // Act
         registration.Processed();
@@ -61,7 +63,7 @@ public sealed class RegistrationTests
     public void Registration_CreateIncludeRule_AddsRule_And_HasAssociatedRule_IsTrue()
     {
         // Arrange
-        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem");
+        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem", "Type");
         var includeRuleId = new ElementComponentId(Guid.NewGuid());
         var includedElementId = new ElementId(Guid.NewGuid());
         const string includedElementName = "Included Element";
@@ -79,7 +81,7 @@ public sealed class RegistrationTests
     public void Registration_HasAssociatedRule_ReturnsFalse_WhenRuleNotPresent()
     {
         // Arrange
-        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem");
+        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem", "Type");
         // Add a different rule
         _ = registration.CreateIncludeRule(new ElementComponentId(Guid.NewGuid()), new ElementId(Guid.NewGuid()), "Other");
 

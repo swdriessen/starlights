@@ -14,7 +14,7 @@ public sealed class RegistrationIncludeRuleTests
         // Arrange
         var characterId = CharacterId.New();
         var elementId = new ElementId(Guid.NewGuid());
-        var registration = Registration.Create(characterId, elementId, "Base Element");
+        var registration = Registration.Create(characterId, elementId, "Base Element", "Base Type");
 
         var includeRuleId = new ElementComponentId(Guid.NewGuid());
         var includedElementId = new ElementId(Guid.NewGuid());
@@ -35,7 +35,7 @@ public sealed class RegistrationIncludeRuleTests
     public void CreateIncludeRule_AddsRuleToRegistration()
     {
         // Arrange
-        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem");
+        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem", "Type");
         var includeRuleId = new ElementComponentId(Guid.NewGuid());
 
         // Act
@@ -51,7 +51,7 @@ public sealed class RegistrationIncludeRuleTests
     public void MultipleIncludeRules_HaveDistinctIds()
     {
         // Arrange
-        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem");
+        var registration = Registration.Create(CharacterId.New(), new ElementId(Guid.NewGuid()), "Elem", "Type");
 
         // Act
         var first = registration.CreateIncludeRule(new ElementComponentId(Guid.NewGuid()), new ElementId(Guid.NewGuid()), "A");

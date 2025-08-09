@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Data;
-using Starlights.Platform.Eventing;
 using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Components.Data.EntityFramework;
@@ -21,6 +20,5 @@ public class PlatformEntityFrameworkComponent : IPlatformServiceComponent
 
         builder.Services.AddScoped<IPersistence, Persistence>();
         builder.Services.AddSingleton<IContextFactoryRegistry, ContextFactoryRegistry>();
-        builder.Services.AddScoped<IDomainEventPublisher, DomainEventPublisher>();
     }
 }

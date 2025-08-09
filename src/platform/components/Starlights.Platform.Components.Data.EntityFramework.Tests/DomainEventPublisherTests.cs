@@ -2,6 +2,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Starlights.Platform.Eventing;
+using Starlights.Platform.Eventing.EventPublisher;
 
 namespace Starlights.Platform.Components.Data.EntityFramework.Tests;
 
@@ -17,18 +18,19 @@ public sealed class DomainEventPublisherTests
     {
         _services = new ServiceCollection();
         _serviceProvider = _services.BuildServiceProvider();
-        _publisher = new DomainEventPublisher(_serviceProvider);
+        // Default publisher for tests that don't assert handler calls; scope factory can be no-op
+        var scopeFactory = Mock.Of<IServiceScopeFactory>(f => f.CreateScope() == Mock.Of<IServiceScope>(s => s.ServiceProvider == _serviceProvider));
+        _publisher = new DomainEventPublisher(scopeFactory);
     }
 
     [TestMethod]
     public void Constructor_ShouldCreateInstance_WhenServiceProviderIsProvided()
     {
         // Arrange
-        var services = new ServiceCollection();
-        var serviceProvider = services.BuildServiceProvider();
+        var scopeFactory = Mock.Of<IServiceScopeFactory>(f => f.CreateScope() == Mock.Of<IServiceScope>(s => s.ServiceProvider == Mock.Of<IServiceProvider>()));
 
         // Act
-        var publisher = new DomainEventPublisher(serviceProvider);
+        var publisher = new DomainEventPublisher(scopeFactory);
 
         // Assert
         publisher.Should().NotBeNull();
@@ -41,10 +43,18 @@ public sealed class DomainEventPublisherTests
         var domainEvent = new TestDomainEvent("Test message");
         var handlerMock = new Mock<IDomainEventHandler<TestDomainEvent>>();
 
-        var services = new ServiceCollection();
-        services.AddSingleton(handlerMock.Object);
-        var serviceProvider = services.BuildServiceProvider();
-        var publisher = new DomainEventPublisher(serviceProvider);
+        // Setup a scoped provider that returns IEnumerable<IDomainEventHandler<TestDomainEvent>>
+        var scopedProviderMock = new Mock<IServiceProvider>();
+        var enumerableType = typeof(IEnumerable<IDomainEventHandler<TestDomainEvent>>);
+        scopedProviderMock
+            .Setup(p => p.GetService(enumerableType))
+            .Returns(new[] { handlerMock.Object });
+
+        var scopeMock = new Mock<IServiceScope>();
+        scopeMock.SetupGet(s => s.ServiceProvider).Returns(scopedProviderMock.Object);
+        var scopeFactoryMock = new Mock<IServiceScopeFactory>();
+        scopeFactoryMock.Setup(f => f.CreateScope()).Returns(scopeMock.Object);
+        var publisher = new DomainEventPublisher(scopeFactoryMock.Object);
 
         // Act
         await publisher.PublishAsync(domainEvent);
@@ -61,11 +71,17 @@ public sealed class DomainEventPublisherTests
         var handlerMock1 = new Mock<IDomainEventHandler<TestDomainEvent>>();
         var handlerMock2 = new Mock<IDomainEventHandler<TestDomainEvent>>();
 
-        var services = new ServiceCollection();
-        services.AddSingleton(handlerMock1.Object);
-        services.AddSingleton(handlerMock2.Object);
-        var serviceProvider = services.BuildServiceProvider();
-        var publisher = new DomainEventPublisher(serviceProvider);
+        var scopedProviderMock = new Mock<IServiceProvider>();
+        var enumerableType = typeof(IEnumerable<IDomainEventHandler<TestDomainEvent>>);
+        scopedProviderMock
+            .Setup(p => p.GetService(enumerableType))
+            .Returns(new IDomainEventHandler<TestDomainEvent>[] { handlerMock1.Object, handlerMock2.Object });
+
+        var scopeMock = new Mock<IServiceScope>();
+        scopeMock.SetupGet(s => s.ServiceProvider).Returns(scopedProviderMock.Object);
+        var scopeFactoryMock = new Mock<IServiceScopeFactory>();
+        scopeFactoryMock.Setup(f => f.CreateScope()).Returns(scopeMock.Object);
+        var publisher = new DomainEventPublisher(scopeFactoryMock.Object);
 
         // Act
         await publisher.PublishAsync(domainEvent);
@@ -81,9 +97,17 @@ public sealed class DomainEventPublisherTests
         // Arrange
         var domainEvent = new TestDomainEvent("Test message");
 
-        var services = new ServiceCollection();
-        var serviceProvider = services.BuildServiceProvider();
-        var publisher = new DomainEventPublisher(serviceProvider);
+        var scopedProviderMock = new Mock<IServiceProvider>();
+        var enumerableType = typeof(IEnumerable<IDomainEventHandler<TestDomainEvent>>);
+        scopedProviderMock
+            .Setup(p => p.GetService(enumerableType))
+            .Returns(Array.Empty<IDomainEventHandler<TestDomainEvent>>());
+
+        var scopeMock = new Mock<IServiceScope>();
+        scopeMock.SetupGet(s => s.ServiceProvider).Returns(scopedProviderMock.Object);
+        var scopeFactoryMock = new Mock<IServiceScopeFactory>();
+        scopeFactoryMock.Setup(f => f.CreateScope()).Returns(scopeMock.Object);
+        var publisher = new DomainEventPublisher(scopeFactoryMock.Object);
 
         // Act & Assert
         var act = async () => await publisher.PublishAsync(domainEvent);
@@ -100,10 +124,17 @@ public sealed class DomainEventPublisherTests
 
         var handlerMock = new Mock<IDomainEventHandler<TestDomainEvent>>();
 
-        var services = new ServiceCollection();
-        services.AddSingleton(handlerMock.Object);
-        var serviceProvider = services.BuildServiceProvider();
-        var publisher = new DomainEventPublisher(serviceProvider);
+        var scopedProviderMock = new Mock<IServiceProvider>();
+        var enumerableType = typeof(IEnumerable<IDomainEventHandler<TestDomainEvent>>);
+        scopedProviderMock
+            .Setup(p => p.GetService(enumerableType))
+            .Returns(new[] { handlerMock.Object });
+
+        var scopeMock = new Mock<IServiceScope>();
+        scopeMock.SetupGet(s => s.ServiceProvider).Returns(scopedProviderMock.Object);
+        var scopeFactoryMock = new Mock<IServiceScopeFactory>();
+        scopeFactoryMock.Setup(f => f.CreateScope()).Returns(scopeMock.Object);
+        var publisher = new DomainEventPublisher(scopeFactoryMock.Object);
 
         // Act
         await publisher.PublishAsync(events);

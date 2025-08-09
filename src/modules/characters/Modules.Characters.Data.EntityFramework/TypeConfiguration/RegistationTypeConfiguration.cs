@@ -34,6 +34,9 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
         builder.Property(e => e.AssociatedElementName)
                .HasMaxLength(128);
 
+        builder.Property(e => e.AssociatedElementType)
+               .HasMaxLength(128);
+
         builder.HasMany(x => x.IncludeRules)
             .WithOne()
             .HasForeignKey(x => x.ParentRegistrationId)

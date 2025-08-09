@@ -31,4 +31,9 @@ public interface IElementsModuleQueries
     /// Retrieves a list of include rules for a specific element by its unique identifier.
     /// </summary>
     Task<List<IncludeRuleDataModel>> GetElementIncludeRules(Guid elementId);
+
+    /// <summary>
+    /// Retrieves an ability model by its unique identifier.
+    /// </summary>
+    Task<AbilityDataModel> GetAbilityModel(Guid elementId);
 }
