@@ -1,11 +1,6 @@
 using System.Net;
-using System.Net.Http.Json;
 using FluentAssertions;
 using Starlights.Integration.Tests.Core;
-using Starlights.Modules.Characters.Endpoints.Entities.AbilityScores.GetAbilities;
-using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
-using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
-using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
 
 namespace Starlights.Integration.Tests.Characters;
 
@@ -24,35 +19,23 @@ public sealed class AbilityScoresEndpointsTests
     [TestInitialize]
     public async Task Initialize()
     {
-        // Arrange
         var client = _integration.CreateClient();
 
-        // Ensure elements are seeded
-        await client.GetAsync("/api/elements/initialize", CancellationToken.None);
+        await client.InitializeElementsAsync();
 
         // Get creation options
-        var optionsResponse = await client.GetAsync("/api/characters/creation-options", CancellationToken.None);
-        var optionsJson = await optionsResponse.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>(CancellationToken.None);
-        optionsJson?.Options.Should().NotBeEmpty();
+        var optionsResponse = await client.GetCharacterCreationOptionsAsync(CancellationToken.None);
+        optionsResponse.Options.Should().NotBeEmpty();
 
         // Get portrait options
-        var portraitsResponse = await client.GetAsync("/api/characters/portrait-options", CancellationToken.None);
-        var portraitsJson = await portraitsResponse.Content.ReadFromJsonAsync<GetCharacterPortraitOptionsResponse>(CancellationToken.None);
-        portraitsJson?.Portraits.Should().NotBeEmpty();
+        var portraitsResponse = await client.GetCharacterPortraitOptionsAsync(CancellationToken.None);
+        portraitsResponse.Portraits.Should().NotBeEmpty();
 
         _characterName = $"Integration Test Character {Guid.NewGuid()}";
-        var request = new CreateCharacterRequest(optionsJson!.Options.First().Id, _characterName, portraitsJson!.Portraits.First().Url);
+        var characterResponse = await client.CreateCharacterAsync(optionsResponse.Options[0].Id, _characterName, portraitsResponse.Portraits[0].Url, CancellationToken.None);
+        _characterId = characterResponse.Id;
 
-        // Act
-        var createResponse = await client.PostAsJsonAsync("/api/characters/create", request, CancellationToken.None);
-
-        // Assert
-        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-        var createCharacterResponseObject = await createResponse.Content.ReadFromJsonAsync<CreateCharacterResponse>(CancellationToken.None);
-        _characterId = createCharacterResponseObject!.Id;
-
-        // Warm up abilities (if event processing is async)
-        await WaitForAbilitiesAsync(client, _characterId, minCount: 1, timeoutMs: 3000);
+        await client.WaitForAbilityScoresAsync(_characterId, minCount: 1, timeout: TimeSpan.FromMilliseconds(3000), CancellationToken.None);
     }
 
     [TestMethod]
@@ -62,13 +45,13 @@ public sealed class AbilityScoresEndpointsTests
         var client = _integration.CreateClient();
 
         // Act
-        var abilities = await GetAbilitiesAsync(client, _characterId);
+        var abilities = await client.GetAbilityScoresAsync(_characterId, CancellationToken.None);
 
         // Assert
         abilities.Should().NotBeNull();
-        abilities!.AbilityScores.Should().NotBeEmpty();
+        abilities.AbilityScores.Should().NotBeEmpty();
 
-        var first = abilities.AbilityScores.First();
+        var first = abilities.AbilityScores[0];
         first.AbilityScoreId.Should().NotBe(Guid.Empty);
         first.Name.Should().NotBeNullOrWhiteSpace();
         first.Abbreviation.Should().NotBeNullOrWhiteSpace();
@@ -81,21 +64,23 @@ public sealed class AbilityScoresEndpointsTests
     {
         // Arrange
         var client = _integration.CreateClient();
-        var abilitiesBefore = await GetAbilitiesAsync(client, _characterId);
-        var target = abilitiesBefore!.AbilityScores.First();
-        var newBase = 18;
+        var abilitiesBefore = await client.GetAbilityScoresAsync(_characterId, CancellationToken.None);
+        var target = abilitiesBefore.AbilityScores[0];
+        const int newBaseScore = 18;
+        const int expectedScore = 18;
+        const int expectedModifier = 4;
 
         // Act
-        var postResponse = await client.PostAsJsonAsync($"/api/characters/{_characterId}/abilities/{target.AbilityScoreId}/base", new { value = newBase }, CancellationToken.None);
+        var postResponse = await client.SetAbilityBaseScoreAsync(_characterId, target.AbilityScoreId, newBaseScore, CancellationToken.None);
 
         // Assert
         postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        var abilitiesAfter = await GetAbilitiesAsync(client, _characterId);
-        var updated = abilitiesAfter!.AbilityScores.First(a => a.AbilityScoreId == target.AbilityScoreId);
+        var abilitiesAfter = await client.GetAbilityScoresAsync(_characterId, CancellationToken.None);
+        var updated = abilitiesAfter.AbilityScores.First(a => a.AbilityScoreId == target.AbilityScoreId);
 
-        updated.BaseScore.Should().Be(newBase);
-        updated.CalculatedScore.Should().Be(updated.BaseScore + updated.AdditionalScore);
-        updated.CalculatedModifier.Should().Be((int)Math.Floor((updated.CalculatedScore - 10) / 2.0));
+        updated.BaseScore.Should().Be(newBaseScore);
+        updated.CalculatedScore.Should().Be(expectedScore);
+        updated.CalculatedModifier.Should().Be(expectedModifier);
     }
 
     [TestMethod]
@@ -103,47 +88,22 @@ public sealed class AbilityScoresEndpointsTests
     {
         // Arrange
         var client = _integration.CreateClient();
-        var abilitiesBefore = await GetAbilitiesAsync(client, _characterId);
-        var target = abilitiesBefore!.AbilityScores.First();
-        var newAdditional = 2;
+        var abilitiesBefore = await client.GetAbilityScoresAsync(_characterId, CancellationToken.None);
+        var target = abilitiesBefore.AbilityScores[0];
+        const int newAdditionalScore = 2;
+        const int expectedScore = 12;
+        const int expectedModifier = 1;
 
         // Act
-        var postResponse = await client.PostAsJsonAsync($"/api/characters/{_characterId}/abilities/{target.AbilityScoreId}/additional", new { value = newAdditional }, CancellationToken.None);
+        var postResponse = await client.SetAbilityAdditionalScoreAsync(_characterId, target.AbilityScoreId, newAdditionalScore, CancellationToken.None);
 
         // Assert
         postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        var abilitiesAfter = await GetAbilitiesAsync(client, _characterId);
-        var updated = abilitiesAfter!.AbilityScores.First(a => a.AbilityScoreId == target.AbilityScoreId);
+        var abilitiesAfter = await client.GetAbilityScoresAsync(_characterId, CancellationToken.None);
+        var updated = abilitiesAfter.AbilityScores.First(a => a.AbilityScoreId == target.AbilityScoreId);
 
-        updated.AdditionalScore.Should().Be(newAdditional);
-        updated.CalculatedScore.Should().Be(updated.BaseScore + updated.AdditionalScore);
-        updated.CalculatedModifier.Should().Be((int)Math.Floor((updated.CalculatedScore - 10) / 2.0));
-    }
-
-    private static async Task<GetAbilityScoresResponse?> GetAbilitiesAsync(HttpClient client, Guid characterId)
-    {
-        var response = await client.GetAsync($"/api/characters/{characterId}/abilities", CancellationToken.None);
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        return await response.Content.ReadFromJsonAsync<GetAbilityScoresResponse>(CancellationToken.None);
-    }
-
-    private static async Task WaitForAbilitiesAsync(HttpClient client, Guid characterId, int minCount, int timeoutMs)
-    {
-        var start = DateTimeOffset.UtcNow;
-        while (true)
-        {
-            var data = await GetAbilitiesAsync(client, characterId);
-            if (data?.AbilityScores.Count >= minCount)
-            {
-                return;
-            }
-
-            if ((DateTimeOffset.UtcNow - start).TotalMilliseconds > timeoutMs)
-            {
-                return;
-            }
-
-            await Task.Delay(100);
-        }
+        updated.AdditionalScore.Should().Be(newAdditionalScore);
+        updated.CalculatedScore.Should().Be(expectedScore);
+        updated.CalculatedModifier.Should().Be(expectedModifier);
     }
 }
