@@ -69,6 +69,6 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
 
         var reponse = new CreateCharacterResponse(newCharacter.Id);
 
-        await Send.CreatedAtAsync($"/api/characters/{newCharacter.Id}", reponse, cancellation: ct);
+        await Send.CreatedAtAsync($"/api/characters/{newCharacter.Id}", responseBody: reponse, cancellation: ct);
     }
 }

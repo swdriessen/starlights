@@ -15,5 +15,10 @@
 	  <ProjectReference Include="..\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
 	  <ProjectReference Include="..\Modules.Characters\Modules.Characters.csproj" />
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Starlights.Integration.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>

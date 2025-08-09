@@ -1,16 +1,19 @@
 using FastEndpoints;
 using Starlights.Modules.Characters.Data;
-using Starlights.Modules.Characters.Domain.Abilities;
-using Starlights.Modules.Characters.Endpoints.Entities.AbilityScores;
-using Starlights.Platform.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Abilities;
+using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Entities.AbilityScores.UpdateAdditionalScore;
 
 sealed class UpdateAbilityAdditionalScoreRequest
 {
-    [BindFrom("characterId")] public Guid CharacterId { get; set; }
-    [BindFrom("abilityScoreId")] public Guid AbilityScoreId { get; set; }
+    [BindFrom("characterId")]
+    public Guid CharacterId { get; set; }
+
+    [BindFrom("abilityScoreId")]
+    public Guid AbilityScoreId { get; set; }
+
     public int Value { get; set; }
 }
 
@@ -34,8 +37,14 @@ sealed class UpdateAbilityAdditionalScoreEndpoint : Endpoint<UpdateAbilityAdditi
     {
         using var _ = CharactersInstrumentation.StartActivity($"{nameof(UpdateAbilityAdditionalScoreEndpoint)} | {req.CharacterId} | {req.AbilityScoreId}");
 
-        var repo = _persistence.GetRepository<ICharactersRepository>();
-        var character = await repo.GetCharacterAsync(req.CharacterId) ?? throw new InvalidOperationException($"Character with ID {req.CharacterId} not found.");
+        var characters = _persistence.GetRepository<ICharactersRepository>();
+        var character = await characters.GetCharacterAsync(req.CharacterId);
+        if (character is null)
+        {
+            AddError($"Character with ID {req.CharacterId} not found.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
 
         var ability = character.AbilityScores.SingleOrDefault(a => a.Id == new AbilityScoreId(req.AbilityScoreId));
         if (ability is null)
@@ -46,6 +55,7 @@ sealed class UpdateAbilityAdditionalScoreEndpoint : Endpoint<UpdateAbilityAdditi
         }
 
         ability.UpdateAdditionalScore(req.Value);
+
         await _persistence.SaveChangesAsync();
 
         var response = new UpdateAbilityScoreResponse
