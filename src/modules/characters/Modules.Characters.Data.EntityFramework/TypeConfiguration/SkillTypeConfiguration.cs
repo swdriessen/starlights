@@ -40,7 +40,7 @@ public class SkillTypeConfiguration : IEntityTypeConfiguration<Skill>
                .HasConversion(m => m.Value, v => new AbilityScoreId(v));
 
         builder.Property(e => e.AbilityScoreAbbreviation)
-               .IsRequired();
+               .IsRequired(false);
 
         builder.Property(e => e.AbilityScoreModifier)
                .HasDefaultValue(0);

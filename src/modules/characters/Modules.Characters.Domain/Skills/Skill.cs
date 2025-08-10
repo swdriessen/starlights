@@ -6,7 +6,7 @@ namespace Starlights.Modules.Characters.Domain.Skills;
 
 public class Skill : EntityBase<SkillId>
 {
-    public Skill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
+    public Skill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation)
         : base(SkillId.New())
     {
         AssociatedRegistrationId = associatedRegistrationId;
@@ -34,7 +34,7 @@ public class Skill : EntityBase<SkillId>
     /// <summary>
     /// The abbreviated name of the ability score associated with the skill (e.g. STR).
     /// </summary>
-    public string AbilityScoreAbbreviation { get; }
+    public string? AbilityScoreAbbreviation { get; private set; }
 
     /// <summary>
     /// The value of the ability score modifier associated with this skill.
@@ -80,10 +80,33 @@ public class Skill : EntityBase<SkillId>
     }
 
     /// <summary>
+    /// Associates this skill with an ability score.
+    /// </summary>
+    public void WithAbilityScore(AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
+    {
+        if (abilityScoreId == default)
+        {
+            throw new ArgumentException("Ability score ID cannot be default.", nameof(abilityScoreId));
+        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(abilityScoreAbbreviation);
+
+        AbilityScoreId = abilityScoreId;
+        AbilityScoreAbbreviation = abilityScoreAbbreviation;
+    }
+
+    /// <summary>
     /// Factory method to create a new <see cref="Skill"/>.
     /// </summary>
     internal static Skill Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
     {
         return new Skill(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+    }
+
+    /// <summary>
+    /// Factory method to create a new <see cref="Skill"/>.
+    /// </summary>
+    internal static Skill CreateWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
+    {
+        return new Skill(associatedRegistrationId, name, default, default);
     }
 }

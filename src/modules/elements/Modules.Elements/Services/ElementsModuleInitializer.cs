@@ -29,16 +29,16 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
         var defaultCharacter = CreateDefaultCharacterCreationOption(repository);
 
-        var abilities = CreateAbilities();
+        var defaultElements = CreateDefaultElements();
 
         // create include rules for each ability 
-        foreach (var ability in abilities)
+        foreach (var e in defaultElements)
         {
-            var includeRule = new IncludeRuleComponent(defaultCharacter.Id, ability.Id, 0);
+            var includeRule = new IncludeRuleComponent(defaultCharacter.Id, e.Id, 0);
             defaultCharacter.AddComponent(includeRule); // EF should track this automatically
         }
 
-        newElements.AddRange(abilities);
+        newElements.AddRange(defaultElements);
 
         foreach (var newElement in newElements)
         {
@@ -60,7 +60,7 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         return defaultCharacter;
     }
 
-    private static List<Element> CreateAbilities()
+    private static List<Element> CreateDefaultElements()
     {
         var newElements = new List<Element>();
 
@@ -88,6 +88,33 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         newElements.Add(intelligenceAbility);
         newElements.Add(wisdomAbility);
         newElements.Add(charismaAbility);
+
+
+        var athletics = Element.Create("Athletics", ElementTypeConstants.Skill);
+        athletics.AddComponent(new PrimaryAbilityComponent(athletics.Id, strengthAbility.Id));
+
+        var arcana = Element.Create("Arcana", ElementTypeConstants.Skill);
+        arcana.AddComponent(new PrimaryAbilityComponent(arcana.Id, intelligenceAbility.Id));
+
+        var history = Element.Create("History", ElementTypeConstants.Skill);
+        history.AddComponent(new PrimaryAbilityComponent(history.Id, intelligenceAbility.Id));
+
+        var perception = Element.Create("Perception", ElementTypeConstants.Skill);
+        perception.AddComponent(new PrimaryAbilityComponent(perception.Id, wisdomAbility.Id));
+
+        var stealth = Element.Create("Stealth", ElementTypeConstants.Skill);
+        stealth.AddComponent(new PrimaryAbilityComponent(stealth.Id, dexterityAbility.Id));
+
+
+
+        newElements.Add(athletics);
+        newElements.Add(arcana);
+        newElements.Add(history);
+        newElements.Add(perception);
+        newElements.Add(stealth);
+
+
+
 
         return newElements;
     }

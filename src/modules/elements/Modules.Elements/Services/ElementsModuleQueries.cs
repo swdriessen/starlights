@@ -82,4 +82,11 @@ internal class ElementsModuleQueries : IElementsModuleQueries
 
         return element.AsAbilityDataModel();
     }
+
+    public async Task<SkillDataModel?> GetSkillModel(Guid elementId)
+    {
+        var repository = _persistence.GetRepository<IElementsRepository>();
+        var element = await repository.GetElementAsync(elementId);
+        return element?.AsSkillDataModel();
+    }
 }

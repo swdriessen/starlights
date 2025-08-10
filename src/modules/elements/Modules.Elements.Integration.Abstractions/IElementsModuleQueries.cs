@@ -36,4 +36,9 @@ public interface IElementsModuleQueries
     /// Retrieves an ability model by its unique identifier.
     /// </summary>
     Task<AbilityDataModel> GetAbilityModel(Guid elementId);
+
+    /// <summary>
+    /// Retrieves a skill model by its unique identifier.
+    /// </summary>
+    Task<SkillDataModel?> GetSkillModel(Guid elementId);
 }

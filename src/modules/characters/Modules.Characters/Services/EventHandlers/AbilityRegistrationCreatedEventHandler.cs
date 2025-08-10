@@ -7,7 +7,7 @@ using Starlights.Platform.Eventing;
 
 namespace Modules.Characters.Services.EventHandlers;
 
-public sealed class AbilityRegistrationCreatedEventHandler : IDomainEventHandler<AbilityRegistrationCreatedEvent>
+public sealed class AbilityRegistrationCreatedEventHandler : IDomainEventHandler<AbilityElementRegistrationCreatedEvent>
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
@@ -18,7 +18,7 @@ public sealed class AbilityRegistrationCreatedEventHandler : IDomainEventHandler
         _elements = elements;
     }
 
-    public async Task HandleAsync(AbilityRegistrationCreatedEvent raisedEvent)
+    public async Task HandleAsync(AbilityElementRegistrationCreatedEvent raisedEvent)
     {
         using var _ = CharactersInstrumentation.StartActivity($"{nameof(AbilityRegistrationCreatedEventHandler)} | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
 
