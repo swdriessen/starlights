@@ -2,6 +2,7 @@ using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Abilities;
+using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Entities.AbilityScores.UpdateAdditionalScore;
@@ -55,6 +56,10 @@ sealed class UpdateAbilityAdditionalScoreEndpoint : Endpoint<UpdateAbilityAdditi
         }
 
         ability.UpdateAdditionalScore(req.Value);
+
+        // add domain event 
+        character.AddDomainEvent(new AbilityScoreUpdatedEvent() { CharacterId = character.Id, AbilityScoreId = ability.Id });
+
 
         await _persistence.SaveChangesAsync();
 

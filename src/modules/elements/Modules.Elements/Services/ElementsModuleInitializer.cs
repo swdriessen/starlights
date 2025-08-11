@@ -32,11 +32,24 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         var defaultElements = CreateDefaultElements();
 
         // create include rules for each ability 
-        foreach (var e in defaultElements)
+        foreach (var e in defaultElements)//.Where(x => x.Type == "Ability"))
         {
             var includeRule = new IncludeRuleComponent(defaultCharacter.Id, e.Id, 0);
             defaultCharacter.AddComponent(includeRule); // EF should track this automatically
         }
+
+        //var skillsRule = CreateSkillsRule(repository);
+
+
+        //defaultCharacter.AddComponent(new IncludeRuleComponent(defaultCharacter.Id, skillsRule.Id, 0));
+
+        // create include rules for each ability 
+        //foreach (var e in defaultElements.Where(x => x.Type == "Skill"))
+        //{
+        //    var includeRule = new IncludeRuleComponent(skillsRule.Id, e.Id, 0);
+        //    skillsRule.AddComponent(includeRule); // EF should track this automatically
+        //}
+
 
         newElements.AddRange(defaultElements);
 
@@ -58,6 +71,14 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         repository.Add(defaultCharacter);
 
         return defaultCharacter;
+    }
+    private static Element CreateSkillsRule(IElementsRepository repository)
+    {
+        var skillsRule = Element.Create("Skills", "Rule");
+
+        repository.Add(skillsRule);
+
+        return skillsRule;
     }
 
     private static List<Element> CreateDefaultElements()

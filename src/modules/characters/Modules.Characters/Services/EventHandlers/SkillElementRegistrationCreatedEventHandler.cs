@@ -68,5 +68,3 @@ public sealed class SkillElementRegistrationCreatedEventHandler : IDomainEventHa
 }
 
 
-
-

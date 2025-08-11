@@ -9,13 +9,13 @@ public static class RegistrationExtensions
     {
         if (registration.AssociatedElementType == "Ability")
         {
-            registration.WithAdditionalEvent(new AbilityElementRegistrationCreatedEvent
-            {
-                CharacterId = registration.CharacterId,
-                RegistrationId = registration.Id,
-                AssociatedElementName = registration.AssociatedElementName,
-                AssociatedElementType = registration.AssociatedElementType
-            });
+            //registration.WithAdditionalEvent(new AbilityElementRegistrationCreatedEvent
+            //{
+            //    CharacterId = registration.CharacterId,
+            //    RegistrationId = registration.Id,
+            //    AssociatedElementName = registration.AssociatedElementName,
+            //    AssociatedElementType = registration.AssociatedElementType
+            //});
         }
         else if (registration.AssociatedElementType == "Skill")
         {
