@@ -4,8 +4,8 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <PropertyGroup Label="Package Versions">
-    <MicrosoftExtensionsVersion>9.0.7</MicrosoftExtensionsVersion>
-    <EntityFrameworkCoreVersion>9.0.7</EntityFrameworkCoreVersion>
+    <MicrosoftExtensionsVersion>9.0.8</MicrosoftExtensionsVersion>
+    <EntityFrameworkCoreVersion>9.0.8</EntityFrameworkCoreVersion>
     <AspireVersion>9.4.0</AspireVersion>
     <OpenTelemetryVersion>1.12.0</OpenTelemetryVersion>
   </PropertyGroup>
