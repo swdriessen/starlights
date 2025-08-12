@@ -24,9 +24,7 @@ public class Persistence : IPersistence
 
     public T GetRepository<T>() where T : IRepository
     {
-        using var activity = PersistenceInstrumentation.StartActivity($"GetRepository ({typeof(T).Name})");
-
-        _logger.LogDebug("get repository [type='{RepositoryType}']", typeof(T).Name);
+        //using var activity = PersistenceInstrumentation.StartActivity($"GetRepository ({typeof(T).Name})");
 
         var repository = _serviceProvider.GetRequiredService<T>();
 
@@ -42,7 +40,7 @@ public class Persistence : IPersistence
             _contexts[contextType] = persistenceContext;
         }
 
-        _logger.LogDebug("setting persistence context for repository [repository='{RepositoryType}', context='{ContextType}']", typeof(T).Name, contextType.Name);
+        //_logger.LogDebug("setting persistence context for repository [repository='{RepositoryType}', context='{ContextType}']", typeof(T).Name, contextType.Name);
         repository.SetPersistenceContext(persistenceContext);
 
         return repository;

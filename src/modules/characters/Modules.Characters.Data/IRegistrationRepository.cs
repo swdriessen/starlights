@@ -1,4 +1,5 @@
 ﻿using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Data;
 
@@ -20,4 +21,9 @@ public interface IRegistrationRepository : IRepository
     /// Retrieves all registrations for a specific character.
     /// </summary>
     Task<List<Registration>> GetRegistrationsAsync(CharacterId id);
+
+    /// <summary>
+    /// Retrieves all registrations for a specific character by association element id.
+    /// </summary>
+    Task<List<Registration>> GetRegistrationsByAssociationsAsync(CharacterId id, ElementId associatedElementId);
 }

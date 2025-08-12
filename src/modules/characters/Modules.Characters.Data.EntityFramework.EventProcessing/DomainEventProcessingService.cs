@@ -58,25 +58,34 @@ public sealed class DomainEventProcessingService : BackgroundService
 
                     foreach (var item in newEvents)
                     {
-                        var eventType = ResolveEventType(item.EventType);
-
-                        if (eventType == null)
+                        try
                         {
-                            _logger.LogError("Event type '{EventType}' could not be resolved.", item.EventType);
-                            continue;
+                            var eventType = ResolveEventType(item.EventType);
+
+                            if (eventType == null)
+                            {
+                                _logger.LogError("Event type '{EventType}' could not be resolved.", item.EventType);
+                                continue;
+                            }
+
+                            _logger.LogDebug("processing event: {EventType} ({EventId})", eventType.Name, item.Id);
+
+                            var deserialized = JsonSerializer.Deserialize(item.Payload, eventType);
+                            if (deserialized is IDomainEvent domainEvent)
+                            {
+                                _logger.LogInformation("publishing event: {EventType} ({EventId})", eventType.Name, item.Id);
+                                await publisher.PublishAsync(domainEvent);
+
+                                // Mark the event as processed
+                                item.ProcessedOn = DateTime.UtcNow;
+                                await context.SaveChangesAsync(stoppingToken);
+                            }
                         }
-
-                        _logger.LogDebug("processing event: {EventType} ({EventId})", eventType.Name, item.Id);
-
-                        var deserialized = JsonSerializer.Deserialize(item.Payload, eventType);
-                        if (deserialized is IDomainEvent domainEvent)
+                        catch (Exception ex)
                         {
-                            _logger.LogInformation("publishing event: {EventType} ({EventId})", eventType.Name, item.Id);
-                            await publisher.PublishAsync(domainEvent);
-
-                            // Mark the event as processed
-                            item.ProcessedOn = DateTime.UtcNow;
-                            await context.SaveChangesAsync(stoppingToken);
+                            _logger.LogError(ex, "Exception while publishing the message [id='{MessageId}', type='{EventType}']", item.Id, item.EventType);
+                            item.ErrorMessage = ex.Message; // stored when the save is moved to bulk save
+                            throw;
                         }
                     }
                 }

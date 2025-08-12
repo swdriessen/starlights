@@ -10,25 +10,25 @@ using Starlights.Platform.Eventing;
 
 namespace Modules.Characters.Services.EventHandlers;
 
-public sealed class AbilityScoreCreatedEventHandler : IDomainEventHandler<AbilityScoreCreatedEvent>
+public sealed class AbilityScoreUpdatedEventHandler : IDomainEventHandler<AbilityScoreUpdatedEvent>
 {
-    private readonly ILogger<AbilityScoreCreatedEventHandler> _logger;
+    private readonly ILogger<AbilityScoreUpdatedEventHandler> _logger;
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
 
-    public AbilityScoreCreatedEventHandler(ILogger<AbilityScoreCreatedEventHandler> logger, IPersistence persistence, IElementsModuleQueries elements)
+    public AbilityScoreUpdatedEventHandler(ILogger<AbilityScoreUpdatedEventHandler> logger, IPersistence persistence, IElementsModuleQueries elements)
     {
         _logger = logger;
         _persistence = persistence;
         _elements = elements;
     }
 
-    public async Task HandleAsync(AbilityScoreCreatedEvent domainEvent)
+    public async Task HandleAsync(AbilityScoreUpdatedEvent domainEvent)
     {
         var characterId = new CharacterId(domainEvent.CharacterId);
         var abilityScoreId = new AbilityScoreId(domainEvent.AbilityScoreId);
 
-        using var handlerActivity = CharactersInstrumentation.StartActivity($"{nameof(AbilityScoreCreatedEventHandler)} | {abilityScoreId.Value}");
+        using var handlerActivity = CharactersInstrumentation.StartActivity($"{nameof(AbilityScoreUpdatedEventHandler)} | {abilityScoreId.Value}");
         handlerActivity?.AddTag("characterId", characterId.Value);
 
         // get character

@@ -18,7 +18,7 @@ public sealed class RegistrationManagerTests
     private readonly Mock<IRegistrationRepository> _registrations = new();
 
     private RegistrationManager CreateSut()
-        => new(_persistence.Object, _elements.Object);
+        => new(_persistence.Object, _elements.Object, []);
 
     [TestInitialize]
     public void Setup()
