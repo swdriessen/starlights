@@ -7,7 +7,7 @@ using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Entities.AbilityScores.UpdateAdditionalScore;
 
-sealed class UpdateAbilityAdditionalScoreRequest
+internal sealed class UpdateAbilityAdditionalScoreRequest
 {
     [BindFrom("characterId")]
     public Guid CharacterId { get; set; }
@@ -18,7 +18,7 @@ sealed class UpdateAbilityAdditionalScoreRequest
     public int Value { get; set; }
 }
 
-sealed class UpdateAbilityAdditionalScoreEndpoint : Endpoint<UpdateAbilityAdditionalScoreRequest, UpdateAbilityScoreResponse>
+internal sealed class UpdateAbilityAdditionalScoreEndpoint : Endpoint<UpdateAbilityAdditionalScoreRequest, UpdateAbilityScoreResponse>
 {
     private readonly IPersistence _persistence;
 

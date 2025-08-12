@@ -40,14 +40,6 @@ public sealed class AbilityScoreUpdatedEventHandler : IDomainEventHandler<Abilit
             return;
         }
 
-        // check if there are skills that need to be updated
-        var unassignedSkills = character.Skills.Where(x => x.AbilityScoreId == Guid.Empty); // once custom skills are implemented, this will need to be adjusted to check for custom skills as well
-        if (!unassignedSkills.Any())
-        {
-            // no skills without an ability score, so we can skip this
-            return;
-        }
-
         // get the ability score
         var abilityScore = character.AbilityScores.SingleOrDefault(x => x.Id == abilityScoreId);
         if (abilityScore is null)
@@ -65,30 +57,50 @@ public sealed class AbilityScoreUpdatedEventHandler : IDomainEventHandler<Abilit
             return;
         }
 
-        foreach (var unassignedSkill in unassignedSkills)
+        foreach (var existingSkill in character.Skills)
         {
-            // get the registration for the skill
-            var skillRegistration = await registrations.GetRegistrationAsync(new(unassignedSkill.AssociatedRegistrationId));
-            if (skillRegistration is null)
+            if (existingSkill.AbilityScoreId == Guid.Empty)
             {
-                _logger.LogWarning("The skill registration was not found, unable to react to AbilityScoreCreatedEvent. [skill='{SkillId}']", unassignedSkill.AssociatedRegistrationId);
+                // this skill does not have an ability score assigned, so we can skip it
+
+
+                // get the registration for the skill
+                var skillRegistration = await registrations.GetRegistrationAsync(new(existingSkill.AssociatedRegistrationId));
+                if (skillRegistration is null)
+                {
+                    _logger.LogWarning("The skill registration was not found, unable to react to AbilityScoreCreatedEvent. [skill='{SkillId}']", existingSkill.AssociatedRegistrationId);
+                    continue;
+                }
+
+                // get the associated element for the skill
+                var skillElement = await _elements.GetSkillModel(skillRegistration.AssociatedElementId);
+                if (skillElement is null)
+                {
+                    _logger.LogWarning("The skill element was not found, unable to react to AbilityScoreCreatedEvent. [skill='{SkillId}']", existingSkill.AssociatedRegistrationId);
+                    continue;
+                }
+
+                if (skillElement.PrimaryAbilityElementId == abilityRegistration.AssociatedElementId)
+                {
+                    _logger.LogInformation("Assigning ability score '{AbilityScoreId}' to skill '{SkillId}' for character '{CharacterId}'", abilityScore.Id, existingSkill.Id, characterId.Value);
+                    // this ability score is the primary ability score for the skill
+                    existingSkill.WithAbilityScore(abilityScore.Id, abilityScore.Abbreviation);
+                    existingSkill.UpdateAbilityScoreModifier(abilityScore.CalculatedModifier);
+                }
+
                 continue;
             }
 
-            // get the associated element for the skill
-            var skillElement = await _elements.GetSkillModel(skillRegistration.AssociatedElementId);
-            if (skillElement is null)
+            // this skill has an ability score assigned, so we need to check if it matches the one we are updating
+            if (existingSkill.AbilityScoreId != abilityScoreId.Value)
             {
-                _logger.LogWarning("The skill element was not found, unable to react to AbilityScoreCreatedEvent. [skill='{SkillId}']", unassignedSkill.AssociatedRegistrationId);
+                // this skill is not affected by the update, so we can skip it
                 continue;
             }
 
-            if (skillElement.PrimaryAbilityElementId == abilityRegistration.AssociatedElementId)
-            {
-                // this ability score is the primary ability score for the skill
-                unassignedSkill.WithAbilityScore(abilityScore.Id, abilityScore.Abbreviation);
-                unassignedSkill.UpdateAbilityScoreModifier(abilityScore.CalculatedModifier);
-            }
+            // the skill is affected by the update, so we need to update it
+            _logger.LogInformation("Updating skill '{SkillId}' for character '{CharacterId}' with new ability score '{AbilityScoreId}'", existingSkill.Id, characterId.Value, abilityScoreId.Value);
+            existingSkill.UpdateAbilityScoreModifier(abilityScore.CalculatedModifier);
         }
 
         var affectedRows = await _persistence.SaveChangesAsync();
