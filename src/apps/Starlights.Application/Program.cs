@@ -1,8 +1,8 @@
-using Modules.Characters.Data.EntityFramework.EventProcessing;
-using Modules.Characters.Services.Processing;
 using Scalar.AspNetCore;
 using Starlights.Modules.Characters.Data.EntityFramework;
+using Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
 using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
+using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
 using Starlights.Modules.Elements.Endpoints.Installation;

@@ -2,7 +2,7 @@
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Platform.Eventing;
 
-namespace Modules.Characters.Services.Processing;
+namespace Starlights.Modules.Characters.Services.Processing;
 
 public sealed class RegistrationCompletedEventHandler : IDomainEventHandler<RegistrationCreatedEvent>
 {

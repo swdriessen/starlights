@@ -3,7 +3,7 @@ using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
 
-namespace Modules.Characters.Services.Processing.Behaviors;
+namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 
 /// <summary>
 /// This behavior is responsible for creating an ability score when a new ability registration is created.

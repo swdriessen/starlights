@@ -1,10 +1,9 @@
 using FluentAssertions;
-using Modules.Characters.Services.Processing;
-using Modules.Characters.Services.Processing.Behaviors;
 using Moq;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
 using Starlights.Platform.Data;

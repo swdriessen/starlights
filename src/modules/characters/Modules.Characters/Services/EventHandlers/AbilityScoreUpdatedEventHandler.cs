@@ -8,7 +8,7 @@ using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 using Starlights.Platform.Eventing;
 
-namespace Modules.Characters.Services.EventHandlers;
+namespace Starlights.Modules.Characters.Services.EventHandlers;
 
 public sealed class AbilityScoreUpdatedEventHandler : IDomainEventHandler<AbilityScoreUpdatedEvent>
 {

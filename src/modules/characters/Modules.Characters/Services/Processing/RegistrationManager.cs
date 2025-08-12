@@ -1,11 +1,10 @@
-﻿using Modules.Characters.Services.Processing.Behaviors;
-using Starlights.Modules.Characters.Data;
+﻿using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
-namespace Modules.Characters.Services.Processing;
+namespace Starlights.Modules.Characters.Services.Processing;
 
 public class RegistrationManager : IRegistrationManager
 {

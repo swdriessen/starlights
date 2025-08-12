@@ -8,7 +8,7 @@ using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
 
-namespace Modules.Characters.Services.Processing.Behaviors;
+namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 
 /// <summary>
 /// This behavior is responsible for creating a skill when a new skill registration is created.

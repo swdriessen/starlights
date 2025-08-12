@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Modules.Characters.Services.Processing;
-using Modules.Characters.Services.Processing.Behaviors;
+using Starlights.Modules.Characters.Services.Processing;
+using Starlights.Modules.Characters.Services.Processing.Behaviors;
 using Starlights.Platform.Eventing.EventPublisher;
 using Starlights.Platform.Hosting;
 

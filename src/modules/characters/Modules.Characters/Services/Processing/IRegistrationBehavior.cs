@@ -1,6 +1,6 @@
 ﻿using Starlights.Modules.Characters.Domain.Registrations;
 
-namespace Modules.Characters.Services.Processing.Behaviors;
+namespace Starlights.Modules.Characters.Services.Processing;
 
 public interface IRegistrationBehavior
 {

@@ -1,7 +1,7 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations;
 
-namespace Modules.Characters.Services.Processing;
+namespace Starlights.Modules.Characters.Services.Processing;
 
 public static class RegistrationExtensions
 {
