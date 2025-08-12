@@ -54,10 +54,7 @@ public class Skill : EntityBase<SkillId>
     /// <summary>
     /// Recalculates the derived bonus.
     /// </summary>
-    private void Recalculate()
-    {
-        CalculatedBonus = AbilityScoreModifier + AdditionalBonus;
-    }
+    private void Recalculate() => CalculatedBonus = AbilityScoreModifier + AdditionalBonus;
 
     /// <summary>
     /// Updates the ability score modifier for this skill and recalculates the total bonus.
@@ -95,18 +92,17 @@ public class Skill : EntityBase<SkillId>
     }
 
     /// <summary>
-    /// Factory method to create a new <see cref="Skill"/>.
+    /// Get a value indicating whether this skill has an associated ability score.
     /// </summary>
-    internal static Skill Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
-    {
-        return new Skill(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
-    }
+    public bool HasAssociatedAbilityScore => AbilityScoreId != default;
 
     /// <summary>
     /// Factory method to create a new <see cref="Skill"/>.
     /// </summary>
-    internal static Skill CreateWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
-    {
-        return new Skill(associatedRegistrationId, name, default, default);
-    }
+    internal static Skill Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation) => new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+
+    /// <summary>
+    /// Factory method to create a new <see cref="Skill"/>.
+    /// </summary>
+    internal static Skill CreateWithoutAbilityScore(RegistrationId associatedRegistrationId, string name) => new(associatedRegistrationId, name, default, default);
 }

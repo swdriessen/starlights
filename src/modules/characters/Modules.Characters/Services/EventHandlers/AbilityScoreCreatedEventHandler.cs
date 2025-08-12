@@ -28,7 +28,7 @@ public sealed class AbilityScoreCreatedEventHandler : IDomainEventHandler<Abilit
         var characterId = new CharacterId(domainEvent.CharacterId);
         var abilityScoreId = new AbilityScoreId(domainEvent.AbilityScoreId);
 
-        using var handlerActivity = CharactersInstrumentation.StartActivity($"{nameof(AbilityScoreUpdatedEventHandler)} | {abilityScoreId.Value}");
+        using var handlerActivity = CharactersInstrumentation.StartActivity($"{nameof(AbilityScoreCreatedEventHandler)} | {abilityScoreId.Value}");
         handlerActivity?.AddTag("characterId", characterId.Value);
 
         // get character
@@ -59,7 +59,7 @@ public sealed class AbilityScoreCreatedEventHandler : IDomainEventHandler<Abilit
 
         foreach (var existingSkill in character.Skills)
         {
-            if (existingSkill.AbilityScoreId == Guid.Empty)
+            if (!existingSkill.HasAssociatedAbilityScore)
             {
                 // this skill does not have an ability score assigned, so we can skip it
 
@@ -92,15 +92,12 @@ public sealed class AbilityScoreCreatedEventHandler : IDomainEventHandler<Abilit
             }
 
             // this skill has an ability score assigned, so we need to check if it matches the one we are updating
-            if (existingSkill.AbilityScoreId != abilityScoreId.Value)
+            if (existingSkill.AbilityScoreId == abilityScoreId.Value)
             {
-                // this skill is not affected by the update, so we can skip it
-                continue;
+                // the skill is affected by the update, so we need to update it
+                _logger.LogInformation("Updating skill '{SkillId}' for character '{CharacterId}' with new ability score '{AbilityScoreId}'", existingSkill.Id, characterId.Value, abilityScoreId.Value);
+                existingSkill.UpdateAbilityScoreModifier(abilityScore.CalculatedModifier);
             }
-
-            // the skill is affected by the update, so we need to update it
-            _logger.LogInformation("Updating skill '{SkillId}' for character '{CharacterId}' with new ability score '{AbilityScoreId}'", existingSkill.Id, characterId.Value, abilityScoreId.Value);
-            existingSkill.UpdateAbilityScoreModifier(abilityScore.CalculatedModifier);
         }
 
         var affectedRows = await _persistence.SaveChangesAsync();
