@@ -8,8 +8,4 @@
     <ProjectReference Include="..\..\apps\Starlights.Application\Starlights.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
-
 </Project>

@@ -5,7 +5,7 @@ using Starlights.Modules.Characters.Services.Processing.Behaviors;
 using Starlights.Platform.Eventing.EventPublisher;
 using Starlights.Platform.Hosting;
 
-namespace Modules.Characters;
+namespace Starlights.Modules.Characters;
 
 internal class CharactersModule : IPlatformServiceComponent
 {

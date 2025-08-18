@@ -1,4 +1,5 @@
-﻿using Starlights.Modules.Characters.Data;
+﻿using Microsoft.Extensions.Logging;
+using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
@@ -10,10 +11,12 @@ namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 /// </summary>
 public sealed class AbilityRegistrationBehavior : IRegistrationBehavior
 {
+    private readonly ILogger<AbilityRegistrationBehavior> _logger;
     private readonly IElementsModuleQueries _elements;
 
-    public AbilityRegistrationBehavior(IElementsModuleQueries elements)
+    public AbilityRegistrationBehavior(ILogger<AbilityRegistrationBehavior> logger, IElementsModuleQueries elements)
     {
+        _logger = logger;
         _elements = elements;
     }
 
@@ -30,6 +33,7 @@ public sealed class AbilityRegistrationBehavior : IRegistrationBehavior
             var characters = context.GetRepository<ICharactersRepository>();
             var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
+            _logger.LogInformation("Creating ability score '{AbilityName}' for character '{CharacterId}'", associatedElement.Name, character.Id.Value);
             character.CreateAbilityScore(newRegistration.Id, associatedElement.Name, associatedElement.Abbreviation);
         }
     }
