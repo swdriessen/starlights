@@ -9,7 +9,7 @@ using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
 namespace Starlights.Integration.Tests.Characters;
 
 [TestClass]
-public sealed class CharacterCreationTests
+public sealed class CharacterCreationTests : IntegrationTestBase
 {
     private readonly IntegrationHost _integration;
     private readonly List<CharacterCreationOption> _options = [];
@@ -26,16 +26,16 @@ public sealed class CharacterCreationTests
     {
         var client = _integration.CreateClient();
 
-        await client.GetAsync("/api/elements/initialize", CancellationToken.None);
+        await client.GetAsync("/api/elements/initialize", TestCancellationToken);
 
-        var response = await client.GetAsync("/api/characters/creation-options", CancellationToken.None);
-        var responseJson = await response.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>(CancellationToken.None);
+        var response = await client.GetAsync("/api/characters/creation-options", TestCancellationToken);
+        var responseJson = await response.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>(TestCancellationToken);
         responseJson?.Options.Should().NotBeEmpty("expected at least one character creation option to be available");
 
         _options.AddRange(responseJson!.Options);
 
-        var portraitResponse = await client.GetAsync("/api/characters/portrait-options", CancellationToken.None);
-        var portraitResponseJson = await portraitResponse.Content.ReadFromJsonAsync<GetCharacterPortraitOptionsResponse>(CancellationToken.None);
+        var portraitResponse = await client.GetAsync("/api/characters/portrait-options", TestCancellationToken);
+        var portraitResponseJson = await portraitResponse.Content.ReadFromJsonAsync<GetCharacterPortraitOptionsResponse>(TestCancellationToken);
         portraitResponseJson?.Portraits.Should().NotBeEmpty("expected at least one character portrait option to be available");
 
         _portraits.AddRange(portraitResponseJson!.Portraits);
@@ -50,7 +50,7 @@ public sealed class CharacterCreationTests
         var request = new CreateCharacterRequest(_options[0].Id, "Test Character", _portraits[0]?.Url);
 
         // Act
-        var response = await client.PostAsJsonAsync("/api/characters/create", request, CancellationToken.None);
+        var response = await client.PostAsJsonAsync("/api/characters/create", request, TestCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);

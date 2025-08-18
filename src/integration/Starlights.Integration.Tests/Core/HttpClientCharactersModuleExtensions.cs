@@ -1,7 +1,7 @@
 using System.Net;
 using Starlights.Modules.Characters.Endpoints.Entities.AbilityScores.GetAbilities;
-using Starlights.Modules.Characters.Endpoints.Entities.Skills.GetSkills;
 using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
+using Starlights.Modules.Characters.Endpoints.Entities.Skills.GetSkills;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
 
@@ -30,46 +30,6 @@ internal static class HttpClientCharactersModuleExtensions
     public static Task<HttpResponseMessage> SetAbilityAdditionalScoreAsync(this HttpClient client, Guid characterId, Guid abilityScoreId, int value, CancellationToken ct = default)
         => client.PostJsonExpectAsync($"/api/characters/{characterId}/abilities/{abilityScoreId}/additional", new { value }, HttpStatusCode.OK, ct);
 
-    public static async Task WaitForAbilityScoresAsync(this HttpClient client, Guid characterId, int minCount, TimeSpan timeout, CancellationToken ct = default)
-    {
-        var start = DateTimeOffset.UtcNow;
-        while (true)
-        {
-            var data = await client.GetAbilityScoresAsync(characterId, ct);
-            if (data.AbilityScores.Count >= minCount)
-            {
-                return;
-            }
-
-            if (DateTimeOffset.UtcNow - start > timeout)
-            {
-                return;
-            }
-
-            await Task.Delay(100, ct);
-        }
-    }
-
     public static Task<GetSkillsResponse> GetSkillsAsync(this HttpClient client, Guid characterId, CancellationToken ct = default)
         => client.GetAndReadAsync<GetSkillsResponse>($"/api/characters/{characterId}/skills", HttpStatusCode.OK, ct);
-
-    public static async Task WaitForSkillsAsync(this HttpClient client, Guid characterId, int minCount, TimeSpan timeout, CancellationToken ct = default)
-    {
-        var start = DateTimeOffset.UtcNow;
-        while (true)
-        {
-            var data = await client.GetSkillsAsync(characterId, ct);
-            if (data.Skills.Count >= minCount)
-            {
-                return;
-            }
-
-            if (DateTimeOffset.UtcNow - start > timeout)
-            {
-                return;
-            }
-
-            await Task.Delay(100, ct);
-        }
-    }
 }

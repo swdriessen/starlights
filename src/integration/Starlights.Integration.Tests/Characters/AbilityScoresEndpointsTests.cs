@@ -7,7 +7,7 @@ using Starlights.Integration.Tests.Core.Extensions;
 namespace Starlights.Integration.Tests.Characters;
 
 [TestClass]
-public sealed class AbilityScoresEndpointsTests
+public sealed class AbilityScoresEndpointsTests : IntegrationTestBase
 {
     private readonly IntegrationHost _integration;
     private readonly IntegrationEventHandlerListener _eventListener;
@@ -28,22 +28,23 @@ public sealed class AbilityScoresEndpointsTests
         await client.InitializeElementsAsync();
 
         // Get creation options
-        var optionsResponse = await client.GetCharacterCreationOptionsAsync(CancellationToken.None);
+        var optionsResponse = await client.GetCharacterCreationOptionsAsync(TestCancellationToken);
         optionsResponse.Options.Should().NotBeEmpty();
 
         // Get portrait options
-        var portraitsResponse = await client.GetCharacterPortraitOptionsAsync(CancellationToken.None);
+        var portraitsResponse = await client.GetCharacterPortraitOptionsAsync(TestCancellationToken);
         portraitsResponse.Portraits.Should().NotBeEmpty();
 
         var characterName = $"Integration Test Character {Guid.NewGuid()}";
 
-        var characterResponse = await client.CreateCharacterAsync(optionsResponse.Options[0].Id, characterName, portraitsResponse.Portraits[0].Url, CancellationToken.None);
+        var characterResponse = await client.CreateCharacterAsync(optionsResponse.Options[0].Id, characterName, portraitsResponse.Portraits[0].Url, TestCancellationToken);
         _integration.SetCharacterIdentifier(characterResponse.Id);
 
-        await _eventListener.AbilityScoreCreated.WaitForEvent(count: 6);
+        await _eventListener.AbilityScoreCreated.WaitForEvent(count: 6, cancellationToken: TestCancellationToken);
     }
 
     [TestMethod]
+    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
     public async Task GetAbilities_Returns_DetailedScores()
     {
         // Arrange
@@ -53,7 +54,7 @@ public sealed class AbilityScoresEndpointsTests
         const int expectedModifier = 0;
 
         // Act
-        var abilities = await client.GetAbilityScoresAsync(characterId, CancellationToken.None);
+        var abilities = await client.GetAbilityScoresAsync(characterId, TestCancellationToken);
 
         // Assert
         abilities.Should().NotBeNull();
@@ -68,23 +69,24 @@ public sealed class AbilityScoresEndpointsTests
     }
 
     [TestMethod]
+    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
     public async Task UpdateBaseScore_Updates_CalculatedFields()
     {
         // Arrange
         var characterId = _integration.GetCharacterIdentifier();
         var client = _integration.CreateClient();
-        var abilitiesBefore = await client.GetAbilityScoresAsync(characterId, CancellationToken.None);
+        var abilitiesBefore = await client.GetAbilityScoresAsync(characterId, TestContext.CancellationTokenSource.Token);
         var target = abilitiesBefore.AbilityScores[0];
         const int newBaseScore = 18;
         const int expectedScore = 18;
         const int expectedModifier = 4;
 
         // Act
-        var postResponse = await client.SetAbilityBaseScoreAsync(characterId, target.AbilityScoreId, newBaseScore, CancellationToken.None);
+        var postResponse = await client.SetAbilityBaseScoreAsync(characterId, target.AbilityScoreId, newBaseScore, TestContext.CancellationTokenSource.Token);
 
         // Assert
         postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        var abilitiesAfter = await client.GetAbilityScoresAsync(characterId, CancellationToken.None);
+        var abilitiesAfter = await client.GetAbilityScoresAsync(characterId, TestContext.CancellationTokenSource.Token);
         var updated = abilitiesAfter.AbilityScores.First(a => a.AbilityScoreId == target.AbilityScoreId);
 
         updated.BaseScore.Should().Be(newBaseScore);
@@ -93,23 +95,24 @@ public sealed class AbilityScoresEndpointsTests
     }
 
     [TestMethod]
+    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
     public async Task UpdateAdditionalScore_Updates_CalculatedFields()
     {
         // Arrange
         var characterId = _integration.GetCharacterIdentifier();
         var client = _integration.CreateClient();
-        var abilitiesBefore = await client.GetAbilityScoresAsync(characterId, CancellationToken.None);
+        var abilitiesBefore = await client.GetAbilityScoresAsync(characterId, TestContext.CancellationTokenSource.Token);
         var target = abilitiesBefore.AbilityScores[0];
         const int newAdditionalScore = 2;
         const int expectedScore = 12;
         const int expectedModifier = 1;
 
         // Act
-        var postResponse = await client.SetAbilityAdditionalScoreAsync(characterId, target.AbilityScoreId, newAdditionalScore, CancellationToken.None);
+        var postResponse = await client.SetAbilityAdditionalScoreAsync(characterId, target.AbilityScoreId, newAdditionalScore, TestContext.CancellationTokenSource.Token);
 
         // Assert
         postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        var abilitiesAfter = await client.GetAbilityScoresAsync(characterId, CancellationToken.None);
+        var abilitiesAfter = await client.GetAbilityScoresAsync(characterId, TestContext.CancellationTokenSource.Token);
         var updated = abilitiesAfter.AbilityScores.First(a => a.AbilityScoreId == target.AbilityScoreId);
 
         updated.AdditionalScore.Should().Be(newAdditionalScore);

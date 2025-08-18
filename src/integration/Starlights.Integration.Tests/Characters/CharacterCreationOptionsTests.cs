@@ -6,7 +6,7 @@ using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 namespace Starlights.Integration.Tests.Characters;
 
 [TestClass]
-public sealed class CharacterCreationOptionsTests
+public sealed class CharacterCreationOptionsTests : IntegrationTestBase
 {
     private readonly IntegrationHost _integration;
 
@@ -21,7 +21,7 @@ public sealed class CharacterCreationOptionsTests
     {
         var client = _integration.CreateClient();
 
-        await client.GetAsync("/api/elements/initialize", CancellationToken.None);
+        await client.GetAsync("/api/elements/initialize", TestCancellationToken);
     }
 
     [TestMethod]
@@ -31,11 +31,12 @@ public sealed class CharacterCreationOptionsTests
         var client = _integration.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/characters/creation-options", CancellationToken.None);
+        var response = await client.GetAsync("/api/characters/creation-options", TestCancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var responseJson = await response.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>(CancellationToken.None);
-        responseJson?.Options.Should().NotBeEmpty();
+        var responseJson = await response.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>(TestCancellationToken);
+        responseJson.Should().NotBeNull();
+        responseJson.Options.Should().NotBeEmpty();
     }
 }
