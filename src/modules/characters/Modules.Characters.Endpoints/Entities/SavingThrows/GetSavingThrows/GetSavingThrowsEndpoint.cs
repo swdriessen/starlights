@@ -2,21 +2,9 @@ using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Endpoints.Extensions;
-using Starlights.Modules.Characters.Endpoints.Entities.SavingThrows;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Entities.SavingThrows.GetSavingThrows;
-
-internal sealed class GetSavingThrowsRequest
-{
-    [BindFrom("id")]
-    public Guid CharacterId { get; set; }
-}
-
-internal sealed class GetSavingThrowsResponse
-{
-    public List<SavingThrowDataModel> SavingThrows { get; set; } = [];
-}
 
 internal sealed class GetSavingThrowsEndpoint : Endpoint<GetSavingThrowsRequest, GetSavingThrowsResponse>
 {
@@ -29,7 +17,7 @@ internal sealed class GetSavingThrowsEndpoint : Endpoint<GetSavingThrowsRequest,
 
     public override void Configure()
     {
-        Get("/{id:guid}/savingthrows");
+        Get("/{id:guid}/saving-throws");
         Group<CharactersGroup>();
         AllowAnonymous();
     }

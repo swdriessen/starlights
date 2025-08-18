@@ -6,17 +6,6 @@ using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Entities.AbilityScores.GetAbilities;
 
-internal sealed class GetAbilityScoresRequest
-{
-    [BindFrom("id")]
-    public Guid CharacterId { get; set; }
-}
-
-internal sealed class GetAbilityScoresResponse
-{
-    public List<AbilityScoreDataModel> AbilityScores { get; set; } = [];
-}
-
 internal sealed class GetAbilityScoresEndpoint : Endpoint<GetAbilityScoresRequest, GetAbilityScoresResponse>
 {
     private readonly IPersistence _persistence;

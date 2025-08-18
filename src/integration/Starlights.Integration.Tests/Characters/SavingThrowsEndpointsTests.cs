@@ -48,7 +48,7 @@ public sealed class SavingThrowsEndpointsTests : IntegrationTestBase
         var characterId = _integration.GetCharacterIdentifier();
         var client = _integration.CreateClient();
 
-        var response = await client.GetAsync($"/api/characters/{characterId}/savingthrows", TestCancellationToken);
+        var response = await client.GetAsync($"/api/characters/{characterId}/saving-throws", TestCancellationToken);
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
 
         var saves = await response.Content.ReadFromJsonAsync<GetSavingThrowsResponse>();
@@ -70,7 +70,7 @@ public sealed class SavingThrowsEndpointsTests : IntegrationTestBase
     {
         var client = _integration.CreateClient();
         var unknownCharacterId = Guid.NewGuid();
-        var response = await client.GetAsync($"/api/characters/{unknownCharacterId}/savingthrows", TestCancellationToken);
+        var response = await client.GetAsync($"/api/characters/{unknownCharacterId}/saving-throws", TestCancellationToken);
         await response.ShouldHaveStatusAsync(System.Net.HttpStatusCode.NotFound);
     }
 }

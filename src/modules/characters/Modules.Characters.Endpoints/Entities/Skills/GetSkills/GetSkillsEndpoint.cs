@@ -7,17 +7,6 @@ using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Entities.Skills.GetSkills;
 
-internal sealed class GetSkillsRequest
-{
-    [BindFrom("id")]
-    public Guid CharacterId { get; set; }
-}
-
-internal sealed class GetSkillsResponse
-{
-    public List<SkillDataModel> Skills { get; set; } = [];
-}
-
 internal sealed class GetSkillsEndpoint : Endpoint<GetSkillsRequest, GetSkillsResponse>
 {
     private readonly IPersistence _persistence;
