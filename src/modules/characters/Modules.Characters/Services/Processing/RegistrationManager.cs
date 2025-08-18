@@ -29,17 +29,10 @@ public class RegistrationManager : IRegistrationManager
 
         var context = new RegistrationProcessContext(registration, _persistence);
 
-        // step 1 process the registration, this can be a pipeline of steps
         await ProcessIncludeRules(context);
 
-        // step 2 process registration hooks
-        // lets first keep it simple and hook into the events
-        // add something like... IIncludeRuleRegistrationBehavior etc
-
-        // step 3 mark as processed (raise domain event)
         registration.Processed();
 
-        // step 4 save the registration
         var affectedRows = await _persistence.SaveChangesAsync();
 
         processActivity?.SetTag("affectedRows", affectedRows);
@@ -73,18 +66,14 @@ public class RegistrationManager : IRegistrationManager
             var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name, newIncludeElement.Type);
             newRegistration.UpdateParentRegistration(currentRegistration);
 
-            // add specific events based on the type of the included element (TODO: inject something instead)
-            newRegistration.IncludeSpecificEvents();
+            // create the new registration include rule, this is to keep track of the rules applied
+            currentRegistration.CreateIncludeRule(new(rule.RuleId), new(newIncludeElement.Id), newIncludeElement.Name);
 
+            // apply any registration behavior in the current context
             foreach (var behavior in _registrationBehaviors)
             {
                 await behavior.Registered(newRegistration, context);
             }
-
-            // create asi / skill here works?
-
-            // create the new registration include rule, this is to keep track of the rules applied
-            currentRegistration.CreateIncludeRule(new(rule.RuleId), new(newIncludeElement.Id), newIncludeElement.Name);
 
             registrations.Add(newRegistration);
         }
