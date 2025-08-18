@@ -1,6 +1,6 @@
 ﻿using Starlights.Modules.Characters.Domain.Characters.Eventing;
 
-namespace Starlights.Modules.Characters.Domain.Skills;
+namespace Starlights.Modules.Characters.Domain.Skills.Eventing;
 
 public record SkillCreatedEvent : CharacterEventBase
 {

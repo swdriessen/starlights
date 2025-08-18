@@ -1,7 +1,9 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Skills;
+using Starlights.Modules.Characters.Domain.SavingThrows;
 using Starlights.Modules.Characters.Endpoints.Entities.AbilityScores;
 using Starlights.Modules.Characters.Endpoints.Entities.Skills;
+using Starlights.Modules.Characters.Endpoints.Entities.SavingThrows;
 
 namespace Starlights.Modules.Characters.Endpoints.Extensions;
 
@@ -47,5 +49,26 @@ public static class DataModelMappingExtensions
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
         return [.. entities.Select(e => e.AsSkillDataModel())];
+    }
+
+    public static SavingThrowDataModel AsSavingThrowDataModel(this SavingThrow entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+        return new SavingThrowDataModel
+        {
+            SavingThrowId = entity.Id,
+            Name = entity.Name,
+            AbilityScoreId = entity.AbilityScoreId,
+            AbilityScoreAbbreviation = entity.AbilityScoreAbbreviation,
+            AbilityScoreModifier = entity.AbilityScoreModifier,
+            AdditionalBonus = entity.AdditionalBonus,
+            CalculatedBonus = entity.CalculatedBonus
+        };
+    }
+
+    public static List<SavingThrowDataModel> AsSavingThrowDataModels(this IEnumerable<SavingThrow> entities)
+    {
+        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
+        return [.. entities.Select(e => e.AsSavingThrowDataModel())];
     }
 }

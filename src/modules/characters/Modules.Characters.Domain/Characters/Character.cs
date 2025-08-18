@@ -4,6 +4,9 @@ using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Characters.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Domain.Skills;
+using Starlights.Modules.Characters.Domain.Skills.Eventing;
+using Starlights.Modules.Characters.Domain.SavingThrows;
+using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
 using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Characters.Domain.Characters;
@@ -16,6 +19,7 @@ public sealed class Character : AggregateRoot<CharacterId>
 {
     private readonly List<AbilityScore> _abilityScores = [];
     private readonly List<Skill> _skills = [];
+    private readonly List<SavingThrow> _savingThrows = [];
 
     private Character(string name)
         : base(CharacterId.New())
@@ -37,6 +41,11 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// Gets the collection of skills associated with the character.
     /// </summary>
     public IReadOnlyCollection<Skill> Skills => _skills.AsReadOnly();
+
+    /// <summary>
+    /// Gets the collection of saving throws associated with the character.
+    /// </summary>
+    public IReadOnlyCollection<SavingThrow> SavingThrows => _savingThrows.AsReadOnly();
 
     /// <summary>
     /// Creates a new instance of the <see cref="Character"/> class with the specified name.
@@ -85,5 +94,27 @@ public sealed class Character : AggregateRoot<CharacterId>
         AddDomainEvent(new SkillCreatedEvent() { CharacterId = Id, SkillId = skill.Id });
 
         return skill;
+    }
+
+    /// <summary>
+    /// Creates a new saving throw for the character.
+    /// </summary>
+    public SavingThrow CreateSavingThrow(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
+    {
+        var save = SavingThrow.Create(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+        _savingThrows.Add(save);
+        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = Id, SavingThrowId = save.Id });
+        return save;
+    }
+
+    /// <summary>
+    /// Creates a new saving throw for the character without an associated ability score (should be rare).
+    /// </summary>
+    public SavingThrow CreateSavingThrowWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
+    {
+        var save = SavingThrow.CreateWithoutAbilityScore(associatedRegistrationId, name);
+        _savingThrows.Add(save);
+        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = Id, SavingThrowId = save.Id });
+        return save;
     }
 }

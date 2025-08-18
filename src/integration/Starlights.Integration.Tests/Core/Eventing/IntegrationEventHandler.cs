@@ -1,5 +1,5 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities.Eventing;
-using Starlights.Modules.Characters.Domain.Skills;
+using Starlights.Modules.Characters.Domain.Skills.Eventing;
 using Starlights.Platform.Eventing;
 
 namespace Starlights.Integration.Tests.Core.Eventing;
