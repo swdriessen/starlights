@@ -3,6 +3,7 @@ using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Characters.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Domain.Skills;
 using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Characters.Domain.Characters;
@@ -14,6 +15,7 @@ namespace Starlights.Modules.Characters.Domain.Characters;
 public sealed class Character : AggregateRoot<CharacterId>
 {
     private readonly List<AbilityScore> _abilityScores = [];
+    private readonly List<Skill> _skills = [];
 
     private Character(string name)
         : base(CharacterId.New())
@@ -30,6 +32,11 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// Gets the collection of ability scores associated with the character.
     /// </summary>
     public IReadOnlyCollection<AbilityScore> AbilityScores => _abilityScores.AsReadOnly();
+
+    /// <summary>
+    /// Gets the collection of skills associated with the character.
+    /// </summary>
+    public IReadOnlyCollection<Skill> Skills => _skills.AsReadOnly();
 
     /// <summary>
     /// Creates a new instance of the <see cref="Character"/> class with the specified name.
@@ -52,5 +59,31 @@ public sealed class Character : AggregateRoot<CharacterId>
         AddDomainEvent(new AbilityScoreCreatedEvent() { CharacterId = Id, AbilityScoreId = abilityScore.Id });
 
         return abilityScore;
+    }
+
+    /// <summary>
+    /// Creates a new skill for the character.
+    /// </summary>
+    public Skill CreateSkill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
+    {
+        var skill = Skill.Create(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+        _skills.Add(skill);
+
+        AddDomainEvent(new SkillCreatedEvent() { CharacterId = Id, SkillId = skill.Id });
+
+        return skill;
+    }
+
+    /// <summary>
+    /// Creates a new skill for the character.
+    /// </summary>
+    public Skill CreateSkillWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
+    {
+        var skill = Skill.CreateWithoutAbilityScore(associatedRegistrationId, name);
+        _skills.Add(skill);
+
+        AddDomainEvent(new SkillCreatedEvent() { CharacterId = Id, SkillId = skill.Id });
+
+        return skill;
     }
 }

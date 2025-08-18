@@ -6,7 +6,7 @@ using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
 namespace Starlights.Integration.Tests.Characters;
 
 [TestClass]
-public sealed class CharacterPortraitOptionsTests
+public sealed class CharacterPortraitOptionsTests : IntegrationTestBase
 {
     private readonly IntegrationHost _integration;
 
@@ -23,7 +23,7 @@ public sealed class CharacterPortraitOptionsTests
         var client = _integration.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/characters/portrait-options", CancellationToken.None);
+        var response = await client.GetAsync("/api/characters/portrait-options", TestCancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -36,8 +36,8 @@ public sealed class CharacterPortraitOptionsTests
         var client = _integration.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/characters/portrait-options", CancellationToken.None);
-        var responseJson = await response.Content.ReadFromJsonAsync<GetCharacterPortraitOptionsResponse>(CancellationToken.None);
+        var response = await client.GetAsync("/api/characters/portrait-options", TestCancellationToken);
+        var responseJson = await response.Content.ReadFromJsonAsync<GetCharacterPortraitOptionsResponse>(TestCancellationToken);
 
         // Assert
         responseJson?.Portraits.Should().NotBeEmpty();

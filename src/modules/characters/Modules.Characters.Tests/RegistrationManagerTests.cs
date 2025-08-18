@@ -1,9 +1,9 @@
 using FluentAssertions;
-using Modules.Characters.Services.Processing;
 using Moq;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
 using Starlights.Platform.Data;
@@ -17,8 +17,8 @@ public sealed class RegistrationManagerTests
     private readonly Mock<IElementsModuleQueries> _elements = new();
     private readonly Mock<IRegistrationRepository> _registrations = new();
 
-    private RegistrationManager CreateSut()
-        => new(_persistence.Object, _elements.Object);
+    private RegistrationManager CreateSut(params IRegistrationBehavior[] behaviors)
+        => new(_persistence.Object, _elements.Object, behaviors);
 
     [TestInitialize]
     public void Setup()
@@ -53,10 +53,11 @@ public sealed class RegistrationManagerTests
     }
 
     [TestMethod]
-    public async Task ProcessRegistration_AddsIncludedRegistrations_And_MarksProcessed()
+    public async Task ProcessRegistration_ShouldSaveChanges_WhenIncludeAddsRegistration()
     {
         // Arrange
         var sut = CreateSut();
+
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
         var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
@@ -65,96 +66,287 @@ public sealed class RegistrationManagerTests
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
 
-        // the current element has one include rule
         var includeRuleId = Guid.NewGuid();
         var includedElementId = Guid.NewGuid();
 
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
-                 .ReturnsAsync(new ElementDataModel
-                 {
-                     Id = baseElementId,
-                     Name = "Base",
-                     Type = "Type",
-                     IncludeRules = [new IncludeRuleDataModel(includeRuleId, includedElementId, 0)]
-                 });
+                 .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
 
-        // the included element resolved by the rule
-        const string includedName = "Included-1";
-        const string includedType = "IncludedType-1";
         _elements.Setup(m => m.GetElementWithRules(includedElementId))
-                 .ReturnsAsync(new ElementDataModel
-                 {
-                     Id = includedElementId,
-                     Name = includedName,
-                     Type = includedType,
-                     IncludeRules = []
-                 });
-
-        // capture added registration for assertions
-        Registration? addedRegistration = null;
-        _registrations.Setup(r => r.Add(It.IsAny<Registration>()))
-                      .Callback<Registration>(reg => addedRegistration = reg);
-
-        _persistence.Setup(p => p.SaveChangesAsync())
-                    .ReturnsAsync(2);
+                 .ReturnsAsync(CreateIncludedElement(includedElementId));
 
         // Act
-        var affected = await sut.ProcessRegistration(registrationId);
+        _ = await sut.ProcessRegistration(registrationId);
 
         // Assert
-        affected.Should().Be(2);
+        _persistence.Verify(p => p.SaveChangesAsync(), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task ProcessRegistration_MarksRegistrationProcessed_WhenIncludeAddsRegistration()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        var characterId = CharacterId.New();
+        var baseElementId = Guid.NewGuid();
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
+        var registrationId = registration.Id;
+
+        _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
+                      .ReturnsAsync(registration);
+
+        _elements.Setup(m => m.GetElementWithRules(baseElementId))
+                 .ReturnsAsync(CreateBaseElementWithoutRules(baseElementId));
+
+        // Act
+        _ = await sut.ProcessRegistration(registrationId);
+
+        // Assert
         registration.IsProcessed.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task ProcessRegistration_AssociatesIncludeRule_WhenIncludeAddsRegistration()
+    {
+        // Arrange
+        var behavior = new Mock<IRegistrationBehavior>();
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+                .Returns(Task.CompletedTask);
+
+        var sut = CreateSut(behavior.Object);
+
+        var characterId = CharacterId.New();
+        var baseElementId = Guid.NewGuid();
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
+        var registrationId = registration.Id;
+
+        _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
+                      .ReturnsAsync(registration);
+
+        var includeRuleId = Guid.NewGuid();
+        var includedElementId = Guid.NewGuid();
+
+        _elements.Setup(m => m.GetElementWithRules(baseElementId))
+                 .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
+
+        _elements.Setup(m => m.GetElementWithRules(includedElementId))
+                 .ReturnsAsync(CreateIncludedElement(includedElementId));
+
+        _persistence.Setup(p => p.SaveChangesAsync()).ReturnsAsync(2);
+
+        // Act
+        _ = await sut.ProcessRegistration(registrationId);
+
+        // Assert
         registration.HasAssociatedRule(includeRuleId).Should().BeTrue();
+    }
 
-        addedRegistration.Should().NotBeNull();
-        addedRegistration!.ParentRegistrationId.Should().Be(registration.Id);
-        addedRegistration.AssociatedElementId.Value.Should().Be(includedElementId);
-        addedRegistration.AssociatedElementName.Should().Be(includedName);
-        addedRegistration.AssociatedElementType.Should().Be(includedType);
+    [TestMethod]
+    public async Task ProcessRegistration_AddsIncludedRegistrationWithExpectedProperties()
+    {
+        // Arrange
+        var behavior = new Mock<IRegistrationBehavior>();
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+                .Returns(Task.CompletedTask);
 
+        var sut = CreateSut(behavior.Object);
+
+        var characterId = CharacterId.New();
+        var baseElementId = Guid.NewGuid();
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
+        var registrationId = registration.Id;
+
+        _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
+                      .ReturnsAsync(registration);
+
+        var includeRuleId = Guid.NewGuid();
+        var includedElementId = Guid.NewGuid();
+
+        _elements.Setup(m => m.GetElementWithRules(baseElementId))
+                 .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
+
+        _elements.Setup(m => m.GetElementWithRules(includedElementId))
+                 .ReturnsAsync(CreateIncludedElement(includedElementId));
+
+        Registration? added = null;
+        _registrations.Setup(r => r.Add(It.IsAny<Registration>()))
+                      .Callback<Registration>(reg => added = reg);
+
+        _persistence.Setup(p => p.SaveChangesAsync()).ReturnsAsync(2);
+
+        // Act
+        _ = await sut.ProcessRegistration(registrationId);
+
+        // Assert
+        added.Should().NotBeNull();
+        added!.ParentRegistrationId.Should().Be(registration.Id);
+        added.AssociatedElementId.Value.Should().Be(includedElementId);
+        added.AssociatedElementName.Should().Be("Included-1");
+        added.AssociatedElementType.Should().Be("IncludedType-1");
         _registrations.Verify(r => r.Add(It.IsAny<Registration>()), Times.Once);
         _persistence.Verify(p => p.SaveChangesAsync(), Times.Once);
     }
 
     [TestMethod]
-    public async Task ProcessRegistration_SkipsWhenRuleAlreadyAssociated()
+    public async Task ProcessRegistration_InvokesBehaviors_ForIncludedRegistration()
     {
         // Arrange
-        var sut = CreateSut();
+        var behavior = new Mock<IRegistrationBehavior>();
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+                .Returns(Task.CompletedTask);
+
+        var sut = CreateSut(behavior.Object);
+
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
         var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
         var registrationId = registration.Id;
 
-        var includeRuleId = Guid.NewGuid();
-        var includedElementId = Guid.NewGuid();
-
-        // pre-associate rule so manager should skip it
-        registration.CreateIncludeRule(new(includeRuleId), new(includedElementId), "Pre-Added");
-
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
 
+        var includeRuleId = Guid.NewGuid();
+        var includedElementId = Guid.NewGuid();
+
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
-                 .ReturnsAsync(new ElementDataModel
-                 {
-                     Id = baseElementId,
-                     Name = "Base",
-                     IncludeRules = [new IncludeRuleDataModel(includeRuleId, includedElementId, 0)]
-                 });
+                 .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
+
+        _elements.Setup(m => m.GetElementWithRules(includedElementId))
+                 .ReturnsAsync(CreateIncludedElement(includedElementId));
+
+        _persistence.Setup(p => p.SaveChangesAsync()).ReturnsAsync(2);
 
         // Act
-        var affected = await sut.ProcessRegistration(registrationId);
+        _ = await sut.ProcessRegistration(registrationId);
+
+        // Assert
+        behavior.Verify(b => b.Registered(
+            It.Is<Registration>(r => r.AssociatedElementId.Value == includedElementId && r.ParentRegistrationId == registration.Id),
+            It.IsAny<RegistrationProcessContext>()),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public async Task ProcessRegistration_MarksRegistrationProcessed_WhenRuleAlreadyAssociated()
+    {
+        // Arrange
+        var behavior = new Mock<IRegistrationBehavior>();
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+                .Returns(Task.CompletedTask);
+        var sut = CreateSut(behavior.Object);
+
+        var characterId = CharacterId.New();
+        var baseElementId = Guid.NewGuid();
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
+
+        var includeRuleId = Guid.NewGuid();
+        var includedElementId = Guid.NewGuid();
+
+        registration.CreateIncludeRule(new(includeRuleId), new(includedElementId), "Pre-Added");
+
+        _registrations.Setup(r => r.GetRegistrationAsync(registration.Id))
+                      .ReturnsAsync(registration);
+
+        _elements.Setup(m => m.GetElementWithRules(baseElementId))
+                 .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
+
+        // Act
+        var affected = await sut.ProcessRegistration(registration.Id);
 
         // Assert
         affected.Should().Be(1);
         registration.IsProcessed.Should().BeTrue();
+    }
 
-        // No additional registrations added
+    [TestMethod]
+    public async Task ProcessRegistration_DoesNotCreateOrInvoke_WhenRuleAlreadyAssociated()
+    {
+        // Arrange
+        var behavior = new Mock<IRegistrationBehavior>();
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+                .Returns(Task.CompletedTask);
+        var sut = CreateSut(behavior.Object);
+
+        var characterId = CharacterId.New();
+        var baseElementId = Guid.NewGuid();
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
+
+        var includeRuleId = Guid.NewGuid();
+        var includedElementId = Guid.NewGuid();
+
+        registration.CreateIncludeRule(new(includeRuleId), new(includedElementId), "Pre-Added");
+
+        _registrations.Setup(r => r.GetRegistrationAsync(registration.Id))
+                      .ReturnsAsync(registration);
+
+        _elements.Setup(m => m.GetElementWithRules(baseElementId))
+                 .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
+
+        // Act
+        _ = await sut.ProcessRegistration(registration.Id);
+
+        // Assert
         _registrations.Verify(r => r.Add(It.IsAny<Registration>()), Times.Never);
+        behavior.Verify(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()), Times.Never);
+    }
 
-        // Ensure we did not fetch the included element because rule was already associated
+    [TestMethod]
+    public async Task ProcessRegistration_DoesNotFetchIncludedElement_WhenRuleAlreadyAssociated()
+    {
+        // Arrange
+        var behavior = new Mock<IRegistrationBehavior>();
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+                .Returns(Task.CompletedTask);
+        var sut = CreateSut(behavior.Object);
+
+        var characterId = CharacterId.New();
+        var baseElementId = Guid.NewGuid();
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
+
+        var includeRuleId = Guid.NewGuid();
+        var includedElementId = Guid.NewGuid();
+
+        registration.CreateIncludeRule(new(includeRuleId), new(includedElementId), "Pre-Added");
+
+        _registrations.Setup(r => r.GetRegistrationAsync(registration.Id))
+                      .ReturnsAsync(registration);
+
+        _elements.Setup(m => m.GetElementWithRules(baseElementId))
+                 .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
+
+        // Act
+        _ = await sut.ProcessRegistration(registration.Id);
+
+        // Assert
         _elements.Verify(m => m.GetElementWithRules(includedElementId), Times.Never);
         _persistence.Verify(p => p.SaveChangesAsync(), Times.Once);
     }
+
+    private static ElementDataModel CreateBaseElementWithIncludeRule(Guid baseElementId, Guid includeRuleId, Guid includedElementId, string name = "Base", string type = "Type", int levelRequirement = 0)
+        => new()
+        {
+            Id = baseElementId,
+            Name = name,
+            Type = type,
+            IncludeRules = [new IncludeRuleDataModel(includeRuleId, includedElementId, levelRequirement)]
+        };
+
+    private static ElementDataModel CreateIncludedElement(Guid includedElementId, string name = "Included-1", string type = "IncludedType-1")
+        => new()
+        {
+            Id = includedElementId,
+            Name = name,
+            Type = type,
+            IncludeRules = []
+        };
+
+    private static ElementDataModel CreateBaseElementWithoutRules(Guid baseElementId, string name = "Base", string type = "Type")
+        => new()
+        {
+            Id = baseElementId,
+            Name = name,
+            Type = type,
+            IncludeRules = []
+        };
 }

@@ -4,8 +4,13 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<RootNamespace>Starlights.Modules.Characters</RootNamespace>
+	</PropertyGroup>
+	
   <ItemGroup>
     <ProjectReference Include="..\..\..\platform\components\Starlights.Platform.Eventing.EventPublisher\Starlights.Platform.Eventing.EventPublisher.csproj" />
     <ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />

@@ -163,6 +163,51 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.ToTable("registration_include_rules", "characters");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Skills.Skill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AbilityScoreAbbreviation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("AbilityScoreId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AbilityScoreModifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("AdditionalBonus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<Guid>("AssociatedRegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CalculatedBonus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<Guid>("CharacterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssociatedRegistrationId");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("skills", "characters");
+                });
+
             modelBuilder.Entity("Starlights.Platform.Components.Data.EntityFramework.EventMessage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -207,9 +252,20 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Skills.Skill", b =>
+                {
+                    b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", null)
+                        .WithMany("Skills")
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Characters.Character", b =>
                 {
                     b.Navigation("AbilityScores");
+
+                    b.Navigation("Skills");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>

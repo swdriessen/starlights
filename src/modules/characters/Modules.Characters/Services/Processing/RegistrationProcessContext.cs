@@ -1,16 +1,25 @@
-﻿using Starlights.Modules.Characters.Data;
-using Starlights.Modules.Characters.Domain.Registrations;
+﻿using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Platform.Data;
 
-namespace Modules.Characters.Services.Processing;
+namespace Starlights.Modules.Characters.Services.Processing;
 
 public class RegistrationProcessContext
 {
-    public RegistrationProcessContext(IRegistrationRepository repository, Registration registration)
+    private readonly IPersistence _persistence;
+
+    public RegistrationProcessContext(Registration registration, IPersistence persistence)
     {
-        Repository = repository;
         Registration = registration;
+        _persistence = persistence;
     }
 
-    public IRegistrationRepository Repository { get; }
+    /// <summary>
+    /// The registration that is currently being processed. Itself it already persisted.
+    /// </summary>
     public Registration Registration { get; }
+
+    /// <summary>
+    /// Gets a repository for the current persistence context.
+    /// </summary>
+    public T GetRepository<T>() where T : IRepository => _persistence.GetRepository<T>();
 }

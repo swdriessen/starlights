@@ -29,16 +29,16 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
         var defaultCharacter = CreateDefaultCharacterCreationOption(repository);
 
-        var abilities = CreateAbilities();
+        var defaultElements = CreateDefaultElements();
 
-        // create include rules for each ability 
-        foreach (var ability in abilities)
+        // create include rules for each element
+        foreach (var e in defaultElements)
         {
-            var includeRule = new IncludeRuleComponent(defaultCharacter.Id, ability.Id, 0);
+            var includeRule = new IncludeRuleComponent(defaultCharacter.Id, e.Id, 0);
             defaultCharacter.AddComponent(includeRule); // EF should track this automatically
         }
 
-        newElements.AddRange(abilities);
+        newElements.AddRange(defaultElements);
 
         foreach (var newElement in newElements)
         {
@@ -60,10 +60,20 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         return defaultCharacter;
     }
 
-    private static List<Element> CreateAbilities()
+    private static Element CreateSkillsRule(IElementsRepository repository)
+    {
+        var skillsRule = Element.Create("Skills", "Rule");
+
+        repository.Add(skillsRule);
+
+        return skillsRule;
+    }
+
+    private static List<Element> CreateDefaultElements()
     {
         var newElements = new List<Element>();
 
+        // Abilities
         var strengthAbility = Element.Create("Strength", ElementTypeConstants.Ability);
         strengthAbility.AddComponent(new AbbreviationComponent(strengthAbility.Id, "STR"));
 
@@ -88,6 +98,80 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         newElements.Add(intelligenceAbility);
         newElements.Add(wisdomAbility);
         newElements.Add(charismaAbility);
+
+        // D&D 5e skills (18 total) with their primary abilities
+        var acrobatics = Element.Create("Acrobatics", ElementTypeConstants.Skill);
+        acrobatics.AddComponent(new PrimaryAbilityComponent(acrobatics.Id, dexterityAbility.Id));
+
+        var animalHandling = Element.Create("Animal Handling", ElementTypeConstants.Skill);
+        animalHandling.AddComponent(new PrimaryAbilityComponent(animalHandling.Id, wisdomAbility.Id));
+
+        var arcana = Element.Create("Arcana", ElementTypeConstants.Skill);
+        arcana.AddComponent(new PrimaryAbilityComponent(arcana.Id, intelligenceAbility.Id));
+
+        var athletics = Element.Create("Athletics", ElementTypeConstants.Skill);
+        athletics.AddComponent(new PrimaryAbilityComponent(athletics.Id, strengthAbility.Id));
+
+        var deception = Element.Create("Deception", ElementTypeConstants.Skill);
+        deception.AddComponent(new PrimaryAbilityComponent(deception.Id, charismaAbility.Id));
+
+        var history = Element.Create("History", ElementTypeConstants.Skill);
+        history.AddComponent(new PrimaryAbilityComponent(history.Id, intelligenceAbility.Id));
+
+        var insight = Element.Create("Insight", ElementTypeConstants.Skill);
+        insight.AddComponent(new PrimaryAbilityComponent(insight.Id, wisdomAbility.Id));
+
+        var intimidation = Element.Create("Intimidation", ElementTypeConstants.Skill);
+        intimidation.AddComponent(new PrimaryAbilityComponent(intimidation.Id, charismaAbility.Id));
+
+        var investigation = Element.Create("Investigation", ElementTypeConstants.Skill);
+        investigation.AddComponent(new PrimaryAbilityComponent(investigation.Id, intelligenceAbility.Id));
+
+        var medicine = Element.Create("Medicine", ElementTypeConstants.Skill);
+        medicine.AddComponent(new PrimaryAbilityComponent(medicine.Id, wisdomAbility.Id));
+
+        var nature = Element.Create("Nature", ElementTypeConstants.Skill);
+        nature.AddComponent(new PrimaryAbilityComponent(nature.Id, intelligenceAbility.Id));
+
+        var perception = Element.Create("Perception", ElementTypeConstants.Skill);
+        perception.AddComponent(new PrimaryAbilityComponent(perception.Id, wisdomAbility.Id));
+
+        var performance = Element.Create("Performance", ElementTypeConstants.Skill);
+        performance.AddComponent(new PrimaryAbilityComponent(performance.Id, charismaAbility.Id));
+
+        var persuasion = Element.Create("Persuasion", ElementTypeConstants.Skill);
+        persuasion.AddComponent(new PrimaryAbilityComponent(persuasion.Id, charismaAbility.Id));
+
+        var religion = Element.Create("Religion", ElementTypeConstants.Skill);
+        religion.AddComponent(new PrimaryAbilityComponent(religion.Id, intelligenceAbility.Id));
+
+        var sleightOfHand = Element.Create("Sleight of Hand", ElementTypeConstants.Skill);
+        sleightOfHand.AddComponent(new PrimaryAbilityComponent(sleightOfHand.Id, dexterityAbility.Id));
+
+        var stealth = Element.Create("Stealth", ElementTypeConstants.Skill);
+        stealth.AddComponent(new PrimaryAbilityComponent(stealth.Id, dexterityAbility.Id));
+
+        var survival = Element.Create("Survival", ElementTypeConstants.Skill);
+        survival.AddComponent(new PrimaryAbilityComponent(survival.Id, wisdomAbility.Id));
+
+        newElements.Add(acrobatics);
+        newElements.Add(animalHandling);
+        newElements.Add(arcana);
+        newElements.Add(athletics);
+        newElements.Add(deception);
+        newElements.Add(history);
+        newElements.Add(insight);
+        newElements.Add(intimidation);
+        newElements.Add(investigation);
+        newElements.Add(medicine);
+        newElements.Add(nature);
+        newElements.Add(perception);
+        newElements.Add(performance);
+        newElements.Add(persuasion);
+        newElements.Add(religion);
+        newElements.Add(sleightOfHand);
+        newElements.Add(stealth);
+        newElements.Add(survival);
 
         return newElements;
     }
