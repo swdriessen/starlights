@@ -69,13 +69,14 @@ public class RegistrationManager : IRegistrationManager
             // create the new registration include rule, this is to keep track of the rules applied
             currentRegistration.CreateIncludeRule(new(rule.RuleId), new(newIncludeElement.Id), newIncludeElement.Name);
 
+            registrations.Add(newRegistration);
+            context.NewRegistrations.Add(newRegistration);
+
             // apply any registration behavior in the current context
             foreach (var behavior in _registrationBehaviors)
             {
                 await behavior.Registered(newRegistration, context);
             }
-
-            registrations.Add(newRegistration);
         }
     }
 }

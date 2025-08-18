@@ -19,6 +19,11 @@ public class RegistrationProcessContext
     public Registration Registration { get; }
 
     /// <summary>
+    /// A list of new registrations that were created during the processing of the current registration.
+    /// </summary>
+    public List<Registration> NewRegistrations { get; } = [];
+
+    /// <summary>
     /// Gets a repository for the current persistence context.
     /// </summary>
     public T GetRepository<T>() where T : IRepository => _persistence.GetRepository<T>();

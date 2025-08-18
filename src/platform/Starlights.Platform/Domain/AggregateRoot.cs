@@ -22,10 +22,7 @@ public abstract class AggregateRoot<TKey> : EntityBase<TKey>, IAggregateRoot<TKe
     /// <summary>
     /// Adds a domain event.
     /// </summary>
-    public void AddDomainEvent(IDomainEvent domainEvent)
-    {
-        _domainEvents.Add(domainEvent);
-    }
+    protected void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
 
     /// <summary>
     /// Clears all domain events.

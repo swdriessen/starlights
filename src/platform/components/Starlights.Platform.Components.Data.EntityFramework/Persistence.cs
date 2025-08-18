@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Concurrent;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,9 @@ public class Persistence : IPersistence
     private readonly Dictionary<Type, IPersistenceContext> _contexts = [];
     private bool _disposedValue;
 
+    // repository cache
+    private readonly ConcurrentDictionary<Type, IRepository> _repositories = [];
+
     public Persistence(ILogger<Persistence> logger, IContextFactoryRegistry contextFactoryRegistry, IServiceProvider serviceProvider)
     {
         _logger = logger;
@@ -26,6 +30,11 @@ public class Persistence : IPersistence
     {
         //using var activity = PersistenceInstrumentation.StartActivity($"GetRepository ({typeof(T).Name})");
 
+        if (_repositories.TryGetValue(typeof(T), out var existingRepository))
+        {
+            return (T)existingRepository;
+        }
+
         var repository = _serviceProvider.GetRequiredService<T>();
 
         // Get the appropriate context factory for this repository type
@@ -35,13 +44,16 @@ public class Persistence : IPersistence
         // Reuse existing context or create new one for this context type
         if (!_contexts.TryGetValue(contextType, out var persistenceContext))
         {
-            _logger.LogDebug("creating a new context instance [context='{ContextType}']", contextType.Name);
+            //_logger.LogDebug("creating a new context instance [context='{ContextType}']", contextType.Name);
             persistenceContext = contextFactory.CreateContext();
             _contexts[contextType] = persistenceContext;
         }
 
         //_logger.LogDebug("setting persistence context for repository [repository='{RepositoryType}', context='{ContextType}']", typeof(T).Name, contextType.Name);
         repository.SetPersistenceContext(persistenceContext);
+
+        _repositories.TryAdd(typeof(T), repository);
+        //_logger.LogDebug("created new repository instance [repository='{RepositoryType}']", typeof(T).Name);
 
         return repository;
     }
@@ -103,6 +115,8 @@ public class Persistence : IPersistence
         {
             if (disposing)
             {
+                _repositories.Clear();
+
                 foreach (var context in _contexts.Values)
                 {
                     if (context is DbContext dbContext)

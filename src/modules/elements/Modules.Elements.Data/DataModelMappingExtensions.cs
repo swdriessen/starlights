@@ -36,4 +36,10 @@ public static class DataModelMappingExtensions
         ArgumentNullException.ThrowIfNull(element, nameof(element));
         return new SkillDataModel(element.Id, element.Name, element.GetComponent<PrimaryAbilityComponent>().PrimaryAbility);
     }
+
+    public static SavingThrowDataModel AsSavingThrowDataModel(this Element element)
+    {
+        ArgumentNullException.ThrowIfNull(element, nameof(element));
+        return new SavingThrowDataModel(element.Id, element.Name, element.GetComponent<PrimaryAbilityComponent>().PrimaryAbility);
+    }
 }

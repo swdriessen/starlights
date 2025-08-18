@@ -60,15 +60,6 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         return defaultCharacter;
     }
 
-    private static Element CreateSkillsRule(IElementsRepository repository)
-    {
-        var skillsRule = Element.Create("Skills", "Rule");
-
-        repository.Add(skillsRule);
-
-        return skillsRule;
-    }
-
     private static List<Element> CreateDefaultElements()
     {
         var newElements = new List<Element>();
@@ -172,6 +163,34 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         newElements.Add(sleightOfHand);
         newElements.Add(stealth);
         newElements.Add(survival);
+
+
+        // D&D 5e saving throws (6 total) with their primary abilities
+
+        var strengthSavingThrow = Element.Create("Strength Saving Throw", ElementTypeConstants.SavingThrow);
+        strengthSavingThrow.AddComponent(new PrimaryAbilityComponent(strengthSavingThrow.Id, strengthAbility.Id));
+
+        var dexteritySavingThrow = Element.Create("Dexterity Saving Throw", ElementTypeConstants.SavingThrow);
+        dexteritySavingThrow.AddComponent(new PrimaryAbilityComponent(dexteritySavingThrow.Id, dexterityAbility.Id));
+
+        var constitutionSavingThrow = Element.Create("Constitution Saving Throw", ElementTypeConstants.SavingThrow);
+        constitutionSavingThrow.AddComponent(new PrimaryAbilityComponent(constitutionSavingThrow.Id, constitutionAbility.Id));
+
+        var intelligenceSavingThrow = Element.Create("Intelligence Saving Throw", ElementTypeConstants.SavingThrow);
+        intelligenceSavingThrow.AddComponent(new PrimaryAbilityComponent(intelligenceSavingThrow.Id, intelligenceAbility.Id));
+
+        var wisdomSavingThrow = Element.Create("Wisdom Saving Throw", ElementTypeConstants.SavingThrow);
+        wisdomSavingThrow.AddComponent(new PrimaryAbilityComponent(wisdomSavingThrow.Id, wisdomAbility.Id));
+
+        var charismaSavingThrow = Element.Create("Charisma Saving Throw", ElementTypeConstants.SavingThrow);
+        charismaSavingThrow.AddComponent(new PrimaryAbilityComponent(charismaSavingThrow.Id, charismaAbility.Id));
+
+        newElements.Add(strengthSavingThrow);
+        newElements.Add(dexteritySavingThrow);
+        newElements.Add(constitutionSavingThrow);
+        newElements.Add(intelligenceSavingThrow);
+        newElements.Add(wisdomSavingThrow);
+        newElements.Add(charismaSavingThrow);
 
         return newElements;
     }

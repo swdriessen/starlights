@@ -2,7 +2,7 @@
 
 namespace Starlights.Modules.Characters.Domain.Abilities.Eventing;
 
-public record AbilityScoreCreatedEvent : CharacterEventBase
+public record AbilityScoreUpdatedEvent : CharacterEventBase
 {
     public AbilityScoreId AbilityScoreId { get; init; }
 }

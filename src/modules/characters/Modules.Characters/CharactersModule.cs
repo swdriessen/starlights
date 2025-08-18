@@ -17,6 +17,7 @@ internal class CharactersModule : IPlatformServiceComponent
 
         // registration behaviors
         builder.Services.AddScoped<IRegistrationBehavior, SkillRegistrationBehavior>();
+        builder.Services.AddScoped<IRegistrationBehavior, SavingThrowRegistrationBehavior>();
         builder.Services.AddScoped<IRegistrationBehavior, AbilityRegistrationBehavior>();
 
         // event handlers

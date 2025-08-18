@@ -2,30 +2,29 @@ using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Endpoints.Extensions;
-using Starlights.Modules.Characters.Endpoints.Entities.Skills;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Characters.Endpoints.Entities.Skills.GetSkills;
+namespace Starlights.Modules.Characters.Endpoints.Entities.SavingThrows.GetSavingThrows;
 
-internal sealed class GetSkillsEndpoint : Endpoint<GetSkillsRequest, GetSkillsResponse>
+internal sealed class GetSavingThrowsEndpoint : Endpoint<GetSavingThrowsRequest, GetSavingThrowsResponse>
 {
     private readonly IPersistence _persistence;
 
-    public GetSkillsEndpoint(IPersistence persistence)
+    public GetSavingThrowsEndpoint(IPersistence persistence)
     {
         _persistence = persistence;
     }
 
     public override void Configure()
     {
-        Get("/{id:guid}/skills");
+        Get("/{id:guid}/saving-throws");
         Group<CharactersGroup>();
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetSkillsRequest req, CancellationToken ct)
+    public override async Task HandleAsync(GetSavingThrowsRequest req, CancellationToken ct)
     {
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(GetSkillsEndpoint)} | {req.CharacterId}");
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(GetSavingThrowsEndpoint)} | {req.CharacterId}");
         var characters = _persistence.GetRepository<ICharactersRepository>();
 
         var character = await characters.GetCharacterAsync(req.CharacterId);
@@ -36,9 +35,9 @@ internal sealed class GetSkillsEndpoint : Endpoint<GetSkillsRequest, GetSkillsRe
             return;
         }
 
-        var response = new GetSkillsResponse
+        var response = new GetSavingThrowsResponse
         {
-            Skills = [.. character.Skills.AsSkillDataModels()]
+            SavingThrows = [.. character.SavingThrows.AsSavingThrowDataModels()]
         };
 
         await Send.OkAsync(response, ct);

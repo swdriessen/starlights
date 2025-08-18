@@ -19,6 +19,7 @@ internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepo
         return await Entities
             .Include(c => c.AbilityScores)
             .Include(c => c.Skills)
+            .Include(c => c.SavingThrows)
             .SingleOrDefaultAsync(a => a.Id == identifier);
     }
 }
