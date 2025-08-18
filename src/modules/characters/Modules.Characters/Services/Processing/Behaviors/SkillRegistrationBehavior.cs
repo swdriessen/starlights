@@ -35,7 +35,7 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
             var characters = context.GetRepository<ICharactersRepository>();
             var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
-            var primaryScore = await GetPrimaryAbilityScore(context.GetRepository<IRegistrationRepository>(), character, associatedElement);
+            var primaryScore = await GetPrimaryAbilityScore(context, character, associatedElement);
 
             if (primaryScore is null)
             {
@@ -50,13 +50,23 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
         }
     }
 
-    private static async Task<AbilityScore?> GetPrimaryAbilityScore(IRegistrationRepository registrations, Character character, SkillDataModel skill)
+    private static async Task<AbilityScore?> GetPrimaryAbilityScore(RegistrationProcessContext context, Character character, SkillDataModel skill)
     {
-        var all = await registrations.GetRegistrationsByAssociationsAsync(character.Id, new ElementId(skill.PrimaryAbilityElementId));
+        // first check if the skill is already associated with a new registration
+        foreach (var registration in context.NewRegistrations)
+        {
+            if (registration.AssociatedElementId == skill.PrimaryAbilityElementId)
+            {
+                return character.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == registration.Id);
+            }
+        }
 
-        //var all = await registrations.GetRegistrationsAsync(character.Id);
+        // otherwise, we need to fetch the registrations from the repository
+        var registrations = context.GetRepository<IRegistrationRepository>();
 
-        foreach (var abilityRegistration in all)
+        var existingRegistrations = await registrations.GetRegistrationsByAssociationsAsync(character.Id, new ElementId(skill.PrimaryAbilityElementId));
+
+        foreach (var abilityRegistration in existingRegistrations)
         {
             if (abilityRegistration.AssociatedElementId == skill.PrimaryAbilityElementId)
             {

@@ -1,11 +1,11 @@
 ﻿namespace Starlights.Modules.Elements.Integration.Models;
 
 /// <summary>
-/// The DTO model for skill information. This is used when creating a character.
+/// The DTO model for saving throw information. This is used when creating a character.
 /// </summary>
-public record SkillDataModel
+public record SavingThrowDataModel
 {
-    public SkillDataModel(Guid elementId, string name, Guid primaryAbilityElementId)
+    public SavingThrowDataModel(Guid elementId, string name, Guid primaryAbilityElementId)
     {
         ElementId = elementId;
         Name = name;

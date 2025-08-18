@@ -1,4 +1,5 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities.Eventing;
+using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
 using Starlights.Modules.Characters.Domain.Skills.Eventing;
 using Starlights.Platform.Eventing;
 
@@ -6,7 +7,8 @@ namespace Starlights.Integration.Tests.Core.Eventing;
 
 internal sealed class IntegrationEventHandler :
     IDomainEventHandler<AbilityScoreCreatedEvent>,
-    IDomainEventHandler<SkillCreatedEvent>
+    IDomainEventHandler<SkillCreatedEvent>,
+    IDomainEventHandler<SavingThrowCreatedEvent>
 {
     private readonly IntegrationEventHandlerListener _listener;
 
@@ -17,4 +19,5 @@ internal sealed class IntegrationEventHandler :
 
     public Task HandleAsync(AbilityScoreCreatedEvent domainEvent) => _listener.AbilityScoreCreated.Mock.Object.HandleAsync(domainEvent);
     public Task HandleAsync(SkillCreatedEvent domainEvent) => _listener.SkillCreated.Mock.Object.HandleAsync(domainEvent);
+    public Task HandleAsync(SavingThrowCreatedEvent domainEvent) => _listener.SavingThrowCreated.Mock.Object.HandleAsync(domainEvent);
 }

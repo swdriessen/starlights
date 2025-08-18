@@ -3,6 +3,7 @@ using FluentAssertions;
 using Starlights.Integration.Tests.Core;
 using Starlights.Integration.Tests.Core.Eventing;
 using Starlights.Integration.Tests.Core.Extensions;
+using Starlights.Modules.Characters.Endpoints.Entities.SavingThrows.GetSavingThrows;
 
 namespace Starlights.Integration.Tests.Characters;
 
@@ -37,12 +38,12 @@ public sealed class SavingThrowsEndpointsTests : IntegrationTestBase
         var characterResponse = await client.CreateCharacterAsync(optionsResponse.Options[0].Id, name, portraitsResponse.Portraits[0].Url, TestCancellationToken);
         _integration.SetCharacterIdentifier(characterResponse.Id);
 
-        await _eventListener.SkillCreated.WaitForEvent(cancellationToken: TestCancellationToken);
+        await _eventListener.SavingThrowCreated.WaitForEvent(count: 6, cancellationToken: TestCancellationToken);
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
-    public async Task GetSavingThrows_Returns_EmptyList_ByDefault()
+    [Timeout(IntegrationHost.TimeoutForDebugging, CooperativeCancellation = true)]
+    public async Task GetSavingThrows_Returns_Data()
     {
         var characterId = _integration.GetCharacterIdentifier();
         var client = _integration.CreateClient();
@@ -50,9 +51,17 @@ public sealed class SavingThrowsEndpointsTests : IntegrationTestBase
         var response = await client.GetAsync($"/api/characters/{characterId}/savingthrows", TestCancellationToken);
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
 
-        var payload = await response.Content.ReadFromJsonAsync<GetSavingThrowsResponse>();
-        payload.Should().NotBeNull();
-        payload.SavingThrows.Should().NotBeNull();
+        var saves = await response.Content.ReadFromJsonAsync<GetSavingThrowsResponse>();
+
+        saves.Should().NotBeNull();
+        saves.SavingThrows.Should().NotBeEmpty();
+
+        var save = saves.SavingThrows[0];
+        save.SavingThrowId.Should().NotBe(Guid.Empty);
+        save.Name.Should().NotBeNullOrWhiteSpace();
+        save.AbilityScoreId.Should().NotBe(Guid.Empty);
+        save.AbilityScoreAbbreviation.Should().NotBeNullOrWhiteSpace();
+        save.CalculatedBonus.Should().Be(save.AbilityScoreModifier + save.AdditionalBonus);
     }
 
     [TestMethod]
@@ -63,21 +72,5 @@ public sealed class SavingThrowsEndpointsTests : IntegrationTestBase
         var unknownCharacterId = Guid.NewGuid();
         var response = await client.GetAsync($"/api/characters/{unknownCharacterId}/savingthrows", TestCancellationToken);
         await response.ShouldHaveStatusAsync(System.Net.HttpStatusCode.NotFound);
-    }
-
-    private sealed class GetSavingThrowsResponse
-    {
-        public List<SavingThrowDataModel> SavingThrows { get; set; } = [];
-    }
-
-    private sealed class SavingThrowDataModel
-    {
-        public Guid SavingThrowId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public Guid AbilityScoreId { get; set; }
-        public string? AbilityScoreAbbreviation { get; set; }
-        public int AbilityScoreModifier { get; set; }
-        public int AdditionalBonus { get; set; }
-        public int CalculatedBonus { get; set; }
     }
 }

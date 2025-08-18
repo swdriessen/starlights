@@ -60,15 +60,6 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         return defaultCharacter;
     }
 
-    private static Element CreateSkillsRule(IElementsRepository repository)
-    {
-        var skillsRule = Element.Create("Skills", "Rule");
-
-        repository.Add(skillsRule);
-
-        return skillsRule;
-    }
-
     private static List<Element> CreateDefaultElements()
     {
         var newElements = new List<Element>();

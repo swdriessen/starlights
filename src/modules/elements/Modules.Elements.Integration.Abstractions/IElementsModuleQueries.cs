@@ -41,4 +41,9 @@ public interface IElementsModuleQueries
     /// Retrieves a skill model by its unique identifier.
     /// </summary>
     Task<SkillDataModel?> GetSkillModel(Guid elementId);
+
+    /// <summary>
+    /// Retrieves a savnng throw model by its unique identifier.
+    /// </summary>
+    Task<SavingThrowDataModel?> GetSavingThrowModel(Guid elementId);
 }

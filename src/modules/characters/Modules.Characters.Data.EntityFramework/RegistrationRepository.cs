@@ -8,6 +8,11 @@ namespace Starlights.Modules.Characters.Data.EntityFramework;
 
 internal class RegistrationRepository : RepositoryBase<Registration>, IRegistrationRepository
 {
+    public RegistrationRepository()
+    {
+
+    }
+
     public void Add(Registration registration) =>
         //using var _ = CharactersInstrumentation.StartActivity("Add Registration");
         Entities.Add(registration);
