@@ -15,8 +15,8 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     {
         ParentRegistrationId = parentRegistrationId;
         AssociatedStatisticRuleId = associatedStatisticRuleId;
-        Name = name;
-        Value = value;
+        Name = name.Trim();
+        Value = value.Trim();
     }
 
     /// <summary>
@@ -42,16 +42,24 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     /// <summary>
     /// Gets the optional stacking bonus value.
     /// </summary>
-    public string? StackingBonus { get; }
+    public string? StackingBonus { get; private set; }
 
     /// <summary>
     /// Gets the level requirement at which this statistic rule becomes active.
     /// </summary>
-    public int LevelRequirement { get; }
+    public int LevelRequirement { get; private set; }
 
     /// <summary>
     /// Factory for creating a new applied registration statistic rule.
     /// </summary>
     internal static RegistrationStatisticRule Create(RegistrationId parentRegistrationId, ElementComponentId associatedStatisticRuleId, string name, string value)
         => new(parentRegistrationId, associatedStatisticRuleId, name, value);
+
+
+
+    public void UpdateStackingBonus(string stackingBonus) =>
+        StackingBonus = stackingBonus.Trim();
+
+    public void UpdateLevelRequirement(int levelRequirement)
+        => LevelRequirement = levelRequirement;
 }

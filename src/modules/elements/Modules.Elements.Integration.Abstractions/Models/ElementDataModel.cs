@@ -11,4 +11,5 @@ public record ElementDataModel
     public string Source { get; init; } = string.Empty;
 
     public List<IncludeRuleDataModel> IncludeRules { get; init; } = [];
+    public List<StatisticRuleDataModel> StatisticRules { get; init; } = [];
 }

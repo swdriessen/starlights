@@ -15,7 +15,8 @@ public static class DataModelMappingExtensions
             Name = element.Name,
             Type = element.Type,
             Source = "Internal",
-            IncludeRules = [.. element.GetComponents<IncludeRuleComponent>().Select(rule => rule.AsIncludeRuleDataModel())]
+            IncludeRules = [.. element.GetComponents<IncludeRuleComponent>().Select(rule => rule.AsIncludeRuleDataModel())],
+            StatisticRules = [.. element.GetComponents<StatisticRuleComponent>().Select(rule => rule.AsStatisticRuleDataModel())]
         };
     }
 
@@ -23,6 +24,12 @@ public static class DataModelMappingExtensions
     {
         ArgumentNullException.ThrowIfNull(rule, nameof(rule));
         return new IncludeRuleDataModel(rule.Id, rule.IncludeElement, rule.LevelRequirement);
+    }
+
+    public static StatisticRuleDataModel AsStatisticRuleDataModel(this StatisticRuleComponent rule)
+    {
+        ArgumentNullException.ThrowIfNull(rule, nameof(rule));
+        return new StatisticRuleDataModel(rule.Id, rule.Name, rule.Value, rule.StackingBonus, rule.LevelRequirement);
     }
 
     public static AbilityDataModel AsAbilityDataModel(this Element element)

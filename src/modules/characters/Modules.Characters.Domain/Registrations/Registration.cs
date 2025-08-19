@@ -83,11 +83,8 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// </summary>
     public bool HasAssociatedRule(Guid associatedRuleId)
     {
-        var hasRule = _includeRules.Any(x => x.AssociatedIncludeRuleId.Value == associatedRuleId);
-
-        // TODO: add checks once we have multiple rule types e.g. selection, statistic, etc.
-
-        return hasRule;
+        return _includeRules.Any(r => r.AssociatedIncludeRuleId.Value == associatedRuleId)
+               || _statisticRules.Any(r => r.AssociatedStatisticRuleId.Value == associatedRuleId);
     }
 
     /// <summary>

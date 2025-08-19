@@ -30,6 +30,7 @@ public class RegistrationManager : IRegistrationManager
         var context = new RegistrationProcessContext(registration, _persistence);
 
         await ProcessIncludeRules(context);
+        await ProcessStatisticRules(context);
 
         registration.Processed();
 
@@ -76,6 +77,42 @@ public class RegistrationManager : IRegistrationManager
             foreach (var behavior in _registrationBehaviors)
             {
                 await behavior.Registered(newRegistration, context);
+            }
+        }
+    }
+
+    private async Task ProcessStatisticRules(RegistrationProcessContext context)
+    {
+        using var statisticsActivity = CharactersInstrumentation.StartActivity();
+
+        var currentRegistration = context.Registration;
+
+        var currentElement = await _elements.GetElementWithRules(currentRegistration.AssociatedElementId);
+
+        // if the current element has no statistic rules, we can skip processing
+
+        var registrations = context.GetRepository<IRegistrationRepository>();
+
+        statisticsActivity?.DisplayName = $"ProcessStatisticRules | {currentElement.StatisticRules.Count}";
+
+        foreach (var rule in currentElement.StatisticRules)
+        {
+            if (currentRegistration.HasAssociatedRule(rule.RuleId))
+            {
+                continue;
+            }
+
+            // create the new registration statistic rule, this is to keep track of the rules applied
+            var newStatisticRule = currentRegistration.CreateStatisticRule(new(rule.RuleId), rule.Name, rule.Value);
+
+            if (rule.StackingBonus is not null)
+            {
+                newStatisticRule.UpdateStackingBonus(rule.StackingBonus);
+            }
+
+            if (rule.LevelRequirement > 0)
+            {
+                newStatisticRule.UpdateLevelRequirement(rule.LevelRequirement);
             }
         }
     }
