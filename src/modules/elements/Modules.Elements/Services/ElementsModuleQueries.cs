@@ -62,7 +62,7 @@ internal class ElementsModuleQueries : IElementsModuleQueries
 
         var element = await repository.GetElementAsync(elementId);
 
-        return element.AsElementDataModel();
+        return element!.AsElementDataModel();
     }
 
     public async Task<List<IncludeRuleDataModel>> GetElementIncludeRules(Guid elementId)
@@ -71,7 +71,7 @@ internal class ElementsModuleQueries : IElementsModuleQueries
 
         var element = await repository.GetElementAsync(elementId);
 
-        return element.AsElementDataModel().IncludeRules;
+        return element!.AsElementDataModel().IncludeRules;
     }
 
     public async Task<AbilityDataModel> GetAbilityModel(Guid elementId)
@@ -80,7 +80,7 @@ internal class ElementsModuleQueries : IElementsModuleQueries
 
         var element = await repository.GetElementAsync(elementId);
 
-        return element.AsAbilityDataModel();
+        return element!.AsAbilityDataModel();
     }
 
     public async Task<SkillDataModel?> GetSkillModel(Guid elementId)

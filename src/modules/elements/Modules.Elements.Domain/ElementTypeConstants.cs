@@ -2,7 +2,12 @@
 
 public static class ElementTypeConstants
 {
+    public static readonly string Rule = "Rule";
     public static readonly string CharacterCreation = "Character Creation";
+
+
+
+
     public static readonly string Ability = "Ability";
     public static readonly string SavingThrow = "Saving Throw";
     public static readonly string Skill = "Skill";

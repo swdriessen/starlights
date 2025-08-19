@@ -34,10 +34,11 @@ public sealed class Element : AggregateRoot<ElementId>
     /// <summary>
     /// Adds a component to the element.
     /// </summary>
-    public void AddComponent<T>(T component) where T : ElementComponentBase
+    public T AddComponent<T>(T component) where T : ElementComponentBase
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
         _components.Add(component);
+        return component;
     }
 
     /// <summary>

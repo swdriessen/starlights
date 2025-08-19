@@ -15,7 +15,7 @@ namespace Starlights.Integration.Tests.Core;
 /// </summary>
 public class IntegrationHost : IIntegrationHost
 {
-    public const int Timeout = 15000;
+    public const int Timeout = 5000;
     public const int TimeoutForDebugging = int.MaxValue;
 
     private readonly WebApplicationFactory<Program> _factory;
