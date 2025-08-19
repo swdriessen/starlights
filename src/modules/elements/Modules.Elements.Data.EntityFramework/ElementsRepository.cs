@@ -16,7 +16,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public void Add(Element element)
     {
-        using var _ = ElementsInstrumentation.StartActivity();
+        //using var _ = ElementsInstrumentation.StartActivity();
 
         _logger.LogInformation("add element '{ElementName}' with identifier {Identifier}", element.Name, element.Id.Value);
         Entities.Add(element);
@@ -24,7 +24,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task<Element?> GetElementAsync(Guid identifier)
     {
-        using var _ = ElementsInstrumentation.StartActivity();
+        //using var _ = ElementsInstrumentation.StartActivity();
 
         var element = await Entities
             .Include(x => x.Components)
@@ -40,7 +40,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task<List<Element>> GetElementsByTypeAsync(string type)
     {
-        using var _ = ElementsInstrumentation.StartActivity();
+        //using var _ = ElementsInstrumentation.StartActivity();
 
         _logger.LogInformation("getting elements of type [{ElementType}]", type);
 
@@ -52,7 +52,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public async Task<List<Element>> GetElementsByTypesAsync(IEnumerable<string> types)
     {
-        using var _ = ElementsInstrumentation.StartActivity();
+        //using var _ = ElementsInstrumentation.StartActivity();
 
         _logger.LogInformation("getting elements of types [{ElementTypes}]", string.Join(", ", types));
 

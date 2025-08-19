@@ -16,7 +16,7 @@ public class RegistrationManager : IRegistrationManager
     {
         _persistence = persistence;
         _elements = elements;
-        _registrationBehaviors = registrationBehaviors;
+        _registrationBehaviors = [.. registrationBehaviors];
     }
 
     public async Task<int> ProcessRegistration(RegistrationId registrationId)

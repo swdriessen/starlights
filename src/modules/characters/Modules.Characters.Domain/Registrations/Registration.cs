@@ -3,7 +3,6 @@ using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Platform.Domain;
-using Starlights.Platform.Eventing;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;
 
@@ -14,6 +13,7 @@ namespace Starlights.Modules.Characters.Domain.Registrations;
 public sealed class Registration : AggregateRoot<RegistrationId>
 {
     private readonly List<RegistrationIncludeRule> _includeRules = [];
+    private readonly List<RegistrationStatisticRule> _statisticRules = [];
 
     private Registration(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
         : base(RegistrationId.New())
@@ -28,6 +28,11 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// Gets the collection of include rules associated with this registration.
     /// </summary>
     public IReadOnlyCollection<RegistrationIncludeRule> IncludeRules => _includeRules.AsReadOnly();
+
+    /// <summary>
+    /// Gets the collection of statistic rules associated with this registration.
+    /// </summary>
+    public IReadOnlyCollection<RegistrationStatisticRule> StatisticRules => _statisticRules.AsReadOnly();
 
     /// <summary>
     /// Gets the ID of the character associated with this registration.
@@ -57,10 +62,7 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// <summary>
     /// Updates the parent registration ID for this registration.
     /// </summary>
-    public void UpdateParentRegistration(Registration parentRegistration)
-    {
-        ParentRegistrationId = parentRegistration.Id;
-    }
+    public void UpdateParentRegistration(Registration parentRegistration) => ParentRegistrationId = parentRegistration.Id;
 
     /// <summary>
     /// Indicates whether this registration has been processed after it has been added.
@@ -117,20 +119,12 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     }
 
     /// <summary>
-    /// Attaches a domain event to this registration. This is used to raise events related to the registration process.
+    /// Creates a new statistic rule for this registration.
     /// </summary>
-    /// <remarks>
-    /// This is currently used to raise type specific events, such as when an ability registration is completed. This should be refactored.
-    /// </remarks>
-    public void WithAdditionalEvent(IDomainEvent domainEvent)
+    public RegistrationStatisticRule CreateStatisticRule(ElementComponentId associatedStatisticRuleId, string name, string value)
     {
-        ArgumentNullException.ThrowIfNull(domainEvent, nameof(domainEvent));
-
-        if (IsProcessed)
-        {
-            throw new InvalidOperationException("You cannot attach domain events to a processed registration. This is only for new registration events.");
-        }
-
-        AddDomainEvent(domainEvent);
+        var newStatisticRule = RegistrationStatisticRule.Create(Id, associatedStatisticRuleId, name, value);
+        _statisticRules.Add(newStatisticRule);
+        return newStatisticRule;
     }
 }
