@@ -41,6 +41,32 @@ public sealed class Element : AggregateRoot<ElementId>
     }
 
     /// <summary>
+    /// Retrieves a component of the specified type from the element's components.
+    /// </summary>
+    public T GetComponent<T>() => _components.OfType<T>().Single();
+
+    /// <summary>
+    /// Retrieves a component of the specified type from the element's components.
+    /// </summary>
+    public IEnumerable<T> GetComponents<T>() => _components.OfType<T>();
+
+    /// <summary>
+    /// Updates the ID of the element. This may be used when importing data instead of creating new elements.
+    /// </summary>
+    /// <remarks>
+    /// This should be used with caution as it can affect references to this element.
+    /// </remarks>
+    public void UpdateId(ElementId newId)
+    {
+        if (newId == default)
+        {
+            throw new ArgumentException("New ID cannot be default.", nameof(newId));
+        }
+
+        Id = newId;
+    }
+
+    /// <summary>
     /// Creates a new instance of the <see cref="Element"/> class with the specified name and type.
     /// </summary>
     public static Element Create(string name, string type)
@@ -48,21 +74,5 @@ public sealed class Element : AggregateRoot<ElementId>
         var element = new Element(name, type);
         // raise an 'ElementCreated' domain event here if needed
         return element;
-    }
-
-    /// <summary>
-    /// Retrieves a component of the specified type from the element's components.
-    /// </summary>
-    public T GetComponent<T>()
-    {
-        return _components.OfType<T>().Single();
-    }
-
-    /// <summary>
-    /// Retrieves a component of the specified type from the element's components.
-    /// </summary>
-    public IEnumerable<T> GetComponents<T>()
-    {
-        return _components.OfType<T>();
     }
 }

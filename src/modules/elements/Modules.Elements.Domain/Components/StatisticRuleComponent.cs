@@ -1,0 +1,80 @@
+namespace Starlights.Modules.Elements.Domain.Components;
+
+public sealed class StatisticRuleComponent : ElementComponentBase
+{
+    public StatisticRuleComponent(ElementId owningElement, string name, string value, int levelRequirement)
+        : base(owningElement)
+    {
+        Name = name.Trim().ToLowerInvariant();
+        Value = value.Trim().ToLowerInvariant();
+        UpdateLevelRequirement(levelRequirement);
+    }
+
+    /// <summary>
+    /// Gets or sets the name of the statistic.
+    /// </summary>
+    public string Name { get; private set; }
+
+    /// <summary>
+    /// Gets or sets the value of the statistic.
+    /// </summary>
+    public string Value { get; private set; }
+
+    /// <summary>
+    /// Gets or sets the name of the stacking bonus of the statistic.
+    /// </summary>
+    public string? StackingBonus { get; private set; }
+
+    /// <summary>
+    /// Gets the level requirement for this statistic rule.
+    /// </summary>
+    public int LevelRequirement { get; private set; }
+
+    /// <summary>
+    /// Updates the name of the statistic. The name is trimmed and converted to lowercase.
+    /// </summary>
+    public void UpdateName(string name) => Name = name.Trim().ToLowerInvariant();
+
+    /// <summary>
+    /// Updates the value of the statistic. The value is trimmed and converted to lowercase.
+    /// </summary>
+    public void UpdateValue(string value) => Value = value.Trim().ToLowerInvariant();
+
+    /// <summary>
+    /// Updates the stacking bonus of the statistic. The value is trimmed and converted to lowercase.
+    /// </summary>
+    public void UpdateStackingBonus(string value) => StackingBonus = value.Trim().ToLowerInvariant();
+
+    /// <summary>
+    /// Checks if the value of the statistic is a number.
+    /// </summary>
+    public bool IsNumberValue() => int.TryParse(Value, out _);
+
+    /// <summary>
+    /// Gets the value of the statistic as an integer.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    public int GetValue()
+    {
+        if (int.TryParse(Value, out var result))
+        {
+            return result;
+        }
+
+        throw new InvalidOperationException($"The value '{Value}' is not a valid integer.");
+    }
+
+    /// <summary>
+    /// Updates the level requirement for this statistic rule.
+    /// </summary>
+    /// <param name="levelRequirement">The new level requirement.</param>
+    public void UpdateLevelRequirement(int levelRequirement)
+    {
+        if (levelRequirement < 0)
+        {
+            throw new ArgumentException("LevelRequirement cannot be negative.", nameof(levelRequirement));
+        }
+
+        LevelRequirement = levelRequirement;
+    }
+}
