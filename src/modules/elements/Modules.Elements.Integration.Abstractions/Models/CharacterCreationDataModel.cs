@@ -3,9 +3,9 @@
 /// <summary>
 /// The DTO model for character creation information.
 /// </summary>
-public record CharacterCreationInfo
+public record CharacterCreationDataModel
 {
-    public CharacterCreationInfo(Guid elementId, string name, string type)
+    public CharacterCreationDataModel(Guid elementId, string name, string type)
     {
         ElementId = elementId;
         Name = name;

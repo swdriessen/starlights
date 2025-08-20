@@ -24,10 +24,8 @@ public sealed class GetAbilitiesEndpoint : EndpointWithoutRequest
     public override async Task HandleAsync(CancellationToken ct)
     {
         var repository = _persistence.GetRepository<IElementsRepository>();
-
         var elements = await repository.GetElementsByTypeAsync(ElementTypeConstants.Ability);
-
-        var abilities = elements.ConvertAll(x => x.AsAbilityInfo());
+        var abilities = elements.ConvertAll(x => x.AsAbilityDataModel());
 
         await Send.OkAsync(new GetAbilitiesResponse { Abilities = abilities }, cancellation: ct);
     }

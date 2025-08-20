@@ -420,3 +420,4 @@ FodyWeavers.xsd
 
 # Local Customized Chatmodes
 /.github/chatmodes/
+/.vscode/tasks.json

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
@@ -13,7 +12,6 @@ namespace Starlights.Modules.Elements.Tests;
 [TestClass]
 public class ElementsModuleQueriesTests
 {
-    private readonly Mock<ILogger<ElementsModuleQueries>> _loggerMock = new();
     private readonly Mock<IPersistence> _persistenceMock = new();
     private readonly Mock<IElementsRepository> _elementsRepositoryMock = new();
 
@@ -22,7 +20,7 @@ public class ElementsModuleQueriesTests
 
     public ElementsModuleQueriesTests()
     {
-        _queries = new ElementsModuleQueries(_loggerMock.Object, _persistenceMock.Object);
+        _queries = new ElementsModuleQueries(_persistenceMock.Object);
 
         _persistenceMock.Setup(x => x.GetRepository<IElementsRepository>())
             .Returns(_elementsRepositoryMock.Object);
@@ -99,7 +97,7 @@ public class ElementsModuleQueriesTests
         var result = await _queries.GetCharacterCreationElement(element.Id);
 
         // Assert
-        result.Should().BeEquivalentTo(new CharacterCreationInfo(element.Id, element.Name, element.Type) { ShortDescription = "With Description" });
+        result.Should().BeEquivalentTo(new CharacterCreationDataModel(element.Id, element.Name, element.Type) { ShortDescription = "With Description" });
     }
 
     [TestMethod]
@@ -114,6 +112,6 @@ public class ElementsModuleQueriesTests
         var result = await _queries.GetCharacterCreationElement(element.Id);
 
         // Assert
-        result.Should().BeEquivalentTo(new CharacterCreationInfo(element.Id, element.Name, element.Type));
+        result.Should().BeEquivalentTo(new CharacterCreationDataModel(element.Id, element.Name, element.Type));
     }
 }

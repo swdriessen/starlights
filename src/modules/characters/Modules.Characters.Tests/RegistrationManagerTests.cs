@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain.Characters;
@@ -18,7 +19,7 @@ public sealed class RegistrationManagerTests
     private readonly Mock<IRegistrationRepository> _registrations = new();
 
     private RegistrationManager CreateSut(params IRegistrationBehavior[] behaviors)
-        => new(_persistence.Object, _elements.Object, behaviors);
+        => new(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, _elements.Object, behaviors);
 
     [TestInitialize]
     public void Setup()
@@ -34,7 +35,7 @@ public sealed class RegistrationManagerTests
     }
 
     [TestMethod]
-    public async Task ProcessRegistration_Throws_WhenRegistrationNotFound()
+    public async Task ProcessRegistration_ShouldNotSaveChanges_WhenRegistrationNotFound()
     {
         // Arrange
         var sut = CreateSut();
@@ -43,12 +44,9 @@ public sealed class RegistrationManagerTests
                       .ReturnsAsync((Registration?)null);
 
         // Act
-        var action = async () => await sut.ProcessRegistration(registrationId);
+        await sut.ProcessRegistration(registrationId);
 
         // Assert
-        await action.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage($"Registration with ID {registrationId} not found.");
-
         _persistence.Verify(p => p.SaveChangesAsync(), Times.Never);
     }
 
