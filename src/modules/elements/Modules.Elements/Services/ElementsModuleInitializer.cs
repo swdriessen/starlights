@@ -44,12 +44,31 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         // skills rule
         var skillsRule = CreateSkillsRule(repository, abilities);
 
+        // class selection
+        var classSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Class Selection")
+            .WithShortDescription("This rule allows players to select their character's class.")
+            .Build();
+
+        // origin selection
+        var originSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Origin Selection")
+            .WithShortDescription("This rule allows players to select their character's origin.")
+            .Build();
+
+        // alignment selection
+        var alignmentSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Alignment Selection")
+            .WithShortDescription("This rule allows players to select their character's alignment.")
+            .WithSelectionRule(ElementTypeConstants.Alignment, "Alignment")
+            .Build();
+
         // default character creation option
         var defaultCharacter = ElementBuilder.Create(ElementTypeConstants.CharacterCreation, "Default Character")
             .WithShortDescription("This is a default character for testing purposes.")
             .WithIncludeRule(proficiencyRule.Id)
             .WithIncludeRule(abilitiesRule.Id)
             .WithIncludeRule(skillsRule.Id)
+            .WithIncludeRule(classSelectionRule.Id)
+            .WithIncludeRule(originSelectionRule.Id)
+            .WithIncludeRule(alignmentSelectionRule.Id)
             .Build();
 
         repository.Add(defaultCharacter);

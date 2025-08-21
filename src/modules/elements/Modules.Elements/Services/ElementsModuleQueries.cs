@@ -2,6 +2,7 @@
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
+using Starlights.Modules.Elements.Integration.Models.Rules;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Services;
@@ -27,13 +28,6 @@ internal class ElementsModuleQueries : IElementsModuleQueries
         var repository = _persistence.GetRepository<IElementsRepository>();
         var elements = await repository.GetElementsByTypeAsync(ElementTypeConstants.CharacterCreation);
         return elements.ConvertAll(element => element.AsCharacterCreationDataModel());
-    }
-
-    public async Task<List<ElementInfo>> GetElements()
-    {
-        var repository = _persistence.GetRepository<IElementsRepository>();
-        var elements = await repository.GetElementsByTypesAsync([ElementTypeConstants.CharacterCreation, ElementTypeConstants.Ability, ElementTypeConstants.Skill]);
-        return elements.ConvertAll(element => element.AsElementInfo());
     }
 
     public async Task<ElementDataModel?> GetElementWithRules(Guid elementId)

@@ -14,7 +14,7 @@ public static class Program
         builder.AddStarlightsPlatform(options =>
         {
             options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
-            options.AdditionalAssemblies.Add(typeof(SerilogComponent).Assembly);
+            options.AddSerilogComponent();
         });
 
         builder.Services.AddHostedService<Worker>();

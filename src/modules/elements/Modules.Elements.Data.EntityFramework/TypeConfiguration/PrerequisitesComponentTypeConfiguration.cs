@@ -14,5 +14,8 @@ public sealed class PrerequisitesComponentTypeConfiguration : IEntityTypeConfigu
             .IsRequired()
             .HasMaxLength(256)
             .HasColumnName("prerequisites");
+
+        builder.Property(x => x.Requirements)
+            .HasColumnName("requirements");
     }
 }

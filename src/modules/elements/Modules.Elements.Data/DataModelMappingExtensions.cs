@@ -1,11 +1,26 @@
 ﻿using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Modules.Elements.Integration.Models;
+using Starlights.Modules.Elements.Integration.Models.Rules;
 
 namespace Starlights.Modules.Elements.Data;
 
 public static class DataModelMappingExtensions
 {
+    public static CharacterCreationDataModel AsCharacterCreationDataModel(this Element element)
+    {
+        ArgumentNullException.ThrowIfNull(element, nameof(element));
+
+        var description = element.Components
+            .OfType<ShortDescriptionComponent>()
+            .SingleOrDefault();
+
+        return new CharacterCreationDataModel(element.Id, element.Name, element.Type)
+        {
+            ShortDescription = description?.Content
+        };
+    }
+
     public static ElementDataModel AsElementDataModel(this Element element)
     {
         ArgumentNullException.ThrowIfNull(element, nameof(element));

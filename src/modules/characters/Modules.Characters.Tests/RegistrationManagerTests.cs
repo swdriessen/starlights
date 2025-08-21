@@ -7,6 +7,7 @@ using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
+using Starlights.Modules.Elements.Integration.Models.Rules;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Tests;

@@ -1,4 +1,5 @@
 ﻿using Starlights.Modules.Elements.Integration.Models;
+using Starlights.Modules.Elements.Integration.Models.Rules;
 
 namespace Starlights.Modules.Elements.Integration;
 
@@ -16,11 +17,6 @@ public interface IElementsModuleQueries
     /// Retrieves a list of all character creation elements available in the system.
     /// </summary>
     Task<List<CharacterCreationDataModel>> GetCharacterCreationElements();
-
-    /// <summary>
-    /// Retrieves a list of all elements available in the system.
-    /// </summary>
-    Task<List<ElementInfo>> GetElements();
 
     /// <summary>
     /// Retrieves an element header with rules by its unique identifier.

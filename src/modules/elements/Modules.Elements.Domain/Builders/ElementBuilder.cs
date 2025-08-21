@@ -5,11 +5,13 @@ public class ElementBuilder
     private readonly List<Func<ElementId, ElementComponentBase>> _componentFactories = [];
     private readonly string _type;
     private string? _name;
+    private string? _system;
 
-    private ElementBuilder(string type, string? name = null)
+    private ElementBuilder(string type, string? name = null, string? system = "DND5E")
     {
         _type = type;
         _name = name;
+        _system = system;
     }
 
     /// <summary>
@@ -18,6 +20,15 @@ public class ElementBuilder
     public ElementBuilder WithName(string name)
     {
         _name = name;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the system of the element being built.
+    /// </summary>
+    public ElementBuilder WithSystem(string system)
+    {
+        _system = system;
         return this;
     }
 
@@ -40,7 +51,17 @@ public class ElementBuilder
             throw new InvalidOperationException("Element name must be specified via WithName before calling Build().");
         }
 
-        var element = Element.Create(_name!, _type);
+        if (string.IsNullOrWhiteSpace(_type))
+        {
+            throw new InvalidOperationException("Element type must be specified.");
+        }
+
+        if (string.IsNullOrWhiteSpace(_system))
+        {
+            throw new InvalidOperationException("Element system must be specified.");
+        }
+
+        var element = Element.Create(_name, _type, _system);
 
         foreach (var factory in _componentFactories)
         {
@@ -54,5 +75,5 @@ public class ElementBuilder
     /// <summary>
     /// Creates a new ElementBuilder instance for the given element type.
     /// </summary>
-    public static ElementBuilder Create(string type, string? name = null) => new(type, name);
+    public static ElementBuilder Create(string type, string? name = null, string? system = "DND5E") => new(type, name, system);
 }

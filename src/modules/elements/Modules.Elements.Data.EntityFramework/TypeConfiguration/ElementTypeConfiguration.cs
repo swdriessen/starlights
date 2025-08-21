@@ -24,6 +24,10 @@ public class ElementTypeConfiguration : IEntityTypeConfiguration<Element>
             .IsRequired()
             .HasColumnName("type");
 
+        builder.Property(e => e.SystemIdentifier)
+            .IsRequired()
+            .HasColumnName("system_identifier");
+
         builder.HasMany(x => x.Components)
             .WithOne()
             .HasForeignKey(x => x.OwningElement)

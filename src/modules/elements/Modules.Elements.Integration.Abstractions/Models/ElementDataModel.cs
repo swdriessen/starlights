@@ -1,4 +1,6 @@
-﻿namespace Starlights.Modules.Elements.Integration.Models;
+﻿using Starlights.Modules.Elements.Integration.Models.Rules;
+
+namespace Starlights.Modules.Elements.Integration.Models;
 
 /// <summary>
 /// The DTO model for an Element with its associated data.

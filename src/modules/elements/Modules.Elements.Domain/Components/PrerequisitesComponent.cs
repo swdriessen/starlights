@@ -19,15 +19,25 @@ public sealed class PrerequisitesComponent : ElementComponentBase
     /// </summary>
     public string Prerequisites { get; private set; } = string.Empty;
 
+
+    /// <summary>
+    /// Gets the requirements string.
+    /// </summary>
+    public string Requirements { get; private set; } = string.Empty;
+
     /// <summary>
     /// Updates the prerequisites string.
     /// </summary>
     public void UpdatePrerequisites(string prerequisites)
     {
-        if (string.IsNullOrWhiteSpace(prerequisites))
-        {
-            throw new ArgumentException("Prerequisites cannot be null or whitespace.", nameof(prerequisites));
-        }
         Prerequisites = prerequisites.Trim();
+    }
+
+    /// <summary>
+    /// Updates the requirements string.
+    /// </summary>
+    public void UpdateRequirements(string requirements)
+    {
+        Requirements = requirements.Trim();
     }
 }

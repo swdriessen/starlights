@@ -8,19 +8,19 @@ public static class ElementBuilderExtensions
     {
         return builder.WithComponent(id =>
         {
-            var s = new StatisticRuleComponent(id, name, value, 0);
+            var component = new StatisticRuleComponent(id, name, value, 0);
 
             if (!string.IsNullOrWhiteSpace(stackingBonus))
             {
-                s.UpdateStackingBonus(stackingBonus);
+                component.UpdateStackingBonus(stackingBonus);
             }
 
             if (levelRequirement.HasValue)
             {
-                s.UpdateLevelRequirement(levelRequirement.Value);
+                component.UpdateLevelRequirement(levelRequirement.Value);
             }
 
-            return s;
+            return component;
         });
     }
 
@@ -28,45 +28,44 @@ public static class ElementBuilderExtensions
     {
         return builder.WithComponent(id =>
         {
-            var s = new StatisticRuleComponent(id, name, value, 0);
-            configure?.Invoke(s);
-            return s;
+            var component = new StatisticRuleComponent(id, name, value, 0);
+            configure?.Invoke(component);
+            return component;
         });
     }
 
     public static ElementBuilder WithIncludeRule(this ElementBuilder builder, ElementId includeElementId, int levelRequirement = 0)
     {
+        return builder.WithComponent(id => new IncludeRuleComponent(id, includeElementId, levelRequirement));
+    }
+
+    public static ElementBuilder WithSelectionRule(this ElementBuilder builder, string elementType, string name, int levelRequirement = 0, Action<SelectionRuleComponent>? configure = null)
+    {
         return builder.WithComponent(id =>
         {
-            var s = new IncludeRuleComponent(id, includeElementId, levelRequirement);
-            return s;
+            var component = new SelectionRuleComponent(id, elementType, name, levelRequirement);
+            configure?.Invoke(component);
+            return component;
         });
+    }
+
+    public static ElementBuilder WithDescription(this ElementBuilder builder, string description)
+    {
+        return builder.WithComponent(id => new DescriptionComponent(id, description));
     }
 
     public static ElementBuilder WithShortDescription(this ElementBuilder builder, string description)
     {
-        return builder.WithComponent(id =>
-        {
-            var component = new ShortDescriptionComponent(id, description);
-            return component;
-        });
+        return builder.WithComponent(id => new ShortDescriptionComponent(id, description));
     }
 
     public static ElementBuilder WithAbbreviationComponent(this ElementBuilder builder, string abbreviation)
     {
-        return builder.WithComponent(id =>
-        {
-            var component = new AbbreviationComponent(id, abbreviation);
-            return component;
-        });
+        return builder.WithComponent(id => new AbbreviationComponent(id, abbreviation));
     }
 
     public static ElementBuilder WithSorting(this ElementBuilder builder, double sortingOrder)
     {
-        return builder.WithComponent(id =>
-        {
-            var component = new SortingComponent(id, sortingOrder);
-            return component;
-        });
+        return builder.WithComponent(id => new SortingComponent(id, sortingOrder));
     }
 }
