@@ -11,23 +11,32 @@ public class SelectionRuleComponentTypeConfiguration : IEntityTypeConfiguration<
         builder.ToTable("element_component_selection_rule");
 
         builder.Property(x => x.ElementType)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("element_type");
 
         builder.Property(x => x.Name)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("name");
 
         builder.Property(x => x.LevelRequirement)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("level_requirement");
 
         builder.Property(x => x.Quantity)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("quantity");
 
         builder.Property(x => x.IsOptional)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("is_optional");
 
-        builder.Property(x => x.ShortDescription);
-        builder.Property(x => x.Supports);
-        builder.Property(x => x.RangeSupports);
-        builder.Property(x => x.Requirements);
+        builder.Property(x => x.ShortDescription)
+            .HasColumnName("short_description");
+        builder.Property(x => x.Supports)
+            .HasColumnName("supports");
+        builder.Property(x => x.RangeSupports)
+            .HasColumnName("range_supports");
+        builder.Property(x => x.Requirements)
+            .HasColumnName("requirements");
     }
 }

@@ -13,13 +13,16 @@ public class ElementTypeConfiguration : IEntityTypeConfiguration<Element>
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
                .ValueGeneratedNever()
-               .HasConversion(m => m.Value, v => new ElementId(v));
+               .HasConversion(m => m.Value, v => new ElementId(v))
+               .HasColumnName("id");
 
         builder.Property(e => e.Name)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("name");
 
         builder.Property(e => e.Type)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("type");
 
         builder.HasMany(x => x.Components)
             .WithOne()

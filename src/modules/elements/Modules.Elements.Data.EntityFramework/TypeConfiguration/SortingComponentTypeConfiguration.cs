@@ -9,5 +9,8 @@ public class SortingComponentTypeConfiguration : IEntityTypeConfiguration<Sortin
     public void Configure(EntityTypeBuilder<SortingComponent> builder)
     {
         builder.ToTable("element_component_sorting");
+
+        builder.Property(x => x.SortingOrder)
+            .HasColumnName("sorting_order");
     }
 }

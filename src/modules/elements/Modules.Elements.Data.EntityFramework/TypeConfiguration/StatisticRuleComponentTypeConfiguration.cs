@@ -11,16 +11,22 @@ public class StatisticRuleComponentTypeConfiguration : IEntityTypeConfiguration<
         builder.ToTable("element_component_statistic_rule");
 
         builder.Property(x => x.Name)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("name");
 
         builder.Property(x => x.Value)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("value");
 
         builder.Property(x => x.LevelRequirement)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("level_requirement");
 
-        builder.Property(x => x.DisplayName);
-        builder.Property(x => x.StackingBonus);
-        builder.Property(x => x.Requirements);
+        builder.Property(x => x.DisplayName)
+            .HasColumnName("display_name");
+        builder.Property(x => x.StackingBonus)
+            .HasColumnName("stacking_bonus");
+        builder.Property(x => x.Requirements)
+            .HasColumnName("requirements");
     }
 }
