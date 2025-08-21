@@ -16,6 +16,11 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     public string Name { get; private set; }
 
     /// <summary>
+    /// Gets or sets the display name of the statistic.
+    /// </summary>
+    public string? DisplayName { get; private set; }
+
+    /// <summary>
     /// Gets or sets the value of the statistic.
     /// </summary>
     public string Value { get; private set; }
@@ -29,6 +34,11 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     /// Gets the level requirement for this statistic rule.
     /// </summary>
     public int LevelRequirement { get; private set; }
+
+    /// <summary>
+    /// Gets or sets a dynamic string that can be used to specify additional requirements for the selection option.
+    /// </summary>
+    public string? Requirements { get; private set; }
 
     /// <summary>
     /// Updates the name of the statistic. The name is trimmed and converted to lowercase.
@@ -77,4 +87,10 @@ public sealed class StatisticRuleComponent : ElementComponentBase
 
         LevelRequirement = levelRequirement;
     }
+
+    /// <summary>
+    /// Gets a value indicating whether this selection option has any requirements.
+    /// </summary>
+    public bool HasRequirements => LevelRequirement > 0 || !string.IsNullOrWhiteSpace(Requirements);
+
 }

@@ -25,7 +25,7 @@ public class RegistrationManager : IRegistrationManager
         _registrationBehaviors = [.. registrationBehaviors];
     }
 
-    public async Task<int> ProcessRegistration(RegistrationId registrationId)
+    public async Task<ProcessRegistrationResult> ProcessRegistration(RegistrationId registrationId)
     {
         using var processActivity = CharactersInstrumentation.StartActivity();
 
@@ -37,7 +37,7 @@ public class RegistrationManager : IRegistrationManager
         if (registration is null)
         {
             _logger.LogError("Registration with ID {RegistrationId} not found.", registrationId);
-            return 0;
+            return new ProcessRegistrationResult();
         }
 
         var context = new RegistrationProcessContext(registration, _persistence);
@@ -52,7 +52,7 @@ public class RegistrationManager : IRegistrationManager
 
         processActivity?.SetTag("affectedRows", affectedRows);
 
-        return affectedRows;
+        return new ProcessRegistrationResult() { AffectedRows = affectedRows };
     }
 
     private async Task ProcessIncludeRules(RegistrationProcessContext context)

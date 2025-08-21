@@ -250,10 +250,10 @@ public sealed class RegistrationManagerTests
                  .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
 
         // Act
-        var affected = await sut.ProcessRegistration(registration.Id);
+        var result = await sut.ProcessRegistration(registration.Id);
 
         // Assert
-        affected.Should().Be(1);
+        result.AffectedRows.Should().Be(1);
         registration.IsProcessed.Should().BeTrue();
     }
 

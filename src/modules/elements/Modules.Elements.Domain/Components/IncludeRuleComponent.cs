@@ -29,6 +29,16 @@ public sealed class IncludeRuleComponent : ElementComponentBase
     public int LevelRequirement { get; private set; }
 
     /// <summary>
+    /// Gets or sets a dynamic string that can be used to specify additional requirements for the selection option.
+    /// </summary>
+    public string? Requirements { get; private set; }
+
+    /// <summary>
+    /// Gets a value indicating whether this selection option has any requirements.
+    /// </summary>
+    public bool HasRequirements => LevelRequirement > 0 || !string.IsNullOrWhiteSpace(Requirements);
+
+    /// <summary>
     /// Updates the element to include.
     /// </summary>
     /// <param name="includeElement">The new element to include.</param>

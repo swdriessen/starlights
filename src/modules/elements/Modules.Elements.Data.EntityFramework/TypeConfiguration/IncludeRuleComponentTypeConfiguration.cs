@@ -17,5 +17,7 @@ public class IncludeRuleComponentTypeConfiguration : IEntityTypeConfiguration<In
 
         builder.Property(x => x.LevelRequirement)
             .IsRequired();
+
+        builder.Property(x => x.Requirements);
     }
 }

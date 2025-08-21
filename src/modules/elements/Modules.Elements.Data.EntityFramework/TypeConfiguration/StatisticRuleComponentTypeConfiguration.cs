@@ -15,5 +15,12 @@ public class StatisticRuleComponentTypeConfiguration : IEntityTypeConfiguration<
 
         builder.Property(x => x.Value)
             .IsRequired();
+
+        builder.Property(x => x.LevelRequirement)
+            .IsRequired();
+
+        builder.Property(x => x.DisplayName);
+        builder.Property(x => x.StackingBonus);
+        builder.Property(x => x.Requirements);
     }
 }
