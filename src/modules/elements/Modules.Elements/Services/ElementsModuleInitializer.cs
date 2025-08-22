@@ -27,6 +27,10 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         var repository = _persistence.GetRepository<IElementsRepository>();
 
         CreateDefaultCharacterCreationOption(repository);
+        CreateClasses(repository);
+        CreateSpecies(repository);
+        CreateBackgrounds(repository);
+        CreateAlignments(repository);
 
         var rows = await _persistence.SaveChangesAsync();
 
@@ -46,17 +50,17 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
         // class selection
         var classSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Class Selection")
-            .WithShortDescription("This rule allows players to select their character's class.")
+            .WithSelectionRule(ElementTypeConstants.Class, "Class")
             .Build();
 
         // origin selection
         var originSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Origin Selection")
-            .WithShortDescription("This rule allows players to select their character's origin.")
+            .WithSelectionRule(ElementTypeConstants.Species, "Species")
+            .WithSelectionRule(ElementTypeConstants.Background, "Background")
             .Build();
 
         // alignment selection
         var alignmentSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Alignment Selection")
-            .WithShortDescription("This rule allows players to select their character's alignment.")
             .WithSelectionRule(ElementTypeConstants.Alignment, "Alignment")
             .Build();
 
@@ -72,6 +76,9 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
             .Build();
 
         repository.Add(defaultCharacter);
+        repository.Add(classSelectionRule);
+        repository.Add(originSelectionRule);
+        repository.Add(alignmentSelectionRule);
 
         return defaultCharacter;
     }
@@ -316,5 +323,107 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         repository.Add(skillsRule);
 
         return skillsRule;
+    }
+
+    private static void CreateClasses(IElementsRepository repository)
+    {
+        var barbarian = ElementBuilder.Create(ElementTypeConstants.Class, "Barbarian")
+            .Build();
+
+        repository.Add(barbarian);
+
+        var rogue = ElementBuilder.Create(ElementTypeConstants.Class, "Rogue")
+            .Build();
+
+        repository.Add(rogue);
+    }
+
+    private static void CreateSpecies(IElementsRepository repository)
+    {
+        var human = ElementBuilder.Create(ElementTypeConstants.Species, "Human")
+            .Build();
+
+        repository.Add(human);
+
+        var elf = ElementBuilder.Create(ElementTypeConstants.Species, "Elf")
+            .Build();
+
+        repository.Add(elf);
+    }
+
+    private static void CreateBackgrounds(IElementsRepository repository)
+    {
+        var acolyte = ElementBuilder.Create(ElementTypeConstants.Background, "Acolyte")
+            .Build();
+
+        repository.Add(acolyte);
+
+        var charlatan = ElementBuilder.Create(ElementTypeConstants.Background, "Charlatan")
+            .Build();
+
+        repository.Add(charlatan);
+    }
+
+    private static void CreateAlignments(IElementsRepository repository)
+    {
+        var lawfulGood = ElementBuilder.Create(ElementTypeConstants.Alignment, "Lawful Good")
+            .WithAbbreviationComponent("LG")
+            .Build();
+
+        repository.Add(lawfulGood);
+
+        var neutralGood = ElementBuilder.Create(ElementTypeConstants.Alignment, "Neutral Good")
+            .WithAbbreviationComponent("NG")
+            .Build();
+
+        repository.Add(neutralGood);
+
+        var chaoticGood = ElementBuilder.Create(ElementTypeConstants.Alignment, "Chaotic Good")
+            .WithAbbreviationComponent("CG")
+            .Build();
+
+        repository.Add(chaoticGood);
+
+        var lawfulNeutral = ElementBuilder.Create(ElementTypeConstants.Alignment, "Lawful Neutral")
+            .WithAbbreviationComponent("LN")
+            .Build();
+
+        repository.Add(lawfulNeutral);
+
+        var trueNeutral = ElementBuilder.Create(ElementTypeConstants.Alignment, "True Neutral")
+            .WithAbbreviationComponent("TN")
+            .Build();
+
+        repository.Add(trueNeutral);
+
+        var chaoticNeutral = ElementBuilder.Create(ElementTypeConstants.Alignment, "Chaotic Neutral")
+            .WithAbbreviationComponent("CN")
+            .Build();
+
+        repository.Add(chaoticNeutral);
+
+        var lawfulEvil = ElementBuilder.Create(ElementTypeConstants.Alignment, "Lawful Evil")
+            .WithAbbreviationComponent("LE")
+            .Build();
+
+        repository.Add(lawfulEvil);
+
+        var neutralEvil = ElementBuilder.Create(ElementTypeConstants.Alignment, "Neutral Evil")
+            .WithAbbreviationComponent("NE")
+            .Build();
+
+        repository.Add(neutralEvil);
+
+        var chaoticEvil = ElementBuilder.Create(ElementTypeConstants.Alignment, "Chaotic Evil")
+            .WithAbbreviationComponent("CE")
+            .Build();
+
+        repository.Add(chaoticEvil);
+
+        var unaligned = ElementBuilder.Create(ElementTypeConstants.Alignment, "Unaligned")
+            .WithAbbreviationComponent("U")
+            .Build();
+
+        repository.Add(unaligned);
     }
 }

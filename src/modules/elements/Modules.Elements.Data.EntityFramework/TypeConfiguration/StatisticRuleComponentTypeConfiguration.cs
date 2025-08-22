@@ -24,8 +24,10 @@ public class StatisticRuleComponentTypeConfiguration : IEntityTypeConfiguration<
 
         builder.Property(x => x.DisplayName)
             .HasColumnName("display_name");
+
         builder.Property(x => x.StackingBonus)
             .HasColumnName("stacking_bonus");
+
         builder.Property(x => x.Requirements)
             .HasColumnName("requirements");
     }

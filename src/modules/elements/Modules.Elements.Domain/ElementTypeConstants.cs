@@ -13,4 +13,9 @@ public static class ElementTypeConstants
     public static readonly string Skill = "Skill";
     public static readonly string Language = "Language";
     public static readonly string Alignment = "Alignment";
+    public static readonly string Class = "Class";
+    public static readonly string Origin = "Origin";
+    public static readonly string Species = "Species";
+    public static readonly string Race = "Race";
+    public static readonly string Background = "Background";
 }

@@ -32,10 +32,13 @@ public class SelectionRuleComponentTypeConfiguration : IEntityTypeConfiguration<
 
         builder.Property(x => x.ShortDescription)
             .HasColumnName("short_description");
+
         builder.Property(x => x.Supports)
             .HasColumnName("supports");
+
         builder.Property(x => x.RangeSupports)
             .HasColumnName("range_supports");
+
         builder.Property(x => x.Requirements)
             .HasColumnName("requirements");
     }
