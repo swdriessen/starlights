@@ -176,7 +176,7 @@ public class RegistrationManager : IRegistrationManager
             }
 
             // create the new registration selection rule, this is to keep track of the rules applied
-            var newSelectionRule = currentRegistration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
+            _ = currentRegistration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
         }
     }
 }

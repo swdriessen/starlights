@@ -31,7 +31,8 @@ public static class DataModelMappingExtensions
             Type = element.Type,
             Source = "Internal",
             IncludeRules = [.. element.GetComponents<IncludeRuleComponent>().Select(rule => rule.AsIncludeRuleDataModel())],
-            StatisticRules = [.. element.GetComponents<StatisticRuleComponent>().Select(rule => rule.AsStatisticRuleDataModel())]
+            StatisticRules = [.. element.GetComponents<StatisticRuleComponent>().Select(rule => rule.AsStatisticRuleDataModel())],
+            SelectionRules = [.. element.GetComponents<SelectionRuleComponent>().Select(rule => rule.AsSelectionRuleDataModel())]
         };
     }
 

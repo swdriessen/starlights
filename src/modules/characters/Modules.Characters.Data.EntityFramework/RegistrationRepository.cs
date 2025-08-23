@@ -8,27 +8,33 @@ namespace Starlights.Modules.Characters.Data.EntityFramework;
 
 internal class RegistrationRepository : RepositoryBase<Registration>, IRegistrationRepository
 {
-    public RegistrationRepository()
-    {
+    public void Add(Registration registration) => Entities.Add(registration);
 
+    public async Task<Registration?> GetRegistrationAsync(RegistrationId id)
+    {
+        return await Entities
+            .Include(x => x.SelectionRules)
+            .Include(x => x.IncludeRules)
+            .Include(x => x.StatisticRules)
+            .SingleOrDefaultAsync(r => r.Id == id);
     }
 
-    public void Add(Registration registration) =>
-        //using var _ = CharactersInstrumentation.StartActivity("Add Registration");
-        Entities.Add(registration);
-
-    public async Task<Registration?> GetRegistrationAsync(RegistrationId id) =>
-        //using var _ = CharactersInstrumentation.StartActivity();
-        await Entities.SingleOrDefaultAsync(r => r.Id == id);
-
-    public async Task<List<Registration>> GetRegistrationsAsync(CharacterId id) =>
-        //using var _ = CharactersInstrumentation.StartActivity();
-        await Entities.Where(r => r.CharacterId == id).ToListAsync();
+    public async Task<List<Registration>> GetRegistrationsAsync(CharacterId id)
+    {
+        return await Entities
+            .Include(x => x.SelectionRules)
+            .Include(x => x.IncludeRules)
+            .Include(x => x.StatisticRules)
+            .Where(r => r.CharacterId == id)
+            .ToListAsync();
+    }
 
     public async Task<List<Registration>> GetRegistrationsByAssociationsAsync(CharacterId id, ElementId associatedElementId)
     {
-        //using var _ = CharactersInstrumentation.StartActivity();
         return await Entities
+            .Include(x => x.SelectionRules)
+            .Include(x => x.IncludeRules)
+            .Include(x => x.StatisticRules)
             .Where(r => r.CharacterId == id && r.AssociatedElementId == associatedElementId)
             .ToListAsync();
     }
