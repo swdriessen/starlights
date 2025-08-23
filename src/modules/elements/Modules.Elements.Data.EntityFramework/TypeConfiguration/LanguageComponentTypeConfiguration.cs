@@ -12,10 +12,12 @@ public class LanguageComponentTypeConfiguration : IEntityTypeConfiguration<Langu
 
         builder.Property(x => x.Origin)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(128)
+            .HasColumnName("origin");
 
         builder.Property(x => x.Kind)
             .IsRequired()
-            .HasMaxLength(32);
+            .HasMaxLength(32)
+            .HasColumnName("kind");
     }
 }

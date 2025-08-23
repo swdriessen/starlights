@@ -11,11 +11,13 @@ public class ElementComponentBaseTypeConfiguration : IEntityTypeConfiguration<El
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
                .ValueGeneratedNever()
-               .HasConversion(m => m.Value, v => new ElementComponentId(v));
+               .HasConversion(m => m.Value, v => new ElementComponentId(v))
+               .HasColumnName("id");
 
         builder.Property(e => e.OwningElement)
                .IsRequired()
-               .HasConversion(m => m.Value, v => new ElementId(v));
+               .HasConversion(m => m.Value, v => new ElementId(v))
+               .HasColumnName("owning_element_id");
 
         builder.UseTpcMappingStrategy();
     }

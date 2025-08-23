@@ -26,27 +26,29 @@ public sealed class SavingThrowRegistrationBehavior : IRegistrationBehavior
 
     public async Task Registered(Registration newRegistration, RegistrationProcessContext context)
     {
-        if (newRegistration.AssociatedElementType == "Saving Throw")
+        if (newRegistration.AssociatedElementType != "Saving Throw")
         {
-            using var _ = CharactersInstrumentation.StartActivity("Saving Throw Registration Behavior");
+            return;
+        }
 
-            var associatedElement = await _elements.GetSavingThrowModel(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Saving Throw with ID {newRegistration.AssociatedElementId} not found.");
+        using var _ = CharactersInstrumentation.StartActivity("Saving Throw Registration Behavior");
 
-            var characters = context.GetRepository<ICharactersRepository>();
-            var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
+        var associatedElement = await _elements.GetSavingThrowModel(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Saving Throw with ID {newRegistration.AssociatedElementId} not found.");
 
-            var primaryScore = await GetPrimaryAbilityScore(context, character, associatedElement);
+        var characters = context.GetRepository<ICharactersRepository>();
+        var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
-            if (primaryScore is null)
-            {
-                _logger.LogInformation("Creating saving throw '{SavingThrowName}' without primary ability score for character '{CharacterId}'", associatedElement.Name, character.Id.Value);
-                character.CreateSavingThrowWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
-            }
-            else
-            {
-                _logger.LogInformation("Creating saving throw '{SavingThrowName}' with primary ability score '{AbilityScoreName}' for character '{CharacterId}'", associatedElement.Name, primaryScore.Name, character.Id.Value);
-                character.CreateSavingThrow(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
-            }
+        var primaryScore = await GetPrimaryAbilityScore(context, character, associatedElement);
+
+        if (primaryScore is null)
+        {
+            _logger.LogInformation("Creating saving throw '{SavingThrowName}' without primary ability score for character '{CharacterId}'", associatedElement.Name, character.Id.Value);
+            character.CreateSavingThrowWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
+        }
+        else
+        {
+            _logger.LogInformation("Creating saving throw '{SavingThrowName}' with primary ability score '{AbilityScoreName}' for character '{CharacterId}'", associatedElement.Name, primaryScore.Name, character.Id.Value);
+            character.CreateSavingThrow(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
         }
     }
 

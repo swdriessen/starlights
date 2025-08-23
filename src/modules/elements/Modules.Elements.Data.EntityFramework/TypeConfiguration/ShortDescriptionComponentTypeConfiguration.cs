@@ -11,6 +11,7 @@ public sealed class ShortDescriptionComponentTypeConfiguration : IEntityTypeConf
         builder.ToTable("element_component_short_description");
 
         builder.Property(x => x.Content)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("content");
     }
 }

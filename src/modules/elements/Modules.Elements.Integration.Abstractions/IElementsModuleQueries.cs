@@ -1,4 +1,5 @@
 ﻿using Starlights.Modules.Elements.Integration.Models;
+using Starlights.Modules.Elements.Integration.Models.Rules;
 
 namespace Starlights.Modules.Elements.Integration;
 
@@ -10,22 +11,17 @@ public interface IElementsModuleQueries
     /// <summary>
     /// Retrieves a character creation element by its unique identifier.
     /// </summary>
-    Task<CharacterCreationInfo?> GetCharacterCreationElement(Guid elementId);
+    Task<CharacterCreationDataModel?> GetCharacterCreationElement(Guid elementId);
 
     /// <summary>
     /// Retrieves a list of all character creation elements available in the system.
     /// </summary>
-    Task<List<CharacterCreationInfo>> GetCharacterCreationElements();
-
-    /// <summary>
-    /// Retrieves a list of all elements available in the system.
-    /// </summary>
-    Task<List<ElementInfo>> GetElements();
+    Task<List<CharacterCreationDataModel>> GetCharacterCreationElements();
 
     /// <summary>
     /// Retrieves an element header with rules by its unique identifier.
     /// </summary>
-    Task<ElementDataModel> GetElementWithRules(Guid elementId);
+    Task<ElementDataModel?> GetElementWithRules(Guid elementId);
 
     /// <summary>
     /// Retrieves a list of include rules for a specific element by its unique identifier.
@@ -35,7 +31,7 @@ public interface IElementsModuleQueries
     /// <summary>
     /// Retrieves an ability model by its unique identifier.
     /// </summary>
-    Task<AbilityDataModel> GetAbilityModel(Guid elementId);
+    Task<AbilityDataModel?> GetAbilityModel(Guid elementId);
 
     /// <summary>
     /// Retrieves a skill model by its unique identifier.

@@ -11,6 +11,7 @@ public class AbbreviationComponentTypeConfiguration : IEntityTypeConfiguration<A
         builder.ToTable("element_component_abbreviation");
         builder.Property(x => x.Abbreviation)
             .IsRequired()
-            .HasMaxLength(32);
+            .HasMaxLength(32)
+            .HasColumnName("abbreviation");
     }
 }

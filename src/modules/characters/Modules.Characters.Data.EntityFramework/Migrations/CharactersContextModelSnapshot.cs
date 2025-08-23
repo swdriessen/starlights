@@ -163,6 +163,74 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.ToTable("registration_include_rules", "characters");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationSelectionRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AssociatedSelectionRuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ElementType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ParentRegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentRegistrationId");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.ToTable("registration_selection_rules", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationStatisticRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AssociatedStatisticRuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("LevelRequirement")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ParentRegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RegistrationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StackingBonus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentRegistrationId");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.ToTable("registration_statistic_rules", "characters");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.SavingThrows.SavingThrow", b =>
                 {
                     b.Property<Guid>("Id")
@@ -297,6 +365,20 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationSelectionRule", b =>
+                {
+                    b.HasOne("Starlights.Modules.Characters.Domain.Registrations.Registration", null)
+                        .WithMany("SelectionRules")
+                        .HasForeignKey("RegistrationId");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationStatisticRule", b =>
+                {
+                    b.HasOne("Starlights.Modules.Characters.Domain.Registrations.Registration", null)
+                        .WithMany("StatisticRules")
+                        .HasForeignKey("RegistrationId");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.SavingThrows.SavingThrow", b =>
                 {
                     b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", null)
@@ -327,6 +409,10 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>
                 {
                     b.Navigation("IncludeRules");
+
+                    b.Navigation("SelectionRules");
+
+                    b.Navigation("StatisticRules");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Builders;
 using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
@@ -25,25 +26,11 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
         var repository = _persistence.GetRepository<IElementsRepository>();
 
-        var newElements = new List<Element>();
-
-        var defaultCharacter = CreateDefaultCharacterCreationOption(repository);
-
-        var defaultElements = CreateDefaultElements();
-
-        // create include rules for each element
-        foreach (var e in defaultElements)
-        {
-            var includeRule = new IncludeRuleComponent(defaultCharacter.Id, e.Id, 0);
-            defaultCharacter.AddComponent(includeRule); // EF should track this automatically
-        }
-
-        newElements.AddRange(defaultElements);
-
-        foreach (var newElement in newElements)
-        {
-            repository.Add(newElement);
-        }
+        CreateDefaultCharacterCreationOption(repository);
+        CreateClasses(repository);
+        CreateSpecies(repository);
+        CreateBackgrounds(repository);
+        CreateAlignments(repository);
 
         var rows = await _persistence.SaveChangesAsync();
 
@@ -52,146 +39,444 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
     private static Element CreateDefaultCharacterCreationOption(IElementsRepository repository)
     {
-        var defaultCharacter = Element.Create("Default Character", ElementTypeConstants.CharacterCreation);
-        defaultCharacter.AddComponent(new ShortDescriptionComponent(defaultCharacter.Id, "This is a default character for testing purposes."));
+        // proficiency bonus rule
+        var proficiencyRule = CreateProficiencyRule(repository);
+
+        // abilities rule
+        var (abilitiesRule, abilities) = CreateAbilitiesRule(repository);
+
+        // skills rule
+        var skillsRule = CreateSkillsRule(repository, abilities);
+
+        // class selection
+        var classSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Class Selection")
+            .WithSelectionRule(ElementTypeConstants.Class, "Class")
+            .Build();
+
+        // origin selection
+        var originSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Origin Selection")
+            .WithSelectionRule(ElementTypeConstants.Species, "Species")
+            .WithSelectionRule(ElementTypeConstants.Background, "Background")
+            .Build();
+
+        // alignment selection
+        var alignmentSelectionRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Alignment Selection")
+            .WithSelectionRule(ElementTypeConstants.Alignment, "Alignment")
+            .Build();
+
+        // default character creation option
+        var defaultCharacter = ElementBuilder.Create(ElementTypeConstants.CharacterCreation, "Default Character")
+            .WithShortDescription("This is a default character for testing purposes.")
+            .WithIncludeRule(proficiencyRule.Id)
+            .WithIncludeRule(abilitiesRule.Id)
+            .WithIncludeRule(skillsRule.Id)
+            .WithIncludeRule(classSelectionRule.Id)
+            .WithIncludeRule(originSelectionRule.Id)
+            .WithIncludeRule(alignmentSelectionRule.Id)
+            .Build();
 
         repository.Add(defaultCharacter);
+        repository.Add(classSelectionRule);
+        repository.Add(originSelectionRule);
+        repository.Add(alignmentSelectionRule);
 
         return defaultCharacter;
     }
 
-    private static List<Element> CreateDefaultElements()
+    private static Element CreateProficiencyRule(IElementsRepository repository)
     {
-        var newElements = new List<Element>();
+        // proficiency bonus rule
+        var element = ElementBuilder.Create(ElementTypeConstants.Rule, "Proficiency Bonus")
+            .WithStatisticRule("proficiency", "2", "base", 0)
+            .WithStatisticRule("proficiency", "3", "base", 5)
+            .WithStatisticRule("proficiency", "4", "base", 9)
+            .WithStatisticRule("proficiency", "5", "base", 13)
+            .WithStatisticRule("proficiency", "6", "base", 17)
+            .Build();
 
-        // Abilities
-        var strengthAbility = Element.Create("Strength", ElementTypeConstants.Ability);
-        strengthAbility.AddComponent(new AbbreviationComponent(strengthAbility.Id, "STR"));
+        repository.Add(element);
 
-        var dexterityAbility = Element.Create("Dexterity", ElementTypeConstants.Ability);
-        dexterityAbility.AddComponent(new AbbreviationComponent(dexterityAbility.Id, "DEX"));
+        return element;
+    }
 
-        var constitutionAbility = Element.Create("Constitution", ElementTypeConstants.Ability);
-        constitutionAbility.AddComponent(new AbbreviationComponent(constitutionAbility.Id, "CON"));
+    private static (Element AbilitiesRule, IEnumerable<Element> Abilities) CreateAbilitiesRule(IElementsRepository repository)
+    {
+        var strength = ElementBuilder.Create(ElementTypeConstants.Ability, "Strength")
+            .WithAbbreviationComponent("STR")
+            .WithComponent(id => new SortingComponent(id, 1))
+            .Build();
 
-        var intelligenceAbility = Element.Create("Intelligence", ElementTypeConstants.Ability);
-        intelligenceAbility.AddComponent(new AbbreviationComponent(intelligenceAbility.Id, "INT"));
+        var dexterity = ElementBuilder.Create(ElementTypeConstants.Ability, "Dexterity")
+            .WithAbbreviationComponent("DEX")
+            .WithComponent(id => new SortingComponent(id, 2))
+            .Build();
 
-        var wisdomAbility = Element.Create("Wisdom", ElementTypeConstants.Ability);
-        wisdomAbility.AddComponent(new AbbreviationComponent(wisdomAbility.Id, "WIS"));
+        var constitution = ElementBuilder.Create(ElementTypeConstants.Ability, "Constitution")
+            .WithAbbreviationComponent("CON")
+            .WithComponent(id => new SortingComponent(id, 3))
+            .Build();
 
-        var charismaAbility = Element.Create("Charisma", ElementTypeConstants.Ability);
-        charismaAbility.AddComponent(new AbbreviationComponent(charismaAbility.Id, "CHA"));
+        var intelligence = ElementBuilder.Create(ElementTypeConstants.Ability, "Intelligence")
+            .WithAbbreviationComponent("INT")
+            .WithComponent(id => new SortingComponent(id, 4))
+            .Build();
 
-        newElements.Add(strengthAbility);
-        newElements.Add(dexterityAbility);
-        newElements.Add(constitutionAbility);
-        newElements.Add(intelligenceAbility);
-        newElements.Add(wisdomAbility);
-        newElements.Add(charismaAbility);
+        var wisdom = ElementBuilder.Create(ElementTypeConstants.Ability, "Wisdom")
+            .WithAbbreviationComponent("WIS")
+            .WithComponent(id => new SortingComponent(id, 5))
+            .Build();
 
-        // D&D 5e skills (18 total) with their primary abilities
-        var acrobatics = Element.Create("Acrobatics", ElementTypeConstants.Skill);
-        acrobatics.AddComponent(new PrimaryAbilityComponent(acrobatics.Id, dexterityAbility.Id));
+        var charisma = ElementBuilder.Create(ElementTypeConstants.Ability, "Charisma")
+            .WithAbbreviationComponent("CHA")
+            .WithComponent(id => new SortingComponent(id, 6))
+            .Build();
 
-        var animalHandling = Element.Create("Animal Handling", ElementTypeConstants.Skill);
-        animalHandling.AddComponent(new PrimaryAbilityComponent(animalHandling.Id, wisdomAbility.Id));
+        repository.Add(strength);
+        repository.Add(dexterity);
+        repository.Add(constitution);
+        repository.Add(intelligence);
+        repository.Add(wisdom);
+        repository.Add(charisma);
 
-        var arcana = Element.Create("Arcana", ElementTypeConstants.Skill);
-        arcana.AddComponent(new PrimaryAbilityComponent(arcana.Id, intelligenceAbility.Id));
+        var strengthSave = ElementBuilder.Create(ElementTypeConstants.SavingThrow, "Strength Saving Throw")
+            .WithComponent(id => new PrimaryAbilityComponent(id, strength.Id))
+            .WithComponent(id => new SortingComponent(id, 1))
+            .Build();
 
-        var athletics = Element.Create("Athletics", ElementTypeConstants.Skill);
-        athletics.AddComponent(new PrimaryAbilityComponent(athletics.Id, strengthAbility.Id));
+        var dexteritySave = ElementBuilder.Create(ElementTypeConstants.SavingThrow, "Dexterity Saving Throw")
+            .WithComponent(id => new PrimaryAbilityComponent(id, dexterity.Id))
+            .WithComponent(id => new SortingComponent(id, 2))
+            .Build();
 
-        var deception = Element.Create("Deception", ElementTypeConstants.Skill);
-        deception.AddComponent(new PrimaryAbilityComponent(deception.Id, charismaAbility.Id));
+        var constitutionSave = ElementBuilder.Create(ElementTypeConstants.SavingThrow, "Constitution Saving Throw")
+            .WithComponent(id => new PrimaryAbilityComponent(id, constitution.Id))
+            .WithComponent(id => new SortingComponent(id, 3))
+            .Build();
 
-        var history = Element.Create("History", ElementTypeConstants.Skill);
-        history.AddComponent(new PrimaryAbilityComponent(history.Id, intelligenceAbility.Id));
+        var intelligenceSave = ElementBuilder.Create(ElementTypeConstants.SavingThrow, "Intelligence Saving Throw")
+            .WithComponent(id => new PrimaryAbilityComponent(id, intelligence.Id))
+            .WithComponent(id => new SortingComponent(id, 4))
+            .Build();
 
-        var insight = Element.Create("Insight", ElementTypeConstants.Skill);
-        insight.AddComponent(new PrimaryAbilityComponent(insight.Id, wisdomAbility.Id));
+        var wisdomSave = ElementBuilder.Create(ElementTypeConstants.SavingThrow, "Wisdom Saving Throw")
+            .WithComponent(id => new PrimaryAbilityComponent(id, wisdom.Id))
+            .WithComponent(id => new SortingComponent(id, 5))
+            .Build();
 
-        var intimidation = Element.Create("Intimidation", ElementTypeConstants.Skill);
-        intimidation.AddComponent(new PrimaryAbilityComponent(intimidation.Id, charismaAbility.Id));
+        var charismaSave = ElementBuilder.Create(ElementTypeConstants.SavingThrow, "Charisma Saving Throw")
+            .WithComponent(id => new PrimaryAbilityComponent(id, charisma.Id))
+            .WithComponent(id => new SortingComponent(id, 6))
+            .Build();
 
-        var investigation = Element.Create("Investigation", ElementTypeConstants.Skill);
-        investigation.AddComponent(new PrimaryAbilityComponent(investigation.Id, intelligenceAbility.Id));
+        repository.Add(strengthSave);
+        repository.Add(dexteritySave);
+        repository.Add(constitutionSave);
+        repository.Add(intelligenceSave);
+        repository.Add(wisdomSave);
+        repository.Add(charismaSave);
 
-        var medicine = Element.Create("Medicine", ElementTypeConstants.Skill);
-        medicine.AddComponent(new PrimaryAbilityComponent(medicine.Id, wisdomAbility.Id));
+        // abilties rule
+        var abilitiesRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Abilities")
+            .WithIncludeRule(strength.Id)
+            .WithIncludeRule(dexterity.Id)
+            .WithIncludeRule(constitution.Id)
+            .WithIncludeRule(intelligence.Id)
+            .WithIncludeRule(wisdom.Id)
+            .WithIncludeRule(charisma.Id)
+            .WithIncludeRule(strengthSave.Id)
+            .WithIncludeRule(dexteritySave.Id)
+            .WithIncludeRule(constitutionSave.Id)
+            .WithIncludeRule(intelligenceSave.Id)
+            .WithIncludeRule(wisdomSave.Id)
+            .WithIncludeRule(charismaSave.Id)
+            .Build();
 
-        var nature = Element.Create("Nature", ElementTypeConstants.Skill);
-        nature.AddComponent(new PrimaryAbilityComponent(nature.Id, intelligenceAbility.Id));
+        repository.Add(abilitiesRule);
 
-        var perception = Element.Create("Perception", ElementTypeConstants.Skill);
-        perception.AddComponent(new PrimaryAbilityComponent(perception.Id, wisdomAbility.Id));
+        return (abilitiesRule, [strength, dexterity, constitution, intelligence, wisdom, charisma]);
+    }
 
-        var performance = Element.Create("Performance", ElementTypeConstants.Skill);
-        performance.AddComponent(new PrimaryAbilityComponent(performance.Id, charismaAbility.Id));
+    private static Element CreateSkillsRule(IElementsRepository repository, IEnumerable<Element> abilities)
+    {
+        var strength = abilities.Single(a => a.Name == "Strength");
+        var dexterity = abilities.Single(a => a.Name == "Dexterity");
+        var intelligence = abilities.Single(a => a.Name == "Intelligence");
+        var wisdom = abilities.Single(a => a.Name == "Wisdom");
+        var charisma = abilities.Single(a => a.Name == "Charisma");
 
-        var persuasion = Element.Create("Persuasion", ElementTypeConstants.Skill);
-        persuasion.AddComponent(new PrimaryAbilityComponent(persuasion.Id, charismaAbility.Id));
+        // Skills (18)
+        var acrobatics = ElementBuilder.Create(ElementTypeConstants.Skill, "Acrobatics")
+            .WithComponent(id => new PrimaryAbilityComponent(id, dexterity.Id))
+            .WithSorting(1)
+            .Build();
+        var animalHandling = ElementBuilder.Create(ElementTypeConstants.Skill, "Animal Handling")
+            .WithComponent(id => new PrimaryAbilityComponent(id, wisdom.Id))
+            .WithSorting(2)
+            .Build();
+        var arcana = ElementBuilder.Create(ElementTypeConstants.Skill, "Arcana")
+            .WithComponent(id => new PrimaryAbilityComponent(id, intelligence.Id))
+            .WithSorting(3)
+            .Build();
+        var athletics = ElementBuilder.Create(ElementTypeConstants.Skill, "Athletics")
+            .WithComponent(id => new PrimaryAbilityComponent(id, strength.Id))
+            .WithSorting(4)
+            .Build();
+        var deception = ElementBuilder.Create(ElementTypeConstants.Skill, "Deception")
+            .WithComponent(id => new PrimaryAbilityComponent(id, charisma.Id))
+            .WithSorting(5)
+            .Build();
+        var history = ElementBuilder.Create(ElementTypeConstants.Skill, "History")
+            .WithComponent(id => new PrimaryAbilityComponent(id, intelligence.Id))
+            .WithSorting(6)
+            .Build();
+        var insight = ElementBuilder.Create(ElementTypeConstants.Skill, "Insight")
+            .WithComponent(id => new PrimaryAbilityComponent(id, wisdom.Id))
+            .WithSorting(7)
+            .Build();
+        var intimidation = ElementBuilder.Create(ElementTypeConstants.Skill, "Intimidation")
+            .WithComponent(id => new PrimaryAbilityComponent(id, charisma.Id))
+            .WithSorting(8)
+            .Build();
+        var investigation = ElementBuilder.Create(ElementTypeConstants.Skill, "Investigation")
+            .WithComponent(id => new PrimaryAbilityComponent(id, intelligence.Id))
+            .WithSorting(9)
+            .Build();
+        var medicine = ElementBuilder.Create(ElementTypeConstants.Skill, "Medicine")
+            .WithComponent(id => new PrimaryAbilityComponent(id, wisdom.Id))
+            .WithSorting(10)
+            .Build();
+        var nature = ElementBuilder.Create(ElementTypeConstants.Skill, "Nature")
+            .WithComponent(id => new PrimaryAbilityComponent(id, intelligence.Id))
+            .WithSorting(11)
+            .Build();
+        var perception = ElementBuilder.Create(ElementTypeConstants.Skill, "Perception")
+            .WithComponent(id => new PrimaryAbilityComponent(id, wisdom.Id))
+            .WithSorting(12)
+            .Build();
+        var performance = ElementBuilder.Create(ElementTypeConstants.Skill, "Performance")
+            .WithComponent(id => new PrimaryAbilityComponent(id, charisma.Id))
+            .WithSorting(13)
+            .Build();
+        var persuasion = ElementBuilder.Create(ElementTypeConstants.Skill, "Persuasion")
+            .WithComponent(id => new PrimaryAbilityComponent(id, charisma.Id))
+            .WithSorting(14)
+            .Build();
+        var religion = ElementBuilder.Create(ElementTypeConstants.Skill, "Religion")
+            .WithComponent(id => new PrimaryAbilityComponent(id, intelligence.Id))
+            .WithSorting(15)
+            .Build();
+        var sleightOfHand = ElementBuilder.Create(ElementTypeConstants.Skill, "Sleight of Hand")
+            .WithComponent(id => new PrimaryAbilityComponent(id, dexterity.Id))
+            .WithSorting(16)
+            .Build();
+        var stealth = ElementBuilder.Create(ElementTypeConstants.Skill, "Stealth")
+            .WithComponent(id => new PrimaryAbilityComponent(id, dexterity.Id))
+            .WithSorting(17)
+            .Build();
+        var survival = ElementBuilder.Create(ElementTypeConstants.Skill, "Survival")
+            .WithComponent(id => new PrimaryAbilityComponent(id, wisdom.Id))
+            .WithSorting(18)
+            .Build();
 
-        var religion = Element.Create("Religion", ElementTypeConstants.Skill);
-        religion.AddComponent(new PrimaryAbilityComponent(religion.Id, intelligenceAbility.Id));
+        // Add all skills to repository
+        repository.Add(acrobatics);
+        repository.Add(animalHandling);
+        repository.Add(arcana);
+        repository.Add(athletics);
+        repository.Add(deception);
+        repository.Add(history);
+        repository.Add(insight);
+        repository.Add(intimidation);
+        repository.Add(investigation);
+        repository.Add(medicine);
+        repository.Add(nature);
+        repository.Add(perception);
+        repository.Add(performance);
+        repository.Add(persuasion);
+        repository.Add(religion);
+        repository.Add(sleightOfHand);
+        repository.Add(stealth);
+        repository.Add(survival);
 
-        var sleightOfHand = Element.Create("Sleight of Hand", ElementTypeConstants.Skill);
-        sleightOfHand.AddComponent(new PrimaryAbilityComponent(sleightOfHand.Id, dexterityAbility.Id));
+        // skills rule includes all skills
+        var skillsRule = ElementBuilder.Create(ElementTypeConstants.Rule, "Skills")
+            .WithIncludeRule(acrobatics.Id)
+            .WithIncludeRule(animalHandling.Id)
+            .WithIncludeRule(arcana.Id)
+            .WithIncludeRule(athletics.Id)
+            .WithIncludeRule(deception.Id)
+            .WithIncludeRule(history.Id)
+            .WithIncludeRule(insight.Id)
+            .WithIncludeRule(intimidation.Id)
+            .WithIncludeRule(investigation.Id)
+            .WithIncludeRule(medicine.Id)
+            .WithIncludeRule(nature.Id)
+            .WithIncludeRule(perception.Id)
+            .WithIncludeRule(performance.Id)
+            .WithIncludeRule(persuasion.Id)
+            .WithIncludeRule(religion.Id)
+            .WithIncludeRule(sleightOfHand.Id)
+            .WithIncludeRule(stealth.Id)
+            .WithIncludeRule(survival.Id)
+            .Build();
 
-        var stealth = Element.Create("Stealth", ElementTypeConstants.Skill);
-        stealth.AddComponent(new PrimaryAbilityComponent(stealth.Id, dexterityAbility.Id));
+        repository.Add(skillsRule);
 
-        var survival = Element.Create("Survival", ElementTypeConstants.Skill);
-        survival.AddComponent(new PrimaryAbilityComponent(survival.Id, wisdomAbility.Id));
+        return skillsRule;
+    }
 
-        newElements.Add(acrobatics);
-        newElements.Add(animalHandling);
-        newElements.Add(arcana);
-        newElements.Add(athletics);
-        newElements.Add(deception);
-        newElements.Add(history);
-        newElements.Add(insight);
-        newElements.Add(intimidation);
-        newElements.Add(investigation);
-        newElements.Add(medicine);
-        newElements.Add(nature);
-        newElements.Add(perception);
-        newElements.Add(performance);
-        newElements.Add(persuasion);
-        newElements.Add(religion);
-        newElements.Add(sleightOfHand);
-        newElements.Add(stealth);
-        newElements.Add(survival);
+    private static void CreateClasses(IElementsRepository repository)
+    {
+        var barbarianFeature1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 1")
+            .Build();
+
+        var barbarianFeature2 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 2")
+            .Build();
+
+        var barbarianFeature3 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 3")
+            .Build();
+
+        var barbarian = ElementBuilder.Create(ElementTypeConstants.Class, "Barbarian")
+            .WithIncludeRule(barbarianFeature1.Id, levelRequirement: 1)
+            .WithIncludeRule(barbarianFeature2.Id, levelRequirement: 2)
+            .WithIncludeRule(barbarianFeature3.Id, levelRequirement: 3)
+            .Build();
+
+        repository.Add(barbarian);
+        repository.Add(barbarianFeature1);
+        repository.Add(barbarianFeature2);
+        repository.Add(barbarianFeature3);
 
 
-        // D&D 5e saving throws (6 total) with their primary abilities
+        var rogueFeature1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Rogue Feature 1")
+            .Build();
 
-        var strengthSavingThrow = Element.Create("Strength Saving Throw", ElementTypeConstants.SavingThrow);
-        strengthSavingThrow.AddComponent(new PrimaryAbilityComponent(strengthSavingThrow.Id, strengthAbility.Id));
+        var rogueFeature2 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Rogue Feature 2")
+            .Build();
 
-        var dexteritySavingThrow = Element.Create("Dexterity Saving Throw", ElementTypeConstants.SavingThrow);
-        dexteritySavingThrow.AddComponent(new PrimaryAbilityComponent(dexteritySavingThrow.Id, dexterityAbility.Id));
+        var rogueFeature3 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Rogue Feature 3")
+            .Build();
 
-        var constitutionSavingThrow = Element.Create("Constitution Saving Throw", ElementTypeConstants.SavingThrow);
-        constitutionSavingThrow.AddComponent(new PrimaryAbilityComponent(constitutionSavingThrow.Id, constitutionAbility.Id));
+        repository.Add(rogueFeature1);
+        repository.Add(rogueFeature2);
+        repository.Add(rogueFeature3);
 
-        var intelligenceSavingThrow = Element.Create("Intelligence Saving Throw", ElementTypeConstants.SavingThrow);
-        intelligenceSavingThrow.AddComponent(new PrimaryAbilityComponent(intelligenceSavingThrow.Id, intelligenceAbility.Id));
+        var rogue = ElementBuilder.Create(ElementTypeConstants.Class, "Rogue")
+            .WithIncludeRule(rogueFeature1.Id, levelRequirement: 1)
+            .WithIncludeRule(rogueFeature2.Id, levelRequirement: 2)
+            .WithIncludeRule(rogueFeature3.Id, levelRequirement: 3)
+            .Build();
 
-        var wisdomSavingThrow = Element.Create("Wisdom Saving Throw", ElementTypeConstants.SavingThrow);
-        wisdomSavingThrow.AddComponent(new PrimaryAbilityComponent(wisdomSavingThrow.Id, wisdomAbility.Id));
+        repository.Add(rogue);
+    }
 
-        var charismaSavingThrow = Element.Create("Charisma Saving Throw", ElementTypeConstants.SavingThrow);
-        charismaSavingThrow.AddComponent(new PrimaryAbilityComponent(charismaSavingThrow.Id, charismaAbility.Id));
+    private static void CreateSpecies(IElementsRepository repository)
+    {
+        var humanFeature = ElementBuilder.Create(ElementTypeConstants.SpeciesFeature, "Human Feature")
+            .Build();
 
-        newElements.Add(strengthSavingThrow);
-        newElements.Add(dexteritySavingThrow);
-        newElements.Add(constitutionSavingThrow);
-        newElements.Add(intelligenceSavingThrow);
-        newElements.Add(wisdomSavingThrow);
-        newElements.Add(charismaSavingThrow);
+        var human = ElementBuilder.Create(ElementTypeConstants.Species, "Human")
+            .WithIncludeRule(humanFeature.Id, levelRequirement: 3)
+            .Build();
 
-        return newElements;
+        repository.Add(humanFeature);
+        repository.Add(human);
+
+        var elfFeature = ElementBuilder.Create(ElementTypeConstants.SpeciesFeature, "Elf Feature")
+            .Build();
+
+        var elf = ElementBuilder.Create(ElementTypeConstants.Species, "Elf")
+            .WithIncludeRule(elfFeature.Id, levelRequirement: 3)
+            .Build();
+
+        repository.Add(elfFeature);
+        repository.Add(elf);
+    }
+
+    private static void CreateBackgrounds(IElementsRepository repository)
+    {
+        var acolyteFeature = ElementBuilder.Create(ElementTypeConstants.BackgroundFeature, "Acolyte Feature")
+            .Build();
+
+        var acolyte = ElementBuilder.Create(ElementTypeConstants.Background, "Acolyte")
+            .WithIncludeRule(acolyteFeature.Id, 3)
+            .Build();
+
+        repository.Add(acolyteFeature);
+        repository.Add(acolyte);
+
+
+        var charlatanFeature = ElementBuilder.Create(ElementTypeConstants.BackgroundFeature, "Charlatan Feature")
+            .Build();
+
+        var charlatan = ElementBuilder.Create(ElementTypeConstants.Background, "Charlatan")
+            .WithIncludeRule(charlatanFeature.Id, 3)
+            .Build();
+
+        repository.Add(charlatanFeature);
+        repository.Add(charlatan);
+    }
+
+    private static void CreateAlignments(IElementsRepository repository)
+    {
+        var lawfulGood = ElementBuilder.Create(ElementTypeConstants.Alignment, "Lawful Good")
+            .WithAbbreviationComponent("LG")
+            .Build();
+
+        repository.Add(lawfulGood);
+
+        var neutralGood = ElementBuilder.Create(ElementTypeConstants.Alignment, "Neutral Good")
+            .WithAbbreviationComponent("NG")
+            .Build();
+
+        repository.Add(neutralGood);
+
+        var chaoticGood = ElementBuilder.Create(ElementTypeConstants.Alignment, "Chaotic Good")
+            .WithAbbreviationComponent("CG")
+            .Build();
+
+        repository.Add(chaoticGood);
+
+        var lawfulNeutral = ElementBuilder.Create(ElementTypeConstants.Alignment, "Lawful Neutral")
+            .WithAbbreviationComponent("LN")
+            .Build();
+
+        repository.Add(lawfulNeutral);
+
+        var trueNeutral = ElementBuilder.Create(ElementTypeConstants.Alignment, "True Neutral")
+            .WithAbbreviationComponent("TN")
+            .Build();
+
+        repository.Add(trueNeutral);
+
+        var chaoticNeutral = ElementBuilder.Create(ElementTypeConstants.Alignment, "Chaotic Neutral")
+            .WithAbbreviationComponent("CN")
+            .Build();
+
+        repository.Add(chaoticNeutral);
+
+        var lawfulEvil = ElementBuilder.Create(ElementTypeConstants.Alignment, "Lawful Evil")
+            .WithAbbreviationComponent("LE")
+            .Build();
+
+        repository.Add(lawfulEvil);
+
+        var neutralEvil = ElementBuilder.Create(ElementTypeConstants.Alignment, "Neutral Evil")
+            .WithAbbreviationComponent("NE")
+            .Build();
+
+        repository.Add(neutralEvil);
+
+        var chaoticEvil = ElementBuilder.Create(ElementTypeConstants.Alignment, "Chaotic Evil")
+            .WithAbbreviationComponent("CE")
+            .Build();
+
+        repository.Add(chaoticEvil);
+
+        var unaligned = ElementBuilder.Create(ElementTypeConstants.Alignment, "Unaligned")
+            .WithAbbreviationComponent("U")
+            .Build();
+
+        repository.Add(unaligned);
     }
 }

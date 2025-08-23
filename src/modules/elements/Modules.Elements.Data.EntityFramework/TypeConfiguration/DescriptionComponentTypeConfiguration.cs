@@ -9,5 +9,9 @@ public class DescriptionComponentTypeConfiguration : IEntityTypeConfiguration<De
     public void Configure(EntityTypeBuilder<DescriptionComponent> builder)
     {
         builder.ToTable("element_component_description");
+
+        builder.Property(x => x.Content)
+            .IsRequired()
+            .HasColumnName("content");
     }
 }

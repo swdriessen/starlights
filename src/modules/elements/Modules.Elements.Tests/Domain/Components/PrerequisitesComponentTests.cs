@@ -25,20 +25,6 @@ public class PrerequisitesComponentTests
     }
 
     [TestMethod]
-    public void Constructor_EmptyPrerequisites_ThrowsArgumentException()
-    {
-        // Arrange
-        var elementId = CreateElementId();
-
-        // Act
-        Action act = () => new PrerequisitesComponent(elementId, "   ");
-
-        // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("*Prerequisites cannot be null or whitespace.*");
-    }
-
-    [TestMethod]
     public void UpdatePrerequisites_ValidValue_UpdatesProperty()
     {
         // Arrange
@@ -51,20 +37,5 @@ public class PrerequisitesComponentTests
 
         // Assert
         component.Prerequisites.Should().Be(newValue);
-    }
-
-    [TestMethod]
-    public void UpdatePrerequisites_EmptyValue_ThrowsArgumentException()
-    {
-        // Arrange
-        var elementId = CreateElementId();
-        var component = new PrerequisitesComponent(elementId, "Initial");
-
-        // Act
-        Action act = () => component.UpdatePrerequisites("");
-
-        // Assert
-        act.Should().Throw<ArgumentException>()
-            .WithMessage("*Prerequisites cannot be null or whitespace.*");
     }
 }

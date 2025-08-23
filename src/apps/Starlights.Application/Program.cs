@@ -54,8 +54,8 @@ public sealed class Program
             options.AdditionalAssemblies.Add(typeof(InitializationEndpoint).Assembly);
 
             // platform components
-            options.AdditionalAssemblies.Add(typeof(FastEndpointsComponent).Assembly);
-            options.AdditionalAssemblies.Add(typeof(SerilogComponent).Assembly);
+            options.AddFastEndpointsComponent();
+            options.AddSerilogComponent();
             options.AdditionalAssemblies.Add(typeof(EventPublisherComponent).Assembly);
         });
 

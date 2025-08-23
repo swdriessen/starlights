@@ -26,27 +26,29 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
 
     public async Task Registered(Registration newRegistration, RegistrationProcessContext context)
     {
-        if (newRegistration.AssociatedElementType == "Skill")
+        if (newRegistration.AssociatedElementType != "Skill")
         {
-            using var _ = CharactersInstrumentation.StartActivity("Skill Registration Behavior");
+            return;
+        }
 
-            var associatedElement = await _elements.GetSkillModel(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Skill with ID {newRegistration.AssociatedElementId} not found.");
+        using var _ = CharactersInstrumentation.StartActivity("Skill Registration Behavior");
 
-            var characters = context.GetRepository<ICharactersRepository>();
-            var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
+        var associatedElement = await _elements.GetSkillModel(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Skill with ID {newRegistration.AssociatedElementId} not found.");
 
-            var primaryScore = await GetPrimaryAbilityScore(context, character, associatedElement);
+        var characters = context.GetRepository<ICharactersRepository>();
+        var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
-            if (primaryScore is null)
-            {
-                _logger.LogInformation("Creating skill '{SkillName}' without primary ability score for character '{CharacterId}'", associatedElement.Name, character.Id.Value);
-                character.CreateSkillWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
-            }
-            else
-            {
-                _logger.LogInformation("Creating skill '{SkillName}' with primary ability score '{AbilityScoreName}' for character '{CharacterId}'", associatedElement.Name, primaryScore.Name, character.Id.Value);
-                character.CreateSkill(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
-            }
+        var primaryScore = await GetPrimaryAbilityScore(context, character, associatedElement);
+
+        if (primaryScore is null)
+        {
+            _logger.LogInformation("Creating skill '{SkillName}' without primary ability score for character '{CharacterId}'", associatedElement.Name, character.Id.Value);
+            character.CreateSkillWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
+        }
+        else
+        {
+            _logger.LogInformation("Creating skill '{SkillName}' with primary ability score '{AbilityScoreName}' for character '{CharacterId}'", associatedElement.Name, primaryScore.Name, character.Id.Value);
+            character.CreateSkill(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
         }
     }
 

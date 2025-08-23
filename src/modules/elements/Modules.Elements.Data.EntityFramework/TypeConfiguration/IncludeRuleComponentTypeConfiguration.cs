@@ -13,9 +13,14 @@ public class IncludeRuleComponentTypeConfiguration : IEntityTypeConfiguration<In
 
         builder.Property(x => x.IncludeElement)
             .IsRequired()
-            .HasConversion(m => m.Value, v => new ElementId(v));
+            .HasConversion(m => m.Value, v => new ElementId(v))
+            .HasColumnName("include_element_id");
 
         builder.Property(x => x.LevelRequirement)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("level_requirement");
+
+        builder.Property(x => x.Requirements)
+            .HasColumnName("requirements");
     }
 }

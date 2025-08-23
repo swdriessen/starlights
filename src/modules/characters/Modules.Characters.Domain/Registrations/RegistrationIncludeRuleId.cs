@@ -16,5 +16,8 @@ public readonly record struct RegistrationIncludeRuleId(Guid Value)
     /// <summary>
     /// Implicitly converts RegistrationIncludeRuleId to Guid.
     /// </summary>
-    public static implicit operator Guid(RegistrationIncludeRuleId id) => id.Value;
+    public static implicit operator Guid(RegistrationIncludeRuleId id)
+    {
+        return id.Value;
+    }
 }

@@ -42,7 +42,7 @@ public sealed class SavingThrowsEndpointsTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.TimeoutForDebugging, CooperativeCancellation = true)]
+    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
     public async Task GetSavingThrows_Returns_Data()
     {
         var characterId = _integration.GetCharacterIdentifier();

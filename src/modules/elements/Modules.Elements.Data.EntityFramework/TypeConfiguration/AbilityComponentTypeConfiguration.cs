@@ -9,5 +9,9 @@ public class AbilityComponentTypeConfiguration : IEntityTypeConfiguration<Abilit
     public void Configure(EntityTypeBuilder<AbilityComponent> builder)
     {
         builder.ToTable("element_component_ability");
+
+        builder.Property(x => x.Abbreviation)
+            .IsRequired()
+            .HasColumnName("abbreviation");
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Starlights.Modules.Elements.Integration.Models;
+﻿namespace Starlights.Modules.Elements.Integration.Models.Rules;
 
 /// <summary>
 /// The DTO model for an include rule.

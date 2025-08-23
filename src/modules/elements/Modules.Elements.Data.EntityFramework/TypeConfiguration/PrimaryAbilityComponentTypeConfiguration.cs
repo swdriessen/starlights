@@ -13,6 +13,7 @@ public class PrimaryAbilityComponentTypeConfiguration : IEntityTypeConfiguration
 
         builder.Property(x => x.PrimaryAbility)
             .IsRequired()
-            .HasConversion(m => m.Value, v => new ElementId(v));
+            .HasConversion(m => m.Value, v => new ElementId(v))
+            .HasColumnName("primary_ability_id");
     }
 }

@@ -4,5 +4,8 @@ namespace Starlights.Modules.Characters.Services.Processing;
 
 public interface IRegistrationManager
 {
-    Task<int> ProcessRegistration(RegistrationId registrationId);
+    /// <summary>
+    /// Processes a registration by its unique identifier.
+    /// </summary>
+    Task<ProcessRegistrationResult> ProcessRegistration(RegistrationId registrationId);
 }
