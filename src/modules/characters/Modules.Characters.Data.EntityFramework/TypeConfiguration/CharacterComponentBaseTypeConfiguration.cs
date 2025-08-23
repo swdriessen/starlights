@@ -23,5 +23,3 @@ public class CharacterComponentBaseTypeConfiguration : IEntityTypeConfiguration<
         builder.UseTpcMappingStrategy();
     }
 }
-
-
