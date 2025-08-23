@@ -3,12 +3,14 @@ using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;
 
 /// <summary>
 /// Represents a registration for an element in the system.
 /// </summary>
+[Entity]
 [DebuggerDisplay("Id = {Id}, AssociatedElementName = {AssociatedElementName}, Parent = {ParentRegistrationId}")]
 public sealed class Registration : AggregateRoot<RegistrationId>
 {

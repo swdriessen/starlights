@@ -1,12 +1,14 @@
 using System.Diagnostics;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;
 
 /// <summary>
 /// Represents a selection rule that has been applied to a registration via a selection rule component.
 /// </summary>
+[Entity]
 [DebuggerDisplay("Id = {Id}, Parent = {ParentRegistrationId} RuleId = {AssociatedSelectionRuleId}, ElementType = {ElementType}, Name = {Name}")]
 public sealed class RegistrationSelectionRule : EntityBase<RegistrationSelectionRuleId>
 {

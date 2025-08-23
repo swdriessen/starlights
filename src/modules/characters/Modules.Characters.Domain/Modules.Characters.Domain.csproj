@@ -4,6 +4,7 @@
 	</PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\platform\Starlights.Platform\Starlights.Platform.csproj" />
+    <ProjectReference Include="..\..\..\source-generators\Starlights.Platform.SourceGenerators\Starlights.Platform.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
