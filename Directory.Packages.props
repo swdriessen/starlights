@@ -16,6 +16,8 @@
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
 		<PackageVersion Include="Scalar.AspNetCore" Version="2.4.13" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+		<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
   </ItemGroup>
   <ItemGroup Label="Aspire">
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="$(AspireVersion)" />
