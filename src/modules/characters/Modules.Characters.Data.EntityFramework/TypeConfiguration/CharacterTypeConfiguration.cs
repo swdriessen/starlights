@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Characters;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
