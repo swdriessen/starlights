@@ -3,7 +3,9 @@ using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Appearances;
 using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Classes;
 using Starlights.Modules.Characters.Domain.Elements;
+using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements.Integration;
@@ -36,7 +38,7 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
 
     public override async Task HandleAsync(CreateCharacterRequest req, CancellationToken ct)
     {
-        using var a = CharactersInstrumentation.StartActivity(nameof(CreateCharacterEndpoint));
+        using var _ = CharactersInstrumentation.StartActivity(nameof(CreateCharacterEndpoint));
 
         // get the root element which handles all rules for character creation
         var rootElement = await _queries.GetCharacterCreationElement(req.CharacterCreationOptionId);
@@ -49,6 +51,9 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
 
         // character entity
         var newCharacter = Character.Create(req.Name);
+
+        newCharacter.AddComponent(new ProgressionComponent(newCharacter.Id));
+        newCharacter.AddComponent(new ClassComponent(newCharacter.Id));
 
         var characters = _persistence.GetRepository<ICharactersRepository>();
         characters.Add(newCharacter);
