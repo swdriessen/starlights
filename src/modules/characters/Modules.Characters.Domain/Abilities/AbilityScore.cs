@@ -1,8 +1,10 @@
 ﻿using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.Abilities;
 
+[Entity]
 public sealed class AbilityScore : EntityBase<AbilityScoreId>
 {
     private AbilityScore(RegistrationId associatedRegistrationId, string name, string abbreviation)

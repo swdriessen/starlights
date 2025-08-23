@@ -1,12 +1,14 @@
 ﻿using System.Diagnostics;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;
 
 /// <summary>
 /// Represents a rule for an element in the system.
 /// </summary>
+[Entity]
 [DebuggerDisplay("Id = {Id}, Parent = {ParentRegistrationId} RuleId = {AssociatedIncludeRuleId}, ElementName = {IncludedElementName}, ElementId = {IncludedElementId}")]
 public sealed class RegistrationIncludeRule : EntityBase<RegistrationIncludeRuleId>
 {

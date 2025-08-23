@@ -1,9 +1,11 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.Skills;
 
+[Entity]
 public class Skill : EntityBase<SkillId>
 {
     public Skill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation)

@@ -1,12 +1,14 @@
 using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.SavingThrows;
 
 /// <summary>
 /// Represents a saving throw for a character (e.g. Strength Saving Throw) which is associated with a primary ability.
 /// </summary>
+[Entity]
 public sealed class SavingThrow : EntityBase<SavingThrowId>
 {
     public SavingThrow(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation)

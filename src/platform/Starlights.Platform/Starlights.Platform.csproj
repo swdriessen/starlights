@@ -1,3 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\source-generators\Starlights.Platform.SourceGenerators.Entities.Attributes\Starlights.Platform.SourceGenerators.Entities.Attributes.csproj" />
+    <ProjectReference Include="..\..\source-generators\Starlights.Platform.SourceGenerators\Starlights.Platform.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
 </Project>

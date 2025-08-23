@@ -1,12 +1,14 @@
 using System.Diagnostics;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.Registrations;
 
 /// <summary>
 /// Represents a statistic rule that has been applied to a registration via a statistic rule component.
 /// </summary>
+[Entity]
 [DebuggerDisplay("Id = {Id}, Parent = {ParentRegistrationId} RuleId = {AssociatedStatisticRuleId}, Name = {Name}, Value = {Value}")]
 public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatisticRuleId>
 {

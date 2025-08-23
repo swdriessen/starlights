@@ -2,12 +2,14 @@ using System.Diagnostics;
 using Starlights.Modules.Characters.Domain.Appearances.Eventing;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.Appearances;
 
 /// <summary>
 /// Represents the appearance details of a character.
 /// </summary>
+[Entity]
 [DebuggerDisplay("Id = {Id}, CharacterId = {CharacterId}")]
 public sealed class Appearance : AggregateRoot<AppearanceId>
 {

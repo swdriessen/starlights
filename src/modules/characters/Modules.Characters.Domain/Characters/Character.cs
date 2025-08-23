@@ -8,12 +8,14 @@ using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
 using Starlights.Modules.Characters.Domain.Skills;
 using Starlights.Modules.Characters.Domain.Skills.Eventing;
 using Starlights.Platform.Domain;
+using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
 namespace Starlights.Modules.Characters.Domain.Characters;
 
 /// <summary>
 /// Represents a character in the system.
 /// </summary>
+[Entity]
 [DebuggerDisplay("Id = {Id}, Name = {Name}")]
 public sealed class Character : AggregateRoot<CharacterId>
 {
@@ -30,7 +32,7 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <summary>
     /// Gets the name of the character.
     /// </summary>
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; } = string.Empty;
 
     /// <summary>
     /// Gets the collection of ability scores associated with the character.
