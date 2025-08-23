@@ -327,12 +327,44 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
     private static void CreateClasses(IElementsRepository repository)
     {
+        var barbarianFeature1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 1")
+            .Build();
+
+        var barbarianFeature2 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 2")
+            .Build();
+
+        var barbarianFeature3 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 3")
+            .Build();
+
         var barbarian = ElementBuilder.Create(ElementTypeConstants.Class, "Barbarian")
+            .WithIncludeRule(barbarianFeature1.Id, levelRequirement: 1)
+            .WithIncludeRule(barbarianFeature2.Id, levelRequirement: 2)
+            .WithIncludeRule(barbarianFeature3.Id, levelRequirement: 3)
             .Build();
 
         repository.Add(barbarian);
+        repository.Add(barbarianFeature1);
+        repository.Add(barbarianFeature2);
+        repository.Add(barbarianFeature3);
+
+
+        var rogueFeature1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Rogue Feature 1")
+            .Build();
+
+        var rogueFeature2 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Rogue Feature 2")
+            .Build();
+
+        var rogueFeature3 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Rogue Feature 3")
+            .Build();
+
+        repository.Add(rogueFeature1);
+        repository.Add(rogueFeature2);
+        repository.Add(rogueFeature3);
 
         var rogue = ElementBuilder.Create(ElementTypeConstants.Class, "Rogue")
+            .WithIncludeRule(rogueFeature1.Id, levelRequirement: 1)
+            .WithIncludeRule(rogueFeature2.Id, levelRequirement: 2)
+            .WithIncludeRule(rogueFeature3.Id, levelRequirement: 3)
             .Build();
 
         repository.Add(rogue);
@@ -340,27 +372,48 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
     private static void CreateSpecies(IElementsRepository repository)
     {
-        var human = ElementBuilder.Create(ElementTypeConstants.Species, "Human")
+        var humanFeature = ElementBuilder.Create(ElementTypeConstants.SpeciesFeature, "Human Feature")
             .Build();
 
+        var human = ElementBuilder.Create(ElementTypeConstants.Species, "Human")
+            .WithIncludeRule(humanFeature.Id, levelRequirement: 3)
+            .Build();
+
+        repository.Add(humanFeature);
         repository.Add(human);
 
-        var elf = ElementBuilder.Create(ElementTypeConstants.Species, "Elf")
+        var elfFeature = ElementBuilder.Create(ElementTypeConstants.SpeciesFeature, "Elf Feature")
             .Build();
 
+        var elf = ElementBuilder.Create(ElementTypeConstants.Species, "Elf")
+            .WithIncludeRule(elfFeature.Id, levelRequirement: 3)
+            .Build();
+
+        repository.Add(elfFeature);
         repository.Add(elf);
     }
 
     private static void CreateBackgrounds(IElementsRepository repository)
     {
-        var acolyte = ElementBuilder.Create(ElementTypeConstants.Background, "Acolyte")
+        var acolyteFeature = ElementBuilder.Create(ElementTypeConstants.BackgroundFeature, "Acolyte Feature")
             .Build();
 
+        var acolyte = ElementBuilder.Create(ElementTypeConstants.Background, "Acolyte")
+            .WithIncludeRule(acolyteFeature.Id, 3)
+            .Build();
+
+        repository.Add(acolyteFeature);
         repository.Add(acolyte);
 
-        var charlatan = ElementBuilder.Create(ElementTypeConstants.Background, "Charlatan")
+
+        var charlatanFeature = ElementBuilder.Create(ElementTypeConstants.BackgroundFeature, "Charlatan Feature")
             .Build();
 
+        var charlatan = ElementBuilder.Create(ElementTypeConstants.Background, "Charlatan")
+            .WithIncludeRule(charlatanFeature.Id, 3)
+            .Build();
+
+        repository.Add(charlatanFeature);
         repository.Add(charlatan);
     }
 
