@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Starlights.Modules.Characters.Data.EntityFramework;
 
@@ -11,9 +12,11 @@ using Starlights.Modules.Characters.Data.EntityFramework;
 namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 {
     [DbContext(typeof(CharactersContext))]
-    partial class CharactersContextModelSnapshot : ModelSnapshot
+    [Migration("20250823164040_AddCharacterClass")]
+    partial class AddCharacterClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
