@@ -2,6 +2,7 @@
 using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Characters.Eventing;
+using Starlights.Modules.Characters.Domain.Components;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Domain.SavingThrows;
 using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
@@ -19,6 +20,7 @@ namespace Starlights.Modules.Characters.Domain.Characters;
 [DebuggerDisplay("Id = {Id}, Name = {Name}")]
 public sealed class Character : AggregateRoot<CharacterId>
 {
+    private readonly List<CharacterComponentBase> _components = [];
     private readonly List<AbilityScore> _abilityScores = [];
     private readonly List<Skill> _skills = [];
     private readonly List<SavingThrow> _savingThrows = [];
@@ -28,6 +30,11 @@ public sealed class Character : AggregateRoot<CharacterId>
     {
         Name = name;
     }
+
+    /// <summary>
+    /// Gets the collection of components associated with the character.
+    /// </summary>
+    public IReadOnlyCollection<CharacterComponentBase> Components => _components.AsReadOnly();
 
     /// <summary>
     /// Gets the name of the character.
@@ -185,4 +192,28 @@ public sealed class Character : AggregateRoot<CharacterId>
             }
         }
     }
+
+    /// <summary>
+    /// Adds a component to the character.
+    /// </summary>
+    public T AddComponent<T>(T component) where T : CharacterComponentBase
+    {
+        if (component.ParentCharacter != Id)
+        {
+            throw new InvalidOperationException("Component's CharacterId does not match this Character's Id.");
+        }
+
+        _components.Add(component);
+        return component;
+    }
+
+    /// <summary>
+    /// Gets a single component of the specified type.
+    /// </summary>
+    public T GetRequiredComponent<T>() where T : CharacterComponentBase => _components.OfType<T>().Single();
+
+    /// <summary>
+    /// Gets all components of the specified type.
+    /// </summary>
+    public IEnumerable<T> GetComponents<T>() where T : CharacterComponentBase => _components.OfType<T>();
 }

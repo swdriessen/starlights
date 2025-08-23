@@ -24,5 +24,15 @@ public class CharacterTypeConfiguration : IEntityTypeConfiguration<Character>
                .HasForeignKey("CharacterId")
                    .OnDelete(DeleteBehavior.Cascade)
                    .IsRequired();
+
+
+
+
+
+        builder.HasMany(x => x.Components)
+            .WithOne()
+            .HasForeignKey(x => x.ParentCharacter)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
     }
 }
