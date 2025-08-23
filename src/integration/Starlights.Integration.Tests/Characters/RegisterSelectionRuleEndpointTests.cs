@@ -140,9 +140,10 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
         var chosenOption = options.Options[0];
 
         // Act
-        var regId = await client.RegisterSelectionRuleAsync(characterId, targetRule.RegistrationId, targetRule.RegistrationSelectionRuleId, chosenOption.ElementId, ct: TestCancellationToken);
+        var newRegistrationId = await client.RegisterSelectionRuleAsync(characterId, targetRule.RegistrationId, targetRule.RegistrationSelectionRuleId, chosenOption.ElementId, ct: TestCancellationToken);
 
         // Assert new registration exists
-        regId.Should().NotBe(Guid.Empty);
+        newRegistrationId.Should().NotBe(Guid.Empty);
+        await _eventListener.CharacterClassCreated.WaitForEvent(cancellationToken: TestCancellationToken);
     }
 }

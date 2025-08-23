@@ -23,7 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Entities\" />
+	  <Folder Include="Characters\GetCharacters\" />
+	  <Folder Include="Characters\DeleteCharacter\" />
+	  <Folder Include="Manage\" />
 	</ItemGroup>
 
 </Project>

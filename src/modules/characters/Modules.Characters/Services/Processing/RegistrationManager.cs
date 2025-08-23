@@ -40,6 +40,8 @@ public class RegistrationManager : IRegistrationManager
             return new ProcessRegistrationResult();
         }
 
+        // trigger behaviors for unprocessed registrations?
+
         var context = new RegistrationProcessContext(registration, _persistence);
 
         await ProcessIncludeRules(context);

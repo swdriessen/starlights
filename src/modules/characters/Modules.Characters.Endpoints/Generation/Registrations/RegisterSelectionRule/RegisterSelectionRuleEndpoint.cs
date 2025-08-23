@@ -2,6 +2,7 @@
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
@@ -11,11 +12,13 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
+    private readonly IEnumerable<IRegistrationBehavior> _registrationBehaviors;
 
-    public RegisterSelectionRuleEndpoint(IPersistence persistence, IElementsModuleQueries elements)
+    public RegisterSelectionRuleEndpoint(IPersistence persistence, IElementsModuleQueries elements, IEnumerable<IRegistrationBehavior> registrationBehaviors)
     {
         _persistence = persistence;
         _elements = elements;
+        _registrationBehaviors = [.. registrationBehaviors];
     }
 
     public override void Configure()
@@ -64,7 +67,24 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
         }
 
         var newRegistration = Registration.Create(character.Id, new(element.Id), element.Name, element.Type);
+        newRegistration.UpdateParentRegistration(parentRegistration);
+
+        // mark the selection rule with the selected element
+        selectionRule.UpdateCurrentSelection(newRegistration.AssociatedElementId);
+        // TODO: add domain event, aka go through parent registration
+
         registrations.Add(newRegistration);
+
+        // move this to the registration manager? - aka if a class is selected, registration behavior will add the character class entity to the classcomponent
+        var context = new RegistrationProcessContext(parentRegistration, _persistence);
+        context.NewRegistrations.Add(newRegistration);
+
+        foreach (var behavior in _registrationBehaviors)
+        {
+            await behavior.Registered(newRegistration, context);
+        }
+
+
 
         await _persistence.SaveChangesAsync();
 

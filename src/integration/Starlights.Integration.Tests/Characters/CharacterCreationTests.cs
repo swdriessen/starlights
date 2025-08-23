@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 using FluentAssertions;
 using Starlights.Integration.Tests.Core;
-using Starlights.Modules.Characters.Endpoints.Generation.Characters.Create;
+using Starlights.Modules.Characters.Endpoints.Characters.Create;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
 

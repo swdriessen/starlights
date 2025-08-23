@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using FluentValidation;
 
-namespace Starlights.Modules.Characters.Endpoints.Generation.Characters.Create;
+namespace Starlights.Modules.Characters.Endpoints.Characters.Create;
 
 public sealed class CreateCharacterRequestValidator : Validator<CreateCharacterRequest>
 {

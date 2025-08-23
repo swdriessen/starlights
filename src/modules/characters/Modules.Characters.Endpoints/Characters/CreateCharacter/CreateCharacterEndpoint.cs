@@ -7,10 +7,11 @@ using Starlights.Modules.Characters.Domain.Classes;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Endpoints.Characters.Create;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Characters.Endpoints.Generation.Characters.Create;
+namespace Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 
 public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, CreateCharacterResponse>
 {
@@ -26,8 +27,8 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
     public override void Configure()
     {
         Post("/create");
-        AllowAnonymous();
         Group<CharactersGroup>();
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CreateCharacterRequest req, CancellationToken ct)
