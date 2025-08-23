@@ -47,6 +47,12 @@ public static class DataModelMappingExtensions
         return new StatisticRuleDataModel(rule.Id, rule.Name, rule.Value, rule.StackingBonus, rule.LevelRequirement);
     }
 
+    public static SelectionRuleDataModel AsSelectionRuleDataModel(this SelectionRuleComponent rule)
+    {
+        ArgumentNullException.ThrowIfNull(rule, nameof(rule));
+        return new SelectionRuleDataModel(rule.Id, rule.ElementType, rule.Name, rule.LevelRequirement);
+    }
+
     public static AbilityDataModel AsAbilityDataModel(this Element element)
     {
         ArgumentNullException.ThrowIfNull(element, nameof(element));

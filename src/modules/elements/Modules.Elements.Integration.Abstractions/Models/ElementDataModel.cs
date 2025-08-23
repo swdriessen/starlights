@@ -14,4 +14,5 @@ public record ElementDataModel
 
     public List<IncludeRuleDataModel> IncludeRules { get; init; } = [];
     public List<StatisticRuleDataModel> StatisticRules { get; init; } = [];
+    public List<SelectionRuleDataModel> SelectionRules { get; init; } = [];
 }

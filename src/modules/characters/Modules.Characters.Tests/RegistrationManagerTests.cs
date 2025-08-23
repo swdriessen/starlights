@@ -82,6 +82,65 @@ public sealed class RegistrationManagerTests
     }
 
     [TestMethod]
+    public async Task ProcessRegistration_ShouldCreateSelectionRules_WhenPresentOnElement()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        var characterId = CharacterId.New();
+        var baseElementId = Guid.NewGuid();
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
+        var registrationId = registration.Id;
+
+        _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
+                      .ReturnsAsync(registration);
+
+        var selectionRuleId = Guid.NewGuid();
+
+        _elements.Setup(m => m.GetElementWithRules(baseElementId))
+                 .ReturnsAsync(CreateBaseElementWithSelectionRules(baseElementId, selectionRuleId));
+
+        // Act
+        var result = await sut.ProcessRegistration(registrationId);
+
+        // Assert
+        result.AffectedRows.Should().Be(1);
+        registration.SelectionRules.Should().HaveCount(1);
+        registration.HasAssociatedRule(selectionRuleId).Should().BeTrue();
+        var applied = registration.SelectionRules.Single();
+        applied.ElementType.Should().Be("Skill");
+        applied.Name.Should().Be("Choose Skill");
+    }
+
+    [TestMethod]
+    public async Task ProcessRegistration_ShouldNotDuplicateSelectionRules_WhenAlreadyAssociated()
+    {
+        // Arrange
+        var sut = CreateSut();
+
+        var characterId = CharacterId.New();
+        var baseElementId = Guid.NewGuid();
+        var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
+        var registrationId = registration.Id;
+
+        var selectionRuleId = Guid.NewGuid();
+        registration.CreateSelectionRule(new(selectionRuleId), "Skill", "Choose Skill");
+
+        _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
+                      .ReturnsAsync(registration);
+
+        _elements.Setup(m => m.GetElementWithRules(baseElementId))
+                 .ReturnsAsync(CreateBaseElementWithSelectionRules(baseElementId, selectionRuleId));
+
+        // Act
+        var result = await sut.ProcessRegistration(registrationId);
+
+        // Assert
+        result.AffectedRows.Should().Be(1);
+        registration.SelectionRules.Should().HaveCount(1);
+    }
+
+    [TestMethod]
     public async Task ProcessRegistration_MarksRegistrationProcessed_WhenIncludeAddsRegistration()
     {
         // Arrange
@@ -329,6 +388,15 @@ public sealed class RegistrationManagerTests
             Name = name,
             Type = type,
             IncludeRules = [new IncludeRuleDataModel(includeRuleId, includedElementId, levelRequirement)]
+        };
+
+    private static ElementDataModel CreateBaseElementWithSelectionRules(Guid baseElementId, Guid selectionRuleId, string name = "Base", string type = "Type")
+        => new()
+        {
+            Id = baseElementId,
+            Name = name,
+            Type = type,
+            SelectionRules = [new SelectionRuleDataModel(selectionRuleId, "Skill", "Choose Skill", 0)]
         };
 
     private static ElementDataModel CreateIncludedElement(Guid includedElementId, string name = "Included-1", string type = "IncludedType-1")

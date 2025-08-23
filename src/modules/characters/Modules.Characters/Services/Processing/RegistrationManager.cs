@@ -44,7 +44,7 @@ public class RegistrationManager : IRegistrationManager
 
         await ProcessIncludeRules(context);
         await ProcessStatisticRules(context);
-
+        await ProcessSelectionRules(context);
 
         registration.Processed();
 
@@ -57,7 +57,7 @@ public class RegistrationManager : IRegistrationManager
 
     private async Task ProcessIncludeRules(RegistrationProcessContext context)
     {
-        using var _ = CharactersInstrumentation.StartActivity();
+        using var includeActivity = CharactersInstrumentation.StartActivity();
 
         var currentRegistration = context.Registration;
 
@@ -71,6 +71,8 @@ public class RegistrationManager : IRegistrationManager
         // if the current element has no include rules, we can skip processing
 
         var registrations = context.GetRepository<IRegistrationRepository>();
+
+        includeActivity?.DisplayName = $"ProcessIncludeRules | {currentElement.IncludeRules.Count}";
 
         foreach (var rule in currentElement.IncludeRules)
         {
@@ -144,6 +146,37 @@ public class RegistrationManager : IRegistrationManager
             {
                 newStatisticRule.UpdateLevelRequirement(rule.LevelRequirement);
             }
+        }
+    }
+
+    private async Task ProcessSelectionRules(RegistrationProcessContext context)
+    {
+        using var selectionActivity = CharactersInstrumentation.StartActivity();
+
+        var currentRegistration = context.Registration;
+
+        var currentElement = await _elements.GetElementWithRules(currentRegistration.AssociatedElementId);
+        if (currentElement is null)
+        {
+            _logger.LogError("Element with ID {ElementId} not found for registration {RegistrationId}. Skipping include rules processing.", currentRegistration.AssociatedElementId, currentRegistration.Id);
+            return;
+        }
+
+        // if the current element has no selection rules, we can skip processing
+
+        var registrations = context.GetRepository<IRegistrationRepository>();
+
+        selectionActivity?.DisplayName = $"ProcessSelectionRules | {currentElement.SelectionRules.Count}";
+
+        foreach (var rule in currentElement.SelectionRules)
+        {
+            if (currentRegistration.HasAssociatedRule(rule.RuleId))
+            {
+                continue;
+            }
+
+            // create the new registration selection rule, this is to keep track of the rules applied
+            var newSelectionRule = currentRegistration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
         }
     }
 }

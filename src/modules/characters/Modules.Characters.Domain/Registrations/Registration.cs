@@ -14,6 +14,7 @@ public sealed class Registration : AggregateRoot<RegistrationId>
 {
     private readonly List<RegistrationIncludeRule> _includeRules = [];
     private readonly List<RegistrationStatisticRule> _statisticRules = [];
+    private readonly List<RegistrationSelectionRule> _selectionRules = [];
 
     private Registration(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
         : base(RegistrationId.New())
@@ -33,6 +34,11 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// Gets the collection of statistic rules associated with this registration.
     /// </summary>
     public IReadOnlyCollection<RegistrationStatisticRule> StatisticRules => _statisticRules.AsReadOnly();
+
+    /// <summary>
+    /// Gets the collection of selection rules associated with this registration.
+    /// </summary>
+    public IReadOnlyCollection<RegistrationSelectionRule> SelectionRules => _selectionRules.AsReadOnly();
 
     /// <summary>
     /// Gets the ID of the character associated with this registration.
@@ -79,12 +85,13 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     }
 
     /// <summary>
-    /// Gets a value indicating whether this registration has a specific include rule by its associated rule ID.
+    /// Gets a value indicating whether this registration has a specific include/statistic/selection rule by its associated rule ID.
     /// </summary>
     public bool HasAssociatedRule(Guid associatedRuleId)
     {
         return _includeRules.Any(r => r.AssociatedIncludeRuleId.Value == associatedRuleId)
-               || _statisticRules.Any(r => r.AssociatedStatisticRuleId.Value == associatedRuleId);
+               || _statisticRules.Any(r => r.AssociatedStatisticRuleId.Value == associatedRuleId)
+               || _selectionRules.Any(r => r.AssociatedSelectionRuleId.Value == associatedRuleId);
     }
 
     /// <summary>
@@ -123,5 +130,15 @@ public sealed class Registration : AggregateRoot<RegistrationId>
         var newStatisticRule = RegistrationStatisticRule.Create(Id, associatedStatisticRuleId, name, value);
         _statisticRules.Add(newStatisticRule);
         return newStatisticRule;
+    }
+
+    /// <summary>
+    /// Creates a new selection rule for this registration.
+    /// </summary>
+    public RegistrationSelectionRule CreateSelectionRule(ElementComponentId associatedSelectionRuleId, string elementType, string name)
+    {
+        var newSelectionRule = RegistrationSelectionRule.Create(Id, associatedSelectionRuleId, elementType, name);
+        _selectionRules.Add(newSelectionRule);
+        return newSelectionRule;
     }
 }
