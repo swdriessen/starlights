@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Starlights.Modules.Characters.Domain.Services;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Characters.Services.Processing.Behaviors;
 using Starlights.Platform.Eventing.EventPublisher;
@@ -14,6 +15,8 @@ internal class CharactersModule : IPlatformServiceComponent
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IRegistrationManager, RegistrationManager>();
+
+        builder.Services.AddScoped<CharacterDomainService>();
 
         // registration behaviors
         builder.Services.AddScoped<IRegistrationBehavior, SkillRegistrationBehavior>();

@@ -221,7 +221,7 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <summary>
     /// Executes an action on a component of the specified type and adds any resulting domain events.
     /// </summary>
-    public void WithComponent<T>(Action<T, IEventRecorder> component) where T : CharacterComponentBase
+    public void UpdateComponent<T>(Action<T, IEventRecorder> component) where T : CharacterComponentBase
     {
         var existingComponent = GetRequiredComponent<T>();
         component(existingComponent, new EventRecorder(this));
@@ -230,7 +230,7 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <summary>
     /// Executes an action on a component of the specified type and adds any resulting domain events.
     /// </summary>
-    public void WithComponent<T1, T2>(Action<T1, T2, IEventRecorder> component)
+    public void UpdateComponents<T1, T2>(Action<T1, T2, IEventRecorder> component)
         where T1 : CharacterComponentBase
         where T2 : CharacterComponentBase
     {
@@ -239,7 +239,7 @@ public sealed class Character : AggregateRoot<CharacterId>
         component(existingComponent1, existingComponent2, new EventRecorder(this));
     }
 
-    sealed class EventRecorder : IEventRecorder
+    private sealed class EventRecorder : IEventRecorder
     {
         private readonly Character _character;
 
@@ -248,6 +248,6 @@ public sealed class Character : AggregateRoot<CharacterId>
             _character = character;
         }
 
-        public void RecordEvent(IDomainEvent @event) => _character.AddDomainEvent(@event);
+        public void AddDomainEvent(IDomainEvent domainEvent) => _character.AddDomainEvent(domainEvent);
     }
 }
