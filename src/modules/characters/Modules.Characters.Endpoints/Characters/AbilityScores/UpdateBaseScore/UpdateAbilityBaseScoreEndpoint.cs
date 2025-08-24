@@ -4,7 +4,7 @@ using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Characters.Endpoints.Generation.AbilityScores.UpdateBaseScore;
+namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.UpdateBaseScore;
 
 internal sealed class UpdateAbilityBaseScoreEndpoint : Endpoint<UpdateAbilityBaseScoreRequest, UpdateAbilityBaseScoreResponse>
 {

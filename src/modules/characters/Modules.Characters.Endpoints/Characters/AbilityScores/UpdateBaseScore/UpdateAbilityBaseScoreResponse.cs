@@ -1,6 +1,6 @@
-namespace Starlights.Modules.Characters.Endpoints.Generation.AbilityScores.UpdateAdditionalScore;
+namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.UpdateBaseScore;
 
-public sealed class UpdateAbilityAdditionalScoreResponse
+public sealed class UpdateAbilityBaseScoreResponse
 {
     public Guid AbilityScoreId { get; set; }
     public int BaseScore { get; set; }

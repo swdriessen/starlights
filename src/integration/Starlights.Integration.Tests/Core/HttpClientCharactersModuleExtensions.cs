@@ -1,9 +1,9 @@
 using System.Net;
-using Starlights.Modules.Characters.Endpoints.Characters.Create;
-using Starlights.Modules.Characters.Endpoints.Generation.AbilityScores.GetAbilities;
+using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.GetAbilities;
+using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
+using Starlights.Modules.Characters.Endpoints.Characters.Skills.GetSkills;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
-using Starlights.Modules.Characters.Endpoints.Generation.Skills.GetSkills;
 
 namespace Starlights.Integration.Tests.Core;
 

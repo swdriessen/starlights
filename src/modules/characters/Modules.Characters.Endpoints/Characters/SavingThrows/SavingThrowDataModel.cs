@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Characters.Endpoints.Generation.SavingThrows;
+namespace Starlights.Modules.Characters.Endpoints.Characters.SavingThrows;
 
 /// <summary>
 /// The DTO for a saving throw from a character.

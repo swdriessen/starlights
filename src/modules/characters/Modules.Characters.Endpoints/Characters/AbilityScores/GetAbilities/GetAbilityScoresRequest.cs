@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 
-namespace Starlights.Modules.Characters.Endpoints.Generation.AbilityScores.GetAbilities;
+namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.GetAbilities;
 
 internal sealed class GetAbilityScoresRequest
 {

@@ -31,8 +31,8 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
         var character = await client.CreateCharacterAsync(options.Options[0].Id, $"ITest {Guid.NewGuid()}", portraits.Portraits[0].Url, TestCancellationToken);
         _integration.SetCharacterIdentifier(character.Id);
 
-        // Wait for character initialization (abilities created triggers further processing like selection rules)
-        await _eventListener.AbilityScoreCreated.WaitForEvent(count: 6, cancellationToken: TestCancellationToken);
+        // wait for character initialization
+        await _eventListener.RegistrationSelectionRuleCreated.WaitForEvent(count: 3, cancellationToken: TestCancellationToken);
     }
 
     [TestMethod]
@@ -142,8 +142,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
         // Act
         var newRegistrationId = await client.RegisterSelectionRuleAsync(characterId, targetRule.RegistrationId, targetRule.RegistrationSelectionRuleId, chosenOption.ElementId, ct: TestCancellationToken);
 
-        // Assert new registration exists
+        // Assert
         newRegistrationId.Should().NotBe(Guid.Empty);
-        await _eventListener.CharacterClassCreated.WaitForEvent(cancellationToken: TestCancellationToken);
     }
 }

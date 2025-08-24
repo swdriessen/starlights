@@ -84,8 +84,6 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
             await behavior.Registered(newRegistration, context);
         }
 
-
-
         await _persistence.SaveChangesAsync();
 
         registrationActivity?.AddTag("registration.id", newRegistration.Id.ToString());

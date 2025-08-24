@@ -1,11 +1,11 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.SavingThrows;
 using Starlights.Modules.Characters.Domain.Skills;
-using Starlights.Modules.Characters.Endpoints.Generation.AbilityScores;
-using Starlights.Modules.Characters.Endpoints.Generation.SavingThrows;
-using Starlights.Modules.Characters.Endpoints.Generation.Skills;
+using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores;
+using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows;
+using Starlights.Modules.Characters.Endpoints.Characters.Skills;
 
-namespace Starlights.Modules.Characters.Endpoints.Extensions;
+namespace Starlights.Modules.Characters.Endpoints;
 
 public static class DataModelMappingExtensions
 {

@@ -1,10 +1,9 @@
 ﻿using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
-using Starlights.Modules.Characters.Endpoints.Extensions;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Characters.Endpoints.Generation.AbilityScores.GetAbilities;
+namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.GetAbilities;
 
 internal sealed class GetAbilityScoresEndpoint : Endpoint<GetAbilityScoresRequest, GetAbilityScoresResponse>
 {

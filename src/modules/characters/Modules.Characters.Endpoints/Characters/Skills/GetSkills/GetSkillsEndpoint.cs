@@ -1,10 +1,9 @@
 using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
-using Starlights.Modules.Characters.Endpoints.Extensions;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Characters.Endpoints.Generation.Skills.GetSkills;
+namespace Starlights.Modules.Characters.Endpoints.Characters.Skills.GetSkills;
 
 internal sealed class GetSkillsEndpoint : Endpoint<GetSkillsRequest, GetSkillsResponse>
 {

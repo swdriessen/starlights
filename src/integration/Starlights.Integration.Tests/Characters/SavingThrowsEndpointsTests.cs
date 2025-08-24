@@ -3,7 +3,7 @@ using FluentAssertions;
 using Starlights.Integration.Tests.Core;
 using Starlights.Integration.Tests.Core.Eventing;
 using Starlights.Integration.Tests.Core.Extensions;
-using Starlights.Modules.Characters.Endpoints.Generation.SavingThrows.GetSavingThrows;
+using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows.GetSavingThrows;
 
 namespace Starlights.Integration.Tests.Characters;
 

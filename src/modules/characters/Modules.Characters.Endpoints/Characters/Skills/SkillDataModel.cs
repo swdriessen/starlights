@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Characters.Endpoints.Generation.Skills;
+namespace Starlights.Modules.Characters.Endpoints.Characters.Skills;
 
 /// <summary>
 /// The DTO for a skill from a character.

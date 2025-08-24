@@ -1,6 +1,6 @@
 using FastEndpoints;
 
-namespace Starlights.Modules.Characters.Endpoints.Generation.AbilityScores.UpdateAdditionalScore;
+namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.UpdateAdditionalScore;
 
 internal sealed class UpdateAbilityAdditionalScoreRequest
 {

@@ -7,7 +7,6 @@ using Starlights.Modules.Characters.Domain.Classes;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Domain.Registrations;
-using Starlights.Modules.Characters.Endpoints.Characters.Create;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 

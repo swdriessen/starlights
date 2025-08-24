@@ -23,9 +23,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Characters\GetCharacters\" />
 	  <Folder Include="Characters\DeleteCharacter\" />
-	  <Folder Include="Manage\" />
+	  <Folder Include="View\" />
 	</ItemGroup>
 
 </Project>

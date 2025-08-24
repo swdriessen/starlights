@@ -1,0 +1,35 @@
+﻿using FastEndpoints;
+using Starlights.Modules.Characters.Data;
+using Starlights.Platform.Data;
+
+namespace Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
+
+sealed class GetCharactersEndpoint : EndpointWithoutRequest<GetCharactersResponse>
+{
+    private readonly IPersistence _persistence;
+
+    public GetCharactersEndpoint(IPersistence persistence)
+    {
+        _persistence = persistence;
+    }
+
+    public override void Configure()
+    {
+        Get("");
+        Group<CharactersGroup>();
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var repository = _persistence.GetRepository<ICharactersRepository>();
+
+        var characters = await repository.GetCharactersAsync();
+
+        var models = characters.Select(c => new CharacterDetailsDataModel { CharacterId = c.Id, Name = c.Name, }).ToList();
+
+        var response = new GetCharactersResponse { Characters = models };
+
+        await Send.OkAsync(response, ct);
+    }
+}

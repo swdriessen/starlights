@@ -1,6 +1,6 @@
 using FastEndpoints;
 
-namespace Starlights.Modules.Characters.Endpoints.Generation.Skills.GetSkills;
+namespace Starlights.Modules.Characters.Endpoints.Characters.Skills.GetSkills;
 
 internal sealed class GetSkillsRequest
 {

@@ -1,4 +1,4 @@
-﻿namespace Starlights.Modules.Characters.Endpoints.Generation.AbilityScores;
+﻿namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores;
 
 /// <summary>
 /// The DTO for an ability score.
