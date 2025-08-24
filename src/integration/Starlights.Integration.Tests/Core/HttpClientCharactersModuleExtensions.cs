@@ -4,6 +4,7 @@ using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 using Starlights.Modules.Characters.Endpoints.Characters.Skills.GetSkills;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
+using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
 
 namespace Starlights.Integration.Tests.Core;
 
@@ -32,4 +33,7 @@ internal static class HttpClientCharactersModuleExtensions
 
     public static Task<GetSkillsResponse> GetSkillsAsync(this HttpClient client, Guid characterId, CancellationToken ct = default)
         => client.GetAndReadAsync<GetSkillsResponse>($"/api/characters/{characterId}/skills", HttpStatusCode.OK, ct);
+
+    public static Task<GetCharactersResponse> GetCharactersAsync(this HttpClient client, CancellationToken ct = default)
+        => client.GetAndReadAsync<GetCharactersResponse>("/api/characters", HttpStatusCode.OK, ct);
 }
