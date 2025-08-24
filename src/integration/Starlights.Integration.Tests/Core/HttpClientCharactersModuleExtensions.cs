@@ -1,10 +1,10 @@
 using System.Net;
 using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.GetAbilities;
 using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
+using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
 using Starlights.Modules.Characters.Endpoints.Characters.Skills.GetSkills;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
-using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
 
 namespace Starlights.Integration.Tests.Core;
 
@@ -20,7 +20,7 @@ internal static class HttpClientCharactersModuleExtensions
         => client.GetAndReadAsync<GetCharacterPortraitOptionsResponse>("/api/characters/portrait-options", HttpStatusCode.OK, ct);
 
     public static Task<CreateCharacterResponse> CreateCharacterAsync(this HttpClient client, Guid optionId, string name, string portraitUrl, CancellationToken ct = default)
-        => client.PostJsonAndReadAsync<CreateCharacterResponse>("/api/characters/create", new CreateCharacterRequest(optionId, name, portraitUrl), HttpStatusCode.Created, ct);
+        => client.PostJsonAndReadAsync<CreateCharacterResponse>("/api/characters", new CreateCharacterRequest(optionId, name, portraitUrl), HttpStatusCode.Created, ct);
 
     public static Task<GetAbilityScoresResponse> GetAbilityScoresAsync(this HttpClient client, Guid characterId, CancellationToken ct = default)
         => client.GetAndReadAsync<GetAbilityScoresResponse>($"/api/characters/{characterId}/abilities", HttpStatusCode.OK, ct);
@@ -36,4 +36,11 @@ internal static class HttpClientCharactersModuleExtensions
 
     public static Task<GetCharactersResponse> GetCharactersAsync(this HttpClient client, CancellationToken ct = default)
         => client.GetAndReadAsync<GetCharactersResponse>("/api/characters", HttpStatusCode.OK, ct);
+
+    public static async Task<HttpResponseMessage> DeleteCharacterAsync(this HttpClient client, Guid characterId, HttpStatusCode expected = HttpStatusCode.OK, CancellationToken ct = default)
+    {
+        var response = await client.DeleteAsync($"/api/characters/{characterId}", ct);
+        await response.ShouldHaveStatusAsync(expected);
+        return response;
+    }
 }

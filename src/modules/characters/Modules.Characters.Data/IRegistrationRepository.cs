@@ -26,4 +26,9 @@ public interface IRegistrationRepository : IRepository
     /// Retrieves all registrations for a specific character by association element id.
     /// </summary>
     Task<List<Registration>> GetRegistrationsByAssociationsAsync(CharacterId id, ElementId associatedElementId);
+
+    /// <summary>
+    /// Deletes all registrations for a specific character.
+    /// </summary>
+    Task DeleteRegistrationsAsync(CharacterId id);
 }

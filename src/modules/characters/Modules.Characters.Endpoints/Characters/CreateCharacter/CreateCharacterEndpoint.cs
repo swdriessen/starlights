@@ -25,7 +25,7 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
 
     public override void Configure()
     {
-        Post("/create");
+        Post("");
         Group<CharactersGroup>();
         AllowAnonymous();
     }

@@ -21,4 +21,9 @@ public interface ICharactersRepository : IRepository
     /// Retrieves all characters from the repository.
     /// </summary>
     Task<IEnumerable<Character>> GetCharactersAsync();
+
+    /// <summary>
+    /// Deletes a character by its identifier.
+    /// </summary>
+    Task DeleteCharacterAsync(CharacterId identifier);
 }

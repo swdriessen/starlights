@@ -23,7 +23,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Characters\DeleteCharacter\" />
 	  <Folder Include="View\" />
 	</ItemGroup>
 

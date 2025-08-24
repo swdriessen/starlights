@@ -25,9 +25,17 @@ public class CharacterTypeConfiguration : IEntityTypeConfiguration<Character>
                    .OnDelete(DeleteBehavior.Cascade)
                    .IsRequired();
 
+        builder.HasMany(x => x.SavingThrows)
+               .WithOne()
+               .HasForeignKey("CharacterId")
+                   .OnDelete(DeleteBehavior.Cascade)
+                   .IsRequired();
 
-
-
+        builder.HasMany(x => x.Skills)
+               .WithOne()
+               .HasForeignKey("CharacterId")
+                   .OnDelete(DeleteBehavior.Cascade)
+                   .IsRequired();
 
         builder.HasMany(x => x.Components)
             .WithOne()

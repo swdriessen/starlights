@@ -10,6 +10,13 @@ internal class RegistrationRepository : RepositoryBase<Registration>, IRegistrat
 {
     public void Add(Registration registration) => Entities.Add(registration);
 
+    public Task DeleteRegistrationsAsync(CharacterId id)
+    {
+        var toRemove = Entities.Where(r => r.CharacterId == id);
+        Entities.RemoveRange(toRemove);
+        return Task.CompletedTask;
+    }
+
     public async Task<Registration?> GetRegistrationAsync(RegistrationId id)
     {
         return await Entities

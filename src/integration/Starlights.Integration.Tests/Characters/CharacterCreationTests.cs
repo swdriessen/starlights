@@ -50,7 +50,7 @@ public sealed class CharacterCreationTests : IntegrationTestBase
         var request = new CreateCharacterRequest(_options[0].Id, "Test Character", _portraits[0]?.Url);
 
         // Act
-        var response = await client.PostAsJsonAsync("/api/characters/create", request, TestCancellationToken);
+        var response = await client.PostAsJsonAsync("/api/characters", request, TestCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);

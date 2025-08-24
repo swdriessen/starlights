@@ -8,6 +8,16 @@ internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepo
 {
     public void Add(Character character) => Entities.Add(character);
 
+    public Task DeleteCharacterAsync(CharacterId identifier)
+    {
+        var toRemove = Entities.SingleOrDefault(c => c.Id == identifier);
+        if (toRemove != null)
+        {
+            Entities.Remove(toRemove);
+        }
+        return Task.CompletedTask;
+    }
+
     public async Task<Character?> GetCharacterAsync(Guid identifier)
     {
         return await Entities
