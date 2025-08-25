@@ -42,8 +42,27 @@ public sealed class RegistrationSelectionRule : EntityBase<RegistrationSelection
     public string Name { get; }
 
     /// <summary>
+    /// Gets the currently selected element for this selection rule, if any.
+    /// </summary>
+    public ElementId? CurrentSelection { get; private set; }
+
+    /// <summary>
+    /// Updates the current selection for this selection rule.
+    /// </summary>
+    public void UpdateCurrentSelection(ElementId? newSelection)
+    {
+        CurrentSelection = newSelection;
+    }
+
+    /// <summary>
     /// Factory for creating a new applied registration selection rule.
     /// </summary>
     internal static RegistrationSelectionRule Create(RegistrationId parentRegistrationId, ElementComponentId associatedSelectionRuleId, string elementType, string name)
-        => new(parentRegistrationId, associatedSelectionRuleId, elementType, name);
+    {
+        RegistrationSelectionRule registrationSelectionRule = new(parentRegistrationId, associatedSelectionRuleId, elementType, name);
+
+        // domain event?
+
+        return registrationSelectionRule;
+    }
 }

@@ -43,6 +43,18 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
 
+        builder.HasMany(x => x.SelectionRules)
+            .WithOne()
+            .HasForeignKey(x => x.ParentRegistrationId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
+
+        builder.HasMany(x => x.StatisticRules)
+            .WithOne()
+            .HasForeignKey(x => x.ParentRegistrationId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
+
         // Foreign key relationship to Character
         builder.HasIndex(e => e.CharacterId);
     }

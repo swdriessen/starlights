@@ -1,7 +1,7 @@
 using Scalar.AspNetCore;
 using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
-using Starlights.Modules.Characters.Endpoints.Entities.Characters.Create;
+using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
@@ -71,10 +71,11 @@ public sealed class Program
                 options.Servers = [];
                 options.WithTitle("Starlights API")
                     .WithClientButton(false)
-                    .WithLayout(ScalarLayout.Modern)
+                    .WithLayout(ScalarLayout.Classic)
                     .WithTheme(ScalarTheme.Alternate)
                     .WithDarkMode(true)
-                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+                    .WithModels(false)
+                    .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Fetch);
             });
         }
 

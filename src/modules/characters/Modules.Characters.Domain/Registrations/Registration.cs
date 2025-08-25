@@ -121,6 +121,16 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     {
         var newIncludeRule = RegistrationIncludeRule.Create(Id, associatedIncludeRuleId, includedElementId, includedElementName);
         _includeRules.Add(newIncludeRule);
+
+        AddDomainEvent(new RegistrationIncludeRuleCreatedEvent
+        {
+            CharacterId = CharacterId,
+            RegistrationId = Id,
+            RegistrationIncludeRuleId = newIncludeRule.Id,
+            ElementId = includedElementId,
+            Name = includedElementName
+        });
+
         return newIncludeRule;
     }
 
@@ -131,6 +141,16 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     {
         var newStatisticRule = RegistrationStatisticRule.Create(Id, associatedStatisticRuleId, name, value);
         _statisticRules.Add(newStatisticRule);
+
+        AddDomainEvent(new RegistrationStatisticRuleCreatedEvent
+        {
+            CharacterId = CharacterId,
+            RegistrationId = Id,
+            RegistrationStatisticRuleId = newStatisticRule.Id,
+            Name = name,
+            Value = value
+        });
+
         return newStatisticRule;
     }
 
@@ -141,6 +161,16 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     {
         var newSelectionRule = RegistrationSelectionRule.Create(Id, associatedSelectionRuleId, elementType, name);
         _selectionRules.Add(newSelectionRule);
+
+        AddDomainEvent(new RegistrationSelectionRuleCreatedEvent
+        {
+            CharacterId = CharacterId,
+            RegistrationId = Id,
+            RegistrationSelectionRuleId = newSelectionRule.Id,
+            ElementType = elementType,
+            Name = name
+        });
+
         return newSelectionRule;
     }
 }

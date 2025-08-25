@@ -10,9 +10,3 @@ public interface IDomainEvent
     /// </summary>
     DateTime OccurredOn { get; }
 }
-
-public abstract record EventBase : IDomainEvent
-{
-    /// <inheritdoc />
-    public DateTime OccurredOn => DateTime.UtcNow;
-}

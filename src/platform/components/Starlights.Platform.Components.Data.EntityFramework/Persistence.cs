@@ -99,7 +99,10 @@ public class Persistence : IPersistence
                 totalChanges += actualChanges;
                 totalEventMessages += domainEvents.Count;
 
-                _logger.LogInformation("...saved successfully [rows='{Rows}', events='{EventCount}', context='{ContextType}']", actualChanges, domainEvents.Count, contextType.Name);
+                if (actualChanges > 0)
+                {
+                    _logger.LogInformation("...saved successfully [rows='{Rows}', events='{EventCount}', context='{ContextType}']", actualChanges, domainEvents.Count, contextType.Name);
+                }
             }
         }
 

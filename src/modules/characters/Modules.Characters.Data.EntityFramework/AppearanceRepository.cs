@@ -14,6 +14,18 @@ internal class AppearanceRepository : RepositoryBase<Appearance>, IAppearanceRep
         Entities.Add(appearance);
     }
 
+    public Task<bool> DeleteAppearanceAsync(CharacterId id)
+    {
+        var toRemove = Entities.SingleOrDefault(x => x.CharacterId == id);
+        if (toRemove is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        Entities.RemoveRange(toRemove);
+        return Task.FromResult(true);
+    }
+
     public async Task<Appearance?> GetAppearanceAsync(AppearanceId id)
     {
         using var _ = CharactersInstrumentation.StartActivity();

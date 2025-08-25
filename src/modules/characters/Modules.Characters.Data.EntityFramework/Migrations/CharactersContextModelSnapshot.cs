@@ -104,6 +104,57 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.ToTable("character", "characters");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Classes.CharacterClass", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClassComponentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Level")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Registration")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassComponentId");
+
+                    b.HasIndex("Registration");
+
+                    b.ToTable("character_class", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ParentCharacter")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("parent_character");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCharacter");
+
+                    b.ToTable((string)null);
+
+                    b.UseTpcMappingStrategy();
+                });
+
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>
                 {
                     b.Property<Guid>("Id")
@@ -171,6 +222,9 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.Property<Guid>("AssociatedSelectionRuleId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CurrentSelection")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ElementType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -182,14 +236,9 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.Property<Guid>("ParentRegistrationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("RegistrationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ParentRegistrationId");
-
-                    b.HasIndex("RegistrationId");
 
                     b.ToTable("registration_selection_rules", "characters");
                 });
@@ -212,9 +261,6 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.Property<Guid>("ParentRegistrationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("RegistrationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("StackingBonus")
                         .HasColumnType("nvarchar(max)");
 
@@ -225,8 +271,6 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ParentRegistrationId");
-
-                    b.HasIndex("RegistrationId");
 
                     b.ToTable("registration_statistic_rules", "characters");
                 });
@@ -348,6 +392,24 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.ToTable("event_messages", "characters");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Classes.ClassComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase");
+
+                    b.ToTable("character_component_class", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Progression.ProgressionComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase");
+
+                    b.Property<int>("CharacterLevel")
+                        .HasColumnType("int")
+                        .HasColumnName("character_level");
+
+                    b.ToTable("character_progression", "characters");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>
                 {
                     b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", null)
@@ -355,6 +417,23 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Classes.CharacterClass", b =>
+                {
+                    b.HasOne("Starlights.Modules.Characters.Domain.Classes.ClassComponent", null)
+                        .WithMany("Classes")
+                        .HasForeignKey("ClassComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase", b =>
+                {
+                    b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", null)
+                        .WithMany("Components")
+                        .HasForeignKey("ParentCharacter")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationIncludeRule", b =>
@@ -369,14 +448,16 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                 {
                     b.HasOne("Starlights.Modules.Characters.Domain.Registrations.Registration", null)
                         .WithMany("SelectionRules")
-                        .HasForeignKey("RegistrationId");
+                        .HasForeignKey("ParentRegistrationId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationStatisticRule", b =>
                 {
                     b.HasOne("Starlights.Modules.Characters.Domain.Registrations.Registration", null)
                         .WithMany("StatisticRules")
-                        .HasForeignKey("RegistrationId");
+                        .HasForeignKey("ParentRegistrationId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.SavingThrows.SavingThrow", b =>
@@ -401,6 +482,8 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                 {
                     b.Navigation("AbilityScores");
 
+                    b.Navigation("Components");
+
                     b.Navigation("SavingThrows");
 
                     b.Navigation("Skills");
@@ -413,6 +496,11 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.Navigation("SelectionRules");
 
                     b.Navigation("StatisticRules");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Classes.ClassComponent", b =>
+                {
+                    b.Navigation("Classes");
                 });
 #pragma warning restore 612, 618
         }
