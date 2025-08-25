@@ -11,4 +11,7 @@
 			<_Parameter1>Modules.Characters.Tests</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+	</ItemGroup>
 </Project>

@@ -40,6 +40,9 @@ public class RegistrationManager : IRegistrationManager
             return new ProcessRegistrationResult();
         }
 
+        _logger.LogInformation("processing registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
+                               registration.AssociatedElementName, registration.AssociatedElementType, registration.CharacterId.Value);
+
         var context = new RegistrationProcessContext(registration, _persistence);
 
         await ProcessIncludeRules(context);
@@ -176,7 +179,7 @@ public class RegistrationManager : IRegistrationManager
             }
 
             // create the new registration selection rule, this is to keep track of the rules applied
-            var newSelectionRule = currentRegistration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
+            _ = currentRegistration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSTest.Sdk/3.10.1">
+﻿<Project Sdk="MSTest.Sdk/3.10.2">
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
