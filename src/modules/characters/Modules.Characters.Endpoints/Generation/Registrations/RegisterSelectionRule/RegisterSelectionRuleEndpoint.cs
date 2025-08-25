@@ -93,6 +93,11 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
         registrationActivity?.AddTag("registration.id", newRegistration.Id.ToString());
         registrationActivity?.AddTag("registration.name", newRegistration.AssociatedElementName);
 
-        await Send.OkAsync(new RegisterSelectionRuleResponse { RegistrationId = newRegistration.Id }, ct);
+        var response = new RegisterSelectionRuleResponse
+        {
+            RegistrationId = newRegistration.Id
+        };
+
+        await Send.OkAsync(response, ct);
     }
 }

@@ -16,8 +16,8 @@ public sealed class GetCharacterCreationOptionsEndpoint : EndpointWithoutRequest
     public override void Configure()
     {
         Get("/creation-options");
-        AllowAnonymous();
         Group<CharactersGroup>();
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

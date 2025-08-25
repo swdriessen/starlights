@@ -8,8 +8,8 @@ public sealed class GetCharacterPortraitOptionsEndpoint : EndpointWithoutRequest
     public override void Configure()
     {
         Get("/portrait-options");
-        AllowAnonymous();
         Group<CharactersGroup>();
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

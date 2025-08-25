@@ -18,7 +18,7 @@ internal sealed class UpdateAbilityAdditionalScoreEndpoint : Endpoint<UpdateAbil
 
     public override void Configure()
     {
-        Post("/{characterId:guid}/abilities/{abilityScoreId:guid}/additional");
+        Post("/{characterId:guid}/ability-scores/{abilityScoreId:guid}/additional");
         Group<CharactersGroup>();
         AllowAnonymous();
     }

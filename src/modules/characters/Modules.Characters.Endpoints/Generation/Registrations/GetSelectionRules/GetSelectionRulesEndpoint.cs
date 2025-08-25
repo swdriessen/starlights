@@ -48,7 +48,7 @@ public sealed class GetSelectionRulesEndpoint : Endpoint<GetSelectionRulesReques
             .Where(x => req.SelectionRuleTypes.Contains(x.ElementType))
             .ToList();
 
-        await Send.OkAsync(new GetSelectionRulesResponse
+        var response = new GetSelectionRulesResponse
         {
             Rules = selectionRules.ConvertAll(x => new SelectionRuleDataModel
             {
@@ -57,6 +57,8 @@ public sealed class GetSelectionRulesEndpoint : Endpoint<GetSelectionRulesReques
                 Type = x.ElementType,
                 Name = x.Name
             })
-        }, ct);
+        };
+
+        await Send.OkAsync(response, ct);
     }
 }

@@ -43,8 +43,8 @@ public interface IElementsModuleQueries
     /// </summary>
     Task<SavingThrowDataModel?> GetSavingThrowModel(Guid elementId);
 
-
-
-
-    Task<IEnumerable<ElementDataModel>> GetElementsByType(string elementType);
+    /// <summary>
+    /// Retrieves a list of elements by their type.
+    /// </summary>
+    Task<List<ElementDataModel>> GetElementsByType(string elementType);
 }

@@ -23,13 +23,13 @@ internal static class HttpClientCharactersModuleExtensions
         => client.PostJsonAndReadAsync<CreateCharacterResponse>("/api/characters", new CreateCharacterRequest(optionId, name, portraitUrl), HttpStatusCode.Created, ct);
 
     public static Task<GetAbilityScoresResponse> GetAbilityScoresAsync(this HttpClient client, Guid characterId, CancellationToken ct = default)
-        => client.GetAndReadAsync<GetAbilityScoresResponse>($"/api/characters/{characterId}/abilities", HttpStatusCode.OK, ct);
+        => client.GetAndReadAsync<GetAbilityScoresResponse>($"/api/characters/{characterId}/ability-scores", HttpStatusCode.OK, ct);
 
     public static Task<HttpResponseMessage> SetAbilityBaseScoreAsync(this HttpClient client, Guid characterId, Guid abilityScoreId, int value, CancellationToken ct = default)
-        => client.PostJsonExpectAsync($"/api/characters/{characterId}/abilities/{abilityScoreId}/base", new { value }, HttpStatusCode.OK, ct);
+        => client.PostJsonExpectAsync($"/api/characters/{characterId}/ability-scores/{abilityScoreId}/base", new { value }, HttpStatusCode.OK, ct);
 
     public static Task<HttpResponseMessage> SetAbilityAdditionalScoreAsync(this HttpClient client, Guid characterId, Guid abilityScoreId, int value, CancellationToken ct = default)
-        => client.PostJsonExpectAsync($"/api/characters/{characterId}/abilities/{abilityScoreId}/additional", new { value }, HttpStatusCode.OK, ct);
+        => client.PostJsonExpectAsync($"/api/characters/{characterId}/ability-scores/{abilityScoreId}/additional", new { value }, HttpStatusCode.OK, ct);
 
     public static Task<GetSkillsResponse> GetSkillsAsync(this HttpClient client, Guid characterId, CancellationToken ct = default)
         => client.GetAndReadAsync<GetSkillsResponse>($"/api/characters/{characterId}/skills", HttpStatusCode.OK, ct);

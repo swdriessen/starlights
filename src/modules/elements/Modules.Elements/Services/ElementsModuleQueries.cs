@@ -65,10 +65,10 @@ internal class ElementsModuleQueries : IElementsModuleQueries
         return element?.AsSavingThrowDataModel();
     }
 
-    public async Task<IEnumerable<ElementDataModel>> GetElementsByType(string elementType)
+    public async Task<List<ElementDataModel>> GetElementsByType(string elementType)
     {
         var repository = _persistence.GetRepository<IElementsRepository>();
         var elements = await repository.GetElementsByTypeAsync(elementType);
-        return elements.Select(e => e.AsElementDataModel());
+        return elements.ConvertAll(e => e.AsElementDataModel());
     }
 }

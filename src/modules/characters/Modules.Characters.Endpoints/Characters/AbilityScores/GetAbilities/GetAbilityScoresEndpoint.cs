@@ -17,7 +17,7 @@ internal sealed class GetAbilityScoresEndpoint : EndpointWithoutRequest<GetAbili
 
     public override void Configure()
     {
-        Get("/{characterId:guid}/abilities");
+        Get("/{characterId:guid}/ability-scores");
         Group<CharactersGroup>();
         AllowAnonymous();
     }

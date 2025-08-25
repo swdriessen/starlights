@@ -58,9 +58,11 @@ public sealed class GetSelectionRuleOptionsEndpoint : EndpointWithoutRequest<Get
 
         var elements = await _elements.GetElementsByType(selectionRule.ElementType);
 
-        await Send.OkAsync(new GetSelectionRuleOptionsResponse
+        var response = new GetSelectionRuleOptionsResponse
         {
-            Options = [.. elements.Select(e => new SelectionRuleOptionModel { ElementId = e.Id, Name = e.Name })]
-        }, ct);
+            Options = elements.ConvertAll(e => new SelectionRuleOptionModel { ElementId = e.Id, Name = e.Name })
+        };
+
+        await Send.OkAsync(response, ct);
     }
 }
