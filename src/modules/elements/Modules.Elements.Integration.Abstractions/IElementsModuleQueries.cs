@@ -42,4 +42,9 @@ public interface IElementsModuleQueries
     /// Retrieves a savnng throw model by its unique identifier.
     /// </summary>
     Task<SavingThrowDataModel?> GetSavingThrowModel(Guid elementId);
+
+    /// <summary>
+    /// Retrieves a list of elements by their type.
+    /// </summary>
+    Task<List<ElementDataModel>> GetElementsByType(string elementType);
 }

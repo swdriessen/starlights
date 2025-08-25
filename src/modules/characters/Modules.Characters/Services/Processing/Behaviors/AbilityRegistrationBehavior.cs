@@ -36,7 +36,7 @@ public sealed class AbilityRegistrationBehavior : IRegistrationBehavior
         var characters = context.GetRepository<ICharactersRepository>();
         var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
-        _logger.LogInformation("Creating ability score '{AbilityName}' for character '{CharacterId}'", associatedElement.Name, character.Id.Value);
+        _logger.LogInformation("Creating ability score '{AbilityName}' [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
         character.CreateAbilityScore(newRegistration.Id, associatedElement.Name, associatedElement.Abbreviation);
     }
 }

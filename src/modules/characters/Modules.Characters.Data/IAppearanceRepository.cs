@@ -20,4 +20,7 @@ public interface IAppearanceRepository : IRepository
     /// Retrieves an appearance for a specific character.
     /// </summary>
     Task<Appearance?> GetAppearanceAsync(CharacterId id);
+
+
+    Task<bool> DeleteAppearanceAsync(CharacterId id);
 }

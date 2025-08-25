@@ -16,8 +16,8 @@ public sealed class GetCharacterCreationOptionsEndpoint : EndpointWithoutRequest
     public override void Configure()
     {
         Get("/creation-options");
-        AllowAnonymous();
         Group<CharactersGroup>();
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -40,16 +40,4 @@ public sealed class GetCharacterCreationOptionsEndpoint : EndpointWithoutRequest
 
         await Send.OkAsync(response, ct);
     }
-}
-
-public record GetCharacterCreationOptionsResponse
-{
-    public List<CharacterCreationOption> Options { get; init; } = [];
-}
-
-public record CharacterCreationOption
-{
-    public Guid Id { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public string? ShortDescription { get; init; }
 }

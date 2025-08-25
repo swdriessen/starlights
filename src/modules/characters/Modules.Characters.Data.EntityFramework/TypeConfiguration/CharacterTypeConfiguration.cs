@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Characters;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
@@ -25,5 +24,23 @@ public class CharacterTypeConfiguration : IEntityTypeConfiguration<Character>
                .HasForeignKey("CharacterId")
                    .OnDelete(DeleteBehavior.Cascade)
                    .IsRequired();
+
+        builder.HasMany(x => x.SavingThrows)
+               .WithOne()
+               .HasForeignKey("CharacterId")
+                   .OnDelete(DeleteBehavior.Cascade)
+                   .IsRequired();
+
+        builder.HasMany(x => x.Skills)
+               .WithOne()
+               .HasForeignKey("CharacterId")
+                   .OnDelete(DeleteBehavior.Cascade)
+                   .IsRequired();
+
+        builder.HasMany(x => x.Components)
+            .WithOne()
+            .HasForeignKey(x => x.ParentCharacter)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
     }
 }

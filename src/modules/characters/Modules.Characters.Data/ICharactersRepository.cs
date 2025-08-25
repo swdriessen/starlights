@@ -16,4 +16,14 @@ public interface ICharactersRepository : IRepository
     /// <param name="identifier">The unique identifier of the character.</param>
     /// <returns>The character if found; otherwise, null.</returns>
     Task<Character?> GetCharacterAsync(Guid identifier);
+
+    /// <summary>
+    /// Retrieves all characters from the repository.
+    /// </summary>
+    Task<IEnumerable<Character>> GetCharactersAsync();
+
+    /// <summary>
+    /// Deletes a character by its identifier.
+    /// </summary>
+    Task<bool> DeleteCharacterAsync(CharacterId identifier);
 }

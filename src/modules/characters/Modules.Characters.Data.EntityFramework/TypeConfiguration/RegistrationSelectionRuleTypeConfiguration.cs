@@ -24,6 +24,13 @@ public class RegistrationSelectionRuleTypeConfiguration : IEntityTypeConfigurati
                .IsRequired()
                .HasConversion(m => m.Value, v => new ElementComponentId(v));
 
+        builder.Property(e => e.CurrentSelection)
+               .IsRequired(false)
+               .HasConversion(
+                   m => m.HasValue ? m.Value.Value : (Guid?)null,
+                   v => v.HasValue ? new ElementId(v.Value) : null
+               );
+
         builder.Property(e => e.ElementType)
                .IsRequired();
 
