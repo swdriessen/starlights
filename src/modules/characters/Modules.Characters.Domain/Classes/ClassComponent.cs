@@ -24,7 +24,7 @@ public class ClassComponent : CharacterComponentBase
     /// <summary>
     /// Gets the combined level of all classes associated with the character.
     /// </summary>
-    public int GetCombinedLevel()
+    public int GetAggregatedLevel()
     {
         return _classes.Sum(c => c.Level);
     }
@@ -32,7 +32,7 @@ public class ClassComponent : CharacterComponentBase
     /// <summary>
     /// Adds a new class to the character's collection of classes.
     /// </summary>
-    public CharacterClass AddClass(RegistrationId registration, string name, IEventRecorder eventRecorder)
+    public CharacterClass CreateClass(RegistrationId registration, string name, IEventRecorder eventRecorder)
     {
         var newClass = CharacterClass.Create(registration, name);
 

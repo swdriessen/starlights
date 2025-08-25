@@ -71,10 +71,11 @@ public sealed class Program
                 options.Servers = [];
                 options.WithTitle("Starlights API")
                     .WithClientButton(false)
-                    .WithLayout(ScalarLayout.Modern)
+                    .WithLayout(ScalarLayout.Classic)
                     .WithTheme(ScalarTheme.Alternate)
                     .WithDarkMode(true)
-                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+                    .WithModels(false)
+                    .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Fetch);
             });
         }
 

@@ -24,7 +24,11 @@ public class SerilogComponent : IPlatformServiceComponent
             }
             else
             {
-                configuration.MinimumLevel.Debug();
+                if (builder.Environment.IsDevelopment())
+                {
+                    // development logging, but not in integration tests for now
+                    configuration.MinimumLevel.Debug();
+                }
 
                 configuration.Filter.ByExcluding(e =>
                 {

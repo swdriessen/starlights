@@ -40,7 +40,8 @@ public class RegistrationManager : IRegistrationManager
             return new ProcessRegistrationResult();
         }
 
-        // trigger behaviors for unprocessed registrations?
+        _logger.LogInformation("processing registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
+                               registration.AssociatedElementName, registration.AssociatedElementType, registration.CharacterId.Value);
 
         var context = new RegistrationProcessContext(registration, _persistence);
 

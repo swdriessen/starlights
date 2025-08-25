@@ -42,12 +42,12 @@ public sealed class SavingThrowRegistrationBehavior : IRegistrationBehavior
 
         if (primaryScore is null)
         {
-            _logger.LogInformation("Creating saving throw '{SavingThrowName}' without primary ability score for character '{CharacterId}'", associatedElement.Name, character.Id.Value);
+            _logger.LogInformation("Creating saving throw '{SavingThrowName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
             character.CreateSavingThrowWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
         }
         else
         {
-            _logger.LogInformation("Creating saving throw '{SavingThrowName}' with primary ability score '{AbilityScoreName}' for character '{CharacterId}'", associatedElement.Name, primaryScore.Name, character.Id.Value);
+            _logger.LogInformation("Creating saving throw '{SavingThrowName}' with primary ability score '{AbilityScoreName}' [character='{CharacterId}']", associatedElement.Name, primaryScore.Name, character.Id.Value);
             character.CreateSavingThrow(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
         }
     }

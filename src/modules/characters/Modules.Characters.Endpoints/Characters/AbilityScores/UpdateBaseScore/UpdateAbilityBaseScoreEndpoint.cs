@@ -2,6 +2,7 @@ using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Abilities;
+using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.UpdateBaseScore;
@@ -24,22 +25,25 @@ internal sealed class UpdateAbilityBaseScoreEndpoint : Endpoint<UpdateAbilityBas
 
     public override async Task HandleAsync(UpdateAbilityBaseScoreRequest req, CancellationToken ct)
     {
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(UpdateAbilityBaseScoreEndpoint)} | {req.CharacterId} | {req.AbilityScoreId}");
+        var characterId = new CharacterId(Route<Guid>("characterId"));
+        var abilityScoreId = new AbilityScoreId(Route<Guid>("abilityScoreId"));
+
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(UpdateAbilityBaseScoreEndpoint)} | {characterId} | {abilityScoreId}");
 
         var characters = _persistence.GetRepository<ICharactersRepository>();
 
-        var character = await characters.GetCharacterAsync(req.CharacterId);
+        var character = await characters.GetCharacterAsync(characterId);
         if (character is null)
         {
-            AddError($"Character with ID {req.CharacterId} not found.");
+            AddError($"Character with ID {characterId} not found.");
             await Send.ErrorsAsync(cancellation: ct);
             return;
         }
 
-        var ability = character.AbilityScores.SingleOrDefault(a => a.Id == new AbilityScoreId(req.AbilityScoreId));
+        var ability = character.AbilityScores.SingleOrDefault(a => a.Id == abilityScoreId);
         if (ability is null)
         {
-            AddError($"AbilityScore with ID {req.AbilityScoreId} not found for Character {req.CharacterId}.");
+            AddError($"AbilityScore with ID {abilityScoreId} not found for Character {characterId}.");
             await Send.ErrorsAsync(cancellation: ct);
             return;
         }

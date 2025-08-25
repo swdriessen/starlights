@@ -1,9 +1,9 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.SavingThrows;
 using Starlights.Modules.Characters.Domain.Skills;
-using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores;
 using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows;
 using Starlights.Modules.Characters.Endpoints.Characters.Skills;
+using Starlights.Modules.Characters.Endpoints.Models;
 
 namespace Starlights.Modules.Characters.Endpoints;
 

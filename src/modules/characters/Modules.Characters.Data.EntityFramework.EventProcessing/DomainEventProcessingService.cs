@@ -61,19 +61,18 @@ public sealed class DomainEventProcessingService : BackgroundService
                         try
                         {
                             var eventType = ResolveEventType(item.EventType);
-
                             if (eventType == null)
                             {
                                 _logger.LogError("Event type '{EventType}' could not be resolved.", item.EventType);
                                 continue;
                             }
 
-                            _logger.LogDebug("processing event: {EventType} ({EventId})", eventType.Name, item.Id);
+                            //_logger.LogDebug("processing event: {EventType} ({EventId})", eventType.Name, item.Id);
 
                             var deserialized = JsonSerializer.Deserialize(item.Payload, eventType);
                             if (deserialized is IDomainEvent domainEvent)
                             {
-                                _logger.LogInformation("publishing event: {EventType} ({EventId})", eventType.Name, item.Id);
+                                //_logger.LogInformation("publishing event: {EventType} ({EventId})", eventType.Name, item.Id);
                                 await publisher.PublishAsync(domainEvent);
 
                                 // Mark the event as processed

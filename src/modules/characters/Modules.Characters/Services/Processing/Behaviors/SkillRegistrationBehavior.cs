@@ -42,12 +42,12 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
 
         if (primaryScore is null)
         {
-            _logger.LogInformation("Creating skill '{SkillName}' without primary ability score for character '{CharacterId}'", associatedElement.Name, character.Id.Value);
+            _logger.LogInformation("Creating skill '{SkillName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
             character.CreateSkillWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
         }
         else
         {
-            _logger.LogInformation("Creating skill '{SkillName}' with primary ability score '{AbilityScoreName}' for character '{CharacterId}'", associatedElement.Name, primaryScore.Name, character.Id.Value);
+            _logger.LogInformation("Creating skill '{SkillName}' with primary ability score '{AbilityScoreName}' [character='{CharacterId}']", associatedElement.Name, primaryScore.Name, character.Id.Value);
             character.CreateSkill(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
         }
     }

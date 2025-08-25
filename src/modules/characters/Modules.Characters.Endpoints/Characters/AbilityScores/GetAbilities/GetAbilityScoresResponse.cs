@@ -1,4 +1,4 @@
-﻿using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores;
+﻿using Starlights.Modules.Characters.Endpoints.Models;
 
 namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.GetAbilities;
 

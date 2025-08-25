@@ -8,7 +8,6 @@ public class ProgressionComponent : CharacterComponentBase
     public ProgressionComponent(CharacterId parentCharacter)
         : base(parentCharacter)
     {
-
     }
 
     /// <summary>

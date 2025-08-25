@@ -221,10 +221,11 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <summary>
     /// Executes an action on a component of the specified type and adds any resulting domain events.
     /// </summary>
-    public void UpdateComponent<T>(Action<T, IEventRecorder> component) where T : CharacterComponentBase
+    public T UpdateComponent<T>(Action<T, IEventRecorder> component) where T : CharacterComponentBase
     {
         var existingComponent = GetRequiredComponent<T>();
         component(existingComponent, new EventRecorder(this));
+        return existingComponent;
     }
 
     /// <summary>

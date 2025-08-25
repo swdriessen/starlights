@@ -82,7 +82,7 @@ public sealed class AbilityScoreCreatedEventHandler : IDomainEventHandler<Abilit
 
                 if (skillElement.PrimaryAbilityElementId == abilityRegistration.AssociatedElementId)
                 {
-                    _logger.LogInformation("Assigning ability score '{AbilityScoreId}' to skill '{SkillId}' for character '{CharacterId}'", abilityScore.Id, existingSkill.Id, characterId.Value);
+                    _logger.LogInformation("Assigning ability score '{AbilityScoreId}' to skill '{SkillId}' for character '{CharacterId}'", abilityScore.Id.Value, existingSkill.Id.Value, characterId.Value);
                     // this ability score is the primary ability score for the skill
                     existingSkill.WithAbilityScore(abilityScore.Id, abilityScore.Abbreviation);
                     existingSkill.UpdateAbilityScoreModifier(abilityScore.CalculatedModifier);
@@ -95,7 +95,7 @@ public sealed class AbilityScoreCreatedEventHandler : IDomainEventHandler<Abilit
             if (existingSkill.AbilityScoreId == abilityScoreId.Value)
             {
                 // the skill is affected by the update, so we need to update it
-                _logger.LogInformation("Updating skill '{SkillId}' for character '{CharacterId}' with new ability score '{AbilityScoreId}'", existingSkill.Id, characterId.Value, abilityScoreId.Value);
+                _logger.LogInformation("Updating skill '{SkillId}' for character '{CharacterId}' with new ability score '{AbilityScoreId}'", existingSkill.Id.Value, characterId.Value, abilityScoreId.Value);
                 existingSkill.UpdateAbilityScoreModifier(abilityScore.CalculatedModifier);
             }
         }
