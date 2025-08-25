@@ -30,5 +30,5 @@ public interface IRegistrationRepository : IRepository
     /// <summary>
     /// Deletes all registrations for a specific character.
     /// </summary>
-    Task DeleteRegistrationsAsync(CharacterId id);
+    Task<bool> DeleteRegistrationsAsync(CharacterId id);
 }

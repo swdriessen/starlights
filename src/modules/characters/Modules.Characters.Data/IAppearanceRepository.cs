@@ -22,5 +22,5 @@ public interface IAppearanceRepository : IRepository
     Task<Appearance?> GetAppearanceAsync(CharacterId id);
 
 
-    Task DeleteAppearanceAsync(CharacterId id);
+    Task<bool> DeleteAppearanceAsync(CharacterId id);
 }

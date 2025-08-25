@@ -43,14 +43,3 @@ public sealed class GetCharacterPortraitOptionsEndpoint : EndpointWithoutRequest
         await Send.OkAsync(response, ct);
     }
 }
-
-public record GetCharacterPortraitOptionsResponse
-{
-    public List<CharacterPortraitOption> Portraits { get; init; } = [];
-}
-
-public record CharacterPortraitOption
-{
-    public required string Url { get; init; }
-    public string? Description { get; init; }
-}

@@ -1,12 +1,15 @@
 ﻿using FastEndpoints;
 using Starlights.Modules.Characters.Data;
+using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Endpoints.Models;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetSelectionRuleOptions;
 
-public sealed class GetSelectionRuleOptionsEndpoint : Endpoint<GetSelectionRuleOptionsRequest, GetSelectionRuleOptionsResponse>
+public sealed class GetSelectionRuleOptionsEndpoint : EndpointWithoutRequest<GetSelectionRuleOptionsResponse>
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
@@ -19,18 +22,23 @@ public sealed class GetSelectionRuleOptionsEndpoint : Endpoint<GetSelectionRuleO
 
     public override void Configure()
     {
-        Get("{characterId:guid}/builder/selection-rules/{selectionRuleId:guid}/options");
+        Get("{characterId:guid}/builder/selection-rules/{ruleId:guid}/options");
         Group<CharactersGroup>();
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetSelectionRuleOptionsRequest req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
+        using var _ = CharactersInstrumentation.StartActivity(nameof(GetSelectionRuleOptionsEndpoint));
+
+        var characterId = new CharacterId(Route<Guid>("characterId"));
+        var ruleId = new RegistrationSelectionRuleId(Route<Guid>("ruleId"));
+
         var characters = _persistence.GetRepository<ICharactersRepository>();
-        var character = await characters.GetCharacterAsync(req.CharacterId);
+        var character = await characters.GetCharacterAsync(characterId);
         if (character is null)
         {
-            AddError($"The character '{req.CharacterId}' does not exist.");
+            AddError($"The character '{characterId}' does not exist.");
             await Send.NotFoundAsync(cancellation: ct);
             return;
         }
@@ -39,11 +47,11 @@ public sealed class GetSelectionRuleOptionsEndpoint : Endpoint<GetSelectionRuleO
         var characterRegistrations = await registrations.GetRegistrationsAsync(character.Id);
 
         var selectionRule = characterRegistrations.SelectMany(x => x.SelectionRules)
-            .SingleOrDefault(x => x.Id == req.SelectionRuleId);
+            .SingleOrDefault(x => x.Id == ruleId);
 
         if (selectionRule is null)
         {
-            AddError($"The selection rule '{req.SelectionRuleId}' does not exist for character '{req.CharacterId}'.");
+            AddError($"The selection rule '{ruleId}' does not exist for character '{characterId}'.");
             await Send.NotFoundAsync(cancellation: ct);
             return;
         }
@@ -55,15 +63,4 @@ public sealed class GetSelectionRuleOptionsEndpoint : Endpoint<GetSelectionRuleO
             Options = [.. elements.Select(e => new SelectionRuleOptionModel { ElementId = e.Id, Name = e.Name })]
         }, ct);
     }
-}
-
-public class GetSelectionRuleOptionsRequest
-{
-    public Guid CharacterId { get; set; }
-    public Guid SelectionRuleId { get; set; }
-}
-
-public class GetSelectionRuleOptionsResponse
-{
-    public List<SelectionRuleOptionModel> Options { get; set; } = [];
 }

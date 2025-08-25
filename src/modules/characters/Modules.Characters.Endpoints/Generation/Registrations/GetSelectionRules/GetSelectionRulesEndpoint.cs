@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Endpoints.Models;
 using Starlights.Platform.Data;
 
@@ -20,7 +21,7 @@ public sealed class GetSelectionRulesEndpoint : Endpoint<GetSelectionRulesReques
 
     public override void Configure()
     {
-        Get("{id:guid}/builder/selection-rules");
+        Get("{characterId:guid}/builder/selection-rules");
         Group<CharactersGroup>();
         AllowAnonymous();
     }
@@ -29,11 +30,13 @@ public sealed class GetSelectionRulesEndpoint : Endpoint<GetSelectionRulesReques
     {
         using var _ = CharactersInstrumentation.StartActivity(nameof(GetSelectionRulesEndpoint));
 
+        var characterId = new CharacterId(Route<Guid>("characterId"));
+
         var characters = _persistence.GetRepository<ICharactersRepository>();
-        var character = await characters.GetCharacterAsync(req.CharacterId);
+        var character = await characters.GetCharacterAsync(characterId);
         if (character is null)
         {
-            AddError($"The character '{req.CharacterId}' does not exist.");
+            AddError($"The character '{characterId}' does not exist.");
             await Send.NotFoundAsync(cancellation: ct);
             return;
         }
@@ -56,18 +59,4 @@ public sealed class GetSelectionRulesEndpoint : Endpoint<GetSelectionRulesReques
             })
         }, ct);
     }
-}
-
-public class GetSelectionRulesRequest
-{
-    [BindFrom("id")]
-    public Guid CharacterId { get; set; }
-
-    [BindFrom("type")]
-    public string[] SelectionRuleTypes { get; set; } = [];
-}
-
-public class GetSelectionRulesResponse
-{
-    public List<SelectionRuleDataModel> Rules { get; set; } = [];
 }

@@ -1,11 +1,12 @@
 using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Characters.SavingThrows.GetSavingThrows;
 
-internal sealed class GetSavingThrowsEndpoint : Endpoint<GetSavingThrowsRequest, GetSavingThrowsResponse>
+internal sealed class GetSavingThrowsEndpoint : EndpointWithoutRequest<GetSavingThrowsResponse>
 {
     private readonly IPersistence _persistence;
 
@@ -16,28 +17,26 @@ internal sealed class GetSavingThrowsEndpoint : Endpoint<GetSavingThrowsRequest,
 
     public override void Configure()
     {
-        Get("/{id:guid}/saving-throws");
+        Get("/{characterId:guid}/saving-throws");
         Group<CharactersGroup>();
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetSavingThrowsRequest req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(GetSavingThrowsEndpoint)} | {req.CharacterId}");
+        var characterId = new CharacterId(Route<Guid>("characterId"));
+
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(GetSavingThrowsEndpoint)} | {characterId}");
         var characters = _persistence.GetRepository<ICharactersRepository>();
 
-        var character = await characters.GetCharacterAsync(req.CharacterId);
-
+        var character = await characters.GetCharacterAsync(characterId);
         if (character is null)
         {
             await Send.NotFoundAsync(ct);
             return;
         }
 
-        var response = new GetSavingThrowsResponse
-        {
-            SavingThrows = [.. character.SavingThrows.AsSavingThrowDataModels()]
-        };
+        var response = new GetSavingThrowsResponse { SavingThrows = character.SavingThrows.AsSavingThrowDataModels() };
 
         await Send.OkAsync(response, ct);
     }

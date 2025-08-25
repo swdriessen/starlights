@@ -17,7 +17,7 @@ sealed class DeleteCharacterEndpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Delete("/{id:guid}");
+        Delete("/{characterId:guid}");
         Group<CharactersGroup>();
         AllowAnonymous();
     }
@@ -26,27 +26,22 @@ sealed class DeleteCharacterEndpoint : EndpointWithoutRequest
     {
         using var activity = CharactersInstrumentation.StartActivity(nameof(DeleteCharacterEndpoint));
 
-        var id = Route<Guid>("id");
-        var characterId = new CharacterId(id);
+        var characterId = new CharacterId(Route<Guid>("characterId"));
 
         var characters = _persistence.GetRepository<ICharactersRepository>();
 
-        var existingCharacter = await characters.GetCharacterAsync(characterId);
-        if (existingCharacter is null)
+        var deleted = await characters.DeleteCharacterAsync(characterId);
+        if (!deleted)
         {
             await Send.NotFoundAsync(cancellation: c);
             return;
         }
 
-        var registrations = _persistence.GetRepository<IRegistrationRepository>();
         var appearances = _persistence.GetRepository<IAppearanceRepository>();
-
-        await characters.DeleteCharacterAsync(characterId);
-
-        await registrations.DeleteRegistrationsAsync(characterId);
-
         await appearances.DeleteAppearanceAsync(characterId);
 
+        var registrations = _persistence.GetRepository<IRegistrationRepository>();
+        await registrations.DeleteRegistrationsAsync(characterId);
 
         var rows = await _persistence.SaveChangesAsync();
 

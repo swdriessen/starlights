@@ -25,5 +25,5 @@ public interface ICharactersRepository : IRepository
     /// <summary>
     /// Deletes a character by its identifier.
     /// </summary>
-    Task DeleteCharacterAsync(CharacterId identifier);
+    Task<bool> DeleteCharacterAsync(CharacterId identifier);
 }

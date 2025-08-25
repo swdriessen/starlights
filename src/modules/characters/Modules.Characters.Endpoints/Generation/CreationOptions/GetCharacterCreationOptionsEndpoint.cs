@@ -41,15 +41,3 @@ public sealed class GetCharacterCreationOptionsEndpoint : EndpointWithoutRequest
         await Send.OkAsync(response, ct);
     }
 }
-
-public record GetCharacterCreationOptionsResponse
-{
-    public List<CharacterCreationOption> Options { get; init; } = [];
-}
-
-public record CharacterCreationOption
-{
-    public Guid Id { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public string? ShortDescription { get; init; }
-}

@@ -1,6 +1,7 @@
 ﻿using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements.Integration;
@@ -23,7 +24,7 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
 
     public override void Configure()
     {
-        Post("{id:guid}/builder/selection-rules/{ruleId:guid}/register");
+        Post("{characterId:guid}/builder/selection-rules/{ruleId:guid}/register");
         Group<CharactersGroup>();
         AllowAnonymous();
     }
@@ -32,11 +33,14 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
     {
         using var registrationActivity = CharactersInstrumentation.StartActivity(nameof(RegisterSelectionRuleEndpoint));
 
+        var characterId = new CharacterId(Route<Guid>("characterId"));
+        var ruleId = new RegistrationSelectionRuleId(Route<Guid>("ruleId"));
+
         var characters = _persistence.GetRepository<ICharactersRepository>();
-        var character = await characters.GetCharacterAsync(req.CharacterId);
+        var character = await characters.GetCharacterAsync(characterId);
         if (character is null)
         {
-            AddError($"The character '{req.CharacterId}' does not exist.");
+            AddError($"The character '{characterId}' does not exist.");
             await Send.NotFoundAsync(cancellation: ct);
             return;
         }
@@ -50,10 +54,10 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
             return;
         }
 
-        var selectionRule = parentRegistration.SelectionRules.FirstOrDefault(r => r.Id == req.SelectionRuleId);
+        var selectionRule = parentRegistration.SelectionRules.FirstOrDefault(r => r.Id == ruleId);
         if (selectionRule is null)
         {
-            AddError($"The selection rule '{req.SelectionRuleId}' does not exist on the parent registration '{req.ParentRegistration}'.");
+            AddError($"The selection rule '{ruleId}' does not exist on the parent registration '{req.ParentRegistration}'.");
             await Send.NotFoundAsync(cancellation: ct);
             return;
         }
@@ -91,24 +95,4 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
 
         await Send.OkAsync(new RegisterSelectionRuleResponse { RegistrationId = newRegistration.Id }, ct);
     }
-}
-
-public class RegisterSelectionRuleResponse
-{
-    public required Guid RegistrationId { get; set; }
-}
-
-public class RegisterSelectionRuleRequest
-{
-    [BindFrom("id")]
-    public required Guid CharacterId { get; set; }
-
-    [BindFrom("parentRegistration")]
-    public required Guid ParentRegistration { get; set; }
-
-    [BindFrom("ruleId")]
-    public required Guid SelectionRuleId { get; set; }
-
-    [BindFrom("elementId")]
-    public required Guid ElementId { get; set; }
 }

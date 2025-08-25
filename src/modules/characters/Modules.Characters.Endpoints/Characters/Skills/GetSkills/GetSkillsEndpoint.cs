@@ -1,11 +1,12 @@
 using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Characters.Skills.GetSkills;
 
-internal sealed class GetSkillsEndpoint : Endpoint<GetSkillsRequest, GetSkillsResponse>
+internal sealed class GetSkillsEndpoint : EndpointWithoutRequest<GetSkillsResponse>
 {
     private readonly IPersistence _persistence;
 
@@ -16,18 +17,19 @@ internal sealed class GetSkillsEndpoint : Endpoint<GetSkillsRequest, GetSkillsRe
 
     public override void Configure()
     {
-        Get("/{id:guid}/skills");
+        Get("/{characterId:guid}/skills");
         Group<CharactersGroup>();
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetSkillsRequest req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(GetSkillsEndpoint)} | {req.CharacterId}");
+        var characterId = new CharacterId(Route<Guid>("characterId"));
+
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(GetSkillsEndpoint)} | {characterId}");
+
         var characters = _persistence.GetRepository<ICharactersRepository>();
-
-        var character = await characters.GetCharacterAsync(req.CharacterId);
-
+        var character = await characters.GetCharacterAsync(characterId);
         if (character is null)
         {
             await Send.NotFoundAsync(ct);
