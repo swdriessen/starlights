@@ -114,6 +114,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.SourceG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Platform.SourceGenerators.Tests", "src\source-generators\Starlights.Platform.SourceGenerators.Tests\Starlights.Platform.SourceGenerators.Tests.csproj", "{7B833283-0512-4230-782B-5A0B4CF1F3A2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{F4513BD3-1991-4CBB-8654-DDA8D3967197}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "builder-app", "builder-app", "{FA95E129-C45F-4E13-826A-4B385130505E}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Starlights.Builder.React", "src\frontend\builder-app\Starlights.Builder.React.esproj", "{0BB19972-5C77-EA60-F264-B9129D38CB4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -252,6 +258,12 @@ Global
 		{7B833283-0512-4230-782B-5A0B4CF1F3A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B833283-0512-4230-782B-5A0B4CF1F3A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B833283-0512-4230-782B-5A0B4CF1F3A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BB19972-5C77-EA60-F264-B9129D38CB4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BB19972-5C77-EA60-F264-B9129D38CB4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BB19972-5C77-EA60-F264-B9129D38CB4C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{0BB19972-5C77-EA60-F264-B9129D38CB4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BB19972-5C77-EA60-F264-B9129D38CB4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BB19972-5C77-EA60-F264-B9129D38CB4C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -306,6 +318,9 @@ Global
 		{E164B546-F8A9-513B-19A8-A59211563603} = {7E29BCC6-F3BE-4486-B473-6D70343FE212}
 		{E37B6F09-C023-C8C6-C3F2-038BAF749407} = {7E29BCC6-F3BE-4486-B473-6D70343FE212}
 		{7B833283-0512-4230-782B-5A0B4CF1F3A2} = {7E29BCC6-F3BE-4486-B473-6D70343FE212}
+		{F4513BD3-1991-4CBB-8654-DDA8D3967197} = {4CA9D0EC-9739-4751-B08B-DF40599F2A52}
+		{FA95E129-C45F-4E13-826A-4B385130505E} = {F4513BD3-1991-4CBB-8654-DDA8D3967197}
+		{0BB19972-5C77-EA60-F264-B9129D38CB4C} = {FA95E129-C45F-4E13-826A-4B385130505E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}
