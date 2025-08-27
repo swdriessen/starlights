@@ -28,7 +28,6 @@ if (builder.ExecutionContext.IsRunMode)
     application.WaitForCompletion(characters);
 }
 
-
 if (builder.ExecutionContext.IsRunMode)
 {
     builder.AddNpmApp("react-builder-app", "../../frontend/builder-app", "dev")
