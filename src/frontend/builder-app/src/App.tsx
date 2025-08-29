@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { usePlatformStatus } from "./lib/queries";
+import "./App.css";
+import { Button } from "@/components/ui/button";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+
+  const { data: status, isLoading, isError, error, refetch } = usePlatformStatus(count);
 
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <h1>Project Starlights</h1>
+        <div className="flex items-center gap-2">
+          <Button size={"sm"} onClick={() => setCount((c) => c + 1)}>
+            {count}
+          </Button>
+          <Button size={"sm"} onClick={() => refetch()}>
+            Refresh Status
+          </Button>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <hr className="my-4" />
+      <div>
+        <h2>Platform</h2>
+        {isLoading && <p>Loading…</p>}
+        {isError && <p>Error: {error?.message}</p>}
+        {status && (
+          <>
+            <p>{status.message}</p>
+            <p>{status.timestamp}</p>
+          </>
+        )}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
