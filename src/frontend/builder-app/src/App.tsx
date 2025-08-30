@@ -1,44 +1,26 @@
-import { useState } from "react";
-import { usePlatformStatus } from "./lib/queries";
-import "./App.css";
-import { Button } from "@/components/ui/button";
-import { ThemeProvider } from "@/components/theme-provider";
+import { Link, Outlet } from "react-router-dom";
 import { ModeToggle } from "./components/mode-toggle";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const { data: status, isLoading, isError, error, refetch } = usePlatformStatus(count);
-
   return (
-    <>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <div>
-          <h1>Project Starlights</h1>
-          <div className="flex items-center gap-2">
-            <Button size="default" onClick={() => setCount((c) => c + 1)}>
-              {count}
-            </Button>
-            <Button size="default" onClick={() => refetch()}>
-              Refresh Status
-            </Button>
-            <ModeToggle />
-          </div>
-        </div>
-        <hr className="my-4" />
-        <div>
-          <h2>Platform</h2>
-          {isLoading && <p>Loading…</p>}
-          {isError && <p>Error: {error?.message}</p>}
-          {status && (
-            <>
-              <p>{status.message}</p>
-              <p>{status.timestamp}</p>
-            </>
-          )}
-        </div>
-      </ThemeProvider>
-    </>
+    <div className="container mx-auto p-4">
+      <header className="flex items-center justify-between gap-2">
+        <nav className="flex items-center gap-3 text-sm">
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>
+          <Link to="/about" className="hover:underline">
+            About
+          </Link>
+        </nav>
+        <ModeToggle />
+      </header>
+      <hr className="my-4" />
+      <main className="py-2">
+        <Outlet />
+      </main>
+    </div>
   );
 }
 
