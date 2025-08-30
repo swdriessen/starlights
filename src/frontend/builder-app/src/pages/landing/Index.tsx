@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import { usePlatformStatus } from "@/lib/queries";
 
-export default function Home() {
+export default function LandingPage() {
   const { data: status, isLoading, isError, error, refetch } = usePlatformStatus(1);
 
   return (

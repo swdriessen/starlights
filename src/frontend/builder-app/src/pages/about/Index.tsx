@@ -1,4 +1,4 @@
-export default function About() {
+export default function AboutPage() {
   return (
     <div className="space-y-2">
       <h2 className="text-xl font-semibold">About</h2>

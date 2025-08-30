@@ -6,8 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Home from "./pages/Home";
-import About from "./pages/About";
+import LandingPage from "./pages/landing/Index.tsx";
+import AboutPage from "./pages/about/Index.tsx";
+import CharactersPage from "./pages/characters/Index.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,8 +25,9 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <Home /> },
-      { path: "about", element: <About /> },
+      { index: true, element: <LandingPage /> },
+      { path: "about", element: <AboutPage /> },
+      { path: "characters", element: <CharactersPage /> },
     ],
   },
 ]);
@@ -33,7 +35,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <RouterProvider router={router} />
         <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
       </ThemeProvider>
