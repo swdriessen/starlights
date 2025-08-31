@@ -1,39 +1,33 @@
-import { useCharacterCreationOptions, useCharacterPortraitOptions } from "@/lib/api/characters/queries";
-import { CharacterCreationOptionsSelect, CharacterPortraitOptionsSelect } from "./create/character-creation-options-select";
+import { useCharacterCards } from "@/lib/api/characters/queries";
+import { Link } from "react-router-dom";
 
 function CharacterCollection() {
+  const { data: characterCards } = useCharacterCards();
+
   return (
     <div className="">
-      <p>Character Collection</p>
+      {characterCards && (
+        <ul className="space-y-2">
+          {characterCards.characters.map((card) => (
+            <li className="bg-accent/20 px-2 py-2 rounded" key={card.characterId}>
+              <Link to={`/characters/${card.characterId}`} className="text-sm">
+                <span className="font-semibold">{card.name}</span> | <span className="font-light text-muted-foreground text-xs">{card.characterId}</span>
+              </Link>
+              {card.portraitUrl && <img src={card.portraitUrl} alt={card.name} className="mt-1 w-full rounded" />}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 
 export default function CharactersPage() {
-  const { data: options, isLoading: optionsLoading, isError: optionsIsError, error: optionsError } = useCharacterCreationOptions();
-  const { data: portraits, isLoading: portraitsLoading, isError: portraitsIsError, error: portraitsError } = useCharacterPortraitOptions();
-
   return (
     <>
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">Characters</h2>
         <p>This is the Characters page for the Starlights builder app.</p>
-      </div>
-
-      <hr className="my-4" />
-
-      <div className="space-y-2">
-        {optionsLoading && <p>Loading Options...</p>}
-        {optionsIsError && <p>Error: {optionsError.message}</p>}
-        {options && <CharacterCreationOptionsSelect characterCreationOptions={options} />}
-      </div>
-
-      <hr className="my-4" />
-
-      <div className="space-y-2">
-        {portraitsLoading && <p>Loading Portraits...</p>}
-        {portraitsIsError && <p>Error: {portraitsError.message}</p>}
-        {portraits && <CharacterPortraitOptionsSelect characterPortraitOptions={portraits} />}
       </div>
 
       <hr className="my-4" />

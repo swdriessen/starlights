@@ -9,6 +9,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import LandingPage from "./pages/landing/Index.tsx";
 import AboutPage from "./pages/about/Index.tsx";
 import CharactersPage from "./pages/characters/Index.tsx";
+import CharactersCreatePage from "./pages/characters/create/Index.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
       { index: true, element: <LandingPage /> },
       { path: "about", element: <AboutPage /> },
       { path: "characters", element: <CharactersPage /> },
+      { path: "characters/create", element: <CharactersCreatePage /> },
     ],
   },
 ]);

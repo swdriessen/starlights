@@ -24,3 +24,15 @@ export function useCharacterPortraitOptions(): UseQueryResult<CharacterPortraitO
     refetchOnWindowFocus: false,
   });
 }
+
+export type CharacterCard = { characterId: string; name: string; portraitUrl?: string };
+export type CharacterCards = { characters: CharacterCard[] };
+
+export function useCharacterCards(): UseQueryResult<CharacterCards, Error> {
+  return useQuery<CharacterCards, Error>({
+    queryKey: ["character-cards"],
+    queryFn: () => fetchJson<CharacterCards>("/api/characters"),
+    staleTime: 5_000,
+    refetchOnWindowFocus: true,
+  });
+}

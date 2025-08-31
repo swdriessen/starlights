@@ -13,6 +13,9 @@ function App() {
           <Link to="/characters" className="hover:underline">
             Characters
           </Link>
+          <Link to="/characters/create" className="hover:underline">
+            Create Character
+          </Link>
           <Link to="/about" className="hover:underline">
             About
           </Link>

@@ -1,23 +1,23 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { CharacterCreationOptions } from "@/lib/api/characters/queries";
+import type { CharacterPortraitOptions } from "@/lib/api/characters/queries";
 
-export function CharacterCreationOptionsSelect({
-  characterCreationOptions,
+export function CharacterPortraitOptionsSelect({
+  characterPortraitOptions,
   onValueChange,
 }: {
-  characterCreationOptions: CharacterCreationOptions | undefined;
+  characterPortraitOptions: CharacterPortraitOptions | undefined;
   onValueChange?: (value: string) => void;
 }) {
   return (
     <Select onValueChange={onValueChange}>
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Select a character creation option" />
+        <SelectValue placeholder="Select a character portrait option" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {characterCreationOptions?.options.map((option) => (
-            <SelectItem key={option.id} value={option.id}>
-              {option.name}
+          {characterPortraitOptions?.portraits.map((option) => (
+            <SelectItem key={option.url} value={option.url}>
+              {option.description}
             </SelectItem>
           ))}
         </SelectGroup>
