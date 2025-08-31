@@ -7,7 +7,7 @@ export function usePlatformStatus(keyExtra?: unknown): UseQueryResult<Status, Er
   return useQuery<Status, Error>({
     queryKey: ["platform", "status", keyExtra].filter((x) => x !== undefined),
     queryFn: () => fetchJson<Status>("/api/platform/status"),
-    staleTime: 5_000,
+    staleTime: 1_000,
     refetchOnWindowFocus: true,
   });
 }

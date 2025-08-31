@@ -9,7 +9,7 @@ export default function LandingPage() {
     <div className="space-y-4">
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">Landing</h2>
-        <p className="text-sm text-muted-foreground">This is the Landing page for the Starlights builder app.</p>
+        <p className="text-sm text-muted-foreground">This is the Landing page for the app.</p>
       </div>
       <div className="flex items-center gap-2">
         <Button size="sm" onClick={() => refetch()}>
