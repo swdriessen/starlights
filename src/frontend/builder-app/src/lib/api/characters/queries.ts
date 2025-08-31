@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
-import { fetchJson, postJson } from "@/lib/api";
+import { API_BASE, fetchJson, postJson } from "@/lib/api";
 
 export type CharacterCreationOption = { id: string; name: string; shortDescription: string };
 export type CharacterCreationOptions = { options: CharacterCreationOption[] };
@@ -60,6 +60,34 @@ export function useCreateCharacter(): UseMutationResult<CreateCharacterResponse,
     },
     onSuccess: () => {
       // Invalidate list to refetch with the new character present
+      qc.invalidateQueries({ queryKey: ["character-cards"] }).catch(() => {});
+    },
+  });
+}
+
+// Deletion
+export function useDeleteCharacter(): UseMutationResult<void, Error, string> {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: async (id: string) => {
+      const path = `/api/characters/${encodeURIComponent(id)}`;
+      const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
+      const res = await fetch(url, { method: "DELETE" });
+      if (!res.ok) {
+        let details = "";
+        try {
+          details = await res.text();
+        } catch {
+          // ignore
+        }
+        const suffix = details ? ` - ${details}` : "";
+        throw new Error(`HTTP ${res.status} ${res.statusText}${suffix}`);
+      }
+      // Most APIs return 204 No Content for DELETE
+      return;
+    },
+  onSuccess: () => {
+      // Refresh the character list after deletion
       qc.invalidateQueries({ queryKey: ["character-cards"] }).catch(() => {});
     },
   });
