@@ -28,5 +28,14 @@ if (builder.ExecutionContext.IsRunMode)
     application.WaitForCompletion(characters);
 }
 
-builder.Build().Run();
+if (builder.ExecutionContext.IsRunMode)
+{
+    builder.AddNpmApp("react-builder-app", "../../frontend/builder-app", "dev")
+        //.WithEnvironment("BROWSER", "none")
+        .WithHttpEndpoint(env: "PORT")
+        .WithExternalHttpEndpoints()
+        .WithReference(application)
+        .WaitFor(application);
+}
 
+builder.Build().Run();

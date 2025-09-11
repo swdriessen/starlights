@@ -55,6 +55,11 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
         // appearance entity
         var newAppearance = Appearance.Create(newCharacter.Id);
 
+        if (req.PortraitUrl is not null)
+        {
+            newAppearance.UpdatePortraitUrl(req.PortraitUrl);
+        }
+
         var appearances = _persistence.GetRepository<IAppearanceRepository>();
         appearances.Add(newAppearance);
 

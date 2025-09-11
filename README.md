@@ -1,71 +1,49 @@
 # Project Starlights
 
-Online toolset to enhance tabletop role‑playing games (initially Dungeons & Dragons). Built as a modular monolith on .NET.
+This is a work-in-progress project intended as an online toolset to enhance tabletop role‑playing games. It's initial focus is creating characters for Dungeons & Dragons. 
+There is no public-facing website hosted for this project at this time and more details will be shared as development progresses.
 
-## Tech stack
+If you'd like to see this project grow, please consider giving it a star :star: — thank you!
 
-- .NET 9 Web API using FastEndpoints
-- Modular monolith with domain modules (Characters, Elements)
+## Tech Stack
+
+### Backend
+
+- A modular monolith with domain modules (data elements module, character builder module) build on top of a platform layer
 - Entity Framework Core 9 + SQL Server
+- .NET 9 Web API using FastEndpoints
+- .NET Aspire 9.4 for local orchestration and future Azure deployment
 - Serilog for logging, OpenTelemetry for tracing/metrics
-- .NET Aspire 9.4 for local orchestration (AppHost, service discovery, SQL container)
-- Testing: MSTest + FluentAssertions + Moq
 
-## Repository layout
+### Frontend (Experimental)
 
-- `src/apps/Starlights.Application` – backend Web API host (FastEndpoints, Scalar UI)
-- `src/aspire/Starlights.AppHost` – .NET Aspire AppHost (runs SQL Server and migration workers, then the backend)
-- `src/aspire/Starlights.ServiceDefaults` – common Aspire service defaults (health, OTel, discovery)
-- `src/modules/characters` – Characters module (Domain, Data, EF, Endpoints, MigrationService, EventProcessing, Tests)
-- `src/modules/elements` – Elements module (Domain, Data, EF, Endpoints, MigrationService, Tests)
-- `src/platform` – shared platform (hosting abstractions, data, components like FastEndpoints/Serilog) + tests
-- `src/integration/Starlights.Integration.Tests` – integration tests across modules and API
-- `assets/` – miscellaneous project assets
-
-Solution file: `Starlights.sln`
+- React 19 (TypeScript)
+- Vite 7 
+- Tailwind CSS 4
+- Shadcn UI components
 
 ## Prerequisites
 
 - Windows, macOS, or Linux with Docker (required for the local SQL Server container via Aspire)
-- .NET SDK 9 (repo pins to `9.0.302` via `global.json`)
+- .NET SDK 9
+- Node.js 20+
 
-Verify:
-
-```powershell
-dotnet --version
-docker version
-```
-
-## Getting started (local)
+## Getting Started (local)
 
 The recommended way to run locally is via the .NET Aspire AppHost, which:
 
-- Creates a persistent SQL Server container on port `61070` (localhost,61070)
+- Creates a persistent SQL Server container
+  - With a fixed port `61070` in `AppHost.cs` for development purposes
 - Runs EF Core migration workers for Characters and Elements
 - Starts the backend API and wires service discovery/telemetry
+- Launches the React Builder App (Vite dev server) with an external URL
+- Initialize the database from `Initialize Database` command on the `backend` resource or hitting the `/api/elements/initialize` endpoint
 
 Run AppHost:
 
 ```powershell
 dotnet run -p ./src/aspire/Starlights.AppHost
 ```
-
-What to expect:
-
-- Console output shows the backend service URL (named `backend`) and migration workers
-- Database available at `localhost,61070` (SQL authentication). You can inspect it with SSMS/Azure Data Studio
-- In Development, the API exposes:
-  - OpenAPI JSON: `/openapi/v1.json`
-  - Scalar API UI: `/scalar`
-  - Health: `/health` and `/alive`
-
-You can also run just the API (skips containerized SQL + migrations):
-
-```powershell
-dotnet run -p ./src/apps/Starlights.Application
-```
-
-Note: When running the API directly, ensure a SQL Server instance and schema exist, or use the AppHost first to initialize.
 
 ## Tests
 
@@ -80,7 +58,7 @@ dotnet test
 
 ## Architecture (high level)
 
-- Modular monolith organized by business capability (Characters, Elements)
+- Modular monolith organized by business capability (character builder, data elements)
 - Each module contains Domain/Data/EF/Endpoints; modules communicate via interfaces/events
 - Platform layer provides hosting, logging, data, and component wiring
 
@@ -96,17 +74,18 @@ In Development, the app maps:
 
 - OpenAPI at `/openapi/v1.json`
 - Scalar API Reference UI at `/scalar`
+- All API endpoints are prefixed with `/api` (FastEndpoints route prefix)
 
 ## Troubleshooting
 
 - Docker not running: start Docker Desktop (or your container runtime) before launching AppHost
-- Port 61070 in use: change the port in `AppHost.cs` and re-run AppHost
+- Port `61070` in use: change the port in `AppHost.cs` and re-run AppHost
 - Database not initialized: ensure you start via AppHost so migration workers run to completion
 
 ## License
 
-See [`LICENSE`](./LICENSE).
+This project is being developed in the open under the [MIT License](./LICENSE). 
 
 ## Acknowledgements
 
-This project builds on experience with [Aurora](https://www.aurorabuilder.com) and modern .NET web tooling.
+This project builds on experience developing [Aurora](https://www.aurorabuilder.com) and modern .NET web tooling.
