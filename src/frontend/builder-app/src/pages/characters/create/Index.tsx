@@ -9,11 +9,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Label } from "@/components/ui/label";
 
 const schema = z.object({
   CharacterCreationOptionId: z.string().min(1, "Please select an option"),
   Name: z.string().trim().min(1, "Please enter a name"),
-  PortraitUrl: z.string().url({ message: "Portrait must be a valid URL" }).optional(),
+  PortraitUrl: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -50,7 +51,7 @@ function CharacterCreation() {
   });
 
   return (
-    <form className="space-y-4" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-6" onSubmit={onSubmit}>
       <div className="">
         {optionsLoading && <p>Loading Options...</p>}
         {optionsIsError && <p>Error: {optionsError.message}</p>}
@@ -65,6 +66,8 @@ function CharacterCreation() {
         )}
       </div>
       <div className="">
+        <Label htmlFor="portrait">Portrait</Label>
+
         {portraitsLoading && <p>Loading Portraits...</p>}
         {portraitsIsError && <p>Error: {portraitsError.message}</p>}
         <div className="grid grid-cols-12 gap-2">
@@ -73,7 +76,7 @@ function CharacterCreation() {
               <div
                 className="overflow-hidden rounded relative cursor-pointer"
                 key={index}
-                onClick={() => setValue("PortraitUrl", portrait.url, { shouldValidate: true })}
+                onClick={() => setValue("PortraitUrl", portrait.url, { shouldValidate: false })}
               >
                 <img className="w-full h-full object-cover" src={portrait.url} alt={portrait.description} title={portrait.description} />
                 {selectedPortrait === portrait.url && (
@@ -87,7 +90,8 @@ function CharacterCreation() {
         {errors.PortraitUrl && <p className="text-sm text-red-600 mt-1">{errors.PortraitUrl.message}</p>}
       </div>
       <div>
-        <Input placeholder="Character Name" {...register("Name")} />
+        <Label htmlFor="charactername">Character Name</Label>
+        <Input id="charactername" placeholder="The Nameless One" {...register("Name")} />
         {errors.Name && <p className="text-sm text-red-600 mt-1">{errors.Name.message}</p>}
       </div>
       <div className="flex items-center gap-3">

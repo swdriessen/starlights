@@ -25,7 +25,7 @@ export function useCharacterPortraitOptions(): UseQueryResult<CharacterPortraitO
   });
 }
 
-export type CharacterCard = { characterId: string; name: string; portraitUrl?: string };
+export type CharacterCard = { characterId: string; name: string; portraitUrl?: string; isFavorite: boolean };
 export type CharacterCards = { characters: CharacterCard[] };
 
 export function useCharacterCards(): UseQueryResult<CharacterCards, Error> {
@@ -86,7 +86,7 @@ export function useDeleteCharacter(): UseMutationResult<void, Error, string> {
       // Most APIs return 204 No Content for DELETE
       return;
     },
-  onSuccess: () => {
+    onSuccess: () => {
       // Refresh the character list after deletion
       qc.invalidateQueries({ queryKey: ["character-cards"] }).catch(() => {});
     },
