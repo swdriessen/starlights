@@ -1,0 +1,17 @@
+<RunSettings>
+  <RunConfiguration>
+    <ResultsDirectory>TestResults</ResultsDirectory>
+    <TargetPlatform>x64</TargetPlatform>
+    <TargetFrameworkVersion>net9.0</TargetFrameworkVersion>
+    <TestSessionTimeout>300000</TestSessionTimeout>
+    <CollectSourcesInformation>false</CollectSourcesInformation>
+  </RunConfiguration>
+
+  <MSTest>
+    <Parallelize>
+      <Workers>1</Workers>
+      <Scope>MethodLevel</Scope>
+    </Parallelize>
+    <MapInconclusiveToFailed>true</MapInconclusiveToFailed>
+  </MSTest>
+</RunSettings>
