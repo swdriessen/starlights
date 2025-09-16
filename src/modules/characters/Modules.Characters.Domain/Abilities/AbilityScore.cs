@@ -1,4 +1,6 @@
-﻿using Starlights.Modules.Characters.Domain.Registrations;
+﻿using System.Runtime.CompilerServices;
+using Starlights.Modules.Characters.Domain.Abilities.Eventing;
+using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Domain;
 using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
@@ -84,6 +86,8 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// </summary>
     internal static AbilityScore Create(RegistrationId associatedRegistrationId, string name, string abbreviation)
     {
-        return new AbilityScore(associatedRegistrationId, name, abbreviation);
+        var newScore = new AbilityScore(associatedRegistrationId, name, abbreviation);
+        newScore.AddDomainEvent(new AbilityScoreCreatedEvent() { AbilityScoreId = newScore.Id, CharacterId = associatedRegistrationId });
+        return newScore;
     }
 }

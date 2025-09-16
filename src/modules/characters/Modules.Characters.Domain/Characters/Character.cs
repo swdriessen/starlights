@@ -22,6 +22,7 @@ namespace Starlights.Modules.Characters.Domain.Characters;
 public sealed class Character : AggregateRoot<CharacterId>
 {
     private readonly List<CharacterComponentBase> _components = [];
+
     private readonly List<AbilityScore> _abilityScores = [];
     private readonly List<Skill> _skills = [];
     private readonly List<SavingThrow> _savingThrows = [];
@@ -41,6 +42,18 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// Gets the name of the character.
     /// </summary>
     public string Name { get; } = string.Empty;
+
+
+
+
+
+
+
+
+
+
+
+
 
     /// <summary>
     /// Gets the collection of ability scores associated with the character.
@@ -194,6 +207,8 @@ public sealed class Character : AggregateRoot<CharacterId>
         }
     }
 
+    #region Components
+
     /// <summary>
     /// Adds a component to the character.
     /// </summary>
@@ -251,4 +266,6 @@ public sealed class Character : AggregateRoot<CharacterId>
 
         public void AddDomainEvent(IDomainEvent domainEvent) => _character.AddDomainEvent(domainEvent);
     }
+
+    #endregion
 }

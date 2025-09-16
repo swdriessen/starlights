@@ -1,12 +1,10 @@
 ﻿using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
-using Starlights.Modules.Characters.Domain.Appearances;
-using Starlights.Modules.Characters.Domain.Characters;
-using Starlights.Modules.Characters.Domain.Classes;
+using Starlights.Modules.Characters.Domain.Components;
 using Starlights.Modules.Characters.Domain.Elements;
-using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Domain.Services;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
@@ -15,11 +13,13 @@ namespace Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, CreateCharacterResponse>
 {
     private readonly IPersistence _persistence;
+    private readonly ICharacterCreationService _characterCreationService;
     private readonly IElementsModuleQueries _queries;
 
-    public CreateCharacterEndpoint(IPersistence persistence, IElementsModuleQueries queries)
+    public CreateCharacterEndpoint(IPersistence persistence, ICharacterCreationService characterCreationService, IElementsModuleQueries queries)
     {
         _persistence = persistence;
+        _characterCreationService = characterCreationService;
         _queries = queries;
     }
 
@@ -34,6 +34,15 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
     {
         using var _ = CharactersInstrumentation.StartActivity(nameof(CreateCharacterEndpoint));
 
+        // character entity
+        var newCharacter = _characterCreationService.Create(req.Name);
+
+        // update appearance component if portrait url is provided
+        if (req.PortraitUrl is not null)
+        {
+            newCharacter.UpdateComponent<AppearanceComponent>((appearance, _) => appearance.PortraitUrl = req.PortraitUrl);
+        }
+
         // get the root element which handles all rules for character creation
         var rootElement = await _queries.GetCharacterCreationElement(req.CharacterCreationOptionId);
         if (rootElement is null)
@@ -43,36 +52,23 @@ public sealed class CreateCharacterEndpoint : Endpoint<CreateCharacterRequest, C
             return;
         }
 
-        // character entity
-        var newCharacter = Character.Create(req.Name);
-
-        newCharacter.AddComponent(new ProgressionComponent(newCharacter.Id));
-        newCharacter.AddComponent(new ClassComponent(newCharacter.Id));
-
-        var characters = _persistence.GetRepository<ICharactersRepository>();
-        characters.Add(newCharacter);
-
-        // appearance entity
-        var newAppearance = Appearance.Create(newCharacter.Id);
-
-        if (req.PortraitUrl is not null)
-        {
-            newAppearance.UpdatePortraitUrl(req.PortraitUrl);
-        }
-
-        var appearances = _persistence.GetRepository<IAppearanceRepository>();
-        appearances.Add(newAppearance);
-
         // registration of the root element used in character creation, this will grant abilities, skills, etc.
         var newRegistration = Registration.Create(newCharacter.Id, new ElementId(rootElement.ElementId), rootElement.Name, rootElement.Type);
 
+        var characters = _persistence.GetRepository<ICharactersRepository>();
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
+
+        characters.Add(newCharacter);
         registrations.Add(newRegistration);
 
-        await _persistence.SaveChangesAsync();
+        var affectedRows = await _persistence.SaveChangesAsync();
+        if (affectedRows == 0)
+        {
+            AddError("Failed to create the character due to an unknown error.");
+            await Send.ErrorsAsync(statusCode: 500, cancellation: ct);
+            return;
+        }
 
-        var reponse = new CreateCharacterResponse(newCharacter.Id);
-
-        await Send.CreatedAtAsync($"/api/characters/{newCharacter.Id}", responseBody: reponse, cancellation: ct);
+        await Send.ResponseAsync(new CreateCharacterResponse(newCharacter.Id), statusCode: 201, cancellation: ct);
     }
 }

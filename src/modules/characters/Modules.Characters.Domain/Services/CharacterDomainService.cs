@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Starlights.Modules.Characters.Domain.Appearances;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Classes;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;

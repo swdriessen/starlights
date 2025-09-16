@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Starlights.Modules.Characters.Domain.Classes;
+using Starlights.Modules.Characters.Domain.Components;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
 
@@ -17,5 +18,13 @@ public class ClassComponentTypeConfiguration : IEntityTypeConfiguration<ClassCom
                .HasForeignKey("ClassComponentId")
                .OnDelete(DeleteBehavior.Cascade)
                .IsRequired();
+    }
+}
+
+public class AppearanceComponentTypeConfiguration : IEntityTypeConfiguration<AppearanceComponent>
+{
+    public void Configure(EntityTypeBuilder<AppearanceComponent> builder)
+    {
+        builder.ToTable("character_component_appearance");
     }
 }
