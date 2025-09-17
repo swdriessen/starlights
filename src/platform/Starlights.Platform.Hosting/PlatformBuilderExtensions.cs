@@ -16,12 +16,13 @@ internal static class PlatformBuilderExtensions
 
         if (builder.Options.IsDiscoveryEnabled)
         {
-            assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies());
+            assemblies.AddRange(GetCandidateAssemblies());
         }
 
         assemblies.AddRange(builder.Options.AdditionalAssemblies);
 
-        var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
+        var discoveredTypes = assemblies
+            .SelectMany(GetTypesSafely)
             .Where(t => typeof(IPlatformModule).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
             .Distinct();
 
@@ -91,12 +92,13 @@ internal static class PlatformBuilderExtensions
 
         if (builder.Options.IsDiscoveryEnabled)
         {
-            assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies());
+            assemblies.AddRange(GetCandidateAssemblies());
         }
 
         assemblies.AddRange(builder.Options.AdditionalAssemblies);
 
-        var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
+        var discoveredTypes = assemblies
+            .SelectMany(GetTypesSafely)
             .Where(t => typeof(IPlatformServiceComponent).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
             .Distinct();
 
@@ -147,5 +149,50 @@ internal static class PlatformBuilderExtensions
         }
 
         return builder;
+    }
+
+    private static IEnumerable<Assembly> GetCandidateAssemblies()
+    {
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .Where(IsCandidateAssembly);
+
+
+        static bool IsCandidateAssembly(Assembly assembly)
+        {
+            if (assembly.IsDynamic)
+            {
+                return false;
+            }
+
+            var name = assembly.GetName().Name ?? string.Empty;
+
+            if (string.Equals(name, "DynamicProxyGenAssembly2", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (name.StartsWith("Castle.Proxies", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private static IEnumerable<Type> GetTypesSafely(Assembly assembly)
+    {
+        try
+        {
+            return assembly.GetTypes();
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            return ex.Types.Where(t => t is not null)!;
+        }
+        catch
+        {
+            return [];
+        }
     }
 }
