@@ -37,9 +37,6 @@ sealed class DeleteCharacterEndpoint : EndpointWithoutRequest
             return;
         }
 
-        var appearances = _persistence.GetRepository<IAppearanceRepository>();
-        await appearances.DeleteAppearanceAsync(characterId);
-
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
         await registrations.DeleteRegistrationsAsync(characterId);
 

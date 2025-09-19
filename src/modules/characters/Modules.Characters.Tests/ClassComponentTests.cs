@@ -16,7 +16,7 @@ public class ClassComponentTests
     {
         // Arrange
         var character = Character.Create("Test");
-        var component = new ClassComponent(character.Id);
+        var component = ClassComponent.Create(character.Id);
 
         // Act
         var newClass = component.CreateClass(RegistrationId.New(), "Wizard", Mock.Of<IEventRecorder>());
@@ -31,7 +31,7 @@ public class ClassComponentTests
     {
         // Arrange
         var character = Character.Create("Test");
-        var component = new ClassComponent(character.Id);
+        var component = ClassComponent.Create(character.Id);
         var recorder = new Mock<IEventRecorder>();
 
         // Act
@@ -48,7 +48,7 @@ public class ClassComponentTests
     {
         // Arrange
         var character = Character.Create("Test");
-        var component = new ClassComponent(character.Id);
+        var component = ClassComponent.Create(character.Id);
         var recorder = new Mock<IEventRecorder>();
 
         // Act
@@ -66,7 +66,7 @@ public class ClassComponentTests
     {
         // Arrange
         var character = Character.Create("Test");
-        var component = new ClassComponent(character.Id);
+        var component = ClassComponent.Create(character.Id);
         var recorder = Mock.Of<IEventRecorder>();
 
         // Act

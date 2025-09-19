@@ -1,12 +1,9 @@
-using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Components;
 using Starlights.Modules.Characters.Domain.Registrations;
-using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
-using Starlights.Modules.Characters.Domain.Skills.Eventing;
-using Starlights.Platform.Eventing;
 
-namespace Starlights.Modules.Characters.Domain.Components;
+namespace Starlights.Modules.Characters.Domain.Abilities;
 
 public sealed class AbilitiesComponent : CharacterComponentBase
 {
@@ -28,6 +25,9 @@ public sealed class AbilitiesComponent : CharacterComponentBase
     public AbilityScore CreateAbilityScore(RegistrationId associatedRegistrationId, string name, string abbreviation)
     {
         var abilityScore = AbilityScore.Create(associatedRegistrationId, name, abbreviation);
+
+        AddDomainEvent(new AbilityScoreCreatedEvent() { CharacterId = ParentCharacter, AbilityScoreId = abilityScore.Id });
+
         _abilityScores.Add(abilityScore);
         return abilityScore;
     }
@@ -45,7 +45,8 @@ public sealed class AbilitiesComponent : CharacterComponentBase
         }
 
         ability.UpdateBaseScore(value);
-        AddDomainEvent(new AbilityScoreUpdatedEvent() { CharacterId = Id, AbilityScoreId = ability.Id });
+
+        AddDomainEvent(new AbilityScoreUpdatedEvent() { CharacterId = ParentCharacter, AbilityScoreId = ability.Id });
     }
 
     /// <summary>
@@ -55,6 +56,12 @@ public sealed class AbilitiesComponent : CharacterComponentBase
     {
         var ability = _abilityScores.SingleOrDefault(a => a.Id == abilityScoreId) ?? throw new InvalidOperationException($"AbilityScore with ID {abilityScoreId} not found for Character {Id}.");
         ability.UpdateAdditionalScore(value);
-        AddDomainEvent(new AbilityScoreUpdatedEvent() { CharacterId = Id, AbilityScoreId = ability.Id });
+
+        AddDomainEvent(new AbilityScoreUpdatedEvent() { CharacterId = ParentCharacter, AbilityScoreId = ability.Id });
+    }
+
+    public static AbilitiesComponent Create(CharacterId parentCharacter)
+    {
+        return new AbilitiesComponent(parentCharacter);
     }
 }

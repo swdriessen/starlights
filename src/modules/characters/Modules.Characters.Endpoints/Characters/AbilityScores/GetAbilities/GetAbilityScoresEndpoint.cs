@@ -1,6 +1,7 @@
 ﻿using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Data;
 
@@ -36,7 +37,9 @@ internal sealed class GetAbilityScoresEndpoint : EndpointWithoutRequest<GetAbili
             return;
         }
 
-        var response = new GetAbilityScoresResponse { AbilityScores = character.AbilityScores.AsAbilityScoreDataModels() };
+        var abilities = character.GetRequiredComponent<AbilitiesComponent>();
+
+        var response = new GetAbilityScoresResponse { AbilityScores = abilities.AbilityScores.AsAbilityScoreDataModels() };
 
         await Send.OkAsync(response, ct);
     }

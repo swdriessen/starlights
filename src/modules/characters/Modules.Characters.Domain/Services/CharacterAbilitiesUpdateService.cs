@@ -1,43 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Starlights.Modules.Characters.Domain.Abilities;
+﻿using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Characters;
-using Starlights.Modules.Characters.Domain.Classes;
-using Starlights.Modules.Characters.Domain.Components;
-using Starlights.Modules.Characters.Domain.Progression;
+using Starlights.Modules.Characters.Domain.SavingThrows;
+using Starlights.Modules.Characters.Domain.Skills;
 
 namespace Starlights.Modules.Characters.Domain.Services;
-
-
-public interface ICharacterCreationService
-{
-    /// <summary>
-    /// Creates a new character instance.
-    /// </summary>
-    Character Create(string name);
-}
-
-public sealed class CharacterCreationService : ICharacterCreationService
-{
-    private readonly ILogger<CharacterCreationService> _logger;
-
-    public CharacterCreationService(ILogger<CharacterCreationService> logger)
-    {
-        _logger = logger;
-    }
-
-    public Character Create(string name)
-    {
-        var newCharacter = Character.Create(name);
-
-        // initialize default components
-        newCharacter.AddComponent(new AppearanceComponent(newCharacter.Id));
-        newCharacter.AddComponent(new ProgressionComponent(newCharacter.Id));
-        newCharacter.AddComponent(new AbilitiesComponent(newCharacter.Id));
-        newCharacter.AddComponent(new ClassComponent(newCharacter.Id));
-
-        return newCharacter;
-    }
-}
 
 public interface ICharacterAbilitiesUpdateService
 {
@@ -56,19 +22,29 @@ public sealed class CharacterAbilitiesUpdateService : ICharacterAbilitiesUpdateS
 {
     public void UpdateAbilityBaseScore(Character character, AbilityScoreId abilityScoreId, int newBaseScore)
     {
-        character.UpdateComponent<AbilitiesComponent>((abilities, _) =>
-        {
-            // update ability base score
-            abilities.UpdateAbilityBaseScore(abilityScoreId, newBaseScore);
-        });
+        var abilitiesComponent = character.UpdateComponent<AbilitiesComponent>((abilities, _) =>
+            abilities.UpdateAbilityBaseScore(abilityScoreId, newBaseScore));
+
+        var updateAbility = abilitiesComponent.AbilityScores.Single(x => x.Id == abilityScoreId);
+
+        character.UpdateComponent<SkillsComponent>((skills, _) =>
+            skills.UpdateAbilityScoreModifier(updateAbility.Id, updateAbility.CalculatedModifier));
+
+        character.UpdateComponent<SavingThrowsComponent>((savingThrows, _) =>
+            savingThrows.UpdateAbilityScoreModifier(updateAbility.Id, updateAbility.CalculatedModifier));
     }
 
     public void UpdateAbilityAdditionalScore(Character character, AbilityScoreId abilityScoreId, int newAdditionalScore)
     {
-        character.UpdateComponent<AbilitiesComponent>((abilities, _) =>
-        {
-            // update ability additional score
-            abilities.UpdateAbilityAdditionalScore(abilityScoreId, newAdditionalScore);
-        });
+        var abilitiesComponent = character.UpdateComponent<AbilitiesComponent>((abilities, _) =>
+            abilities.UpdateAbilityAdditionalScore(abilityScoreId, newAdditionalScore));
+
+        var updateAbility = abilitiesComponent.AbilityScores.Single(x => x.Id == abilityScoreId);
+
+        character.UpdateComponent<SkillsComponent>((skills, _) =>
+            skills.UpdateAbilityScoreModifier(updateAbility.Id, updateAbility.CalculatedModifier));
+
+        character.UpdateComponent<SavingThrowsComponent>((savingThrows, _) =>
+            savingThrows.UpdateAbilityScoreModifier(updateAbility.Id, updateAbility.CalculatedModifier));
     }
 }

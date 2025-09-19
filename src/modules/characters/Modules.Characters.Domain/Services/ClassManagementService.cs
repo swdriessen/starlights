@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Starlights.Modules.Characters.Domain.Appearances;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Classes;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
@@ -9,11 +8,11 @@ using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Domain.Services;
 
-public sealed class CharacterDomainService
+public sealed class ClassManagementService
 {
-    private readonly ILogger<CharacterDomainService> _logger;
+    private readonly ILogger<ClassManagementService> _logger;
 
-    public CharacterDomainService(ILogger<CharacterDomainService> logger)
+    public ClassManagementService(ILogger<ClassManagementService> logger)
     {
         _logger = logger;
     }

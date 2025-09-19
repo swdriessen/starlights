@@ -12,9 +12,9 @@ namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 public sealed class ClassRegistrationBehavior : IRegistrationBehavior
 {
     private readonly IElementsModuleQueries _elements;
-    private readonly CharacterDomainService _service;
+    private readonly ClassManagementService _service;
 
-    public ClassRegistrationBehavior(IElementsModuleQueries elements, CharacterDomainService service)
+    public ClassRegistrationBehavior(IElementsModuleQueries elements, ClassManagementService service)
     {
         _elements = elements;
         _service = service;

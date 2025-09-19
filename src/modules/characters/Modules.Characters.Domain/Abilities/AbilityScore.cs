@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Starlights.Modules.Characters.Domain.Abilities.Eventing;
-using Starlights.Modules.Characters.Domain.Registrations;
+﻿using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Domain;
 using Starlights.Platform.SourceGenerators.Entities.Attributes;
 
@@ -49,7 +47,7 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     public int CalculatedScore { get; private set; }
 
     /// <summary>
-    /// D&amp;D-style ability modifier computed from <see cref="CalculatedScore"/> as floor((score - 10) / 2).
+    /// Gets the ability modifier computed from <see cref="CalculatedScore"/> as floor((score - 10) / 2).
     /// Persisted and updated when <see cref="CalculatedScore"/> changes.
     /// </summary>
     public int CalculatedModifier { get; private set; }
@@ -86,8 +84,6 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// </summary>
     internal static AbilityScore Create(RegistrationId associatedRegistrationId, string name, string abbreviation)
     {
-        var newScore = new AbilityScore(associatedRegistrationId, name, abbreviation);
-        newScore.AddDomainEvent(new AbilityScoreCreatedEvent() { AbilityScoreId = newScore.Id, CharacterId = associatedRegistrationId });
-        return newScore;
+        return new AbilityScore(associatedRegistrationId, name, abbreviation);
     }
 }

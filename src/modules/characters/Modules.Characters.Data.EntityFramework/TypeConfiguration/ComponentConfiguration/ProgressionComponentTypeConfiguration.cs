@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Starlights.Modules.Characters.Domain.Progression;
 
-namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
+namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration.ComponentConfiguration;
 
 public class ProgressionComponentTypeConfiguration : IEntityTypeConfiguration<ProgressionComponent>
 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Starlights.Modules.Characters.Data.EntityFramework.Querying;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Components.Data.EntityFramework;
 
@@ -23,20 +24,16 @@ internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepo
     public async Task<Character?> GetCharacterAsync(Guid identifier)
     {
         return await Entities
-            .Include(c => c.AbilityScores)
-            .Include(c => c.Skills)
-            .Include(c => c.SavingThrows)
-            .Include(c => c.Components)
+            .IncludeAggregateGraph()
+            .AsSplitQuery()
             .SingleOrDefaultAsync(a => a.Id == identifier);
     }
 
     public async Task<IEnumerable<Character>> GetCharactersAsync()
     {
         return await Entities
-            .Include(c => c.AbilityScores)
-            .Include(c => c.Skills)
-            .Include(c => c.SavingThrows)
-            .Include(c => c.Components)
+            .IncludeAggregateGraph()
+            .AsSplitQuery()
             .ToListAsync();
     }
 }

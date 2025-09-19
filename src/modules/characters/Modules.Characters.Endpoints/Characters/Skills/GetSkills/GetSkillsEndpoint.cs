@@ -2,6 +2,7 @@ using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Skills;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Characters.Skills.GetSkills;
@@ -36,9 +37,11 @@ internal sealed class GetSkillsEndpoint : EndpointWithoutRequest<GetSkillsRespon
             return;
         }
 
+        var skillsComponent = character.GetRequiredComponent<SkillsComponent>();
+
         var response = new GetSkillsResponse
         {
-            Skills = [.. character.Skills.AsSkillDataModels()]
+            Skills = [.. skillsComponent.Skills.AsSkillDataModels()]
         };
 
         await Send.OkAsync(response, ct);

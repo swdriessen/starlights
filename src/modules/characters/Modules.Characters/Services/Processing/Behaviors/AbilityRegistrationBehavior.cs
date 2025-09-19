@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
+using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Elements.Integration;
 
@@ -37,6 +38,8 @@ public sealed class AbilityRegistrationBehavior : IRegistrationBehavior
         var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
         _logger.LogInformation("Creating ability score '{AbilityName}' [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
-        character.CreateAbilityScore(newRegistration.Id, associatedElement.Name, associatedElement.Abbreviation);
+
+        character.UpdateComponent<AbilitiesComponent>((abilities, _) =>
+            abilities.CreateAbilityScore(newRegistration.Id, associatedElement.Name, associatedElement.Abbreviation));
     }
 }

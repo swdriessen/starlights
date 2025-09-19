@@ -2,6 +2,7 @@ using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.SavingThrows;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Characters.SavingThrows.GetSavingThrows;
@@ -36,7 +37,9 @@ internal sealed class GetSavingThrowsEndpoint : EndpointWithoutRequest<GetSaving
             return;
         }
 
-        var response = new GetSavingThrowsResponse { SavingThrows = character.SavingThrows.AsSavingThrowDataModels() };
+        var savingThrowsComponent = character.GetRequiredComponent<SavingThrowsComponent>();
+
+        var response = new GetSavingThrowsResponse { SavingThrows = savingThrowsComponent.SavingThrows.AsSavingThrowDataModels() };
 
         await Send.OkAsync(response, ct);
     }
