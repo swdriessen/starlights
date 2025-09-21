@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
 import App from "./App.tsx";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -12,6 +11,9 @@ import AboutPage from "./pages/about/Index.tsx";
 import CharactersPage from "./pages/characters/Index.tsx";
 import CharactersCreatePage from "./pages/characters/create/Index.tsx";
 import CharactersDetailsPage from "./pages/characters/details/Index.tsx";
+
+import "./index.css";
+import "./styles/typography.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

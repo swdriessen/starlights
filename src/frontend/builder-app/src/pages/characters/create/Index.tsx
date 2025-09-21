@@ -107,7 +107,7 @@ export default function CharactersCreatePage() {
   return (
     <>
       <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Characters Create</h2>
+        <h2>Create Characters</h2>
         <p>This is the Characters Create page for the Starlights builder app.</p>
       </div>
       <hr className="my-4" />

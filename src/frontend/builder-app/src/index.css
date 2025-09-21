@@ -36,7 +36,7 @@
   --sidebar-border: oklch(0.91 0 0);
   --sidebar-ring: oklch(0.47 0.1 273.62);
 
-  --font-sans: Lato, sans-serif;
+  --font-sans: Inter, sans-serif;
   --font-serif: Merriweather, serif;
   --font-mono: Roboto Mono, monospace;
 
@@ -131,6 +131,7 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
+  --font-heading: var(--font-heading);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -152,6 +153,8 @@
   --text-xxs--line-height: 0.625rem;
   /* --text-tiny--letter-spacing: 0.125rem; */
   /* --text-tiny--font-weight: 500; */
+
+  --font-heading: Rubik, sans-serif;
 }
 
 @layer base {

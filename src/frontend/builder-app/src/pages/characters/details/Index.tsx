@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useAbilityScores,
   useCharacterCards,
@@ -21,7 +22,7 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
       <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4">
         {abilityScores && (
           <div className="overflow-x-auto min-w-full">
-            <h2 className="text-xs font-semibold uppercase text-center bg-accent p-2 rounded leading-6 tracking-widest">Ability Scores</h2>
+            <h5 className=" text-center bg-accent p-2 rounded leading-6 tracking-widest">Ability Scores</h5>
             <Separator className="my-4" />
 
             <table className="min-w-full text-center">
@@ -143,7 +144,7 @@ function SavingThrowsComponent({ characterId }: { characterId: string }) {
     <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4">
       {savingThrowsData && (
         <div className="overflow-x-auto min-w-full">
-          <h2 className="text-xs font-semibold uppercase text-center bg-accent p-2 rounded leading-6 tracking-widest">Saving Throws</h2>
+          <h5 className="text-xs font-semibold uppercase text-center bg-accent p-2 rounded leading-6 tracking-widest">Saving Throws</h5>
           <Separator className="my-4" />
 
           <table className="min-w-full text-center">
@@ -151,8 +152,8 @@ function SavingThrowsComponent({ characterId }: { characterId: string }) {
               <tr>
                 <th className="px-2 py-2 border-b text-left">Saving Throw</th>
                 <th className="px-2 py-2 border-b">Bonus</th>
-                <th className="px-2 py-2 border-b">Ability Modifier</th>
-                <th className="px-2 py-2 border-b">Additional Bonus</th>
+                {/* <th className="px-2 py-2 border-b">Ability Modifier</th> */}
+                {/* <th className="px-2 py-2 border-b">Additional Bonus</th> */}
               </tr>
             </thead>
             <tbody>
@@ -165,8 +166,8 @@ function SavingThrowsComponent({ characterId }: { characterId: string }) {
                   </td>
 
                   <td className="px-2 py-1 border-b text-sm">{save.calculatedBonus}</td>
-                  <td className="px-2 py-1 border-b text-sm">{save.abilityScoreModifier}</td>
-                  <td className="px-2 py-1 border-b text-sm">{save.additionalBonus}</td>
+                  {/* <td className="px-2 py-1 border-b text-sm">{save.abilityScoreModifier}</td> */}
+                  {/* <td className="px-2 py-1 border-b text-sm">{save.additionalBonus}</td> */}
                 </tr>
               ))}
             </tbody>
@@ -185,7 +186,7 @@ function SkillsComponent({ characterId }: { characterId: string }) {
     <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4">
       {skillsData && (
         <div className="overflow-x-auto min-w-full">
-          <h2 className="text-xs font-semibold uppercase text-center bg-accent p-2 rounded leading-6 tracking-widest">Skills</h2>
+          <h5 className="text-xs font-semibold uppercase text-center bg-accent p-2 rounded leading-6 tracking-widest">Skills</h5>
           <Separator className="my-4" />
 
           <table className="min-w-full text-center">
@@ -232,36 +233,54 @@ export default function CharactersDetailsPage() {
 
   return (
     <>
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Character Details</h2>
-        <p className="text-sm">
-          This is a test page is for viewing and editing character details through the API. This is by no means representative of the final UI.
-        </p>
-        <p className="text-sm">TODO: ordering</p>
+      <div>
+        <h2>Character Details</h2>
+        <p>This is a test page is for viewing and editing character details through the API. This is by no means representative of the final UI.</p>
       </div>
-      <div className="border border-dashed rounded p-4 my-4 text-sm">
+
+      <div className="border border-dashed rounded p-4 my-4">
         <p>
-          <span className="font-semibold">ID:</span> {id}
+          <span className="font-semibold me-1">Id:</span> {id}
         </p>
-        <hr className="my-2" />
+        <hr />
         <p>
-          <span className="font-semibold">Name:</span> character.name
+          <span className="font-semibold me-1">Name:</span> character.name
         </p>
-        <hr className="my-2" />
+        <hr />
         <p>
-          <span className="font-semibold">Level:</span> character.level
+          <span className="font-semibold me-1">Level:</span> character.level
         </p>
-        <hr className="my-2" />
+        <hr />
         <p>
-          <span className="font-semibold">Build:</span> character.build
+          <span className="font-semibold me-1">Build:</span> character.build
         </p>
       </div>
+
       <hr className="my-4" />
-      <AbilitiesComponent id={id} />
+
+      <Tabs defaultValue="tababilityscores" className="">
+        <TabsList>
+          <TabsTrigger value="tababilityscores">Ability Scores</TabsTrigger>
+          <TabsTrigger value="tabsavingthrows">Saving Throws</TabsTrigger>
+          <TabsTrigger value="tabskills">Skills</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tababilityscores">
+          <AbilitiesComponent id={id} />
+        </TabsContent>
+        <TabsContent value="tabsavingthrows">
+          <SavingThrowsComponent characterId={id} />
+        </TabsContent>
+        <TabsContent value="tabskills">
+          <SkillsComponent characterId={id} />
+        </TabsContent>
+      </Tabs>
+      <hr className="my-4" />
+
+      {/* <AbilitiesComponent id={id} />
       <hr className="my-4" />
       <SavingThrowsComponent characterId={id} />
       <hr className="my-4" />
-      <SkillsComponent characterId={id} />
+      <SkillsComponent characterId={id} /> */}
     </>
   );
 }
