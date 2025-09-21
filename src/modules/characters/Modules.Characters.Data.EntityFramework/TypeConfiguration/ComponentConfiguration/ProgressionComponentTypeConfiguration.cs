@@ -8,7 +8,7 @@ public class ProgressionComponentTypeConfiguration : IEntityTypeConfiguration<Pr
 {
     public void Configure(EntityTypeBuilder<ProgressionComponent> builder)
     {
-        builder.ToTable("character_progression");
+        builder.ToTable("component_progression");
 
         builder.Property(x => x.CharacterLevel)
             .IsRequired()

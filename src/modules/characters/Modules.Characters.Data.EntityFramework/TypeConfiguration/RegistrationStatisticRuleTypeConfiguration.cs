@@ -13,22 +13,27 @@ public class RegistrationStatisticRuleTypeConfiguration : IEntityTypeConfigurati
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-               .ValueGeneratedNever()
-               .HasConversion(m => m.Value, v => new RegistrationStatisticRuleId(v));
+            .HasColumnName("id")
+            .ValueGeneratedNever()
+            .HasConversion(m => m.Value, v => new RegistrationStatisticRuleId(v));
 
         builder.Property(e => e.ParentRegistrationId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new RegistrationId(v));
+            .HasColumnName("parent_registration_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new RegistrationId(v));
 
         builder.Property(e => e.AssociatedStatisticRuleId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new ElementComponentId(v));
+            .HasColumnName("associated_statistic_rule_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new ElementComponentId(v));
 
         builder.Property(e => e.Name)
-               .IsRequired();
+            .HasColumnName("name")
+            .IsRequired();
 
         builder.Property(e => e.Value)
-               .IsRequired();
+            .HasColumnName("value")
+            .IsRequired();
 
         builder.HasIndex(e => e.ParentRegistrationId);
     }

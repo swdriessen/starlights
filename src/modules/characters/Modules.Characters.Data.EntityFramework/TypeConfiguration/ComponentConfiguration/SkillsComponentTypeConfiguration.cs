@@ -8,11 +8,11 @@ public class SkillsComponentTypeConfiguration : IEntityTypeConfiguration<SkillsC
 {
     public void Configure(EntityTypeBuilder<SkillsComponent> builder)
     {
-        builder.ToTable("character_component_skills");
+        builder.ToTable("component_skills");
 
         builder.HasMany(x => x.Skills)
                .WithOne()
-               .HasForeignKey("component_id")
+               .HasForeignKey("parent_component_id")
                .OnDelete(DeleteBehavior.Cascade)
                .IsRequired();
     }

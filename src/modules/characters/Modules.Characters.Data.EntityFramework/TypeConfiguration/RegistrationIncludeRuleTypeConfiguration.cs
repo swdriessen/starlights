@@ -12,28 +12,31 @@ public class RegistrationIncludeRuleTypeConfiguration : IEntityTypeConfiguration
         builder.ToTable("registration_include_rules");
 
         builder.HasKey(e => e.Id);
+
         builder.Property(e => e.Id)
-               .ValueGeneratedNever()
-               .HasConversion(m => m.Value, v => new RegistrationIncludeRuleId(v));
+            .HasColumnName("id")
+            .ValueGeneratedNever()
+            .HasConversion(m => m.Value, v => new RegistrationIncludeRuleId(v));
 
         builder.Property(e => e.ParentRegistrationId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new RegistrationId(v));
+            .HasColumnName("parent_registration_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new RegistrationId(v));
 
-        builder.Property(e => e.IncludedElementId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new ElementId(v));
-
-        builder.Property(e => e.AssociatedIncludeRuleId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new ElementComponentId(v));
-
-        builder.Property(e => e.IncludedElementName)
-               .IsRequired();
-
-
-        // Foreign key relationship to Registration
         builder.HasIndex(e => e.ParentRegistrationId);
 
+        builder.Property(e => e.IncludedElementId)
+            .HasColumnName("included_element_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new ElementId(v));
+
+        builder.Property(e => e.AssociatedIncludeRuleId)
+            .HasColumnName("associated_include_rule_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new ElementComponentId(v));
+
+        builder.Property(e => e.IncludedElementName)
+            .HasColumnName("included_element_name")
+            .IsRequired();
     }
 }

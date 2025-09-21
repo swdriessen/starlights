@@ -6,16 +6,15 @@ using Starlights.Platform.SourceGenerators.Entities.Attributes;
 namespace Starlights.Modules.Characters.Domain.Skills;
 
 [Entity]
-public class Skill : EntityBase<SkillId>
+public sealed class Skill : EntityBase<SkillId>
 {
-    public Skill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation)
+    private Skill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation)
         : base(SkillId.New())
     {
         AssociatedRegistrationId = associatedRegistrationId;
         Name = name;
         AbilityScoreId = abilityScoreId;
         AbilityScoreAbbreviation = abilityScoreAbbreviation;
-        Recalculate();
     }
 
     /// <summary>
@@ -56,7 +55,17 @@ public class Skill : EntityBase<SkillId>
     /// <summary>
     /// Recalculates the derived bonus.
     /// </summary>
-    private void Recalculate() => CalculatedBonus = AbilityScoreModifier + AdditionalBonus;
+    private void Recalculate()
+    {
+        var value = AbilityScoreModifier + AdditionalBonus;
+
+        if (CalculatedBonus == value)
+        {
+            return;
+        }
+
+        CalculatedBonus = value;
+    }
 
     /// <summary>
     /// Updates the ability score modifier for this skill and recalculates the total bonus.
@@ -64,6 +73,11 @@ public class Skill : EntityBase<SkillId>
     /// <param name="modifier">The modifier value derived from the associated ability score.</param>
     public void UpdateAbilityScoreModifier(int modifier)
     {
+        if (AbilityScoreModifier == modifier)
+        {
+            return;
+        }
+
         AbilityScoreModifier = modifier;
         Recalculate();
     }
@@ -74,6 +88,11 @@ public class Skill : EntityBase<SkillId>
     /// <param name="bonus">The additional bonus; can be negative to represent a penalty.</param>
     public void UpdateAdditionalBonus(int bonus)
     {
+        if (AdditionalBonus == bonus)
+        {
+            return;
+        }
+
         AdditionalBonus = bonus;
         Recalculate();
     }
@@ -101,10 +120,16 @@ public class Skill : EntityBase<SkillId>
     /// <summary>
     /// Factory method to create a new <see cref="Skill"/>.
     /// </summary>
-    internal static Skill Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation) => new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+    internal static Skill Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
+    {
+        return new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+    }
 
     /// <summary>
     /// Factory method to create a new <see cref="Skill"/>.
     /// </summary>
-    internal static Skill CreateWithoutAbilityScore(RegistrationId associatedRegistrationId, string name) => new(associatedRegistrationId, name, default, default);
+    internal static Skill CreateWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
+    {
+        return new(associatedRegistrationId, name, default, default);
+    }
 }

@@ -13,29 +13,32 @@ public class RegistrationSelectionRuleTypeConfiguration : IEntityTypeConfigurati
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-               .ValueGeneratedNever()
-               .HasConversion(m => m.Value, v => new RegistrationSelectionRuleId(v));
+            .HasColumnName("id")
+            .ValueGeneratedNever()
+            .HasConversion(m => m.Value, v => new RegistrationSelectionRuleId(v));
 
         builder.Property(e => e.ParentRegistrationId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new RegistrationId(v));
+            .HasColumnName("parent_registration_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new RegistrationId(v));
 
         builder.Property(e => e.AssociatedSelectionRuleId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new ElementComponentId(v));
+            .HasColumnName("associated_selection_rule_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new ElementComponentId(v));
 
         builder.Property(e => e.CurrentSelection)
-               .IsRequired(false)
-               .HasConversion(
-                   m => m.HasValue ? m.Value.Value : (Guid?)null,
-                   v => v.HasValue ? new ElementId(v.Value) : null
-               );
+            .HasColumnName("current_selection")
+            .IsRequired(false)
+            .HasConversion(m => m.HasValue ? m.Value.Value : (Guid?)null, v => v.HasValue ? new ElementId(v.Value) : null);
 
         builder.Property(e => e.ElementType)
-               .IsRequired();
+            .HasColumnName("element_type")
+            .IsRequired();
 
         builder.Property(e => e.Name)
-               .IsRequired();
+            .HasColumnName("name")
+            .IsRequired();
 
         builder.HasIndex(e => e.ParentRegistrationId);
     }

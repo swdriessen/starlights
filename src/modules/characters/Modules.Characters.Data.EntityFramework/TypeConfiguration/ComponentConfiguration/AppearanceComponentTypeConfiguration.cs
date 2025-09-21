@@ -8,6 +8,6 @@ public class AppearanceComponentTypeConfiguration : IEntityTypeConfiguration<App
 {
     public void Configure(EntityTypeBuilder<AppearanceComponent> builder)
     {
-        builder.ToTable("character_component_appearance");
+        builder.ToTable("component_appearance");
     }
 }

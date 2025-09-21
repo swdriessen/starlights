@@ -8,11 +8,11 @@ public class ClassComponentTypeConfiguration : IEntityTypeConfiguration<ClassCom
 {
     public void Configure(EntityTypeBuilder<ClassComponent> builder)
     {
-        builder.ToTable("character_component_class");
+        builder.ToTable("component_class");
 
         builder.HasMany(x => x.Classes)
                .WithOne()
-               .HasForeignKey("component_id")
+               .HasForeignKey("parent_component_id")
                .OnDelete(DeleteBehavior.Cascade)
                .IsRequired();
     }

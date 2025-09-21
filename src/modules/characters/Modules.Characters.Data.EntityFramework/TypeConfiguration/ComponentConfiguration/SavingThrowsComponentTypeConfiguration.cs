@@ -8,11 +8,11 @@ public class SavingThrowsComponentTypeConfiguration : IEntityTypeConfiguration<S
 {
     public void Configure(EntityTypeBuilder<SavingThrowsComponent> builder)
     {
-        builder.ToTable("character_component_saving_throws");
+        builder.ToTable("component_saving_throws");
 
         builder.HasMany(x => x.SavingThrows)
                .WithOne()
-               .HasForeignKey("component_id")
+               .HasForeignKey("parent_component_id")
                .OnDelete(DeleteBehavior.Cascade)
                .IsRequired();
     }

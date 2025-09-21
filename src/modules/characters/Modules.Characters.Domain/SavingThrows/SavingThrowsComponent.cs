@@ -23,7 +23,7 @@ public sealed class SavingThrowsComponent : CharacterComponentBase
     {
         var save = SavingThrow.Create(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
         _savingThrows.Add(save);
-        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = Id, SavingThrowId = save.Id });
+        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = ParentCharacter, SavingThrowId = save.Id });
         return save;
     }
 
@@ -31,7 +31,7 @@ public sealed class SavingThrowsComponent : CharacterComponentBase
     {
         var save = SavingThrow.CreateWithoutAbilityScore(associatedRegistrationId, name);
         _savingThrows.Add(save);
-        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = Id, SavingThrowId = save.Id });
+        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = ParentCharacter, SavingThrowId = save.Id });
         return save;
     }
 

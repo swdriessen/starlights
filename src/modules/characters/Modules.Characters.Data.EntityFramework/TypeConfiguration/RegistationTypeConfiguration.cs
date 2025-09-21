@@ -14,28 +14,34 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-               .ValueGeneratedNever()
-               .HasConversion(m => m.Value, v => new RegistrationId(v));
+            .HasColumnName("id")
+            .ValueGeneratedNever()
+            .HasConversion(m => m.Value, v => new RegistrationId(v));
 
         builder.Property(e => e.ParentRegistrationId)
-               .IsRequired(false)
-               .HasConversion(
-                m => m.HasValue ? m.Value.Value : (Guid?)null,
-                v => v.HasValue ? new RegistrationId(v.Value) : null);
+            .HasColumnName("parent_registration_id")
+            .IsRequired(false)
+            .HasConversion(m => m.HasValue ? m.Value.Value : (Guid?)null, v => v.HasValue ? new RegistrationId(v.Value) : null);
 
         builder.Property(e => e.CharacterId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new CharacterId(v));
+            .HasColumnName("character_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new CharacterId(v));
+
+        builder.HasIndex(e => e.CharacterId);
 
         builder.Property(e => e.AssociatedElementId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new ElementId(v));
+            .HasColumnName("associated_element_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new ElementId(v));
 
         builder.Property(e => e.AssociatedElementName)
-               .HasMaxLength(128);
+            .HasColumnName("associated_element_name")
+            .HasMaxLength(128);
 
         builder.Property(e => e.AssociatedElementType)
-               .HasMaxLength(128);
+            .HasColumnName("associated_element_type")
+            .HasMaxLength(128);
 
         builder.HasMany(x => x.IncludeRules)
             .WithOne()
@@ -54,8 +60,5 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
             .HasForeignKey(x => x.ParentRegistrationId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
-
-        // Foreign key relationship to Character
-        builder.HasIndex(e => e.CharacterId);
     }
 }
