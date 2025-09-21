@@ -37,6 +37,27 @@ export function useCharacterCards(): UseQueryResult<CharacterCards, Error> {
   });
 }
 
+// get character details by id
+export type CharacterDetails = {
+  characterId: string;
+  name: string;
+  portraitUrl?: string;
+  build: string;
+  level: number;
+  isFavorite: boolean;
+};
+export type CharacterDetailsResponse = {
+  character: CharacterDetails;
+};
+export function useCharacterDetails(characterId: string): UseQueryResult<CharacterDetailsResponse, Error> {
+  return useQuery<CharacterDetailsResponse, Error>({
+    queryKey: ["character-details", characterId],
+    queryFn: () => fetchJson<CharacterDetailsResponse>(`/api/characters/${characterId}`),
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
+}
+
 // Creation
 export type CreateCharacterRequest = {
   CharacterCreationOptionId: string;

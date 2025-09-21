@@ -40,3 +40,10 @@ p {
   font-weight: var(--font-weight-regular);
   font-size: 0.9rem;
 } */
+
+dl {
+  font-size: 0.9rem;
+  dt {
+    font-weight: var(--font-weight-semibold);
+  }
+}

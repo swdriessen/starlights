@@ -22,9 +22,9 @@ public sealed class ClassComponent : CharacterComponentBase
     public IReadOnlyCollection<CharacterClass> Classes => _classes.AsReadOnly();
 
     /// <summary>
-    /// Gets the combined level of all classes associated with the character.
+    /// Calculates the combined level of all classes associated with the character.
     /// </summary>
-    public int GetAggregatedLevel()
+    public int CalculateCharacterLevel()
     {
         return _classes.Sum(c => c.Level);
     }

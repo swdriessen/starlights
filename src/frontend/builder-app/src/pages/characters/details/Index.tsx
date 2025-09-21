@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useAbilityScores,
-  useCharacterCards,
+  useCharacterDetails,
   useSavingThrows,
   useSkills,
   useUpdateAdditionalAbilityScore,
@@ -229,6 +229,7 @@ export default function CharactersDetailsPage() {
   const { id } = useParams<{ id: string }>();
 
   if (!id) return <div>Character ID is required.</div>;
+  const { data: characterDetails } = useCharacterDetails(id);
   // TODO: fetch character details (name, etc.)
 
   return (
@@ -239,21 +240,18 @@ export default function CharactersDetailsPage() {
       </div>
 
       <div className="border border-dashed rounded p-4 my-4">
-        <p>
-          <span className="font-semibold me-1">Id:</span> {id}
-        </p>
-        <hr />
-        <p>
-          <span className="font-semibold me-1">Name:</span> character.name
-        </p>
-        <hr />
-        <p>
-          <span className="font-semibold me-1">Level:</span> character.level
-        </p>
-        <hr />
-        <p>
-          <span className="font-semibold me-1">Build:</span> character.build
-        </p>
+        <dl className="grid grid-cols-2 gap-1">
+          <dt>Id:</dt>
+          <dd>{id}</dd>
+          <dt>Name:</dt>
+          <dd>{characterDetails?.character.name ?? <span className="text-yellow-700">Loading...</span>}</dd>
+          <dt>Level:</dt>
+          <dd>{characterDetails?.character.level ?? <span className="text-yellow-700">Loading...</span>}</dd>
+          <dt>Build:</dt>
+          <dd>{characterDetails?.character.build ?? <span className="text-yellow-700">Loading...</span>}</dd>
+          <dt>Portrait URL:</dt>
+          <dd>{characterDetails?.character.portraitUrl ?? <span className="text-yellow-700">Loading...</span>}</dd>
+        </dl>
       </div>
 
       <hr className="my-4" />

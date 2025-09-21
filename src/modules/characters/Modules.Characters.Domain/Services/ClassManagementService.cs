@@ -26,7 +26,7 @@ public sealed class ClassManagementService
             var newClass = classes.CreateClass(newRegistration.Id, className, events);
             events.AddDomainEvent(new CharacterClassCreatedEvent { CharacterId = character.Id, ClassId = newClass.Id });
 
-            progression.SetCharacterLevel(classes.GetAggregatedLevel());
+            progression.SetCharacterLevel(classes.CalculateCharacterLevel());
             events.AddDomainEvent(new CharacterLevelChangedEvent { CharacterId = character.Id, NewLevel = progression.CharacterLevel });
         });
     }

@@ -49,4 +49,22 @@ public sealed class GetCharactersEndpointTests : IntegrationTestBase
         var created = response.Characters.First(c => c.CharacterId == _createdCharacterId);
         created.Name.Should().NotBeNullOrWhiteSpace();
     }
+
+
+
+    [TestMethod]
+    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    public async Task GetCharacter_Returns_Created_Character()
+    {
+        // Arrange
+        var client = _integration.CreateClient();
+
+        // Act
+        var response = await client.GetCharacterDetailsAsync(_createdCharacterId, TestCancellationToken);
+
+        // Assert
+        response!.Character.Should().NotBeNull();
+        response.Character.Name.Should().NotBeNullOrWhiteSpace();
+        response.Character.PortraitUrl.Should().NotBeNullOrWhiteSpace();
+    }
 }

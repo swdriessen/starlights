@@ -62,7 +62,7 @@ public class ClassComponentTests
     }
 
     [TestMethod]
-    public void GetAggregatedLevel_ReturnsSumOfClassLevels()
+    public void CalculateCharacterLevel_ReturnsSumOfClassLevels()
     {
         // Arrange
         var character = Character.Create("Test");
@@ -74,6 +74,6 @@ public class ClassComponentTests
         _ = component.CreateClass(RegistrationId.New(), "Fighter", recorder); // level 1 by default
 
         // Assert
-        component.GetAggregatedLevel().Should().Be(2);
+        component.CalculateCharacterLevel().Should().Be(2);
     }
 }
