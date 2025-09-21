@@ -19,12 +19,9 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
 
   return (
     <>
-      <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4">
+      <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4 ">
         {abilityScores && (
-          <div className="overflow-x-auto min-w-full">
-            <h5 className=" text-center bg-accent p-2 rounded leading-6 tracking-widest">Ability Scores</h5>
-            <Separator className="my-4" />
-
+          <div className="overflow-x-auto w-full text-sm">
             <table className="min-w-full text-center">
               <thead className="text-xs  uppercase font-semibold">
                 <tr>
@@ -39,7 +36,7 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
                 {abilityScores.abilityScores.map((ability) => (
                   <tr key={ability.abilityScoreId} className="">
                     <td className="px-2 py-1 border-b ">
-                      <span className="flex items-center gap-1 text-sm uppercase">{ability.name}</span>
+                      <span className="flex items-center gap-1 ">{ability.name}</span>
                     </td>
                     <td className="px-2 py-1 border-b text-sm">{ability.calculatedScore}</td>
                     <td className="px-2 py-1 border-b text-sm">
@@ -55,7 +52,6 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
                           size="icon"
                           variant="outline"
                           onClick={() => {
-                            /* TODO: decrease base score */
                             const newScore = ability.baseScore - 1;
                             console.log(`Decrease ${ability.name} base score to ${newScore}`);
                             updateBaseAbilityScore.mutate({ abilityScoreId: ability.abilityScoreId, value: newScore });
@@ -73,7 +69,6 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
                           size="icon"
                           variant="outline"
                           onClick={() => {
-                            /* TODO: increase base score */
                             const newScore = ability.baseScore + 1;
                             console.log(`Increase ${ability.name} base score to ${newScore}`);
                             updateBaseAbilityScore.mutate({ abilityScoreId: ability.abilityScoreId, value: newScore });
@@ -92,7 +87,6 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
                           size="icon"
                           variant="outline"
                           onClick={() => {
-                            /* TODO: decrease base score */
                             const newScore = ability.additionalScore - 1;
                             console.log(`Decrease ${ability.name} additional score to ${newScore}`);
                             updateAdditionalAbilityScore.mutate({ abilityScoreId: ability.abilityScoreId, value: newScore });
@@ -110,7 +104,6 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
                           size="icon"
                           variant="outline"
                           onClick={() => {
-                            /* TODO: increase base score */
                             const newScore = ability.additionalScore + 1;
                             console.log(`Increase ${ability.name} additional score to ${newScore}`);
                             updateAdditionalAbilityScore.mutate({ abilityScoreId: ability.abilityScoreId, value: newScore });
@@ -141,33 +134,26 @@ function SavingThrowsComponent({ characterId }: { characterId: string }) {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4">
+    <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4 ">
       {savingThrowsData && (
-        <div className="overflow-x-auto min-w-full">
-          <h5 className="text-xs font-semibold uppercase text-center bg-accent p-2 rounded leading-6 tracking-widest">Saving Throws</h5>
-          <Separator className="my-4" />
-
+        <div className="overflow-x-auto min-w-full text-sm">
           <table className="min-w-full text-center">
             <thead className="text-xs uppercase font-semibold">
               <tr>
                 <th className="px-2 py-2 border-b text-left">Saving Throw</th>
                 <th className="px-2 py-2 border-b">Bonus</th>
-                {/* <th className="px-2 py-2 border-b">Ability Modifier</th> */}
-                {/* <th className="px-2 py-2 border-b">Additional Bonus</th> */}
               </tr>
             </thead>
             <tbody>
               {savingThrowsData.savingThrows.map((save) => (
                 <tr key={save.savingThrowId}>
                   <td className="px-2 py-1 border-b ">
-                    <span className="flex items-center gap-1 text-sm uppercase">
+                    <span className="flex items-center gap-1 ">
                       {save.name} ({save.abilityScoreAbbreviation})
                     </span>
                   </td>
 
                   <td className="px-2 py-1 border-b text-sm">{save.calculatedBonus}</td>
-                  {/* <td className="px-2 py-1 border-b text-sm">{save.abilityScoreModifier}</td> */}
-                  {/* <td className="px-2 py-1 border-b text-sm">{save.additionalBonus}</td> */}
                 </tr>
               ))}
             </tbody>
@@ -183,26 +169,21 @@ function SkillsComponent({ characterId }: { characterId: string }) {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   return (
-    <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4">
+    <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4 text-sm">
       {skillsData && (
         <div className="overflow-x-auto min-w-full">
-          <h5 className="text-xs font-semibold uppercase text-center bg-accent p-2 rounded leading-6 tracking-widest">Skills</h5>
-          <Separator className="my-4" />
-
           <table className="min-w-full text-center">
             <thead className="text-xs uppercase font-semibold">
               <tr>
                 <th className="px-2 py-2 border-b text-left">Skill</th>
                 <th className="px-2 py-2 border-b">Bonus</th>
-                {/* <th className="px-2 py-2 border-b">Ability Modifier</th> */}
-                {/* <th className="px-2 py-2 border-b">Additional Bonus</th> */}
               </tr>
             </thead>
             <tbody>
               {skillsData.skills.map((skill) => (
                 <tr key={skill.skillId}>
                   <td className="px-2 py-1 border-b text-left">
-                    <span className="flex items-center gap-1 text-sm uppercase">
+                    <span className="flex items-center gap-1 text-sm">
                       {skill.name}
                       <span className="text-muted-foreground text-xxs">({skill.abilityScoreAbbreviation})</span>
                     </span>
@@ -210,11 +191,9 @@ function SkillsComponent({ characterId }: { characterId: string }) {
 
                   <td className="px-2 py-1 border-b">
                     <div className="flex flex-row items-center justify-center gap-2 ">
-                      <span className="text-xs py-1 w-10 h-8 border border-dashed rounded leading-6 text-center">{skill.calculatedBonus}</span>
+                      <span className="text-center">{skill.calculatedBonus}</span>
                     </div>
                   </td>
-                  {/* <td className="px-2 py-1 border-b text-sm">{skill.abilityScoreModifier}</td> */}
-                  {/* <td className="px-2 py-1 border-b text-sm">{skill.additionalBonus}</td> */}
                 </tr>
               ))}
             </tbody>
@@ -230,7 +209,6 @@ export default function CharactersDetailsPage() {
 
   if (!id) return <div>Character ID is required.</div>;
   const { data: characterDetails } = useCharacterDetails(id);
-  // TODO: fetch character details (name, etc.)
 
   return (
     <>
@@ -257,7 +235,7 @@ export default function CharactersDetailsPage() {
       <hr className="my-4" />
 
       <Tabs defaultValue="tababilityscores" className="">
-        <TabsList>
+        <TabsList className="w-full grid grid-cols-3 ">
           <TabsTrigger value="tababilityscores">Ability Scores</TabsTrigger>
           <TabsTrigger value="tabsavingthrows">Saving Throws</TabsTrigger>
           <TabsTrigger value="tabskills">Skills</TabsTrigger>
@@ -272,13 +250,6 @@ export default function CharactersDetailsPage() {
           <SkillsComponent characterId={id} />
         </TabsContent>
       </Tabs>
-      <hr className="my-4" />
-
-      {/* <AbilitiesComponent id={id} />
-      <hr className="my-4" />
-      <SavingThrowsComponent characterId={id} />
-      <hr className="my-4" />
-      <SkillsComponent characterId={id} /> */}
     </>
   );
 }

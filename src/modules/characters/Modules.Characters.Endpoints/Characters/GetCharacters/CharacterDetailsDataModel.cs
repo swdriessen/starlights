@@ -8,4 +8,6 @@ public record CharacterDetailsDataModel
     public required Guid CharacterId { get; set; }
     public required string Name { get; set; }
     public string? PortraitUrl { get; set; }
+    public int? Level { get; set; }
+    public string? Build { get; set; }
 }

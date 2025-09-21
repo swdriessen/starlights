@@ -48,9 +48,11 @@ public sealed class GetCharactersEndpointTests : IntegrationTestBase
 
         var created = response.Characters.First(c => c.CharacterId == _createdCharacterId);
         created.Name.Should().NotBeNullOrWhiteSpace();
+        created.CharacterId.Should().Be(_createdCharacterId);
+        created.PortraitUrl.Should().NotBeNullOrWhiteSpace();
+        created.Level.Should().Be(0);
+        created.Build.Should().BeEmpty();
     }
-
-
 
     [TestMethod]
     [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
@@ -66,5 +68,8 @@ public sealed class GetCharactersEndpointTests : IntegrationTestBase
         response!.Character.Should().NotBeNull();
         response.Character.Name.Should().NotBeNullOrWhiteSpace();
         response.Character.PortraitUrl.Should().NotBeNullOrWhiteSpace();
+        response.Character.CharacterId.Should().Be(_createdCharacterId);
+        response.Character.Level.Should().Be(0);
+        response.Character.Build.Should().BeEmpty();
     }
 }

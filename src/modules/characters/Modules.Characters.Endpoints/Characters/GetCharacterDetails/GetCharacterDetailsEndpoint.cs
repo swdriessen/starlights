@@ -1,8 +1,11 @@
-﻿using FastEndpoints;
+﻿using System.Text;
+using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Appearances;
 using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Classes;
+using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
 using Starlights.Platform.Data;
 
@@ -40,11 +43,23 @@ sealed class GetCharacterDetailsEndpoint : EndpointWithoutRequest<GetCharacterDe
             return;
         }
 
+        var appearance = character.GetRequiredComponent<AppearanceComponent>();
+        var progression = character.GetRequiredComponent<ProgressionComponent>();
+        var classComponent = character.GetRequiredComponent<ClassComponent>();
+
+        var build = new StringBuilder();
+        foreach (var item in classComponent.Classes)
+        {
+            build.AppendFormat("{0} ({1})", item.Name, item.Level);
+        }
+
         var model = new CharacterDetailsDataModel
         {
             CharacterId = character.Id,
             Name = character.Name,
-            PortraitUrl = character.GetRequiredComponent<AppearanceComponent>().PortraitUrl
+            PortraitUrl = appearance.PortraitUrl,
+            Level = progression.CharacterLevel,
+            Build = build.ToString()
         };
 
         var response = new GetCharacterDetailsResponse { Character = model };
