@@ -21,7 +21,7 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
     <>
       <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4 ">
         {abilityScores && (
-          <div className="overflow-x-auto w-full text-sm">
+          <div className="overflow-x-auto text-sm">
             <table className="min-w-full text-center">
               <thead className="text-xs  uppercase font-semibold">
                 <tr>
@@ -136,7 +136,7 @@ function SavingThrowsComponent({ characterId }: { characterId: string }) {
   return (
     <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4 ">
       {savingThrowsData && (
-        <div className="overflow-x-auto min-w-full text-sm">
+        <div className="overflow-x-auto  text-sm">
           <table className="min-w-full text-center">
             <thead className="text-xs uppercase font-semibold">
               <tr>
@@ -171,7 +171,7 @@ function SkillsComponent({ characterId }: { characterId: string }) {
   return (
     <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4 text-sm">
       {skillsData && (
-        <div className="overflow-x-auto min-w-full">
+        <div className="overflow-x-auto ">
           <table className="min-w-full text-center">
             <thead className="text-xs uppercase font-semibold">
               <tr>
@@ -234,22 +234,32 @@ export default function CharactersDetailsPage() {
 
       <hr className="my-4" />
 
-      <Tabs defaultValue="tababilityscores" className="">
-        <TabsList className="w-full grid grid-cols-3 ">
-          <TabsTrigger value="tababilityscores">Ability Scores</TabsTrigger>
-          <TabsTrigger value="tabsavingthrows">Saving Throws</TabsTrigger>
-          <TabsTrigger value="tabskills">Skills</TabsTrigger>
-        </TabsList>
-        <TabsContent value="tababilityscores">
-          <AbilitiesComponent id={id} />
-        </TabsContent>
-        <TabsContent value="tabsavingthrows">
-          <SavingThrowsComponent characterId={id} />
-        </TabsContent>
-        <TabsContent value="tabskills">
-          <SkillsComponent characterId={id} />
-        </TabsContent>
-      </Tabs>
+      <div className="grid grid-cols-12 gap-2">
+        <Tabs defaultValue="tab-ability-scores" className="col-span-6">
+          <TabsList className="w-full  ">
+            <TabsTrigger value="tab-ability-scores">Ability Scores</TabsTrigger>
+          </TabsList>
+          <TabsContent value="tab-ability-scores">
+            <AbilitiesComponent id={id} />
+          </TabsContent>
+        </Tabs>
+        <Tabs defaultValue="tab-saves" className="col-span-3">
+          <TabsList className="w-full ">
+            <TabsTrigger value="tab-saves">Saving Throws</TabsTrigger>
+          </TabsList>
+          <TabsContent value="tab-saves">
+            <SavingThrowsComponent characterId={id} />
+          </TabsContent>
+        </Tabs>
+        <Tabs defaultValue="tab-skills" className="col-span-3">
+          <TabsList className="w-full ">
+            <TabsTrigger value="tab-skills">Skills</TabsTrigger>
+          </TabsList>
+          <TabsContent value="tab-skills">
+            <SkillsComponent characterId={id} />
+          </TabsContent>
+        </Tabs>
+      </div>
     </>
   );
 }
