@@ -14,7 +14,7 @@ internal static class PlatformHostExtensions
 
         if (platform.Options.IsDiscoveryEnabled)
         {
-            assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies());
+            assemblies.AddRange(GetCandidateAssemblies());
             assemblies.AddRange(platform.Options.AdditionalAssemblies);
 
             var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
@@ -65,5 +65,50 @@ internal static class PlatformHostExtensions
         }
 
         return platform;
+    }
+
+    private static IEnumerable<Assembly> GetCandidateAssemblies()
+    {
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .Where(IsCandidateAssembly);
+
+
+        static bool IsCandidateAssembly(Assembly assembly)
+        {
+            if (assembly.IsDynamic)
+            {
+                return false;
+            }
+
+            var name = assembly.GetName().Name ?? string.Empty;
+
+            if (string.Equals(name, "DynamicProxyGenAssembly2", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (name.StartsWith("Castle.Proxies", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private static IEnumerable<Type> GetTypesSafely(Assembly assembly)
+    {
+        try
+        {
+            return assembly.GetTypes();
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            return ex.Types.Where(t => t is not null)!;
+        }
+        catch
+        {
+            return [];
+        }
     }
 }
