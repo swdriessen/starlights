@@ -19,6 +19,14 @@ public class ElementComponentBaseTypeConfiguration : IEntityTypeConfiguration<El
                .HasConversion(m => m.Value, v => new ElementId(v))
                .HasColumnName("owning_element_id");
 
+        // prefix column name with component_ to avoid potential conflicts or confusion
+        builder.Property(e => e.OrderSequence)
+               .IsRequired()
+               .HasColumnName("component_order_sequence");
+
+        builder.HasIndex(e => new { e.OwningElement, e.OrderSequence })
+               .IsUnique();
+
         builder.UseTpcMappingStrategy();
     }
 }

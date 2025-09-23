@@ -23,7 +23,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
     public async Task<Element?> GetElementAsync(Guid identifier)
     {
         var element = await Entities
-            .Include(x => x.Components)
+            .Include(x => x.Components.OrderBy(c => c.OrderSequence))
             .SingleOrDefaultAsync(e => e.Id == identifier);
 
         if (element is null)
@@ -39,7 +39,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
         _logger.LogInformation("getting elements of type [{ElementType}]", type);
 
         return await Entities
-            .Include(x => x.Components)
+            .Include(x => x.Components.OrderBy(c => c.OrderSequence))
             .Where(element => element.Type == type)
             .ToListAsync();
     }
@@ -49,7 +49,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
         _logger.LogInformation("getting elements of types [{ElementTypes}]", string.Join(", ", types));
 
         return await Entities
-            .Include(x => x.Components)
+            .Include(x => x.Components.OrderBy(c => c.OrderSequence))
             .Where(element => types.Contains(element.Type))
             .ToListAsync();
     }

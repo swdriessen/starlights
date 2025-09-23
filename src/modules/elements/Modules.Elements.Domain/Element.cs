@@ -20,7 +20,7 @@ public sealed class Element : AggregateRoot<ElementId>
     /// <summary>
     /// Gets the components associated with the element.
     /// </summary>
-    public IReadOnlyList<ElementComponentBase> Components => _components.AsReadOnly();
+    public IReadOnlyList<ElementComponentBase> Components => _components.OrderBy(c => c.OrderSequence).ToList().AsReadOnly();
 
     /// <summary>
     /// Gets the name of the element.
@@ -59,19 +59,53 @@ public sealed class Element : AggregateRoot<ElementId>
     public T AddComponent<T>(T component) where T : ElementComponentBase
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
+        component.OrderSequence = _components.Count; // append
         _components.Add(component);
         return component;
     }
 
     /// <summary>
-    /// Retrieves a component of the specified type.
+    /// Inserts or moves a component to a specific index, and re-number sequentially starting at 0.
     /// </summary>
-    public T GetComponent<T>() => _components.OfType<T>().Single();
+    public void MoveComponent(ElementComponentId id, int newIndex)
+    {
+        if (newIndex < 0 || newIndex >= _components.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(newIndex));
+        }
+
+        var idx = _components.FindIndex(c => c.Id == id);
+        if (idx < 0)
+        {
+            throw new InvalidOperationException($"Component with id {id} not found.");
+        }
+
+        var item = _components[idx];
+        _components.RemoveAt(idx);
+        _components.Insert(newIndex, item);
+
+        // Reassign order sequence
+        for (int i = 0; i < _components.Count; i++)
+        {
+            _components[i].OrderSequence = i;
+        }
+    }
 
     /// <summary>
-    /// Retrieves all components of the specified type.
+    /// Retrieves a single component of the specified type.
     /// </summary>
-    public IEnumerable<T> GetComponents<T>() => _components.OfType<T>();
+    public T GetComponent<T>()
+    {
+        return _components.OfType<T>().Single();
+    }
+
+    /// <summary>
+    /// Retrieves all components of the specified type in their sequence order.
+    /// </summary>
+    public IEnumerable<T> GetComponents<T>()
+    {
+        return _components.OrderBy(c => c.OrderSequence).OfType<T>();
+    }
 
     /// <summary>
     /// Creates a new instance of the <see cref="Element"/> class with the specified name and type.
