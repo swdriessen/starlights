@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Components;
 
-namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
+namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration.ComponentConfiguration;
 
 public class CharacterComponentBaseTypeConfiguration : IEntityTypeConfiguration<CharacterComponentBase>
 {

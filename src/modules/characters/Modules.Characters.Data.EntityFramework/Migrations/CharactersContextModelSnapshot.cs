@@ -18,7 +18,7 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("characters")
-                .HasAnnotation("ProductVersion", "9.0.8")
+                .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -26,78 +26,69 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<string>("Abbreviation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("abbreviation");
 
                     b.Property<int>("AdditionalScore")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(0)
+                        .HasColumnName("additional_score");
 
                     b.Property<Guid>("AssociatedRegistrationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("associated_registration_id");
 
                     b.Property<int>("BaseScore")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(10);
+                        .HasDefaultValue(10)
+                        .HasColumnName("base_score");
 
                     b.Property<int>("CalculatedModifier")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(0)
+                        .HasColumnName("calculated_modifier");
 
                     b.Property<int>("CalculatedScore")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(10);
-
-                    b.Property<Guid>("CharacterId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasDefaultValue(10)
+                        .HasColumnName("calculated_score");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid>("parent_component_id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AssociatedRegistrationId");
 
-                    b.HasIndex("CharacterId");
+                    b.HasIndex("parent_component_id");
 
                     b.ToTable("ability_scores", "characters");
-                });
-
-            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Appearances.Appearance", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CharacterId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PortraitUrl")
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CharacterId");
-
-                    b.ToTable("appearance", "characters");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Characters.Character", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
@@ -107,31 +98,36 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Classes.CharacterClass", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ClassComponentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("is_primary");
 
                     b.Property<int>("Level")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasDefaultValue(1)
+                        .HasColumnName("level");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<Guid>("Registration")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("registration_id");
+
+                    b.Property<Guid>("parent_component_id")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassComponentId");
-
                     b.HasIndex("Registration");
+
+                    b.HasIndex("parent_component_id");
 
                     b.ToTable("character_class", "characters");
                 });
@@ -158,29 +154,35 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AssociatedElementId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("associated_element_id");
 
                     b.Property<string>("AssociatedElementName")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasColumnName("associated_element_name");
 
                     b.Property<string>("AssociatedElementType")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasColumnName("associated_element_type");
 
                     b.Property<Guid>("CharacterId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("character_id");
 
                     b.Property<bool>("IsProcessed")
                         .HasColumnType("bit");
 
                     b.Property<Guid?>("ParentRegistrationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("parent_registration_id");
 
                     b.HasKey("Id");
 
@@ -192,20 +194,25 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationIncludeRule", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AssociatedIncludeRuleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("associated_include_rule_id");
 
                     b.Property<Guid>("IncludedElementId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("included_element_id");
 
                     b.Property<string>("IncludedElementName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("included_element_name");
 
                     b.Property<Guid>("ParentRegistrationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("parent_registration_id");
 
                     b.HasKey("Id");
 
@@ -217,24 +224,30 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationSelectionRule", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AssociatedSelectionRuleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("associated_selection_rule_id");
 
                     b.Property<Guid?>("CurrentSelection")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("current_selection");
 
                     b.Property<string>("ElementType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("element_type");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<Guid>("ParentRegistrationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("parent_registration_id");
 
                     b.HasKey("Id");
 
@@ -246,27 +259,32 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.RegistrationStatisticRule", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AssociatedStatisticRuleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("associated_statistic_rule_id");
 
                     b.Property<int>("LevelRequirement")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<Guid>("ParentRegistrationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("parent_registration_id");
 
                     b.Property<string>("StackingBonus")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("value");
 
                     b.HasKey("Id");
 
@@ -278,44 +296,52 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.SavingThrows.SavingThrow", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<string>("AbilityScoreAbbreviation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ability_score_abbreviation");
 
                     b.Property<Guid>("AbilityScoreId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ability_score_id");
 
                     b.Property<int>("AbilityScoreModifier")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(0)
+                        .HasColumnName("ability_score_modifier");
 
                     b.Property<int>("AdditionalBonus")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(0)
+                        .HasColumnName("additional_bonus");
 
                     b.Property<Guid>("AssociatedRegistrationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("associated_registration_id");
 
                     b.Property<int>("CalculatedBonus")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<Guid>("CharacterId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasDefaultValue(0)
+                        .HasColumnName("calculated_bonus");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid>("parent_component_id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AssociatedRegistrationId");
 
-                    b.HasIndex("CharacterId");
+                    b.HasIndex("parent_component_id");
 
                     b.ToTable("savingthrows", "characters");
                 });
@@ -323,44 +349,52 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Skills.Skill", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
 
                     b.Property<string>("AbilityScoreAbbreviation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ability_score_abbreviation");
 
                     b.Property<Guid>("AbilityScoreId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ability_score_id");
 
                     b.Property<int>("AbilityScoreModifier")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(0)
+                        .HasColumnName("ability_score_modifier");
 
                     b.Property<int>("AdditionalBonus")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(0)
+                        .HasColumnName("additional_bonus");
 
                     b.Property<Guid>("AssociatedRegistrationId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("associated_registration_id");
 
                     b.Property<int>("CalculatedBonus")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<Guid>("CharacterId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasDefaultValue(0)
+                        .HasColumnName("calculated_bonus");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid>("parent_component_id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AssociatedRegistrationId");
 
-                    b.HasIndex("CharacterId");
+                    b.HasIndex("parent_component_id");
 
                     b.ToTable("skills", "characters");
                 });
@@ -392,11 +426,28 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.ToTable("event_messages", "characters");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilitiesComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase");
+
+                    b.ToTable("component_abilities", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Appearances.AppearanceComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase");
+
+                    b.Property<string>("PortraitUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("component_appearance", "characters");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Classes.ClassComponent", b =>
                 {
                     b.HasBaseType("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase");
 
-                    b.ToTable("character_component_class", "characters");
+                    b.ToTable("component_class", "characters");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Progression.ProgressionComponent", b =>
@@ -407,14 +458,28 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                         .HasColumnType("int")
                         .HasColumnName("character_level");
 
-                    b.ToTable("character_progression", "characters");
+                    b.ToTable("component_progression", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.SavingThrows.SavingThrowsComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase");
+
+                    b.ToTable("component_saving_throws", "characters");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Skills.SkillsComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase");
+
+                    b.ToTable("component_skills", "characters");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>
                 {
-                    b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", null)
+                    b.HasOne("Starlights.Modules.Characters.Domain.Abilities.AbilitiesComponent", null)
                         .WithMany("AbilityScores")
-                        .HasForeignKey("CharacterId")
+                        .HasForeignKey("parent_component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -423,7 +488,7 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                 {
                     b.HasOne("Starlights.Modules.Characters.Domain.Classes.ClassComponent", null)
                         .WithMany("Classes")
-                        .HasForeignKey("ClassComponentId")
+                        .HasForeignKey("parent_component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -462,31 +527,25 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.SavingThrows.SavingThrow", b =>
                 {
-                    b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", null)
+                    b.HasOne("Starlights.Modules.Characters.Domain.SavingThrows.SavingThrowsComponent", null)
                         .WithMany("SavingThrows")
-                        .HasForeignKey("CharacterId")
+                        .HasForeignKey("parent_component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Skills.Skill", b =>
                 {
-                    b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", null)
+                    b.HasOne("Starlights.Modules.Characters.Domain.Skills.SkillsComponent", null)
                         .WithMany("Skills")
-                        .HasForeignKey("CharacterId")
+                        .HasForeignKey("parent_component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Characters.Character", b =>
                 {
-                    b.Navigation("AbilityScores");
-
                     b.Navigation("Components");
-
-                    b.Navigation("SavingThrows");
-
-                    b.Navigation("Skills");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Registrations.Registration", b =>
@@ -498,9 +557,24 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
                     b.Navigation("StatisticRules");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilitiesComponent", b =>
+                {
+                    b.Navigation("AbilityScores");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Characters.Domain.Classes.ClassComponent", b =>
                 {
                     b.Navigation("Classes");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.SavingThrows.SavingThrowsComponent", b =>
+                {
+                    b.Navigation("SavingThrows");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Characters.Domain.Skills.SkillsComponent", b =>
+                {
+                    b.Navigation("Skills");
                 });
 #pragma warning restore 612, 618
         }

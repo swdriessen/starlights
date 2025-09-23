@@ -1,10 +1,11 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 {
+    [ExcludeFromCodeCoverage]
     /// <inheritdoc />
     public partial class AddComponentBase : Migration
     {

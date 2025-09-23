@@ -39,7 +39,8 @@ internal sealed class UpdateAbilityAdditionalScoreEndpoint : Endpoint<UpdateAbil
             return;
         }
 
-        var ability = character.AbilityScores.SingleOrDefault(a => a.Id == abilityScoreId);
+        var abilities = character.GetRequiredComponent<AbilitiesComponent>();
+        var ability = abilities.AbilityScores.SingleOrDefault(a => a.Id == abilityScoreId);
         if (ability is null)
         {
             AddError($"AbilityScore with ID {abilityScoreId} not found for Character {characterId}.");
@@ -47,7 +48,7 @@ internal sealed class UpdateAbilityAdditionalScoreEndpoint : Endpoint<UpdateAbil
             return;
         }
 
-        character.UpdateAbilityAdditionalScore(ability.Id, req.Value);
+        abilities.UpdateAbilityAdditionalScore(ability.Id, req.Value);
 
         await _persistence.SaveChangesAsync();
 

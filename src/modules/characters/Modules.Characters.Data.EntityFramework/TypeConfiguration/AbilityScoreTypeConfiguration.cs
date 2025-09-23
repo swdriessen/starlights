@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Starlights.Modules.Characters.Domain.Abilities;
-using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
@@ -17,36 +16,39 @@ public class AbilityScoreTypeConfiguration : IEntityTypeConfiguration<AbilitySco
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-               .ValueGeneratedNever()
-               .HasConversion(m => m.Value, v => new AbilityScoreId(v));
+            .HasColumnName("id")
+            .ValueGeneratedNever()
+            .HasConversion(m => m.Value, v => new AbilityScoreId(v));
 
-        // Relationship to Character via shadow FK; Character owns many AbilityScores
-        builder.Property<CharacterId>("CharacterId").HasConversion(m => m.Value, v => new CharacterId(v));
-        builder.HasIndex("CharacterId");
-
-        // Properties
         builder.Property(e => e.AssociatedRegistrationId)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new RegistrationId(v));
+            .HasColumnName("associated_registration_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new RegistrationId(v));
 
         builder.HasIndex(e => e.AssociatedRegistrationId);
 
         builder.Property(e => e.Name)
-               .IsRequired();
+            .HasColumnName("name")
+            .IsRequired();
 
         builder.Property(e => e.Abbreviation)
-               .IsRequired();
+            .HasColumnName("abbreviation")
+            .IsRequired();
 
         builder.Property(e => e.BaseScore)
-               .HasDefaultValue(10);
+            .HasColumnName("base_score")
+            .HasDefaultValue(10);
 
         builder.Property(e => e.AdditionalScore)
-               .HasDefaultValue(0);
+            .HasColumnName("additional_score")
+            .HasDefaultValue(0);
 
         builder.Property(e => e.CalculatedScore)
-               .HasDefaultValue(10);
+            .HasColumnName("calculated_score")
+            .HasDefaultValue(10);
 
         builder.Property(e => e.CalculatedModifier)
-               .HasDefaultValue(0);
+            .HasColumnName("calculated_modifier")
+            .HasDefaultValue(0);
     }
 }

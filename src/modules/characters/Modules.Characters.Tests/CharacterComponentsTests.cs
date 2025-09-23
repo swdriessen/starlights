@@ -12,7 +12,7 @@ public sealed class CharacterComponentsTests
     {
         // Arrange
         var character = Character.Create("Test");
-        var progression = new ProgressionComponent(character.Id);
+        var progression = ProgressionComponent.Create(character.Id);
 
         // Act
         character.AddComponent(progression);
@@ -29,7 +29,7 @@ public sealed class CharacterComponentsTests
         // Arrange
         var character1 = Character.Create("One");
         var character2 = Character.Create("Two");
-        var progression = new ProgressionComponent(character1.Id);
+        var progression = ProgressionComponent.Create(character1.Id);
 
         // Act
         var act = () => character2.AddComponent(progression);

@@ -7,9 +7,9 @@ namespace Starlights.Modules.Characters.Domain.Classes;
 
 [Entity]
 [DebuggerDisplay("Class: {Name}, Level: {Level}, IsPrimary: {IsPrimary}")]
-public class CharacterClass : EntityBase<CharacterClassId>
+public sealed class CharacterClass : EntityBase<CharacterClassId>
 {
-    public CharacterClass(RegistrationId registration, string name)
+    private CharacterClass(RegistrationId registration, string name)
         : base(CharacterClassId.New())
     {
         Registration = registration;
@@ -55,5 +55,8 @@ public class CharacterClass : EntityBase<CharacterClassId>
     /// <summary>
     /// Creates a new instance of the <see cref="CharacterClass"/> entity.
     /// </summary>
-    public static CharacterClass Create(RegistrationId registration, string name) => new(registration, name);
+    public static CharacterClass Create(RegistrationId registration, string name)
+    {
+        return new(registration, name);
+    }
 }

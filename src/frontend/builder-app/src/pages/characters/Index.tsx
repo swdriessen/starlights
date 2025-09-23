@@ -271,9 +271,12 @@ function CharacterCardCollectionSquares() {
                       alt="Banner"
                       className="size-full aspect-square rounded-md object-cover transition-transform duration-300 group-hover:scale-100"
                     />
-                    <div className="m-1.5 absolute top-0 left-0 right-0 bottom-0 rounded-md flex flex-col justify-end p-1.5 px-2 bg-gradient-to-tr from-black/80 group-hover:from-black/50 to-transparent group-hover:to-black/10">
-                      <h3 className="text-sm xl:text-base font-semibold uppercase text-white">{card.name}</h3>
-                      <p className="text-xxs xl:text-xs uppercase text-white/50">{card.name}</p>
+                    <div className="m-1.5 absolute top-0 left-0 right-0 bottom-0 rounded-md flex flex-col justify-end p-1.5 px-2 bg-gradient-to-tr from-black/80 group-hover:from-black/50 to-transparent group-hover:to-black/10 gap-0.5">
+                      <span className="text-sm xl:text-base font-semibold uppercase text-white leading-none">{card.name}</span>
+                      <p className="text-xxs xl:text-xs uppercase text-white/50">
+                        Level {card.level}
+                        {card.build}
+                      </p>
                     </div>
                   </Link>
 
@@ -282,10 +285,10 @@ function CharacterCardCollectionSquares() {
                       <Button
                         size="sm"
                         disabled={deleteCharacter.isPending}
-                        className="bg-secondary/10 hover:bg-secondary/20 absolute end-3 top-3 rounded-sm hidden group-hover:flex w-8"
+                        className="bg-white/50 hover:bg-white/100 absolute end-3 top-3 rounded-sm hidden group-hover:flex w-8"
                       >
-                        <Trash2 className="stroke-white" />
-                        {/* <MoreVertical className="stroke-white" /> */}
+                        {/* <Trash2 className="stroke-black/80 stroke-1" /> */}
+                        <MoreVertical className="stroke-black/80 stroke-1" />
                         <span className="sr-only">Delete</span>
                       </Button>
                     </AlertDialogTrigger>
@@ -334,7 +337,7 @@ export default function CharactersPage() {
   return (
     <>
       <div className="space-y-2">
-        <h2 className="text-xl font-semibold uppercase">Characters</h2>
+        <h2>Characters</h2>
         <p>Your characters are ready for you to manage.</p>
       </div>
 

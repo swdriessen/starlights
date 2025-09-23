@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,6 +8,7 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations;
 /// <inheritdoc />
 public partial class AddEventMessage : Migration
 {
+    [ExcludeFromCodeCoverage]
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {

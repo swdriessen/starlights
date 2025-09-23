@@ -16,7 +16,9 @@ internal class CharactersModule : IPlatformServiceComponent
     {
         builder.Services.AddScoped<IRegistrationManager, RegistrationManager>();
 
-        builder.Services.AddScoped<CharacterDomainService>();
+        builder.Services.AddScoped<ClassManagementService>();
+        builder.Services.AddScoped<ICharacterCreationService, CharacterCreationService>();
+        builder.Services.AddScoped<ICharacterAbilitiesUpdateService, CharacterAbilitiesUpdateService>();
 
         // registration behaviors
         builder.Services.AddScoped<IRegistrationBehavior, SkillRegistrationBehavior>();

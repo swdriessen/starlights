@@ -8,11 +8,11 @@ using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Domain.Services;
 
-public sealed class CharacterDomainService
+public sealed class ClassManagementService
 {
-    private readonly ILogger<CharacterDomainService> _logger;
+    private readonly ILogger<ClassManagementService> _logger;
 
-    public CharacterDomainService(ILogger<CharacterDomainService> logger)
+    public ClassManagementService(ILogger<ClassManagementService> logger)
     {
         _logger = logger;
     }
@@ -26,7 +26,7 @@ public sealed class CharacterDomainService
             var newClass = classes.CreateClass(newRegistration.Id, className, events);
             events.AddDomainEvent(new CharacterClassCreatedEvent { CharacterId = character.Id, ClassId = newClass.Id });
 
-            progression.SetCharacterLevel(classes.GetAggregatedLevel());
+            progression.SetCharacterLevel(classes.CalculateCharacterLevel());
             events.AddDomainEvent(new CharacterLevelChangedEvent { CharacterId = character.Id, NewLevel = progression.CharacterLevel });
         });
     }

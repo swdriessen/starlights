@@ -7,9 +7,9 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig(({ mode }) => {
   const viteEnv = loadEnv(mode, process.cwd(), "");
 
-  const apiHttps = viteEnv.VITE_API_HTTPS || nodeEnv.services__backend__https__0 || "";
-  const apiHttp = viteEnv.VITE_API_HTTP || nodeEnv.services__backend__http__0 || "";
-  const apiBase = viteEnv.VITE_API_BASE || nodeEnv.services__backend__https__0 || nodeEnv.services__backend__http__0 || "";
+  const apiHttps = viteEnv.VITE_API_HTTPS || nodeEnv.services__backend__https__0 || "N/A";
+  const apiHttp = viteEnv.VITE_API_HTTP || nodeEnv.services__backend__http__0 || "N/A";
+  const apiBase = viteEnv.VITE_API_BASE || nodeEnv.services__backend__https__0 || nodeEnv.services__backend__http__0 || "N/A";
 
   console.log("===== RESOLVED ENVIRONMENT =====");
   console.log("NODE_ENV =", nodeEnv.NODE_ENV);

@@ -6,11 +6,11 @@ using Starlights.Platform.Eventing;
 
 namespace Starlights.Modules.Characters.Domain.Classes;
 
-public class ClassComponent : CharacterComponentBase
+public sealed class ClassComponent : CharacterComponentBase
 {
     private readonly List<CharacterClass> _classes = [];
 
-    public ClassComponent(CharacterId parentCharacter)
+    private ClassComponent(CharacterId parentCharacter)
         : base(parentCharacter)
     {
 
@@ -22,9 +22,9 @@ public class ClassComponent : CharacterComponentBase
     public IReadOnlyCollection<CharacterClass> Classes => _classes.AsReadOnly();
 
     /// <summary>
-    /// Gets the combined level of all classes associated with the character.
+    /// Calculates the combined level of all classes associated with the character.
     /// </summary>
-    public int GetAggregatedLevel()
+    public int CalculateCharacterLevel()
     {
         return _classes.Sum(c => c.Level);
     }
@@ -46,5 +46,10 @@ public class ClassComponent : CharacterComponentBase
         eventRecorder.AddDomainEvent(new CharacterClassCreatedEvent() { CharacterId = ParentCharacter, ClassId = newClass.Id });
 
         return newClass;
+    }
+
+    public static ClassComponent Create(CharacterId parentCharacter)
+    {
+        return new ClassComponent(parentCharacter);
     }
 }

@@ -14,7 +14,7 @@ public sealed class ProgressionComponentTests
         var character = Character.Create("Test");
 
         // Act
-        var progression = new ProgressionComponent(character.Id);
+        var progression = ProgressionComponent.Create(character.Id);
 
         // Assert
         progression.CharacterLevel.Should().Be(0);
@@ -25,7 +25,7 @@ public sealed class ProgressionComponentTests
     {
         // Arrange
         var character = Character.Create("Test");
-        var progression = new ProgressionComponent(character.Id);
+        var progression = ProgressionComponent.Create(character.Id);
 
         // Act
         progression.SetCharacterLevel(5);
@@ -39,7 +39,7 @@ public sealed class ProgressionComponentTests
     {
         // Arrange
         var character = Character.Create("Test");
-        var progression = new ProgressionComponent(character.Id);
+        var progression = ProgressionComponent.Create(character.Id);
 
         // Act
         var act = () => progression.SetCharacterLevel(-1);

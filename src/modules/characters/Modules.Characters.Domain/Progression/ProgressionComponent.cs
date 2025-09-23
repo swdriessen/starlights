@@ -3,9 +3,9 @@ using Starlights.Modules.Characters.Domain.Components;
 
 namespace Starlights.Modules.Characters.Domain.Progression;
 
-public class ProgressionComponent : CharacterComponentBase
+public sealed class ProgressionComponent : CharacterComponentBase
 {
-    public ProgressionComponent(CharacterId parentCharacter)
+    private ProgressionComponent(CharacterId parentCharacter)
         : base(parentCharacter)
     {
     }
@@ -26,5 +26,10 @@ public class ProgressionComponent : CharacterComponentBase
         }
 
         CharacterLevel = level;
+    }
+
+    public static ProgressionComponent Create(CharacterId parentCharacter)
+    {
+        return new ProgressionComponent(parentCharacter);
     }
 }

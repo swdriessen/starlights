@@ -4,6 +4,7 @@ using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Skills;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 using Starlights.Platform.Eventing;
@@ -41,7 +42,8 @@ public sealed class AbilityScoreCreatedEventHandler : IDomainEventHandler<Abilit
         }
 
         // get the ability score
-        var abilityScore = character.AbilityScores.SingleOrDefault(x => x.Id == abilityScoreId);
+        var abilities = character.GetRequiredComponent<AbilitiesComponent>();
+        var abilityScore = abilities.AbilityScores.SingleOrDefault(x => x.Id == abilityScoreId);
         if (abilityScore is null)
         {
             _logger.LogWarning("The ability score was not found, unable to react to AbilityScoreCreatedEvent. [abilityScore='{AbilityScoreId}']", abilityScoreId.Value);
@@ -57,7 +59,9 @@ public sealed class AbilityScoreCreatedEventHandler : IDomainEventHandler<Abilit
             return;
         }
 
-        foreach (var existingSkill in character.Skills)
+        var skillsComponent = character.GetRequiredComponent<SkillsComponent>();
+
+        foreach (var existingSkill in skillsComponent.Skills)
         {
             if (!existingSkill.HasAssociatedAbilityScore)
             {

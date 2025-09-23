@@ -12,21 +12,22 @@ namespace Starlights.Modules.Characters.Tests;
 [TestClass]
 public sealed class CharacterDomainServiceTests
 {
-    private readonly Mock<ILogger<CharacterDomainService>> _loggerMock = new();
+    private readonly Mock<ILogger<ClassManagementService>> _loggerMock = new();
     private readonly Character _character;
     private readonly ProgressionComponent _progressionComponent;
     private readonly ClassComponent _classComponent;
 
     // SUT
-    private readonly CharacterDomainService _domainService;
+    private readonly ClassManagementService _domainService;
 
     public CharacterDomainServiceTests()
     {
         _character = Character.Create("Test");
-        _progressionComponent = _character.AddComponent(new ProgressionComponent(_character.Id));
-        _classComponent = _character.AddComponent(new ClassComponent(_character.Id));
 
-        _domainService = new CharacterDomainService(_loggerMock.Object);
+        _progressionComponent = _character.AddComponent(ProgressionComponent.Create(_character.Id));
+        _classComponent = _character.AddComponent(ClassComponent.Create(_character.Id));
+
+        _domainService = new ClassManagementService(_loggerMock.Object);
     }
 
     [TestMethod]

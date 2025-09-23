@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Classes;
 using Starlights.Modules.Characters.Domain.Registrations;
-using Starlights.Modules.Characters.Domain.Components;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.TypeConfiguration;
 
@@ -15,27 +13,28 @@ public class CharacterClassTypeConfiguration : IEntityTypeConfiguration<Characte
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-               .ValueGeneratedNever()
-               .HasConversion(m => m.Value, v => new CharacterClassId(v));
-
-        // Parent component FK (shadow)
-        builder.Property<CharacterComponentBaseId>("ClassComponentId")
-               .HasConversion(m => m.Value, v => new CharacterComponentBaseId(v));
-        builder.HasIndex("ClassComponentId");
+            .HasColumnName("id")
+            .ValueGeneratedNever()
+            .HasConversion(m => m.Value, v => new CharacterClassId(v));
 
         builder.Property(e => e.Registration)
-               .IsRequired()
-               .HasConversion(m => m.Value, v => new RegistrationId(v));
+            .HasColumnName("registration_id")
+            .IsRequired()
+            .HasConversion(m => m.Value, v => new RegistrationId(v));
+
         builder.HasIndex(e => e.Registration);
 
         builder.Property(e => e.Name)
-               .IsRequired();
+            .HasColumnName("name")
+            .IsRequired();
 
         builder.Property(e => e.IsPrimary)
-               .IsRequired();
+            .HasColumnName("is_primary")
+            .IsRequired();
 
         builder.Property(e => e.Level)
-               .HasDefaultValue(1)
-               .IsRequired();
+            .HasColumnName("level")
+            .HasDefaultValue(1)
+            .IsRequired();
     }
 }

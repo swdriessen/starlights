@@ -5,6 +5,7 @@ using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Domain.Skills;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
 
@@ -38,28 +39,32 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
         var characters = context.GetRepository<ICharactersRepository>();
         var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
+        var skillsComponent = character.GetRequiredComponent<SkillsComponent>();
+
         var primaryScore = await GetPrimaryAbilityScore(context, character, associatedElement);
 
         if (primaryScore is null)
         {
             _logger.LogInformation("Creating skill '{SkillName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
-            character.CreateSkillWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
+            skillsComponent.CreateSkillWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
         }
         else
         {
             _logger.LogInformation("Creating skill '{SkillName}' with primary ability score '{AbilityScoreName}' [character='{CharacterId}']", associatedElement.Name, primaryScore.Name, character.Id.Value);
-            character.CreateSkill(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
+            skillsComponent.CreateSkill(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
         }
     }
 
     private static async Task<AbilityScore?> GetPrimaryAbilityScore(RegistrationProcessContext context, Character character, SkillDataModel skill)
     {
+        var abilities = character.GetRequiredComponent<AbilitiesComponent>();
+
         // first check if the skill is already associated with a new registration
         foreach (var registration in context.NewRegistrations)
         {
             if (registration.AssociatedElementId == skill.PrimaryAbilityElementId)
             {
-                return character.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == registration.Id);
+                return abilities.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == registration.Id);
             }
         }
 
@@ -72,7 +77,7 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
         {
             if (abilityRegistration.AssociatedElementId == skill.PrimaryAbilityElementId)
             {
-                return character.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == abilityRegistration.Id);
+                return abilities.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == abilityRegistration.Id);
             }
         }
 

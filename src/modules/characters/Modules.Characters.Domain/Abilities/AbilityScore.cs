@@ -37,7 +37,7 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     public int BaseScore { get; private set; } = 10;
 
     /// <summary>
-    /// Additional bonus or penalty applied to the base score. Defaults to 0.
+    /// Additional bonus or penalty applied to the base score.
     /// </summary>
     public int AdditionalScore { get; private set; }
 
@@ -47,7 +47,7 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     public int CalculatedScore { get; private set; }
 
     /// <summary>
-    /// D&amp;D-style ability modifier computed from <see cref="CalculatedScore"/> as floor((score - 10) / 2).
+    /// Gets the ability modifier computed from <see cref="CalculatedScore"/> as floor((score - 10) / 2).
     /// Persisted and updated when <see cref="CalculatedScore"/> changes.
     /// </summary>
     public int CalculatedModifier { get; private set; }
@@ -57,6 +57,11 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// </summary>
     public void UpdateBaseScore(int value)
     {
+        if (BaseScore == value)
+        {
+            return;
+        }
+
         BaseScore = value;
         Recalculate();
     }
@@ -66,6 +71,11 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// </summary>
     public void UpdateAdditionalScore(int value)
     {
+        if (AdditionalScore == value)
+        {
+            return;
+        }
+
         AdditionalScore = value;
         Recalculate();
     }
