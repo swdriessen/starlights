@@ -68,33 +68,35 @@ public sealed class Skill : EntityBase<SkillId>
     }
 
     /// <summary>
-    /// Updates the ability score modifier for this skill and recalculates the total bonus.
+    /// Updates the ability score modifier if the specified value differs from the current modifier.
     /// </summary>
-    /// <param name="modifier">The modifier value derived from the associated ability score.</param>
-    public void UpdateAbilityScoreModifier(int modifier)
+    /// <returns>true if the ability score modifier was updated; otherwise, false.</returns>
+    public bool UpdateAbilityScoreModifier(int modifier)
     {
         if (AbilityScoreModifier == modifier)
         {
-            return;
+            return false;
         }
 
         AbilityScoreModifier = modifier;
         Recalculate();
+        return true;
     }
 
     /// <summary>
-    /// Updates the additional bonus (or penalty) for this skill and recalculates the total bonus.
+    /// Updates the value of the additional bonus if it differs from the current value.
     /// </summary>
-    /// <param name="bonus">The additional bonus; can be negative to represent a penalty.</param>
-    public void UpdateAdditionalBonus(int bonus)
+    /// <returns>true if the additional bonus was updated; otherwise, false.</returns>
+    public bool UpdateAdditionalBonus(int bonus)
     {
         if (AdditionalBonus == bonus)
         {
-            return;
+            return false;
         }
 
         AdditionalBonus = bonus;
         Recalculate();
+        return true;
     }
 
     /// <summary>
@@ -118,18 +120,10 @@ public sealed class Skill : EntityBase<SkillId>
     public bool HasAssociatedAbilityScore => AbilityScoreId != default;
 
     /// <summary>
-    /// Factory method to create a new <see cref="Skill"/>.
+    /// Creates a new Skill instance with the specified registration, name, ability score identifier, and ability score abbreviation.
     /// </summary>
     internal static Skill Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
     {
         return new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
-    }
-
-    /// <summary>
-    /// Factory method to create a new <see cref="Skill"/>.
-    /// </summary>
-    internal static Skill CreateWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
-    {
-        return new(associatedRegistrationId, name, default, default);
     }
 }

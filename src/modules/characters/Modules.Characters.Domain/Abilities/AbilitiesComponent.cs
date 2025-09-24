@@ -44,15 +44,16 @@ public sealed class AbilitiesComponent : CharacterComponentBase
             throw new ArgumentOutOfRangeException(nameof(value), "Base score must be between 1 and 20.");
         }
 
-        ability.UpdateBaseScore(value);
-
-        AddDomainEvent(new AbilityScoreUpdatedEvent()
+        if (ability.UpdateBaseScore(value))
         {
-            CharacterId = ParentCharacter,
-            AbilityScoreId = ability.Id,
-            NewAbilityScoreValue = ability.CalculatedScore,
-            NewAbilityModifier = ability.CalculatedModifier
-        });
+            AddDomainEvent(new AbilityScoreUpdatedEvent()
+            {
+                CharacterId = ParentCharacter,
+                AbilityScoreId = ability.Id,
+                NewAbilityScoreValue = ability.CalculatedScore,
+                NewAbilityModifier = ability.CalculatedModifier
+            });
+        }
     }
 
     /// <summary>
@@ -61,15 +62,16 @@ public sealed class AbilitiesComponent : CharacterComponentBase
     public void UpdateAbilityAdditionalScore(AbilityScoreId abilityScoreId, int value)
     {
         var ability = _abilityScores.SingleOrDefault(a => a.Id == abilityScoreId) ?? throw new InvalidOperationException($"AbilityScore with ID {abilityScoreId} not found for Character {Id}.");
-        ability.UpdateAdditionalScore(value);
-
-        AddDomainEvent(new AbilityScoreUpdatedEvent()
+        if (ability.UpdateAdditionalScore(value))
         {
-            CharacterId = ParentCharacter,
-            AbilityScoreId = ability.Id,
-            NewAbilityScoreValue = ability.CalculatedScore,
-            NewAbilityModifier = ability.CalculatedModifier
-        });
+            AddDomainEvent(new AbilityScoreUpdatedEvent()
+            {
+                CharacterId = ParentCharacter,
+                AbilityScoreId = ability.Id,
+                NewAbilityScoreValue = ability.CalculatedScore,
+                NewAbilityModifier = ability.CalculatedModifier
+            });
+        }
     }
 
     /// <summary>

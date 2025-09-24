@@ -53,35 +53,39 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     public int CalculatedModifier { get; private set; }
 
     /// <summary>
-    /// Updates the <see cref="BaseScore"/> and recalculates derived values.
+    /// Updates the base score to the specified value if it differs from the current value.
     /// </summary>
-    public void UpdateBaseScore(int value)
+    /// <returns>true if the base score was updated; otherwise, false.</returns>
+    public bool UpdateBaseScore(int value)
     {
         if (BaseScore == value)
         {
-            return;
+            return false;
         }
 
         BaseScore = value;
         Recalculate();
+        return true;
     }
 
     /// <summary>
     /// Updates the <see cref="AdditionalScore"/> and recalculates derived values.
+    /// Returns true if the value changed (and recalculation occurred); otherwise false.
     /// </summary>
-    public void UpdateAdditionalScore(int value)
+    public bool UpdateAdditionalScore(int value)
     {
         if (AdditionalScore == value)
         {
-            return;
+            return false;
         }
 
         AdditionalScore = value;
         Recalculate();
+        return true;
     }
 
     /// <summary>
-    /// Recomputes <see cref="CalculatedScore"/> and <see cref="CalculatedModifier"/> from current inputs.
+    /// Recalculates the calculated score and modifier based on the current base and additional scores.
     /// </summary>
     private void Recalculate()
     {
@@ -90,7 +94,7 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     }
 
     /// <summary>
-    /// Factory method to create a new <see cref="AbilityScore"/>.
+    /// Creates a new instance of the AbilityScore class with the specified registration identifier, name, and abbreviation.
     /// </summary>
     internal static AbilityScore Create(RegistrationId associatedRegistrationId, string name, string abbreviation)
     {

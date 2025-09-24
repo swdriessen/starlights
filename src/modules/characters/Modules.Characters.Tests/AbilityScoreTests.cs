@@ -24,35 +24,75 @@ public class AbilityScoreTests
     }
 
     [TestMethod]
-    public void UpdateBaseScore_Recalculates()
+    public void UpdateBaseScore_Recalculates_ReturnsTrue()
     {
         // Arrange
         var regId = RegistrationId.New();
         var score = AbilityScore.Create(regId, "Dexterity", "DEX");
 
         // Act
-        score.UpdateBaseScore(18);
+        var updated = score.UpdateBaseScore(18);
 
         // Assert
+        updated.Should().BeTrue();
         score.BaseScore.Should().Be(18);
         score.CalculatedScore.Should().Be(18);
         score.CalculatedModifier.Should().Be(4);
     }
 
     [TestMethod]
-    public void UpdateAdditionalScore_Recalculates()
+    public void UpdateBaseScore_NoChange_ReturnsFalse()
+    {
+        // Arrange
+        var regId = RegistrationId.New();
+        var score = AbilityScore.Create(regId, "Dexterity", "DEX");
+        score.UpdateBaseScore(14).Should().BeTrue();
+        var currentCalculatedScore = score.CalculatedScore;
+        var currentModifier = score.CalculatedModifier;
+
+        // Act
+        var updated = score.UpdateBaseScore(14);
+
+        // Assert
+        updated.Should().BeFalse();
+        score.CalculatedScore.Should().Be(currentCalculatedScore);
+        score.CalculatedModifier.Should().Be(currentModifier);
+    }
+
+    [TestMethod]
+    public void UpdateAdditionalScore_Recalculates_ReturnsTrue()
     {
         // Arrange
         var regId = RegistrationId.New();
         var score = AbilityScore.Create(regId, "Constitution", "CON");
 
         // Act
-        score.UpdateAdditionalScore(2);
+        var updated = score.UpdateAdditionalScore(2);
 
         // Assert
+        updated.Should().BeTrue();
         score.AdditionalScore.Should().Be(2);
         score.CalculatedScore.Should().Be(12);
         score.CalculatedModifier.Should().Be(1);
+    }
+
+    [TestMethod]
+    public void UpdateAdditionalScore_NoChange_ReturnsFalse()
+    {
+        // Arrange
+        var regId = RegistrationId.New();
+        var score = AbilityScore.Create(regId, "Constitution", "CON");
+        score.UpdateAdditionalScore(3).Should().BeTrue();
+        var currentCalculatedScore = score.CalculatedScore;
+        var currentModifier = score.CalculatedModifier;
+
+        // Act
+        var updated = score.UpdateAdditionalScore(3);
+
+        // Assert
+        updated.Should().BeFalse();
+        score.CalculatedScore.Should().Be(currentCalculatedScore);
+        score.CalculatedModifier.Should().Be(currentModifier);
     }
 
     [TestMethod]

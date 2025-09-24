@@ -31,15 +31,6 @@ public sealed class SkillsComponent : CharacterComponentBase
         return skill;
     }
 
-    [Obsolete("Use CreateSkill with AbilityScoreId and AbilityScoreAbbreviation instead.")]
-    public Skill CreateSkillWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
-    {
-        var skill = Skill.CreateWithoutAbilityScore(associatedRegistrationId, name);
-        _skills.Add(skill);
-        AddDomainEvent(new SkillCreatedEvent() { CharacterId = Id, SkillId = skill.Id });
-        return skill;
-    }
-
     /// <summary>
     /// Updates the ability score modifier for all skills associated with the specified ability score.
     /// </summary>
@@ -47,8 +38,10 @@ public sealed class SkillsComponent : CharacterComponentBase
     {
         foreach (var skill in _skills.Where(s => s.AbilityScoreId == abilityScoreId))
         {
-            skill.UpdateAbilityScoreModifier(modifier);
-            AddDomainEvent(new SkillUpdatedEvent() { CharacterId = ParentCharacter, SkillId = skill.Id });
+            if (skill.UpdateAbilityScoreModifier(modifier))
+            {
+                AddDomainEvent(new SkillUpdatedEvent() { CharacterId = ParentCharacter, SkillId = skill.Id });
+            }
         }
     }
 

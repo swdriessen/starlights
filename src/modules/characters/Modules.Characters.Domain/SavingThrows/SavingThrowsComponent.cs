@@ -31,15 +31,6 @@ public sealed class SavingThrowsComponent : CharacterComponentBase
         return newSavingThrow;
     }
 
-    [Obsolete("Use CreateSavingThrow with AbilityScoreId instead.")]
-    public SavingThrow CreateSavingThrowWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
-    {
-        var save = SavingThrow.CreateWithoutAbilityScore(associatedRegistrationId, name);
-        _savingThrows.Add(save);
-        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = ParentCharacter, SavingThrowId = save.Id });
-        return save;
-    }
-
     /// <summary>
     /// Updates the ability score modifier for all saving throws associated with the specified ability score.
     /// </summary>
@@ -47,8 +38,10 @@ public sealed class SavingThrowsComponent : CharacterComponentBase
     {
         foreach (var savingThrow in _savingThrows.Where(s => s.AbilityScoreId == abilityScoreId))
         {
-            savingThrow.UpdateAbilityScoreModifier(modifier);
-            AddDomainEvent(new SavingThrowUpdatedEvent() { CharacterId = ParentCharacter, SavingThrowId = savingThrow.Id });
+            if (savingThrow.UpdateAbilityScoreModifier(modifier))
+            {
+                AddDomainEvent(new SavingThrowUpdatedEvent() { CharacterId = ParentCharacter, SavingThrowId = savingThrow.Id });
+            }
         }
     }
 

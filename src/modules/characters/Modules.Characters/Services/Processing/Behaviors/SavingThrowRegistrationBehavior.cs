@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Data;
-using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Domain.SavingThrows;
 using Starlights.Modules.Elements.Integration;
-using Starlights.Modules.Elements.Integration.Models;
 
 namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 
@@ -32,53 +30,45 @@ public sealed class SavingThrowRegistrationBehavior : IRegistrationBehavior
             return;
         }
 
-        using var _ = CharactersInstrumentation.StartActivity("Saving Throw Registration Behavior");
-
-        var associatedElement = await _elements.GetSavingThrowModel(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Saving Throw with ID {newRegistration.AssociatedElementId} not found.");
-
+        // a new saving throw registration was created, we need to create the saving throw in the character
         var characters = context.GetRepository<ICharactersRepository>();
         var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
-        var savingThrowsComponent = character.GetRequiredComponent<SavingThrowsComponent>();
+        // fetch the associated saving throw element
+        var associatedElement = await _elements.GetSavingThrowModel(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Saving Throw with ID {newRegistration.AssociatedElementId} not found.");
 
-        var primaryScore = await GetPrimaryAbilityScore(context, character, associatedElement);
-
+        // try to find the primary ability score for this saving throw
+        var primaryScore = await GetPrimaryAbilityScore(context, character, new(associatedElement.PrimaryAbilityElementId));
         if (primaryScore is null)
         {
-            _logger.LogWarning("Creating saving throw '{SavingThrowName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
-            savingThrowsComponent.CreateSavingThrowWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
+            _logger.LogWarning("Could not find primary ability score for saving throw '{SavingThrowName}' [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
+            return;
         }
-        else
+
+        character.UpdateComponent<SavingThrowsComponent>((component, _) =>
         {
-            _logger.LogInformation("Creating saving throw '{SavingThrowName}' with primary ability score '{AbilityScoreName}' [character='{CharacterId}']", associatedElement.Name, primaryScore.Name, character.Id.Value);
-            savingThrowsComponent.CreateSavingThrow(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
-        }
+            // create the saving throw in the character
+            component.CreateSavingThrow(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
+        });
     }
 
-    private static async Task<AbilityScore?> GetPrimaryAbilityScore(RegistrationProcessContext context, Character character, SavingThrowDataModel save)
+    private static async Task<AbilityScore?> GetPrimaryAbilityScore(RegistrationProcessContext context, Character character, ElementId primaryAbilityElementId)
     {
-        var abilities = character.GetRequiredComponent<AbilitiesComponent>();
+        var component = character.GetRequiredComponent<AbilitiesComponent>();
 
-        // first check if the save is already associated with a new registration
-        foreach (var registration in context.NewRegistrations)
+        // if the ability score was registered in the context of the current processing registration
+        foreach (var registration in context.NewRegistrations.Where(r => r.AssociatedElementId == primaryAbilityElementId))
         {
-            if (registration.AssociatedElementId == save.PrimaryAbilityElementId)
-            {
-                return abilities.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == registration.Id);
-            }
+            return component.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == registration.Id);
         }
 
-        // otherwise, we need to fetch the registrations from the repository
-        var registrations = context.GetRepository<IRegistrationRepository>();
+        // otherwise, we need to fetch the registrations from the repository        
+        var existingRegistrations = await context.GetRepository<IRegistrationRepository>()
+            .GetRegistrationsByAssociationsAsync(character.Id, primaryAbilityElementId);
 
-        var existingRegistrations = await registrations.GetRegistrationsByAssociationsAsync(character.Id, new ElementId(save.PrimaryAbilityElementId));
-
-        foreach (var abilityRegistration in existingRegistrations)
+        foreach (var registration in existingRegistrations.Where(r => r.AssociatedElementId == primaryAbilityElementId))
         {
-            if (abilityRegistration.AssociatedElementId == save.PrimaryAbilityElementId)
-            {
-                return abilities.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == abilityRegistration.Id);
-            }
+            return component.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == registration.Id);
         }
 
         return null;

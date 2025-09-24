@@ -29,7 +29,7 @@ public class SkillTests
     }
 
     [TestMethod]
-    public void UpdateAbilityScoreModifier_Recalculates()
+    public void UpdateAbilityScoreModifier_Recalculates_ReturnsTrue()
     {
         // Arrange
         var regId = RegistrationId.New();
@@ -37,15 +37,34 @@ public class SkillTests
         var skill = Skill.Create(regId, "Stealth", abilityScoreId, "DEX");
 
         // Act
-        skill.UpdateAbilityScoreModifier(3);
+        var updated = skill.UpdateAbilityScoreModifier(3);
 
         // Assert
+        updated.Should().BeTrue();
         skill.AbilityScoreModifier.Should().Be(3);
         skill.CalculatedBonus.Should().Be(3);
     }
 
     [TestMethod]
-    public void UpdateAdditionalBonus_Recalculates()
+    public void UpdateAbilityScoreModifier_NoChange_ReturnsFalse()
+    {
+        // Arrange
+        var regId = RegistrationId.New();
+        var abilityScoreId = AbilityScoreId.New();
+        var skill = Skill.Create(regId, "Stealth", abilityScoreId, "DEX");
+        skill.UpdateAbilityScoreModifier(5).Should().BeTrue();
+        var currentCalculated = skill.CalculatedBonus;
+
+        // Act
+        var updated = skill.UpdateAbilityScoreModifier(5);
+
+        // Assert
+        updated.Should().BeFalse();
+        skill.CalculatedBonus.Should().Be(currentCalculated);
+    }
+
+    [TestMethod]
+    public void UpdateAdditionalBonus_Recalculates_ReturnsTrue()
     {
         // Arrange
         var regId = RegistrationId.New();
@@ -53,11 +72,30 @@ public class SkillTests
         var skill = Skill.Create(regId, "Arcana", abilityScoreId, "INT");
 
         // Act
-        skill.UpdateAdditionalBonus(2);
+        var updated = skill.UpdateAdditionalBonus(2);
 
         // Assert
+        updated.Should().BeTrue();
         skill.AdditionalBonus.Should().Be(2);
         skill.CalculatedBonus.Should().Be(2);
+    }
+
+    [TestMethod]
+    public void UpdateAdditionalBonus_NoChange_ReturnsFalse()
+    {
+        // Arrange
+        var regId = RegistrationId.New();
+        var abilityScoreId = AbilityScoreId.New();
+        var skill = Skill.Create(regId, "Arcana", abilityScoreId, "INT");
+        skill.UpdateAdditionalBonus(4).Should().BeTrue();
+        var currentCalculated = skill.CalculatedBonus;
+
+        // Act
+        var updated = skill.UpdateAdditionalBonus(4);
+
+        // Assert
+        updated.Should().BeFalse();
+        skill.CalculatedBonus.Should().Be(currentCalculated);
     }
 
     [TestMethod]

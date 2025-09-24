@@ -21,45 +21,91 @@ public sealed class SavingThrow : EntityBase<SavingThrowId>
         Recalculate();
     }
 
+    /// <summary>
+    /// Gets the registration identifier associated with this instance.
+    /// </summary>
     public RegistrationId AssociatedRegistrationId { get; }
-    public AbilityScoreId AbilityScoreId { get; private set; }
+
+    /// <summary>
+    /// Gets the name of the saving throw.
+    /// </summary>
     public string Name { get; }
-    public string? AbilityScoreAbbreviation { get; private set; }
+
+    /// <summary>
+    /// Gets the ability score identifier associated with this saving throw.
+    /// </summary>
+    public AbilityScoreId AbilityScoreId { get; }
+
+    /// <summary>
+    /// Gets the abbreviated form of the ability score name, such as "STR" for Strength.
+    /// </summary>
+    public string? AbilityScoreAbbreviation { get; }
+
+    /// <summary>
+    /// Gets the modifier value derived from the associated ability score.
+    /// </summary>
     public int AbilityScoreModifier { get; private set; }
+
+    /// <summary>
+    /// Gets the additional bonus value applied to the calculation or operation.
+    /// </summary>
     public int AdditionalBonus { get; private set; }
+
+    /// <summary>
+    /// Gets the calculated bonus value for the current instance.
+    /// </summary>
     public int CalculatedBonus { get; private set; }
 
-    private void Recalculate() => CalculatedBonus = AbilityScoreModifier + AdditionalBonus;
-
-    public void UpdateAbilityScoreModifier(int modifier)
+    /// <summary>
+    /// Updates the ability score modifier if the specified value differs from the current modifier.
+    /// </summary>
+    /// <returns>true if the ability score modifier was updated; otherwise, false.</returns>
+    public bool UpdateAbilityScoreModifier(int modifier)
     {
+        if (AbilityScoreModifier == modifier)
+        {
+            return false;
+        }
+
         AbilityScoreModifier = modifier;
         Recalculate();
+        return true;
     }
 
-    public void UpdateAdditionalBonus(int bonus)
+    /// <summary>
+    /// Updates the additional bonus value if it differs from the current value.
+    /// </summary>
+    /// <returns>true if the additional bonus was updated; otherwise, false.</returns>
+    public bool UpdateAdditionalBonus(int bonus)
     {
+        if (AdditionalBonus == bonus)
+        {
+            return false;
+        }
+
         AdditionalBonus = bonus;
         Recalculate();
+        return true;
     }
 
-    public void WithAbilityScore(AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
+    /// <summary>
+    /// Recalculates the value of the calculated bonus based on the current ability score modifier and any additional bonus.
+    /// </summary>
+    private void Recalculate()
     {
-        if (abilityScoreId == default)
-        {
-            throw new ArgumentException("Ability score ID cannot be default.", nameof(abilityScoreId));
-        }
-        ArgumentException.ThrowIfNullOrWhiteSpace(abilityScoreAbbreviation);
-
-        AbilityScoreId = abilityScoreId;
-        AbilityScoreAbbreviation = abilityScoreAbbreviation;
+        CalculatedBonus = AbilityScoreModifier + AdditionalBonus;
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this instance has an associated ability score.
+    /// </summary>
     public bool HasAssociatedAbilityScore => AbilityScoreId != default;
 
+    /// <summary>
+    /// Creates a new instance of the SavingThrow class with the specified registration and ability score information.
+    /// </summary>
     internal static SavingThrow Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
-        => new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
-
-    internal static SavingThrow CreateWithoutAbilityScore(RegistrationId associatedRegistrationId, string name)
-        => new(associatedRegistrationId, name, default, default);
+    {
+        return new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+    }
 }
