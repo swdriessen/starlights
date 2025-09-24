@@ -45,7 +45,7 @@ public sealed class SavingThrowRegistrationBehavior : IRegistrationBehavior
 
         if (primaryScore is null)
         {
-            _logger.LogInformation("Creating saving throw '{SavingThrowName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
+            _logger.LogWarning("Creating saving throw '{SavingThrowName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
             savingThrowsComponent.CreateSavingThrowWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
         }
         else

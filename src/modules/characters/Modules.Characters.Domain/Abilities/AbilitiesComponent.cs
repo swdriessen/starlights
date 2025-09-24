@@ -46,7 +46,13 @@ public sealed class AbilitiesComponent : CharacterComponentBase
 
         ability.UpdateBaseScore(value);
 
-        AddDomainEvent(new AbilityScoreUpdatedEvent() { CharacterId = ParentCharacter, AbilityScoreId = ability.Id });
+        AddDomainEvent(new AbilityScoreUpdatedEvent()
+        {
+            CharacterId = ParentCharacter,
+            AbilityScoreId = ability.Id,
+            NewAbilityScoreValue = ability.CalculatedScore,
+            NewAbilityModifier = ability.CalculatedModifier
+        });
     }
 
     /// <summary>
@@ -57,9 +63,18 @@ public sealed class AbilitiesComponent : CharacterComponentBase
         var ability = _abilityScores.SingleOrDefault(a => a.Id == abilityScoreId) ?? throw new InvalidOperationException($"AbilityScore with ID {abilityScoreId} not found for Character {Id}.");
         ability.UpdateAdditionalScore(value);
 
-        AddDomainEvent(new AbilityScoreUpdatedEvent() { CharacterId = ParentCharacter, AbilityScoreId = ability.Id });
+        AddDomainEvent(new AbilityScoreUpdatedEvent()
+        {
+            CharacterId = ParentCharacter,
+            AbilityScoreId = ability.Id,
+            NewAbilityScoreValue = ability.CalculatedScore,
+            NewAbilityModifier = ability.CalculatedModifier
+        });
     }
 
+    /// <summary>
+    /// Creates a new instance of the AbilitiesComponent associated with the specified character.
+    /// </summary>
     public static AbilitiesComponent Create(CharacterId parentCharacter)
     {
         return new AbilitiesComponent(parentCharacter);

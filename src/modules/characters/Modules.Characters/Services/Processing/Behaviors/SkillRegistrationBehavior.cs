@@ -45,7 +45,7 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
 
         if (primaryScore is null)
         {
-            _logger.LogInformation("Creating skill '{SkillName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
+            _logger.LogWarning("Creating skill '{SkillName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
             skillsComponent.CreateSkillWithoutAbilityScore(newRegistration.Id, associatedElement.Name);
         }
         else
