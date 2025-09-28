@@ -7,7 +7,7 @@ using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Domain.Services;
 
-namespace Starlights.Modules.Characters.Tests;
+namespace Starlights.Modules.Characters.Tests.Characters;
 
 [TestClass]
 public sealed class CharacterDomainServiceTests

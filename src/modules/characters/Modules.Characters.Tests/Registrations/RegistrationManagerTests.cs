@@ -10,7 +10,7 @@ using Starlights.Modules.Elements.Integration.Models;
 using Starlights.Modules.Elements.Integration.Models.Rules;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Characters.Tests;
+namespace Starlights.Modules.Characters.Tests.Registrations;
 
 [TestClass]
 public sealed class RegistrationManagerTests

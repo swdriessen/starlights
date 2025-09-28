@@ -9,7 +9,7 @@ using Starlights.Modules.Characters.Domain.Services;
 using Starlights.Modules.Characters.Domain.Skills;
 using Starlights.Modules.Characters.Domain.Skills.Eventing;
 
-namespace Starlights.Modules.Characters.Tests;
+namespace Starlights.Modules.Characters.Tests.Characters;
 
 [TestClass]
 public sealed class CharacterAbilitiesUpdateServiceTests

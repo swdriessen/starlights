@@ -21,6 +21,11 @@ public sealed class ClassComponent : CharacterComponentBase
     public IReadOnlyCollection<CharacterClass> Classes => _classes.AsReadOnly();
 
     /// <summary>
+    /// Gets a value indicating whether the character has multiple classes.
+    /// </summary>
+    public bool IsMulticlass => _classes.Count > 1;
+
+    /// <summary>
     /// Calculates the combined level of all classes associated with the character.
     /// </summary>
     public int CalculateCharacterLevel()

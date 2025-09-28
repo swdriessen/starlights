@@ -1,6 +1,6 @@
 ﻿namespace Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegistrations;
 
-sealed class RegistrationDataModel
+public sealed class RegistrationDataModel
 {
     public required Guid RegistrationId { get; set; }
     public required Guid CharacterId { get; set; }

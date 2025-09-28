@@ -3,7 +3,7 @@ using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Registrations;
 
-namespace Starlights.Modules.Characters.Tests;
+namespace Starlights.Modules.Characters.Tests.Registrations;
 
 [TestClass]
 public sealed class RegistrationSelectionRuleTests

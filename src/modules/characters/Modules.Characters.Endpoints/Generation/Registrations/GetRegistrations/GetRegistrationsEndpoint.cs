@@ -6,7 +6,7 @@ using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegistrations;
 
-sealed class GetRegistrationsEndpoint : Endpoint<GetRegistrationsRequest, GetRegistrationsResponse>
+public sealed class GetRegistrationsEndpoint : Endpoint<GetRegistrationsRequest, GetRegistrationsResponse>
 {
     private readonly ILogger<GetRegistrationsEndpoint> _logger;
     private readonly IPersistence _persistence;
@@ -28,11 +28,18 @@ sealed class GetRegistrationsEndpoint : Endpoint<GetRegistrationsRequest, GetReg
 
     public override async Task HandleAsync(GetRegistrationsRequest req, CancellationToken ct)
     {
+        var characters = _persistence.GetRepository<ICharactersRepository>();
+        var character = await characters.GetCharacterAsync(req.CharacterId);
+        if (character is null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         var registrationRepository = _persistence.GetRepository<IRegistrationRepository>();
+        var characterRegistrations = await registrationRepository.GetRegistrationsAsync(new(req.CharacterId));
 
-        var registrations = await registrationRepository.GetRegistrationsAsync(new(req.CharacterId));
-
-        var models = registrations.ConvertAll(r => new RegistrationDataModel
+        var models = characterRegistrations.ConvertAll(r => new RegistrationDataModel
         {
             RegistrationId = r.Id,
             CharacterId = r.CharacterId,

@@ -10,7 +10,7 @@ using Starlights.Modules.Characters.Services.EventHandlers;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Characters.Tests;
+namespace Starlights.Modules.Characters.Tests.Characters;
 
 [TestClass]
 public sealed class UpdateSavingThrowsEventHandlerTests

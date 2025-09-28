@@ -3,7 +3,7 @@ using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Domain.Skills;
 
-namespace Starlights.Modules.Characters.Tests;
+namespace Starlights.Modules.Characters.Tests.Characters;
 
 [TestClass]
 public class SkillTests

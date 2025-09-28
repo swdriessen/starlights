@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Starlights.Modules.Characters.Domain.Characters;
 
-namespace Starlights.Modules.Characters.Tests;
+namespace Starlights.Modules.Characters.Tests.Characters;
 
 [TestClass]
 public sealed class CharacterTests
