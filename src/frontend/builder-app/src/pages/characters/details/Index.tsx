@@ -306,58 +306,49 @@ export default function CharactersDetailsPage() {
       </div>
 
       <div className="border border-dashed rounded p-4 my-4">
-        <dl className="grid grid-cols-2 gap-1">
-          <dt>Id:</dt>
-          <dd>{id}</dd>
-          <dt>Name:</dt>
-          <dd>{characterDetails?.character.name ?? <span className="text-yellow-700">Loading...</span>}</dd>
-          <dt>Level:</dt>
-          <dd>{characterDetails?.character.level ?? <span className="text-yellow-700">Loading...</span>}</dd>
-          <dt>Build:</dt>
-          <dd>{characterDetails?.character.build ?? <span className="text-yellow-700">Loading...</span>}</dd>
-          <dt>Portrait URL:</dt>
-          <dd>{characterDetails?.character.portraitUrl ?? <span className="text-yellow-700">Loading...</span>}</dd>
-        </dl>
+        <div className="flex flex-between gap-4">
+          <dl className="grid grid-cols-2 gap-1 flex-grow-1">
+            <dt>Id:</dt>
+            <dd>{id}</dd>
+            <dt>Name:</dt>
+            <dd>{characterDetails?.character.name ?? <span className="text-yellow-700">Loading...</span>}</dd>
+            <dt>Level:</dt>
+            <dd>{characterDetails?.character.level ?? <span className="text-yellow-700">Loading...</span>}</dd>
+            <dt>Build:</dt>
+            <dd>{characterDetails?.character.build ?? <span className="text-yellow-700">Loading...</span>}</dd>
+            <dt>Portrait URL:</dt>
+            <dd>{characterDetails?.character.portraitUrl ?? <span className="text-yellow-700">Loading...</span>}</dd>
+          </dl>
+          <div className="flex-shrink-0">
+            <img src={characterDetails?.character.portraitUrl} alt="Character Portrait" className="h-32 w-32 object-cover mt-2 rounded" />
+          </div>
+        </div>
       </div>
 
-      <hr className="my-4" />
-
       <div className="grid grid-cols-12 gap-2">
-        <Tabs defaultValue="tab-ability-scores" className="col-span-6">
-          <TabsList className="w-full  ">
-            <TabsTrigger value="tab-ability-scores">Ability Scores</TabsTrigger>
+        <div className="col-span-12">
+          <h5>Character Sheet Data</h5>
+        </div>
+        <Tabs defaultValue="tab-sheet-1" className="col-span-12">
+          <TabsList className="w-full">
+            <TabsTrigger value="tab-sheet-1">Ability Scores</TabsTrigger>
+            <TabsTrigger value="tab-sheet-2">Saving Throws</TabsTrigger>
+            <TabsTrigger value="tab-sheet-3">Skills</TabsTrigger>
+            <TabsTrigger value="tab-sheet-4">Class Features</TabsTrigger>
           </TabsList>
-          <TabsContent value="tab-ability-scores">
+          <TabsContent value="tab-sheet-1">
             <AbilitiesComponent id={id} />
           </TabsContent>
-        </Tabs>
-        <Tabs defaultValue="tab-saves" className="col-span-3">
-          <TabsList className="w-full ">
-            <TabsTrigger value="tab-saves">Saving Throws</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tab-saves">
+          <TabsContent value="tab-sheet-2">
             <SavingThrowsComponent characterId={id} />
           </TabsContent>
-        </Tabs>
-        <Tabs defaultValue="tab-skills" className="col-span-3">
-          <TabsList className="w-full ">
-            <TabsTrigger value="tab-skills">Skills</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tab-skills">
+          <TabsContent value="tab-sheet-3">
             <SkillsComponent characterId={id} />
           </TabsContent>
-        </Tabs>
-      </div>
-      <div className="grid grid-cols-12 gap-2">
-        <Tabs defaultValue="tab-registrations-all" className="col-span-12">
-          <TabsList className="w-full">
-            <TabsTrigger value="tab-registrations-all">All Registrations</TabsTrigger>
-            <TabsTrigger value="tab-registrations-features">Features</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tab-registrations-all">
+          <TabsContent value="tab-sheet-4">
             <>
               {registrationModels ? (
-                <div className="overflow-x-auto text-sm">
+                <div className="border border-dashed rounded p-4 overflow-x-auto text-sm">
                   {(() => {
                     const renderNode = (reg: any, level = 0): JSX.Element => (
                       <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
@@ -377,63 +368,39 @@ export default function CharactersDetailsPage() {
               )}
             </>
           </TabsContent>
-          <TabsContent value="tab-registrations-features">
-            <>
-              {registrationModels ? (
-                <div className="overflow-x-auto text-sm">
-                  {(() => {
-                    // More robust visibility check: be tolerant of casing and slight variations
-                    const isVisibleElementType = (elementType: any) => {
-                      if (!elementType) return false;
-                      const et = String(elementType).toLowerCase();
-                      // show Class, Class Feature, Background, Background Feature, etc.
-                      return et.includes("class") || et.includes("class feature") || et.includes("background");
-                    };
-
-                    const renderNode = (reg: any, level = 0): JSX.Element | null => {
-                      const nodeVisible = isVisibleElementType(reg.elementType);
-                      const children = (reg.children ?? []) as any[];
-
-                      // Always recurse into children to find deeply nested visible nodes
-                      const renderedChildren = children.map((child) => renderNode(child, nodeVisible ? level + 1 : level)).filter(Boolean) as JSX.Element[];
-
-                      // If current node is not visible but has visible descendants, render only the descendants
-                      if (!nodeVisible) {
-                        if (renderedChildren.length === 0) return null;
-                        return (
-                          <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
-                            {renderedChildren}
-                          </div>
-                        );
-                      }
-
-                      // Node is visible: render it and any visible children
-                      return (
-                        <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
-                          <div className="font-bold">{reg.name}</div>
-                          <div className="text-xxs text-muted-foreground">ID: {reg.registrationId}</div>
-                          {renderedChildren.length > 0 && <div>{renderedChildren}</div>}
-                        </div>
-                      );
-                    };
-
-                    const roots = registrationModels?.registrations ?? [];
-                    return <div>{roots.map((r: any) => renderNode(r, 0)).filter(Boolean)}</div>;
-                  })()}
-                </div>
-              ) : (
-                <span className="text-yellow-700">Loading...</span>
-              )}
-            </>
-          </TabsContent>
         </Tabs>
       </div>
 
       <Separator className="my-4" />
 
       <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-12">
+          <h5>Actions | Commands</h5>
+        </div>
+        <Tabs defaultValue="tab-actions-1" className="col-span-12">
+          <TabsList className="w-full">
+            <TabsTrigger value="tab-actions-1">Character Actions</TabsTrigger>
+            <TabsTrigger value="tab-actions-2">Character Abilities</TabsTrigger>
+          </TabsList>
+          <TabsContent value="tab-actions-1">
+            <div className="border border-dashed rounded p-4 my-2">
+              <p>This section will eventually contain character actions such as resting, leveling up, etc.</p>
+              <p>For now, it's just a placeholder.</p>
+            </div>
+          </TabsContent>
+          <TabsContent value="tab-actions-2">
+            <AbilitiesComponent id={id} />
+          </TabsContent>
+        </Tabs>
+      </div>
+      <Separator className="my-4" />
+
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-12">
+          <h5>Build | Selection Rules</h5>
+        </div>
         <Tabs defaultValue="tab-selection-rules-class" className="col-span-12">
-          <TabsList className="w-full ">
+          <TabsList className="w-full">
             <TabsTrigger value="tab-selection-rules-class">Class</TabsTrigger>
             <TabsTrigger value="tab-selection-rules-race">Race</TabsTrigger>
             <TabsTrigger value="tab-selection-rules-background">Background</TabsTrigger>
