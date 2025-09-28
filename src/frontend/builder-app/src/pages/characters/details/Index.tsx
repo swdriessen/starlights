@@ -2,6 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  useRegisterSelectionMutation,
+  useRegistrationModels,
+  useSelectionRuleDataModels,
+  useSelectionRuleOptionModels,
+} from "@/lib/api/builder/registration-api";
+import {
   useAbilityScores,
   useCharacterDetails,
   useSavingThrows,
@@ -10,6 +16,7 @@ import {
   useUpdateBaseAbilityScore,
 } from "@/lib/api/characters/queries";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import type { JSX } from "react";
 import { useParams } from "react-router-dom";
 
 function AbilitiesComponent({ id: characterId }: { id: string }) {
@@ -204,11 +211,92 @@ function SkillsComponent({ characterId }: { characterId: string }) {
   );
 }
 
+function SelectionRulesSectionOptionsComponent({
+  characterId,
+  selectionRuleId,
+  parentRegistration,
+}: {
+  characterId: string;
+  selectionRuleId: string;
+  parentRegistration: string;
+}) {
+  const { data: optionsData, isLoading, error } = useSelectionRuleOptionModels(characterId, selectionRuleId);
+
+  const registerSelectionMutation = useRegisterSelectionMutation(characterId, selectionRuleId);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      {optionsData && (
+        <>
+          <div className="border border-dashed rounded p-4 my-2">
+            <ul>
+              {optionsData.options.map((option) => (
+                <li key={option.elementId}>
+                  {option.name} | ID: {option.elementId} |{" "}
+                  <Button
+                    size="sm"
+                    disabled={registerSelectionMutation.isPending}
+                    onClick={() => registerSelectionMutation.mutate({ parentRegistration: parentRegistration, elementId: option.elementId })}
+                  >
+                    Register
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function SelectionRulesSectionComponent({ characterId, type }: { characterId: string; type: "Class" | "Race" | "Background" }) {
+  const { data: selectionRulesData, isLoading, error } = useSelectionRuleDataModels(characterId, type);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4 ">
+      {selectionRulesData && (
+        <div className="overflow-x-auto  text-sm w-full">
+          <h4>{type} Selection Rules</h4>
+          {selectionRulesData.rules.map((rule, index) => (
+            // 1 component per rule with its options and registration button
+
+            <div key={rule.registrationSelectionRuleId}>
+              <Separator className="my-4" />
+              <div className="border border-dashed rounded p-4 my-2">
+                <h5 className="text-sm font-semibold mb-1">
+                  {rule.name} ({rule.type})
+                </h5>
+                <p className="text-xxs text-muted-foreground mb-2">
+                  ID: {rule.registrationSelectionRuleId} | Registered: {rule.activeRegistration ? "Yes" : "No"}
+                </p>
+
+                <SelectionRulesSectionOptionsComponent
+                  characterId={characterId}
+                  selectionRuleId={rule.registrationSelectionRuleId}
+                  parentRegistration={rule.registrationId}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CharactersDetailsPage() {
   const { id } = useParams<{ id: string }>();
 
   if (!id) return <div>Character ID is required.</div>;
   const { data: characterDetails } = useCharacterDetails(id);
+  const { data: registrationModels } = useRegistrationModels(id);
 
   return (
     <>
@@ -257,6 +345,107 @@ export default function CharactersDetailsPage() {
           </TabsList>
           <TabsContent value="tab-skills">
             <SkillsComponent characterId={id} />
+          </TabsContent>
+        </Tabs>
+      </div>
+      <div className="grid grid-cols-12 gap-2">
+        <Tabs defaultValue="tab-registrations-all" className="col-span-12">
+          <TabsList className="w-full">
+            <TabsTrigger value="tab-registrations-all">All Registrations</TabsTrigger>
+            <TabsTrigger value="tab-registrations-features">Features</TabsTrigger>
+          </TabsList>
+          <TabsContent value="tab-registrations-all">
+            <>
+              {registrationModels ? (
+                <div className="overflow-x-auto text-sm">
+                  {(() => {
+                    const renderNode = (reg: any, level = 0): JSX.Element => (
+                      <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
+                        <div className="font-bold">
+                          {reg.name} <span className="text-muted-foreground">({reg.type})</span>
+                        </div>
+                        {/* <div className="text-xxs text-muted-foreground">ID: {reg.registrationId}</div> */}
+                        {reg.children && reg.children.length > 0 && <div>{reg.children.map((child: any) => renderNode(child, level + 1))}</div>}
+                      </div>
+                    );
+
+                    return <div>{registrationModels.registrations.map((r: any) => renderNode(r, 0))}</div>;
+                  })()}
+                </div>
+              ) : (
+                <span className="text-yellow-700">Loading...</span>
+              )}
+            </>
+          </TabsContent>
+          <TabsContent value="tab-registrations-features">
+            <>
+              {registrationModels ? (
+                <div className="overflow-x-auto text-sm">
+                  {(() => {
+                    // More robust visibility check: be tolerant of casing and slight variations
+                    const isVisibleElementType = (elementType: any) => {
+                      if (!elementType) return false;
+                      const et = String(elementType).toLowerCase();
+                      // show Class, Class Feature, Background, Background Feature, etc.
+                      return et.includes("class") || et.includes("class feature") || et.includes("background");
+                    };
+
+                    const renderNode = (reg: any, level = 0): JSX.Element | null => {
+                      const nodeVisible = isVisibleElementType(reg.elementType);
+                      const children = (reg.children ?? []) as any[];
+
+                      // Always recurse into children to find deeply nested visible nodes
+                      const renderedChildren = children.map((child) => renderNode(child, nodeVisible ? level + 1 : level)).filter(Boolean) as JSX.Element[];
+
+                      // If current node is not visible but has visible descendants, render only the descendants
+                      if (!nodeVisible) {
+                        if (renderedChildren.length === 0) return null;
+                        return (
+                          <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
+                            {renderedChildren}
+                          </div>
+                        );
+                      }
+
+                      // Node is visible: render it and any visible children
+                      return (
+                        <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
+                          <div className="font-bold">{reg.name}</div>
+                          <div className="text-xxs text-muted-foreground">ID: {reg.registrationId}</div>
+                          {renderedChildren.length > 0 && <div>{renderedChildren}</div>}
+                        </div>
+                      );
+                    };
+
+                    const roots = registrationModels?.registrations ?? [];
+                    return <div>{roots.map((r: any) => renderNode(r, 0)).filter(Boolean)}</div>;
+                  })()}
+                </div>
+              ) : (
+                <span className="text-yellow-700">Loading...</span>
+              )}
+            </>
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      <Separator className="my-4" />
+
+      <div className="grid grid-cols-12 gap-2">
+        <Tabs defaultValue="tab-selection-rules-class" className="col-span-12">
+          <TabsList className="w-full ">
+            <TabsTrigger value="tab-selection-rules-class">Class</TabsTrigger>
+            <TabsTrigger value="tab-selection-rules-race">Race</TabsTrigger>
+            <TabsTrigger value="tab-selection-rules-background">Background</TabsTrigger>
+          </TabsList>
+          <TabsContent value="tab-selection-rules-class">
+            <SelectionRulesSectionComponent characterId={id} type="Class" />
+          </TabsContent>
+          <TabsContent value="tab-selection-rules-race">
+            <SelectionRulesSectionComponent characterId={id} type="Race" />
+          </TabsContent>
+          <TabsContent value="tab-selection-rules-background">
+            <SelectionRulesSectionComponent characterId={id} type="Background" />
           </TabsContent>
         </Tabs>
       </div>

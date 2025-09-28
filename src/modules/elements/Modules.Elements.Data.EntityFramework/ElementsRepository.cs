@@ -16,7 +16,7 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
 
     public void Add(Element element)
     {
-        _logger.LogInformation("add element '{ElementName}' with identifier {Identifier}", element.Name, element.Id.Value);
+        //_logger.LogInformation("add element '{ElementName}' with identifier {Identifier}", element.Name, element.Id.Value);
         Entities.Add(element);
     }
 

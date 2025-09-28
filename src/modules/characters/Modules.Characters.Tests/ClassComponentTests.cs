@@ -1,10 +1,8 @@
 using FluentAssertions;
-using Moq;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Classes;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations;
-using Starlights.Platform.Eventing;
 
 namespace Starlights.Modules.Characters.Tests;
 
@@ -19,7 +17,7 @@ public class ClassComponentTests
         var component = ClassComponent.Create(character.Id);
 
         // Act
-        var newClass = component.CreateClass(RegistrationId.New(), "Wizard", Mock.Of<IEventRecorder>());
+        var newClass = component.CreateClass(RegistrationId.New(), "Wizard");
 
         // Assert
         newClass.IsPrimary.Should().BeTrue();
@@ -32,15 +30,15 @@ public class ClassComponentTests
         // Arrange
         var character = Character.Create("Test");
         var component = ClassComponent.Create(character.Id);
-        var recorder = new Mock<IEventRecorder>();
 
         // Act
-        var newClass = component.CreateClass(RegistrationId.New(), "Wizard", recorder.Object);
+        var newClass = component.CreateClass(RegistrationId.New(), "Wizard");
 
         // Assert
-        recorder.Verify(x => x.AddDomainEvent(
-            It.Is<CharacterClassCreatedEvent>(e => e.CharacterId == character.Id && e.ClassId == newClass.Id)),
-            Times.Once);
+        component.DomainEvents.Should().HaveCount(1);
+        component.DomainEvents.Single().Should().BeOfType<CharacterClassCreatedEvent>();
+        component.DomainEvents.OfType<CharacterClassCreatedEvent>()
+            .Should().ContainSingle(x => x.CharacterId == character.Id && x.ClassId == newClass.Id);
     }
 
     [TestMethod]
@@ -49,11 +47,10 @@ public class ClassComponentTests
         // Arrange
         var character = Character.Create("Test");
         var component = ClassComponent.Create(character.Id);
-        var recorder = new Mock<IEventRecorder>();
 
         // Act
-        var first = component.CreateClass(RegistrationId.New(), "Wizard", recorder.Object);
-        var second = component.CreateClass(RegistrationId.New(), "Fighter", recorder.Object);
+        var first = component.CreateClass(RegistrationId.New(), "Wizard");
+        var second = component.CreateClass(RegistrationId.New(), "Fighter");
 
         // Assert
         first.IsPrimary.Should().BeTrue();
@@ -67,11 +64,10 @@ public class ClassComponentTests
         // Arrange
         var character = Character.Create("Test");
         var component = ClassComponent.Create(character.Id);
-        var recorder = Mock.Of<IEventRecorder>();
 
         // Act
-        _ = component.CreateClass(RegistrationId.New(), "Wizard", recorder); // level 1 by default
-        _ = component.CreateClass(RegistrationId.New(), "Fighter", recorder); // level 1 by default
+        _ = component.CreateClass(RegistrationId.New(), "Wizard"); // level 1 by default
+        _ = component.CreateClass(RegistrationId.New(), "Fighter"); // level 1 by default
 
         // Assert
         component.CalculateCharacterLevel().Should().Be(2);

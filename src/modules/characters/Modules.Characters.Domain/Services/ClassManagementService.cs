@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Classes;
-using Starlights.Modules.Characters.Domain.Classes.Eventing;
 using Starlights.Modules.Characters.Domain.Progression;
-using Starlights.Modules.Characters.Domain.Progression.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Domain.Services;
@@ -19,15 +17,17 @@ public sealed class ClassManagementService
 
     public void AddCharacterClass(Character character, Registration newRegistration, string className)
     {
-        _logger.LogInformation("Creating class '{ClassName}' [character='{CharacterId}']", className, character.Id.Value);
-
-        character.UpdateComponents<ClassComponent, ProgressionComponent>((classes, progression, events) =>
+        character.UpdateComponents<ClassComponent, ProgressionComponent>((classes, progression, _) =>
         {
-            var newClass = classes.CreateClass(newRegistration.Id, className, events);
-            events.AddDomainEvent(new CharacterClassCreatedEvent { CharacterId = character.Id, ClassId = newClass.Id });
+            _logger.LogInformation("creating class '{ClassName}' [CharacterId='{CharacterId}']", className, character.Id.Value);
 
-            progression.SetCharacterLevel(classes.CalculateCharacterLevel());
-            events.AddDomainEvent(new CharacterLevelChangedEvent { CharacterId = character.Id, NewLevel = progression.CharacterLevel });
+            classes.CreateClass(newRegistration.Id, className);
+
+            var newLevel = classes.CalculateCharacterLevel();
+
+            progression.SetCharacterLevel(newLevel);
+
+            _logger.LogInformation("created new class '{ClassName}' [CharacterId='{CharacterId}', CharacterLevel={CharacterLevel}]", className, character.Id.Value, newLevel);
         });
     }
 }

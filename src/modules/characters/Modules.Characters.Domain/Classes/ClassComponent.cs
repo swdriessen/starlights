@@ -2,7 +2,6 @@
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
 using Starlights.Modules.Characters.Domain.Components;
 using Starlights.Modules.Characters.Domain.Registrations;
-using Starlights.Platform.Eventing;
 
 namespace Starlights.Modules.Characters.Domain.Classes;
 
@@ -32,7 +31,7 @@ public sealed class ClassComponent : CharacterComponentBase
     /// <summary>
     /// Adds a new class to the character's collection of classes.
     /// </summary>
-    public CharacterClass CreateClass(RegistrationId registration, string name, IEventRecorder eventRecorder)
+    public CharacterClass CreateClass(RegistrationId registration, string name)
     {
         var newClass = CharacterClass.Create(registration, name);
 
@@ -43,11 +42,14 @@ public sealed class ClassComponent : CharacterComponentBase
 
         _classes.Add(newClass);
 
-        eventRecorder.AddDomainEvent(new CharacterClassCreatedEvent() { CharacterId = ParentCharacter, ClassId = newClass.Id });
+        AddDomainEvent(new CharacterClassCreatedEvent() { CharacterId = ParentCharacter, ClassId = newClass.Id });
 
         return newClass;
     }
 
+    /// <summary>
+    /// Creates a new instance of the ClassComponent associated with the specified character.
+    /// </summary>
     public static ClassComponent Create(CharacterId parentCharacter)
     {
         return new ClassComponent(parentCharacter);

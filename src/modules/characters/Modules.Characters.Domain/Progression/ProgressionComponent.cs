@@ -1,5 +1,6 @@
 ﻿using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Components;
+using Starlights.Modules.Characters.Domain.Progression.Eventing;
 
 namespace Starlights.Modules.Characters.Domain.Progression;
 
@@ -25,9 +26,18 @@ public sealed class ProgressionComponent : CharacterComponentBase
             throw new ArgumentOutOfRangeException(nameof(level), "Character level cannot be negative.");
         }
 
+        if (level == CharacterLevel)
+        {
+            return;
+        }
+
         CharacterLevel = level;
+        AddDomainEvent(new CharacterLevelChangedEvent { CharacterId = ParentCharacter, NewLevel = CharacterLevel });
     }
 
+    /// <summary>
+    /// Creates a new instance of the ProgressionComponent associated with the specified character.
+    /// </summary>
     public static ProgressionComponent Create(CharacterId parentCharacter)
     {
         return new ProgressionComponent(parentCharacter);
