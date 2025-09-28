@@ -13,4 +13,5 @@ public sealed class IntegrationEventHandlerListener
     public IntegrationEventHandlerListener<SavingThrowCreatedEvent> SavingThrowCreated { get; } = new();
     public IntegrationEventHandlerListener<CharacterClassCreatedEvent> CharacterClassCreated { get; } = new();
     public IntegrationEventHandlerListener<RegistrationSelectionRuleCreatedEvent> RegistrationSelectionRuleCreated { get; } = new();
+    public IntegrationEventHandlerListener<RegistrationCreatedEvent> RegistrationCreated { get; } = new();
 }

@@ -12,7 +12,8 @@ internal sealed class IntegrationEventHandler :
     IDomainEventHandler<SkillCreatedEvent>,
     IDomainEventHandler<SavingThrowCreatedEvent>,
     IDomainEventHandler<CharacterClassCreatedEvent>,
-    IDomainEventHandler<RegistrationSelectionRuleCreatedEvent>
+    IDomainEventHandler<RegistrationSelectionRuleCreatedEvent>,
+    IDomainEventHandler<RegistrationCreatedEvent>
 {
     private readonly IntegrationEventHandlerListener _listener;
 
@@ -21,9 +22,33 @@ internal sealed class IntegrationEventHandler :
         _listener = listener;
     }
 
-    public Task HandleAsync(AbilityScoreCreatedEvent domainEvent) => _listener.AbilityScoreCreated.Mock.Object.HandleAsync(domainEvent);
-    public Task HandleAsync(SkillCreatedEvent domainEvent) => _listener.SkillCreated.Mock.Object.HandleAsync(domainEvent);
-    public Task HandleAsync(SavingThrowCreatedEvent domainEvent) => _listener.SavingThrowCreated.Mock.Object.HandleAsync(domainEvent);
-    public Task HandleAsync(CharacterClassCreatedEvent domainEvent) => _listener.CharacterClassCreated.Mock.Object.HandleAsync(domainEvent);
-    public Task HandleAsync(RegistrationSelectionRuleCreatedEvent domainEvent) => _listener.RegistrationSelectionRuleCreated.Mock.Object.HandleAsync(domainEvent);
+    public Task HandleAsync(AbilityScoreCreatedEvent domainEvent)
+    {
+        return _listener.AbilityScoreCreated.Mock.Object.HandleAsync(domainEvent);
+    }
+
+    public Task HandleAsync(SkillCreatedEvent domainEvent)
+    {
+        return _listener.SkillCreated.Mock.Object.HandleAsync(domainEvent);
+    }
+
+    public Task HandleAsync(SavingThrowCreatedEvent domainEvent)
+    {
+        return _listener.SavingThrowCreated.Mock.Object.HandleAsync(domainEvent);
+    }
+
+    public Task HandleAsync(CharacterClassCreatedEvent domainEvent)
+    {
+        return _listener.CharacterClassCreated.Mock.Object.HandleAsync(domainEvent);
+    }
+
+    public Task HandleAsync(RegistrationSelectionRuleCreatedEvent domainEvent)
+    {
+        return _listener.RegistrationSelectionRuleCreated.Mock.Object.HandleAsync(domainEvent);
+    }
+
+    public Task HandleAsync(RegistrationCreatedEvent domainEvent)
+    {
+        return _listener.RegistrationCreated.Mock.Object.HandleAsync(domainEvent);
+    }
 }
