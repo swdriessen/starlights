@@ -1,5 +1,6 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities.Eventing;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
+using Starlights.Modules.Characters.Domain.Progression.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
 using Starlights.Modules.Characters.Domain.Skills.Eventing;
@@ -14,4 +15,5 @@ public sealed class IntegrationEventHandlerListener
     public IntegrationEventHandlerListener<CharacterClassCreatedEvent> CharacterClassCreated { get; } = new();
     public IntegrationEventHandlerListener<RegistrationSelectionRuleCreatedEvent> RegistrationSelectionRuleCreated { get; } = new();
     public IntegrationEventHandlerListener<RegistrationCreatedEvent> RegistrationCreated { get; } = new();
+    public IntegrationEventHandlerListener<CharacterLevelChangedEvent> CharacterLevelChanged { get; } = new();
 }

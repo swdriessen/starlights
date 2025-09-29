@@ -58,7 +58,6 @@ public class ClassComponentTests
         component.Classes.Should().HaveCount(2);
     }
 
-
     [TestMethod]
     public void CalculateCharacterLevel_NoClasses_ReturnsZero()
     {
@@ -139,5 +138,83 @@ public class ClassComponentTests
             .Should().HaveCount(2)
             .And.Contain(e => e.ClassId == first.Id)
             .And.Contain(e => e.ClassId == second.Id);
+    }
+
+    [TestMethod]
+    public void LevelUpClass_ClassExists_UpdatesLevel()
+    {
+        // Arrange
+        var character = Character.Create("Test");
+        var component = ClassComponent.Create(character.Id);
+        var characterClass = component.CreateClass(RegistrationId.New(), "Wizard");
+        characterClass.Level.Should().Be(1); // default
+
+        // Act
+        component.LevelUpClass(characterClass.Id, 5);
+
+        // Assert
+        characterClass.Level.Should().Be(5);
+    }
+
+    [TestMethod]
+    public void LevelUpClass_ClassNotFound_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var character = Character.Create("Test");
+        var component = ClassComponent.Create(character.Id);
+        _ = component.CreateClass(RegistrationId.New(), "Wizard");
+        var missingId = CharacterClassId.New();
+
+        // Act
+        var action = () => component.LevelUpClass(missingId, 2);
+
+        // Assert
+        action.Should().Throw<InvalidOperationException>();
+    }
+
+    [TestMethod]
+    public void LevelUpClass_NewLevelZero_ThrowsArgumentOutOfRangeException()
+    {
+        // Arrange
+        var character = Character.Create("Test");
+        var component = ClassComponent.Create(character.Id);
+        var characterClass = component.CreateClass(RegistrationId.New(), "Wizard");
+
+        // Act
+        var action = () => component.LevelUpClass(characterClass.Id, 0);
+
+        // Assert
+        action.Should().Throw<ArgumentOutOfRangeException>();
+    }
+
+    [TestMethod]
+    public void LevelUpClass_NewLevelNegative_ThrowsArgumentOutOfRangeException()
+    {
+        // Arrange
+        var character = Character.Create("Test");
+        var component = ClassComponent.Create(character.Id);
+        var characterClass = component.CreateClass(RegistrationId.New(), "Wizard");
+
+        // Act
+        var action = () => component.LevelUpClass(characterClass.Id, -5);
+
+        // Assert
+        action.Should().Throw<ArgumentOutOfRangeException>();
+    }
+
+    [TestMethod]
+    public void LevelUpClass_CalledMultipleTimes_SetsLatestLevel()
+    {
+        // Arrange
+        var character = Character.Create("Test");
+        var component = ClassComponent.Create(character.Id);
+        var characterClass = component.CreateClass(RegistrationId.New(), "Wizard");
+
+        // Act
+        component.LevelUpClass(characterClass.Id, 2);
+        component.LevelUpClass(characterClass.Id, 7);
+
+        // Assert
+        characterClass.Level.Should().Be(7);
     }
 }

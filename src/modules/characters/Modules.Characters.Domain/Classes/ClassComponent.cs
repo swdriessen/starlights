@@ -34,6 +34,23 @@ public sealed class ClassComponent : CharacterComponentBase
     }
 
     /// <summary>
+    /// Updates the level of the specified class to the new level.
+    /// </summary>
+    public void LevelUpClass(CharacterClassId classId, int newLevel)
+    {
+        var characterClass = _classes.SingleOrDefault(c => c.Id == classId)
+            ?? throw new InvalidOperationException($"Character does not have a class with ID {classId}");
+
+        if (newLevel <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(newLevel), "New level must be a positive integer.");
+        }
+
+        // TODO: return bool if updated, nothing when level is same as current
+        characterClass.UpdateLevel(newLevel);
+    }
+
+    /// <summary>
     /// Adds a new class to the character's collection of classes.
     /// </summary>
     public CharacterClass CreateClass(RegistrationId registration, string name)

@@ -328,23 +328,38 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
     private static void CreateClasses(IElementsRepository repository)
     {
         var barbarianFeature1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 1")
+            .WithComponent(id => new SortingComponent(id, 1))
+            .WithDescription("This is the first feature of the Barbarian class.")
             .Build();
 
         var barbarianFeature2 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 2")
+            .WithComponent(id => new SortingComponent(id, 2))
+            .WithDescription("This is the second feature of the Barbarian class.")
+            .Build();
+
+        var barbarianFeature2_1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 2.1")
+            .WithComponent(id => new SortingComponent(id, 2.1))
+            .WithStatisticRule("barbarian-stat", "2", "base", 2)
+            .WithDescription("This is a nested feature of the second feature of the Barbarian class.")
             .Build();
 
         var barbarianFeature3 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 3")
+            .WithComponent(id => new SortingComponent(id, 3))
+            .WithDescription("This is the third feature of the Barbarian class.")
             .Build();
 
         var barbarian = ElementBuilder.Create(ElementTypeConstants.Class, "Barbarian")
+            .WithDescription("This is the class description.")
             .WithIncludeRule(barbarianFeature1.Id, levelRequirement: 1)
             .WithIncludeRule(barbarianFeature2.Id, levelRequirement: 2)
+            .WithIncludeRule(barbarianFeature2_1.Id, levelRequirement: 2)
             .WithIncludeRule(barbarianFeature3.Id, levelRequirement: 3)
             .Build();
 
         repository.Add(barbarian);
         repository.Add(barbarianFeature1);
         repository.Add(barbarianFeature2);
+        repository.Add(barbarianFeature2_1);
         repository.Add(barbarianFeature3);
 
 
