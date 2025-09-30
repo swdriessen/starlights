@@ -55,7 +55,7 @@ public sealed class GetRegistrationsEndpoint : Endpoint<GetRegistrationsRequest,
         await Send.OkAsync(new GetRegistrationsResponse { Registrations = BuildHierarchy(models) }, ct);
     }
 
-    private List<RegistrationDataModel> BuildHierarchy(List<RegistrationDataModel> registrations)
+    private static List<RegistrationDataModel> BuildHierarchy(List<RegistrationDataModel> registrations)
     {
         // Build lookup of all registrations
         var registrationDict = registrations.ToDictionary(r => r.RegistrationId, r =>
@@ -93,7 +93,7 @@ public sealed class GetRegistrationsEndpoint : Endpoint<GetRegistrationsRequest,
         // Returns a (possibly empty) list of nodes to represent this node in the
         // processed hierarchy. If the node is excluded, its (processed) children
         // are promoted. If included, it (with transformed children) is returned.
-        IEnumerable<RegistrationDataModel> ProcessNode(RegistrationDataModel node)
+        static IEnumerable<RegistrationDataModel> ProcessNode(RegistrationDataModel node)
         {
             if (node.Children.Count == 0)
             {
@@ -124,19 +124,7 @@ public sealed class GetRegistrationsEndpoint : Endpoint<GetRegistrationsRequest,
 
         static bool ShouldIncludeInHierarchy(string type)
         {
-            if (type is "Rule")
-            {
-                return false;
-            }
-
-            if (type is "Ability" or "Skill" or "Saving Throw")
-            {
-                return false;
-            }
-
-            return true;
-            // Only these element types should appear directly; all others get promoted/removed
-            return type is "Class" or "Class Feature" or "Background" or "Background Feature";
+            return type is not "Rule" and not "Ability" and not "Skill" and not "Saving Throw";
         }
     }
 

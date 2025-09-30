@@ -5,7 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\apps\Starlights.Application\Starlights.Application.csproj" />
+    <ProjectReference Include="..\..\..\apps\Starlights.Application\Starlights.Application.csproj" />
   </ItemGroup>
 
 </Project>
