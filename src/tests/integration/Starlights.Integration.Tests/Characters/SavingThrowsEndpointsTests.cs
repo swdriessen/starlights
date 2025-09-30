@@ -28,15 +28,9 @@ public sealed class SavingThrowsEndpointsTests : IntegrationTestBase
 
         await client.InitializeElementsAsync();
 
-        var optionsResponse = await client.GetCharacterCreationOptionsAsync(TestCancellationToken);
-        optionsResponse.Options.Should().NotBeEmpty();
-
-        var portraitsResponse = await client.GetCharacterPortraitOptionsAsync(TestCancellationToken);
-        portraitsResponse.Portraits.Should().NotBeEmpty();
-
-        var name = $"Integration Test Character {Guid.NewGuid()}";
-        var characterResponse = await client.CreateCharacterAsync(optionsResponse.Options[0].Id, name, portraitsResponse.Portraits[0].Url, TestCancellationToken);
-        _integration.SetCharacterIdentifier(characterResponse.Id);
+        // Create a default character
+        var characterId = await client.CreateDefaultCharacterAsync(TestCancellationToken);
+        _integration.SetCharacterIdentifier(characterId);
 
         await _eventListener.SavingThrowCreated.WaitForEvent(count: 6, cancellationToken: TestCancellationToken);
     }

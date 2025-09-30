@@ -23,17 +23,12 @@ public sealed class UpdateClassLevelEndpointTests : IntegrationTestBase
         var client = _integration.CreateClient();
         await client.InitializeElementsAsync(TestCancellationToken);
 
-        // Create a character
-        var creationOptions = await client.GetCharacterCreationOptionsAsync(TestCancellationToken);
-        creationOptions.Options.Should().NotBeEmpty();
-        var portraitOptions = await client.GetCharacterPortraitOptionsAsync(TestCancellationToken);
-        portraitOptions.Portraits.Should().NotBeEmpty();
+        // Create a character via helper
+        var characterId = await client.CreateDefaultCharacterAsync(TestCancellationToken);
+        _integration.SetCharacterIdentifier(characterId);
 
-        var character = await client.CreateCharacterAsync(creationOptions.Options[0].Id, $"LvlUp {Guid.NewGuid()}", portraitOptions.Portraits[0].Url, TestCancellationToken);
-        _integration.SetCharacterIdentifier(character.Id);
-
-        // Wait for initial class creation event (likely none until registration)
-        await _eventListener.RegistrationSelectionRuleCreated.WaitForEvent(predicate: e => e.CharacterId == character.Id, count: 1, cancellationToken: TestCancellationToken);
+        // Wait for initial selection rules
+        await _eventListener.RegistrationSelectionRuleCreated.WaitForEvent(predicate: e => e.CharacterId == characterId, count: 1, cancellationToken: TestCancellationToken);
     }
 
     [TestMethod]

@@ -27,18 +27,9 @@ public sealed class AbilityScoresEndpointsTests : IntegrationTestBase
 
         await client.InitializeElementsAsync();
 
-        // Get creation options
-        var optionsResponse = await client.GetCharacterCreationOptionsAsync(TestCancellationToken);
-        optionsResponse.Options.Should().NotBeEmpty();
-
-        // Get portrait options
-        var portraitsResponse = await client.GetCharacterPortraitOptionsAsync(TestCancellationToken);
-        portraitsResponse.Portraits.Should().NotBeEmpty();
-
-        var characterName = $"Integration Test Character {Guid.NewGuid()}";
-
-        var characterResponse = await client.CreateCharacterAsync(optionsResponse.Options[0].Id, characterName, portraitsResponse.Portraits[0].Url, TestCancellationToken);
-        _integration.SetCharacterIdentifier(characterResponse.Id);
+        // Create a default character
+        var characterId = await client.CreateDefaultCharacterAsync(TestCancellationToken);
+        _integration.SetCharacterIdentifier(characterId);
 
         await _eventListener.AbilityScoreCreated.WaitForEvent(count: 6, cancellationToken: TestCancellationToken);
     }

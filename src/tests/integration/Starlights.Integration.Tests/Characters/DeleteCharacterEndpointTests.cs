@@ -28,24 +28,18 @@ public sealed class DeleteCharacterEndpointTests : IntegrationTestBase
         // Arrange
         var client = _integration.CreateClient();
 
-        var options = await client.GetCharacterCreationOptionsAsync(TestCancellationToken);
-        options.Options.Should().NotBeEmpty();
-
-        var portraits = await client.GetCharacterPortraitOptionsAsync(TestCancellationToken);
-        portraits.Portraits.Should().NotBeEmpty();
-
-        var character = await client.CreateCharacterAsync(options.Options[0].Id, $"ITest {Guid.NewGuid()}", portraits.Portraits[0].Url, TestCancellationToken);
+        var characterId = await client.CreateDefaultCharacterAsync(TestCancellationToken);
 
         // Ensure it exists
         var before = await client.GetCharactersAsync(TestCancellationToken);
-        before.Characters.Should().Contain(c => c.CharacterId == character.Id);
+        before.Characters.Should().Contain(c => c.CharacterId == characterId);
 
         // Act
-        await client.DeleteCharacterAsync(character.Id, HttpStatusCode.NoContent, TestCancellationToken);
+        await client.DeleteCharacterAsync(characterId, HttpStatusCode.NoContent, TestCancellationToken);
 
         // Assert - not present anymore
         var after = await client.GetCharactersAsync(TestCancellationToken);
-        after.Characters.Should().NotContain(c => c.CharacterId == character.Id);
+        after.Characters.Should().NotContain(c => c.CharacterId == characterId);
     }
 
     [TestMethod]

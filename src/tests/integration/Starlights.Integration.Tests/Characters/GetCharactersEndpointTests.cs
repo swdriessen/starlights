@@ -42,8 +42,6 @@ public sealed class GetCharactersEndpointTests : IntegrationTestBase
         var response = await client.GetCharactersAsync(TestCancellationToken);
 
         // Assert
-        response.Should().NotBeNull();
-        response.Characters.Should().NotBeEmpty();
         response.Characters.Should().Contain(c => c.CharacterId == _createdCharacterId);
 
         var created = response.Characters.First(c => c.CharacterId == _createdCharacterId);

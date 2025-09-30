@@ -4,6 +4,7 @@ using FluentAssertions;
 using Starlights.Integration.Tests.Core;
 using Starlights.Integration.Tests.Core.Eventing;
 using Starlights.Integration.Tests.Core.Extensions;
+using Starlights.Integration.Tests.Constants;
 
 namespace Starlights.Integration.Tests.Characters;
 
@@ -25,11 +26,9 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
         var client = _integration.CreateClient();
         await client.InitializeElementsAsync(TestCancellationToken);
 
-        // Create a character we can work with
-        var options = await client.GetCharacterCreationOptionsAsync(TestCancellationToken);
-        var portraits = await client.GetCharacterPortraitOptionsAsync(TestCancellationToken);
-        var character = await client.CreateCharacterAsync(options.Options[0].Id, $"ITest {Guid.NewGuid()}", portraits.Portraits[0].Url, TestCancellationToken);
-        _integration.SetCharacterIdentifier(character.Id);
+        // Create a character we can work with (refactored to helper)
+        var characterId = await client.CreateDefaultCharacterAsync(TestCancellationToken);
+        _integration.SetCharacterIdentifier(characterId);
 
         // wait for character initialization
         await _eventListener.RegistrationSelectionRuleCreated.WaitForEvent(count: 3, cancellationToken: TestCancellationToken);
@@ -44,15 +43,16 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
         var characterId = _integration.GetCharacterIdentifier();
 
         // Act
-        var rules = await client.GetSelectionRulesAsync(characterId, ["Class", "Species", "Background"], TestCancellationToken);
+        var rules = await client.GetSelectionRulesAsync(characterId, [SelectionRuleTypes.Class, SelectionRuleTypes.Species, SelectionRuleTypes.Background], TestCancellationToken);
 
-        // Assert
+        // Assert (explicit - no opaque helper methods)
         rules.Should().NotBeNull();
         rules.Rules.Should().NotBeEmpty();
-        rules.Rules.Should().OnlyContain(r => r.Type == "Class" || r.Type == "Species" || r.Type == "Background");
-        rules.Rules[0].RegistrationId.Should().NotBe(Guid.Empty);
-        rules.Rules[0].RegistrationSelectionRuleId.Should().NotBe(Guid.Empty);
-        rules.Rules[0].Name.Should().NotBeNullOrWhiteSpace();
+        rules.Rules.Select(r => r.Type)
+            .Should().OnlyContain(t => t == SelectionRuleTypes.Class || t == SelectionRuleTypes.Species || t == SelectionRuleTypes.Background);
+        rules.Rules.Should().OnlyContain(r => r.RegistrationId != Guid.Empty
+                                              && r.RegistrationSelectionRuleId != Guid.Empty
+                                              && !string.IsNullOrWhiteSpace(r.Name));
     }
 
     [TestMethod]
@@ -62,18 +62,16 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
         // Arrange
         var client = _integration.CreateClient();
         var characterId = _integration.GetCharacterIdentifier();
-        var rules = await client.GetSelectionRulesAsync(characterId, ["Class"], TestCancellationToken);
+        var rules = await client.GetSelectionRulesAsync(characterId, [SelectionRuleTypes.Class], TestCancellationToken);
         rules.Rules.Should().NotBeEmpty();
         var targetRuleId = rules.Rules[0].RegistrationSelectionRuleId;
 
         // Act
         var options = await client.GetSelectionRuleOptionsAsync(characterId, targetRuleId, TestCancellationToken);
 
-        // Assert
-        options.Should().NotBeNull();
+        // Assert (explicit)
         options.Options.Should().NotBeEmpty();
-        options.Options[0].ElementId.Should().NotBe(Guid.Empty);
-        options.Options[0].Name.Should().NotBeNullOrWhiteSpace();
+        options.Options.Should().OnlyContain(o => o.ElementId != Guid.Empty && !string.IsNullOrWhiteSpace(o.Name));
     }
 
     [TestMethod]
@@ -105,7 +103,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
         var characterId = _integration.GetCharacterIdentifier();
 
         // pick any existing registration for this character to use as parent
-        var rules = await client.GetSelectionRulesAsync(characterId, ["Class", "Species", "Background"], TestCancellationToken);
+        var rules = await client.GetSelectionRulesAsync(characterId, [SelectionRuleTypes.Class, SelectionRuleTypes.Species, SelectionRuleTypes.Background], TestCancellationToken);
         rules.Rules.Should().NotBeEmpty();
         var parentId = rules.Rules[0].RegistrationId;
 
@@ -130,7 +128,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
         var characterId = _integration.GetCharacterIdentifier();
 
         // Use the endpoint to get the selection rule to register against
-        var rules = await client.GetSelectionRulesAsync(characterId, ["Class"], TestCancellationToken);
+        var rules = await client.GetSelectionRulesAsync(characterId, [SelectionRuleTypes.Class], TestCancellationToken);
         rules.Rules.Should().NotBeEmpty();
         var targetRule = rules.Rules[0];
 

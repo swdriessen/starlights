@@ -4,6 +4,7 @@ using FluentAssertions;
 using Starlights.Integration.Tests.Core;
 using Starlights.Integration.Tests.Core.Eventing;
 using Starlights.Integration.Tests.Core.Extensions;
+using Starlights.Integration.Tests.Constants;
 
 namespace Starlights.Integration.Tests.Characters;
 
@@ -25,11 +26,9 @@ public sealed class GetRegistrationsEndpointTests : IntegrationTestBase
         var client = _integration.CreateClient();
         await client.InitializeElementsAsync(TestCancellationToken);
 
-        // Create a character we can work with
-        var options = await client.GetCharacterCreationOptionsAsync(TestCancellationToken);
-        var portraits = await client.GetCharacterPortraitOptionsAsync(TestCancellationToken);
-        var character = await client.CreateCharacterAsync(options.Options[0].Id, $"ITest {Guid.NewGuid()}", portraits.Portraits[0].Url, TestCancellationToken);
-        _integration.SetCharacterIdentifier(character.Id);
+        // Create a character we can work with (refactored to helper)
+        var characterId = await client.CreateDefaultCharacterAsync(TestCancellationToken);
+        _integration.SetCharacterIdentifier(characterId);
 
         // wait for at least one selection rule (ensures some registrations exist)
         await _eventListener.RegistrationSelectionRuleCreated.WaitForEvent(count: 1, cancellationToken: TestCancellationToken);
