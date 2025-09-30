@@ -5,8 +5,14 @@ using Starlights.Modules.Characters.Endpoints.Generation.Registrations.RegisterS
 
 namespace Starlights.Integration.Tests.Core;
 
-internal static class HttpClientCharactersModuleRegisterSelectionExtensions
+/// <summary>
+/// HTTP client extensions for character builder selection registrations.
+/// </summary>
+internal static partial class HttpClientCharactersModuleExtensions
 {
+    /// <summary>
+    /// Registers a selection rule for a character builder flow.
+    /// </summary>
     public static async Task<Guid> RegisterSelectionRuleAsync(this HttpClient client, Guid characterId, Guid parentRegistrationId, Guid selectionRuleId, Guid elementId, HttpStatusCode expected = HttpStatusCode.OK, CancellationToken ct = default)
     {
         var url = $"/api/characters/{characterId}/builder/selection-rules/{selectionRuleId}/register";

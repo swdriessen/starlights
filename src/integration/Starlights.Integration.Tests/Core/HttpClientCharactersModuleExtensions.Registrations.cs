@@ -3,8 +3,14 @@ using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegist
 
 namespace Starlights.Integration.Tests.Core;
 
-internal static class HttpClientCharactersModuleRegistrationsExtensions
+/// <summary>
+/// HTTP client extensions for retrieving character builder registrations.
+/// </summary>
+internal static partial class HttpClientCharactersModuleExtensions
 {
+    /// <summary>
+    /// Retrieves builder registrations for a character.
+    /// </summary>
     public static Task<GetRegistrationsResponse> GetRegistrationsAsync(this HttpClient client, Guid characterId, CancellationToken ct = default)
     {
         var url = $"/api/characters/{characterId}/registrations";
