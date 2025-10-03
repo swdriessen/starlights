@@ -1,4 +1,4 @@
-namespace Starlights.Integration.Tests.Constants;
+namespace Starlights.Integration.Constants;
 
 internal static class SelectionRuleTypes
 {

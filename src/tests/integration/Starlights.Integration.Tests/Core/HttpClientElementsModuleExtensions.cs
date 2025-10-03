@@ -1,7 +1,7 @@
 using System.Net;
 using FluentAssertions;
 
-namespace Starlights.Integration.Tests.Core;
+namespace Starlights.Integration.Core;
 
 /// <summary>
 /// Reusable HTTP client extensions for elements-related endpoints.

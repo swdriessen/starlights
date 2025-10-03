@@ -1,4 +1,4 @@
-﻿namespace Starlights.Integration.Tests.Core;
+﻿namespace Starlights.Integration.Core;
 
 /// <summary>
 /// Builder for creating an integration host.
@@ -7,12 +7,22 @@ public class IntegrationHostBuilder
 {
     private readonly List<Action<IntegrationHostOptions>> _configureActions = [];
 
-    /// <summary>
-    /// Configures the integration host to use a console activity processor for OpenTelemetry tracing.
-    /// </summary>
-    public IntegrationHostBuilder WithConsoleActivityProcessor()
+    public IntegrationHostBuilder()
     {
-        _configureActions.Add(o => o.UseConsoleActivityProcessor = true);
+
+    }
+
+    /// <summary>
+    /// Gets a collection of custom properties associated with the current instance.
+    /// </summary>
+    public Dictionary<string, object> Properties { get; } = [];
+
+    /// <summary>
+    /// Adds a configuration action to customize the integration host options.
+    /// </summary>
+    public IntegrationHostBuilder ConfigureOptions(Action<IntegrationHostOptions> options)
+    {
+        _configureActions.Add(options);
         return this;
     }
 
@@ -21,12 +31,25 @@ public class IntegrationHostBuilder
     /// </summary>
     public IntegrationHost Build()
     {
-        return new IntegrationHost(options =>
-        {
-            foreach (var configureAction in _configureActions)
+        return new IntegrationHost(
+            properties =>
             {
-                configureAction(options);
+                // add all properties to the host
+                foreach (var (key, value) in Properties)
+                {
+                    properties[key] = value;
+                }
+
+                // rather register an IntegrationTestContext if a TestContext was provided?
+            },
+            options =>
+            {
+                foreach (var configureAction in _configureActions)
+                {
+                    configureAction(options);
+                }
             }
-        });
+
+        );
     }
 }

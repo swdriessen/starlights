@@ -1,4 +1,5 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities.Eventing;
+using Starlights.Modules.Characters.Domain.Characters.Eventing;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
 using Starlights.Modules.Characters.Domain.Progression.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
@@ -6,9 +7,10 @@ using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
 using Starlights.Modules.Characters.Domain.Skills.Eventing;
 using Starlights.Platform.Eventing;
 
-namespace Starlights.Integration.Tests.Core.Eventing;
+namespace Starlights.Integration.Core.Eventing;
 
 internal sealed class IntegrationEventHandler :
+    IDomainEventHandler<CharacterCreatedEvent>,
     IDomainEventHandler<AbilityScoreCreatedEvent>,
     IDomainEventHandler<SkillCreatedEvent>,
     IDomainEventHandler<SavingThrowCreatedEvent>,
@@ -17,45 +19,53 @@ internal sealed class IntegrationEventHandler :
     IDomainEventHandler<RegistrationCreatedEvent>,
     IDomainEventHandler<CharacterLevelChangedEvent>
 {
-    private readonly IntegrationEventHandlerListener _listener;
+    private readonly EventObserverCollection _observers;
 
-    public IntegrationEventHandler(IntegrationEventHandlerListener listener)
+    public IntegrationEventHandler(EventObserverCollection observers)
     {
-        _listener = listener;
+        _observers = observers;
+    }
+
+    public Task HandleAsync(CharacterCreatedEvent domainEvent)
+    {
+        return _observers.CharacterCreated.Mock.Object.HandleAsync(domainEvent);
     }
 
     public Task HandleAsync(AbilityScoreCreatedEvent domainEvent)
     {
-        return _listener.AbilityScoreCreated.Mock.Object.HandleAsync(domainEvent);
+        return _observers.AbilityScoreCreated.Mock.Object.HandleAsync(domainEvent);
     }
 
     public Task HandleAsync(SkillCreatedEvent domainEvent)
     {
-        return _listener.SkillCreated.Mock.Object.HandleAsync(domainEvent);
+        return _observers.SkillCreated.Mock.Object.HandleAsync(domainEvent);
     }
 
     public Task HandleAsync(SavingThrowCreatedEvent domainEvent)
     {
-        return _listener.SavingThrowCreated.Mock.Object.HandleAsync(domainEvent);
+        return _observers.SavingThrowCreated.Mock.Object.HandleAsync(domainEvent);
     }
 
     public Task HandleAsync(CharacterClassCreatedEvent domainEvent)
     {
-        return _listener.CharacterClassCreated.Mock.Object.HandleAsync(domainEvent);
+        return _observers.CharacterClassCreated.Mock.Object.HandleAsync(domainEvent);
     }
 
     public Task HandleAsync(RegistrationSelectionRuleCreatedEvent domainEvent)
     {
-        return _listener.RegistrationSelectionRuleCreated.Mock.Object.HandleAsync(domainEvent);
+        return _observers.RegistrationSelectionRuleCreated.Mock.Object.HandleAsync(domainEvent);
     }
 
     public Task HandleAsync(RegistrationCreatedEvent domainEvent)
     {
-        return _listener.RegistrationCreated.Mock.Object.HandleAsync(domainEvent);
+        return _observers.RegistrationCreated.Mock.Object.HandleAsync(domainEvent);
     }
 
     public Task HandleAsync(CharacterLevelChangedEvent domainEvent)
     {
-        return _listener.CharacterLevelChanged.Mock.Object.HandleAsync(domainEvent);
+        // TODO: try make this work with the generic method
+        //return _listener.Event<CharacterLevelChangedEvent>().Mock.Object.HandleAsync(domainEvent);
+
+        return _observers.CharacterLevelChanged.Mock.Object.HandleAsync(domainEvent);
     }
 }

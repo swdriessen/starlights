@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Starlights.Integration.Tests.Core;
+using Starlights.Integration.Core;
 
 namespace Starlights.Integration.Tests.Elements;
 

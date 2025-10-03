@@ -1,19 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Starlights.Integration.Tests.Core.Eventing;
+﻿using Starlights.Integration.Drivers.Elements;
 
-namespace Starlights.Integration.Tests.Core.Extensions;
+namespace Starlights.Integration.Core.Extensions;
 
 public static class IntegrationHostExtensions
 {
-    public static IntegrationHostOptions GetIntegrationHostOptions(this IntegrationHost host)
+    public static IntegrationHostOptions GetIntegrationHostOptions(this IIntegrationHost host)
     {
         return host.Properties["IntegrationHostOptions"] as IntegrationHostOptions
             ?? throw new InvalidOperationException("IntegrationHostOptions not found in properties.");
     }
 
-    public static IntegrationEventHandlerListener GetIntegrationEventHandlerListener(this IntegrationHost host)
+    public static Task InitializeElements(this IIntegrationHost host)
     {
-        return host.Services
-            .GetRequiredService<IntegrationEventHandlerListener>();
+        return host.GetDriver<ElementsInitializationDriver>().InitializeElementsAsync(CancellationToken.None);
     }
 }
