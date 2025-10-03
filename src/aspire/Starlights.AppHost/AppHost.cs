@@ -31,11 +31,33 @@ if (builder.ExecutionContext.IsRunMode)
 if (builder.ExecutionContext.IsRunMode)
 {
     builder.AddNpmApp("react-builder-app", "../../frontend/builder-app", "dev")
-        //.WithEnvironment("BROWSER", "none")
+        .WithEnvironment("BROWSER", "none")
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()
         .WithReference(application)
         .WaitFor(application);
+}
+
+if (builder.ExecutionContext.IsRunMode)
+{
+    // this section allows access to the frontend from outside the local network using a developer tunnel
+    // this does not start the tunnel automatically, the tunnel must be started explicitly
+    // when the dev tunnel becomes available, the frontend will start automatically
+
+    var tunnel = builder.AddDevTunnel("dev-tunnel")
+        .WithAnonymousAccess()
+        .WithExplicitStart();
+
+    var app = builder.AddNpmApp("dev-tunnel-react-builder-app", "../../frontend/builder-app", "dev")
+        .WithIconName("Cloud", IconVariant.Regular)
+        .WithHttpEndpoint(env: "PORT")
+        .WithExternalHttpEndpoints()
+        .WithReference(application, tunnel)
+        .WithParentRelationship(tunnel)
+        .WaitFor(application);
+
+    tunnel.WithReference(application);
+    tunnel.WithReference(app);
 }
 
 builder.Build().Run();
