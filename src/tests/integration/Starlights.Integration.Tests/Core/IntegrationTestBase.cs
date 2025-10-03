@@ -1,4 +1,4 @@
-namespace Starlights.Integration.Tests.Core;
+namespace Starlights.Integration.Core;
 
 public abstract class IntegrationTestBase
 {

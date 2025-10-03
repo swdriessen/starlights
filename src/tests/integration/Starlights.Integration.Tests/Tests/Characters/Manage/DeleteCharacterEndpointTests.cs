@@ -2,7 +2,6 @@ using FluentAssertions;
 using Starlights.Integration.Core;
 using Starlights.Integration.Core.Extensions;
 using Starlights.Integration.Drivers.CharacterCreation;
-using Starlights.Integration.Tests.Core;
 
 namespace Starlights.Integration.Tests.Characters.Manage;
 

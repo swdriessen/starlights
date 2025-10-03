@@ -5,6 +5,7 @@ using Starlights.Integration.Core;
 using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacterDetails;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
+using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
@@ -67,6 +68,22 @@ internal sealed class CharacterCreationEndpointDriver
         response.EnsureSuccessStatusCode();
 
         var data = await response.Content.ReadFromJsonAsync<GetCharacterDetailsResponse>();
+        data.Should().NotBeNull("Expected response content to be deserializable.");
+
+        return data;
+    }
+
+    /// <summary>
+    /// Retrieves the available options for character creation.
+    /// </summary>
+    public async Task<GetCharacterCreationOptionsResponse> GetCharacterCreationOptionsAsync()
+    {
+        using var api = _integration.CreateClient();
+
+        var response = await api.GetAsync("/api/characters/creation-options");
+        response.EnsureSuccessStatusCode();
+
+        var data = await response.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>();
         data.Should().NotBeNull("Expected response content to be deserializable.");
 
         return data;

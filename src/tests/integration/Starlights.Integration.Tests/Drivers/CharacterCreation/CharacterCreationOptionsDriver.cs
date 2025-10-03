@@ -1,23 +1,20 @@
 ﻿using FluentAssertions;
-using Starlights.Integration.Core;
-using Starlights.Integration.Tests.Core;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
 internal sealed class CharacterCreationOptionsDriver
 {
-    private readonly IIntegrationHost _integration;
+    private readonly CharacterCreationEndpointDriver _api;
 
-    public CharacterCreationOptionsDriver(IIntegrationHost integration)
+    public CharacterCreationOptionsDriver(CharacterCreationEndpointDriver api)
     {
-        _integration = integration;
+        _api = api;
     }
 
     public async Task<List<CharacterCreationOption>> GetCharacterCreationOptionsAsync()
     {
-        using var api = _integration.CreateClient();
-        var response = await api.GetCharacterCreationOptionsAsync();
+        var response = await _api.GetCharacterCreationOptionsAsync();
         response.Options.Should().NotBeEmpty("There should be at least one character creation option available.");
         return response.Options;
     }

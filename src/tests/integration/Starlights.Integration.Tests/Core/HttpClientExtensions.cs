@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 
-namespace Starlights.Integration.Tests.Core;
+namespace Starlights.Integration.Core;
 
 /// <summary>
 /// Reusable helpers for concise HttpClient usage in integration tests.
@@ -38,7 +38,7 @@ internal static class HttpClientExtensions
     {
         if (response.StatusCode != expected)
         {
-            string details = string.Empty;
+            var details = string.Empty;
             try
             {
                 details = await response.Content.ReadAsStringAsync();

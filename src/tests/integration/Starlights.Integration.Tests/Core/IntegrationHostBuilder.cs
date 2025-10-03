@@ -7,11 +7,6 @@ public class IntegrationHostBuilder
 {
     private readonly List<Action<IntegrationHostOptions>> _configureActions = [];
 
-    public IntegrationHostBuilder()
-    {
-
-    }
-
     /// <summary>
     /// Gets a collection of custom properties associated with the current instance.
     /// </summary>
