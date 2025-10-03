@@ -4,7 +4,7 @@ using Starlights.Integration.Core;
 
 namespace Starlights.Integration.Drivers.Elements;
 
-internal class ElementsEndpointDriver
+internal class ElementsEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
 

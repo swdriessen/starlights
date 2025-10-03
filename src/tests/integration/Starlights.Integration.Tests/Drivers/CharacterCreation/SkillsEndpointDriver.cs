@@ -2,12 +2,11 @@
 using FluentAssertions;
 using Starlights.Integration.Core;
 using Starlights.Integration.Core.Extensions;
-using Starlights.Modules.Characters.Endpoints.Characters.Skills;
 using Starlights.Modules.Characters.Endpoints.Characters.Skills.GetSkills;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class SkillsEndpointDriver
+internal sealed class SkillsEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
 
@@ -33,25 +32,5 @@ internal sealed class SkillsEndpointDriver
         data.Should().NotBeNull("Expected response content to be deserializable.");
 
         return data;
-    }
-}
-
-internal sealed class SkillsDriver
-{
-    private readonly IIntegrationHost _integration;
-    private readonly SkillsEndpointDriver _api;
-
-    public SkillsDriver(IIntegrationHost integration, SkillsEndpointDriver api)
-    {
-        _integration = integration;
-        _api = api;
-    }
-
-    public async Task<List<SkillDataModel>> GetSkills()
-    {
-        var response = await _api.GetSkills();
-        response.Skills.Should().NotBeNull();
-
-        return response.Skills;
     }
 }

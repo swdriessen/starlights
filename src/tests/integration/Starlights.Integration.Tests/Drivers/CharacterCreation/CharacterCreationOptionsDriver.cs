@@ -1,9 +1,10 @@
 ﻿using FluentAssertions;
+using Starlights.Integration.Core;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class CharacterCreationOptionsDriver
+internal sealed class CharacterCreationOptionsDriver : IDriver
 {
     private readonly CharacterCreationEndpointDriver _api;
 

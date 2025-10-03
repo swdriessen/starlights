@@ -9,7 +9,7 @@ using Starlights.Modules.Characters.Endpoints.Models;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class RegistrationDriver
+internal sealed class RegistrationDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly EventObserverCollection _events;
@@ -78,10 +78,6 @@ internal sealed class RegistrationDriver
 
         return response.RegistrationId;
     }
-
-
-
-
 
     /// <summary>
     /// Registers a new character class with the specified name and returns the unique registration identifier.

@@ -12,7 +12,7 @@ using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class CharacterCreationDriver
+internal sealed class CharacterCreationDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly CharacterCreationEndpointDriver _api;

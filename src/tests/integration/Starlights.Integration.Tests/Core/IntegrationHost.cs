@@ -6,8 +6,7 @@ using Microsoft.Extensions.Hosting;
 using OpenTelemetry.Trace;
 using Starlights.Application;
 using Starlights.Integration.Core.Eventing;
-using Starlights.Integration.Drivers.CharacterCreation;
-using Starlights.Integration.Drivers.Elements;
+using Starlights.Integration.Core.Extensions;
 using Starlights.Platform.Eventing.EventPublisher;
 
 namespace Starlights.Integration.Core;
@@ -46,35 +45,13 @@ public class IntegrationHost : IIntegrationHost
                     services.AddSingleton<EventObserverCollection>();
                     services.AddDomainEventHandlersFrom(typeof(IntegrationHost).Assembly);
 
-                    // register drivers
-                    // IDriver => auto register
-                    services.AddSingleton<CharacterCreationOptionsDriver>();
-
-                    services.AddSingleton<CharacterCreationDriver>();
-                    services.AddSingleton<CharacterCreationEndpointDriver>();
-
-                    services.AddSingleton<CharacterManagementDriver>();
-                    services.AddSingleton<CharacterManagementEndpointDriver>();
-
-                    services.AddSingleton<AbilityScoresEndpointDriver>();
-                    services.AddSingleton<AbilityScoreDriver>();
-
-                    services.AddSingleton<SkillsEndpointDriver>();
-                    services.AddSingleton<SkillsDriver>();
-
-                    services.AddSingleton<SavingThrowEndpointDriver>();
-                    services.AddSingleton<SavingThrowDriver>();
-
-                    services.AddSingleton<RegistrationEndpointDriver>();
-                    services.AddSingleton<RegistrationDriver>();
-
-                    services.AddSingleton<ElementsInitializationDriver>();
-                    services.AddSingleton<ElementsEndpointDriver>();
+                    // auto register all IDriver implementations in this assembly
+                    services.RegisterDrivers();
 
                     // drivers need the instance of this host
                     services.AddSingleton<IIntegrationHost>(this);
 
-                    if (options.UseConsoleActivityProcessor) // show intrumentation in the console
+                    if (options.UseConsoleActivityProcessor) // show instrumentation in the console
                     {
                         services.AddOpenTelemetry()
                             .WithTracing(tracing => tracing.AddProcessor<CustomConsoleActivityProcessor>());

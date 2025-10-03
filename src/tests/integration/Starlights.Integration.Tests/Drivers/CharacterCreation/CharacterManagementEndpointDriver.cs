@@ -7,7 +7,7 @@ using Starlights.Modules.Characters.Endpoints.CharacterSheet.GetFeatures;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class CharacterManagementEndpointDriver
+internal sealed class CharacterManagementEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
 

@@ -9,7 +9,7 @@ using Starlights.Modules.Characters.Endpoints.Generation.Registrations.RegisterS
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class RegistrationEndpointDriver
+internal sealed class RegistrationEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
 

@@ -2,7 +2,7 @@
 
 namespace Starlights.Integration.Drivers.Elements;
 
-internal class ElementsInitializationDriver
+internal class ElementsInitializationDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsEndpointDriver _endpointDriver;

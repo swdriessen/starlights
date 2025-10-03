@@ -6,7 +6,7 @@ using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegist
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class CharacterManagementDriver
+internal sealed class CharacterManagementDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly CharacterManagementEndpointDriver _api;

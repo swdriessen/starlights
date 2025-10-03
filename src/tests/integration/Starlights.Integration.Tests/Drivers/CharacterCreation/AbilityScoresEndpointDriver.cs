@@ -8,7 +8,7 @@ using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.UpdateBas
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class AbilityScoresEndpointDriver
+internal sealed class AbilityScoresEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
 

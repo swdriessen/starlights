@@ -1,9 +1,10 @@
 ﻿using FluentAssertions;
+using Starlights.Integration.Core;
 using Starlights.Modules.Characters.Endpoints.Models;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
-internal sealed class AbilityScoreDriver
+internal sealed class AbilityScoreDriver : IDriver
 {
     private readonly AbilityScoresEndpointDriver _api;
 

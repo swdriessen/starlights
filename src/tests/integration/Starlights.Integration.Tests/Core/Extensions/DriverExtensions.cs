@@ -14,4 +14,20 @@ public static class DriverExtensions
     {
         return host.Services.GetRequiredService<TDriver>();
     }
+
+    /// <summary>
+    /// Registers all implementations of the IDriver interface from the IntegrationHost assembly as singleton services.
+    /// </summary>
+    public static void RegisterDrivers(this IServiceCollection services)
+    {
+        var driverInterface = typeof(IDriver);
+
+        foreach (var driverType in typeof(IntegrationHost).Assembly // TODO: make this configurable
+                     .DefinedTypes
+                     .Where(t => !t.IsAbstract && !t.IsInterface && driverInterface.IsAssignableFrom(t))
+                     .Select(t => t.AsType()))
+        {
+            services.AddSingleton(driverType);
+        }
+    }
 }
