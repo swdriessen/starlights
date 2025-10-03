@@ -1,9 +1,11 @@
 ﻿using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.SavingThrows;
 using Starlights.Modules.Characters.Domain.Skills;
+using Starlights.Modules.Characters.Domain.Classes; // added
 using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows;
 using Starlights.Modules.Characters.Endpoints.Characters.Skills;
 using Starlights.Modules.Characters.Endpoints.Models;
+using Starlights.Modules.Characters.Endpoints.Characters.GetCharacterClasses; // added
 
 namespace Starlights.Modules.Characters.Endpoints;
 
@@ -70,5 +72,25 @@ public static class DataModelMappingExtensions
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
         return [.. entities.Select(e => e.AsSavingThrowDataModel())];
+    }
+
+    // character classes
+    public static CharacterClassDataModel AsCharacterClassDataModel(this CharacterClass entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+        return new CharacterClassDataModel
+        {
+            CharacterClassId = entity.Id,
+            RegistrationId = entity.Registration,
+            Name = entity.Name,
+            Level = entity.Level,
+            IsPrimary = entity.IsPrimary
+        };
+    }
+
+    public static List<CharacterClassDataModel> AsCharacterClassDataModels(this IEnumerable<CharacterClass> entities)
+    {
+        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
+        return [.. entities.Select(e => e.AsCharacterClassDataModel())];
     }
 }

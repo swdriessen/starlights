@@ -44,7 +44,12 @@ sealed class GetCharactersEndpoint : EndpointWithoutRequest<GetCharactersRespons
             var build = new StringBuilder();
             foreach (var item in classComponent.Classes)
             {
-                build.AppendFormat("{0} ({1})", item.Name, item.Level);
+                build.AppendFormat("{0}", item.Name);
+
+                if (classComponent.IsMulticlass)
+                {
+                    build.AppendFormat(" ({0}) /", item.Level);
+                }
             }
 
             models.Add(new CharacterDetailsDataModel

@@ -25,7 +25,14 @@ export function useCharacterPortraitOptions(): UseQueryResult<CharacterPortraitO
   });
 }
 
-export type CharacterCard = { characterId: string; name: string; portraitUrl?: string; level: number; build: string; isFavorite: boolean };
+export type CharacterCard = {
+  characterId: string;
+  name: string;
+  portraitUrl?: string;
+  level: number;
+  build: string;
+  isFavorite: boolean;
+};
 export type CharacterCards = { characters: CharacterCard[] };
 
 export function useCharacterCards(): UseQueryResult<CharacterCards, Error> {

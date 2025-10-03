@@ -15,7 +15,7 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
 /// </summary>
 public sealed class DomainEventProcessingService : BackgroundService
 {
-    internal const int InitialInterval = 100;
+    internal const int InitialInterval = 10;
     internal const int MaximumInterval = 10_000;
     internal const int BatchSize = 100;
 

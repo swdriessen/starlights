@@ -2,6 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  useRegisterSelectionMutation,
+  useRegistrationModels,
+  useSelectionRuleDataModels,
+  useSelectionRuleOptionModels,
+} from "@/lib/api/builder/registration-api";
+import {
   useAbilityScores,
   useCharacterDetails,
   useSavingThrows,
@@ -10,6 +16,7 @@ import {
   useUpdateBaseAbilityScore,
 } from "@/lib/api/characters/queries";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import type { JSX } from "react";
 import { useParams } from "react-router-dom";
 
 function AbilitiesComponent({ id: characterId }: { id: string }) {
@@ -204,11 +211,92 @@ function SkillsComponent({ characterId }: { characterId: string }) {
   );
 }
 
+function SelectionRulesSectionOptionsComponent({
+  characterId,
+  selectionRuleId,
+  parentRegistration,
+}: {
+  characterId: string;
+  selectionRuleId: string;
+  parentRegistration: string;
+}) {
+  const { data: optionsData, isLoading, error } = useSelectionRuleOptionModels(characterId, selectionRuleId);
+
+  const registerSelectionMutation = useRegisterSelectionMutation(characterId, selectionRuleId);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      {optionsData && (
+        <>
+          <div className="border border-dashed rounded p-4 my-2">
+            <ul>
+              {optionsData.options.map((option) => (
+                <li key={option.elementId}>
+                  {option.name} | ID: {option.elementId} |{" "}
+                  <Button
+                    size="sm"
+                    disabled={registerSelectionMutation.isPending}
+                    onClick={() => registerSelectionMutation.mutate({ parentRegistration: parentRegistration, elementId: option.elementId })}
+                  >
+                    Register
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function SelectionRulesSectionComponent({ characterId, type }: { characterId: string; type: "Class" | "Race" | "Background" }) {
+  const { data: selectionRulesData, isLoading, error } = useSelectionRuleDataModels(characterId, type);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div className="flex flex-row items-center justify-between mb-2 border border-dashed rounded p-4 ">
+      {selectionRulesData && (
+        <div className="overflow-x-auto  text-sm w-full">
+          <h4>{type} Selection Rules</h4>
+          {selectionRulesData.rules.map((rule, index) => (
+            // 1 component per rule with its options and registration button
+
+            <div key={rule.registrationSelectionRuleId}>
+              <Separator className="my-4" />
+              <div className="border border-dashed rounded p-4 my-2">
+                <h5 className="text-sm font-semibold mb-1">
+                  {rule.name} ({rule.type})
+                </h5>
+                <p className="text-xxs text-muted-foreground mb-2">
+                  ID: {rule.registrationSelectionRuleId} | Registered: {rule.activeRegistration ? "Yes" : "No"}
+                </p>
+
+                <SelectionRulesSectionOptionsComponent
+                  characterId={characterId}
+                  selectionRuleId={rule.registrationSelectionRuleId}
+                  parentRegistration={rule.registrationId}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CharactersDetailsPage() {
   const { id } = useParams<{ id: string }>();
 
   if (!id) return <div>Character ID is required.</div>;
   const { data: characterDetails } = useCharacterDetails(id);
+  const { data: registrationModels } = useRegistrationModels(id);
 
   return (
     <>
@@ -218,45 +306,113 @@ export default function CharactersDetailsPage() {
       </div>
 
       <div className="border border-dashed rounded p-4 my-4">
-        <dl className="grid grid-cols-2 gap-1">
-          <dt>Id:</dt>
-          <dd>{id}</dd>
-          <dt>Name:</dt>
-          <dd>{characterDetails?.character.name ?? <span className="text-yellow-700">Loading...</span>}</dd>
-          <dt>Level:</dt>
-          <dd>{characterDetails?.character.level ?? <span className="text-yellow-700">Loading...</span>}</dd>
-          <dt>Build:</dt>
-          <dd>{characterDetails?.character.build ?? <span className="text-yellow-700">Loading...</span>}</dd>
-          <dt>Portrait URL:</dt>
-          <dd>{characterDetails?.character.portraitUrl ?? <span className="text-yellow-700">Loading...</span>}</dd>
-        </dl>
+        <div className="flex flex-between gap-4">
+          <dl className="grid grid-cols-2 gap-1 flex-grow-1">
+            <dt>Id:</dt>
+            <dd>{id}</dd>
+            <dt>Name:</dt>
+            <dd>{characterDetails?.character.name ?? <span className="text-yellow-700">Loading...</span>}</dd>
+            <dt>Level:</dt>
+            <dd>{characterDetails?.character.level ?? <span className="text-yellow-700">Loading...</span>}</dd>
+            <dt>Build:</dt>
+            <dd>{characterDetails?.character.build ?? <span className="text-yellow-700">Loading...</span>}</dd>
+            <dt>Portrait URL:</dt>
+            <dd>{characterDetails?.character.portraitUrl ?? <span className="text-yellow-700">Loading...</span>}</dd>
+          </dl>
+          <div className="flex-shrink-0">
+            <img src={characterDetails?.character.portraitUrl} alt="Character Portrait" className="h-32 w-32 object-cover mt-2 rounded" />
+          </div>
+        </div>
       </div>
 
-      <hr className="my-4" />
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-12">
+          <h5>Character Sheet Data</h5>
+        </div>
+        <Tabs defaultValue="tab-sheet-1" className="col-span-12">
+          <TabsList className="w-full">
+            <TabsTrigger value="tab-sheet-1">Ability Scores</TabsTrigger>
+            <TabsTrigger value="tab-sheet-2">Saving Throws</TabsTrigger>
+            <TabsTrigger value="tab-sheet-3">Skills</TabsTrigger>
+            <TabsTrigger value="tab-sheet-4">Class Features</TabsTrigger>
+          </TabsList>
+          <TabsContent value="tab-sheet-1">
+            <AbilitiesComponent id={id} />
+          </TabsContent>
+          <TabsContent value="tab-sheet-2">
+            <SavingThrowsComponent characterId={id} />
+          </TabsContent>
+          <TabsContent value="tab-sheet-3">
+            <SkillsComponent characterId={id} />
+          </TabsContent>
+          <TabsContent value="tab-sheet-4">
+            <>
+              {registrationModels ? (
+                <div className="border border-dashed rounded p-4 overflow-x-auto text-sm">
+                  {(() => {
+                    const renderNode = (reg: any, level = 0): JSX.Element => (
+                      <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
+                        <div className="font-bold">
+                          {reg.name} <span className="text-muted-foreground">({reg.type})</span>
+                        </div>
+                        {/* <div className="text-xxs text-muted-foreground">ID: {reg.registrationId}</div> */}
+                        {reg.children && reg.children.length > 0 && <div>{reg.children.map((child: any) => renderNode(child, level + 1))}</div>}
+                      </div>
+                    );
+
+                    return <div>{registrationModels.registrations.map((r: any) => renderNode(r, 0))}</div>;
+                  })()}
+                </div>
+              ) : (
+                <span className="text-yellow-700">Loading...</span>
+              )}
+            </>
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      <Separator className="my-4" />
 
       <div className="grid grid-cols-12 gap-2">
-        <Tabs defaultValue="tab-ability-scores" className="col-span-6">
-          <TabsList className="w-full  ">
-            <TabsTrigger value="tab-ability-scores">Ability Scores</TabsTrigger>
+        <div className="col-span-12">
+          <h5>Actions | Commands</h5>
+        </div>
+        <Tabs defaultValue="tab-actions-1" className="col-span-12">
+          <TabsList className="w-full">
+            <TabsTrigger value="tab-actions-1">Character Actions</TabsTrigger>
+            <TabsTrigger value="tab-actions-2">Character Abilities</TabsTrigger>
           </TabsList>
-          <TabsContent value="tab-ability-scores">
+          <TabsContent value="tab-actions-1">
+            <div className="border border-dashed rounded p-4 my-2">
+              <p>This section will eventually contain character actions such as resting, leveling up, etc.</p>
+              <p>For now, it's just a placeholder.</p>
+            </div>
+          </TabsContent>
+          <TabsContent value="tab-actions-2">
             <AbilitiesComponent id={id} />
           </TabsContent>
         </Tabs>
-        <Tabs defaultValue="tab-saves" className="col-span-3">
-          <TabsList className="w-full ">
-            <TabsTrigger value="tab-saves">Saving Throws</TabsTrigger>
+      </div>
+      <Separator className="my-4" />
+
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-12">
+          <h5>Build | Selection Rules</h5>
+        </div>
+        <Tabs defaultValue="tab-selection-rules-class" className="col-span-12">
+          <TabsList className="w-full">
+            <TabsTrigger value="tab-selection-rules-class">Class</TabsTrigger>
+            <TabsTrigger value="tab-selection-rules-race">Race</TabsTrigger>
+            <TabsTrigger value="tab-selection-rules-background">Background</TabsTrigger>
           </TabsList>
-          <TabsContent value="tab-saves">
-            <SavingThrowsComponent characterId={id} />
+          <TabsContent value="tab-selection-rules-class">
+            <SelectionRulesSectionComponent characterId={id} type="Class" />
           </TabsContent>
-        </Tabs>
-        <Tabs defaultValue="tab-skills" className="col-span-3">
-          <TabsList className="w-full ">
-            <TabsTrigger value="tab-skills">Skills</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tab-skills">
-            <SkillsComponent characterId={id} />
+          <TabsContent value="tab-selection-rules-race">
+            <SelectionRulesSectionComponent characterId={id} type="Race" />
+          </TabsContent>
+          <TabsContent value="tab-selection-rules-background">
+            <SelectionRulesSectionComponent characterId={id} type="Background" />
           </TabsContent>
         </Tabs>
       </div>

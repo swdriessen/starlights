@@ -50,7 +50,12 @@ sealed class GetCharacterDetailsEndpoint : EndpointWithoutRequest<GetCharacterDe
         var build = new StringBuilder();
         foreach (var item in classComponent.Classes)
         {
-            build.AppendFormat("{0} ({1})", item.Name, item.Level);
+            build.Append(item.Name);
+
+            if (classComponent.IsMulticlass)
+            {
+                build.AppendFormat(" ({0}) /", item.Level);
+            }
         }
 
         var model = new CharacterDetailsDataModel
@@ -59,7 +64,7 @@ sealed class GetCharacterDetailsEndpoint : EndpointWithoutRequest<GetCharacterDe
             Name = character.Name,
             PortraitUrl = appearance.PortraitUrl,
             Level = progression.CharacterLevel,
-            Build = build.ToString()
+            Build = build.ToString().TrimEnd('/').Trim(),
         };
 
         var response = new GetCharacterDetailsResponse { Character = model };

@@ -1,6 +1,6 @@
 # Project Starlights
 
-This is a work-in-progress project intended as an online toolset to enhance tabletop role‑playing games. It's initial focus is creating characters for Dungeons & Dragons. 
+This is a work-in-progress project intended as an online toolset to enhance tabletop role‑playing games. It's initial focus is creating characters for Dungeons & Dragons in the form of an online version of [Aurora](https://www.aurorabuilder.com) which was my original creation years ago.
 There is no public-facing website hosted for this project at this time and more details will be shared as development progresses.
 
 If you'd like to see this project grow, please consider giving it a star :star: — thank you!
@@ -18,7 +18,7 @@ If you'd like to see this project grow, please consider giving it a star :star: 
 ### Frontend (Experimental)
 
 - React 19 (TypeScript)
-- Vite 7 
+- Vite 7
 - Tailwind CSS 4
 - Shadcn UI components
 
@@ -84,7 +84,7 @@ In Development, the app maps:
 
 ## License
 
-This project is being developed in the open under the [MIT License](./LICENSE). 
+This project is being developed in the open under the [MIT License](./LICENSE).
 
 ## Acknowledgements
 

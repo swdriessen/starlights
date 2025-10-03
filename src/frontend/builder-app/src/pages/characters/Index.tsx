@@ -274,8 +274,7 @@ function CharacterCardCollectionSquares() {
                     <div className="m-1.5 absolute top-0 left-0 right-0 bottom-0 rounded-md flex flex-col justify-end p-1.5 px-2 bg-gradient-to-tr from-black/80 group-hover:from-black/50 to-transparent group-hover:to-black/10 gap-0.5">
                       <span className="text-sm xl:text-base font-semibold uppercase text-white leading-none">{card.name}</span>
                       <p className="text-xxs xl:text-xs uppercase text-white/50">
-                        Level {card.level}
-                        {card.build}
+                        Level {card.level} {card.build}
                       </p>
                     </div>
                   </Link>

@@ -5,6 +5,10 @@
 /// </summary>
 public record SelectionRuleDataModel
 {
+    /// <summary>
+    /// is this parent registration id or registrion id of the selction rule type itself? (class selection element vs class selection rule)
+    /// prefix with Parent to make it clear
+    /// </summary>
     public Guid RegistrationId { get; set; }
     public Guid RegistrationSelectionRuleId { get; set; }
     public string Type { get; set; } = string.Empty;
