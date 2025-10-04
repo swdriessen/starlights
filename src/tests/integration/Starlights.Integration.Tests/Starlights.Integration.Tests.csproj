@@ -12,4 +12,9 @@
     <ProjectReference Include="..\..\..\apps\Starlights.Application\Starlights.Application.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Starlights.Acceptance.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>

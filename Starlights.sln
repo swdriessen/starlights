@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11018.127 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
@@ -120,6 +120,10 @@ EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Starlights.Builder.React", "src\frontend\builder-app\Starlights.Builder.React.esproj", "{0BB19972-5C77-EA60-F264-B9129D38CB4C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Integration.Tests", "src\tests\integration\Starlights.Integration.Tests\Starlights.Integration.Tests.csproj", "{D1043C56-72D1-FE54-F194-3C4E3AC8DEFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starlights.Acceptance.Tests", "src\tests\acceptance\Starlights.Acceptance.Tests\Starlights.Acceptance.Tests.csproj", "{596C8000-2F0D-4E76-9050-9DC282ED41CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "acceptance", "acceptance", "{B4EF7B4B-2506-4BA7-9FB4-B3294E2500A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -265,6 +269,10 @@ Global
 		{D1043C56-72D1-FE54-F194-3C4E3AC8DEFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1043C56-72D1-FE54-F194-3C4E3AC8DEFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1043C56-72D1-FE54-F194-3C4E3AC8DEFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{596C8000-2F0D-4E76-9050-9DC282ED41CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{596C8000-2F0D-4E76-9050-9DC282ED41CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{596C8000-2F0D-4E76-9050-9DC282ED41CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{596C8000-2F0D-4E76-9050-9DC282ED41CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -322,6 +330,8 @@ Global
 		{FA95E129-C45F-4E13-826A-4B385130505E} = {F4513BD3-1991-4CBB-8654-DDA8D3967197}
 		{0BB19972-5C77-EA60-F264-B9129D38CB4C} = {FA95E129-C45F-4E13-826A-4B385130505E}
 		{D1043C56-72D1-FE54-F194-3C4E3AC8DEFA} = {16CB40A1-26BB-4950-AB2E-37F37798D00A}
+		{596C8000-2F0D-4E76-9050-9DC282ED41CC} = {B4EF7B4B-2506-4BA7-9FB4-B3294E2500A9}
+		{B4EF7B4B-2506-4BA7-9FB4-B3294E2500A9} = {128F28F2-7131-4C7B-A386-8E6984195241}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE2DCF26-AB5D-419A-BA72-592FBBB9D7C6}
