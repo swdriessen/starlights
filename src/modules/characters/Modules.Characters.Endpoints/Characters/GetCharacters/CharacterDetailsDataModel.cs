@@ -10,4 +10,5 @@ public record CharacterDetailsDataModel
     public string? PortraitUrl { get; set; }
     public int? Level { get; set; }
     public string? Build { get; set; }
+    public int ProficiencyBonus { get; set; }
 }

@@ -15,3 +15,15 @@ public class ProgressionComponentTypeConfiguration : IEntityTypeConfiguration<Pr
             .HasColumnName("character_level");
     }
 }
+
+public class ProficiencyComponentTypeConfiguration : IEntityTypeConfiguration<ProficiencyComponent>
+{
+    public void Configure(EntityTypeBuilder<ProficiencyComponent> builder)
+    {
+        builder.ToTable("component_proficiency");
+
+        builder.Property(x => x.ProficiencyBonus)
+            .IsRequired()
+            .HasColumnName("proficiency_bonus");
+    }
+}

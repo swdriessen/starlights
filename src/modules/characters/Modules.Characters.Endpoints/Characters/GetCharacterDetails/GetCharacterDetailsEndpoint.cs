@@ -45,6 +45,7 @@ sealed class GetCharacterDetailsEndpoint : EndpointWithoutRequest<GetCharacterDe
 
         var appearance = character.GetRequiredComponent<AppearanceComponent>();
         var progression = character.GetRequiredComponent<ProgressionComponent>();
+        var proficiency = character.GetRequiredComponent<ProficiencyComponent>();
         var classComponent = character.GetRequiredComponent<ClassComponent>();
 
         var build = new StringBuilder();
@@ -65,6 +66,7 @@ sealed class GetCharacterDetailsEndpoint : EndpointWithoutRequest<GetCharacterDe
             PortraitUrl = appearance.PortraitUrl,
             Level = progression.CharacterLevel,
             Build = build.ToString().TrimEnd('/').Trim(),
+            ProficiencyBonus = proficiency.ProficiencyBonus
         };
 
         var response = new GetCharacterDetailsResponse { Character = model };

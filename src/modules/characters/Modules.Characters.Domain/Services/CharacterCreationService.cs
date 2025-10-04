@@ -15,10 +15,11 @@ public sealed class CharacterCreationService : ICharacterCreationService
         var newCharacter = Character.Create(name);
 
         // initialize default components
+        newCharacter.AddComponent(ProgressionComponent.Create(newCharacter.Id));
         newCharacter.AddComponent(AbilitiesComponent.Create(newCharacter.Id));
         newCharacter.AddComponent(SkillsComponent.Create(newCharacter.Id));
         newCharacter.AddComponent(SavingThrowsComponent.Create(newCharacter.Id));
-        newCharacter.AddComponent(ProgressionComponent.Create(newCharacter.Id));
+        newCharacter.AddComponent(ProficiencyComponent.Create(newCharacter.Id));
         newCharacter.AddComponent(AppearanceComponent.Create(newCharacter.Id));
         newCharacter.AddComponent(ClassComponent.Create(newCharacter.Id));
 

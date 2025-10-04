@@ -57,7 +57,6 @@ public class IntegrationHostBuilderHooks
     }
 }
 
-
 [Binding]
 public class AbilityScoresStepDefinitions
 {

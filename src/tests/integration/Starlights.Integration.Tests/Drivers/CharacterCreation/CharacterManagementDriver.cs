@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using Starlights.Integration.Core;
+using Starlights.Integration.Core.Eventing;
 using Starlights.Integration.Core.Extensions;
+using Starlights.Modules.Characters.Domain.Progression.Eventing;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacterClasses;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegistrations;
 
@@ -10,10 +12,15 @@ internal sealed class CharacterManagementDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly CharacterManagementEndpointDriver _api;
-    public CharacterManagementDriver(IIntegrationHost integration, CharacterManagementEndpointDriver api)
+    private readonly EventObserverCollection _events;
+
+    public CharacterManagementDriver(IIntegrationHost integration,
+        CharacterManagementEndpointDriver api,
+        EventObserverCollection events)
     {
         _integration = integration;
         _api = api;
+        _events = events;
     }
 
     public async Task<List<CharacterClassDataModel>> GetCharacterClassesAsync()
@@ -48,6 +55,9 @@ internal sealed class CharacterManagementDriver : IDriver
     {
         var characterId = _integration.GetCharacterIdentifier();
         await _api.UpdateClassLevel(characterId, classId, newLevel);
+
+        // wait for the level change event of the character
+        await _events.EnsureObservation<CharacterLevelChangedEvent>(e => e.NewLevel >= newLevel);
     }
 
 

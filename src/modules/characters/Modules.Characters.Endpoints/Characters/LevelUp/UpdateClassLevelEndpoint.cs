@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Characters;
@@ -10,10 +11,12 @@ namespace Starlights.Modules.Characters.Endpoints.Characters.LevelUp;
 
 public sealed class UpdateClassLevelEndpoint : Endpoint<UpdateClassLevelRequest>
 {
+    private readonly ILogger<UpdateClassLevelEndpoint> _logger;
     private readonly IPersistence _persistence;
 
-    public UpdateClassLevelEndpoint(IPersistence persistence)
+    public UpdateClassLevelEndpoint(ILogger<UpdateClassLevelEndpoint> logger, IPersistence persistence)
     {
+        _logger = logger;
         _persistence = persistence;
     }
 
@@ -52,7 +55,12 @@ public sealed class UpdateClassLevelEndpoint : Endpoint<UpdateClassLevelRequest>
         {
             classComponent.LevelUpClass(classId, req.NewLevel);
             progressionComponent.SetCharacterLevel(classComponent.CalculateCharacterLevel()); // CharacterLevelChangedEvent
+
+            _logger.LogInformation("Updated class level to {NewLevel} for class {ClassId} on character {CharacterId}. New character level is {CharacterLevel}.",
+                req.NewLevel, classId.Value, characterId.Value, progressionComponent.CharacterLevel);
         });
+
+
 
         //if (updatedClass is null)
         //{

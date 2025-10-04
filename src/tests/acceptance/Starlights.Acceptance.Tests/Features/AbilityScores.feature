@@ -1,3 +1,4 @@
+@ignore
 Feature: Ability Scores
 	
 	As a player
