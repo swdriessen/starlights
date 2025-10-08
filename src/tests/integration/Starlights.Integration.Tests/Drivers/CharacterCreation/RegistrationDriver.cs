@@ -79,18 +79,30 @@ internal sealed class RegistrationDriver : IDriver
         return response.RegistrationId;
     }
 
+    public Task UnregisterSelectionRule(SelectionRuleDataModel rule, SelectionRuleOptionModel option)
+    {
+        return _api.UnregisterSelectionRuleAsync(rule.RegistrationId, rule.RegistrationSelectionRuleId, option.ElementId);
+    }
+
     /// <summary>
     /// Registers a new character class with the specified name and returns the unique registration identifier.
     /// </summary>
     /// <param name="className">The name of the character class to register. Cannot be null or empty.</param>
     /// <returns>A <see cref="Guid"/> representing the unique identifier of the registered character class.</returns>
-    public async Task<Guid> RegisterClass(string className)
+    public async Task<(SelectionRuleDataModel Rule, SelectionRuleOptionModel Option, Guid RegistrationId)> RegisterClass(string className)
     {
         var classRule = await GetSingleSelectionRule(SelectionRuleTypes.Class);
         var classOption = await GetSelectionRuleOption(classRule.RegistrationSelectionRuleId, className);
         var registrationId = await RegisterSelectionRule(classRule, classOption);
         await _events.EnsureObservation<CharacterClassCreatedEvent>();
-        return registrationId;
+        return (classRule, classOption, registrationId);
     }
 
+    public async Task UnregisterClass(string className)
+    {
+        var classRule = await GetSingleSelectionRule(SelectionRuleTypes.Class);
+        var classOption = await GetSelectionRuleOption(classRule.RegistrationSelectionRuleId, className);
+        await UnregisterSelectionRule(classRule, classOption);
+        await _events.EnsureObservation<CharacterClassRemovedEvent>();
+    }
 }

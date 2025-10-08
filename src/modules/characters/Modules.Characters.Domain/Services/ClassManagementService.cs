@@ -30,4 +30,20 @@ public sealed class ClassManagementService
             _logger.LogInformation("created new class '{ClassName}' [CharacterId='{CharacterId}', CharacterLevel={CharacterLevel}]", className, character.Id.Value, newLevel);
         });
     }
+
+    public void RemoveCharacterClass(Character character, Registration existingRegistration)
+    {
+        character.UpdateComponents<ClassComponent, ProgressionComponent>((classes, progression, _) =>
+        {
+            _logger.LogInformation("removing class for registration '{RegistrationId}' [CharacterId='{CharacterId}']", existingRegistration.Id.Value, character.Id.Value);
+
+            classes.RemoveClass(existingRegistration.Id);
+
+            var newLevel = classes.CalculateCharacterLevel();
+
+            progression.SetCharacterLevel(newLevel);
+
+            _logger.LogInformation("removed class for registration '{RegistrationId}' [CharacterId='{CharacterId}', CharacterLevel={CharacterLevel}]", existingRegistration.Id.Value, character.Id.Value, newLevel);
+        });
+    }
 }

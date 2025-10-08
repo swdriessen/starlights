@@ -1,8 +1,10 @@
-﻿using Starlights.Modules.Characters.Data;
+﻿using System;
+using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Domain.Services;
 using Starlights.Modules.Elements.Integration;
+using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 
@@ -13,11 +15,13 @@ public sealed class ClassRegistrationBehavior : IRegistrationBehavior
 {
     private readonly IElementsModuleQueries _elements;
     private readonly ClassManagementService _service;
+    private readonly IPersistence _persistence;
 
-    public ClassRegistrationBehavior(IElementsModuleQueries elements, ClassManagementService service)
+    public ClassRegistrationBehavior(IElementsModuleQueries elements, ClassManagementService service, IPersistence persistence)
     {
         _elements = elements;
         _service = service;
+        _persistence = persistence;
     }
 
     public async Task Registered(Registration newRegistration, RegistrationProcessContext context)
@@ -27,7 +31,7 @@ public sealed class ClassRegistrationBehavior : IRegistrationBehavior
             return;
         }
 
-        using var _ = CharactersInstrumentation.StartActivity($"Class Registration Behavior | {newRegistration.AssociatedElementName}");
+        using var _ = CharactersInstrumentation.StartActivity($"Class Registration Behavior | Registered {newRegistration.AssociatedElementName}");
 
         // when a new class element is registered, we need to create the character class for the character
         var associatedElement = await _elements.GetElementWithRules(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Class with ID {newRegistration.AssociatedElementId} not found.");
@@ -37,5 +41,23 @@ public sealed class ClassRegistrationBehavior : IRegistrationBehavior
         var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
         _service.AddCharacterClass(character, newRegistration, associatedElement.Name);
+    }
+
+    public async Task Unregister(Registration existingRegistration)
+    {
+        if(existingRegistration.AssociatedElementType != "Class")
+        {
+            return;
+        }
+
+        using var _ = CharactersInstrumentation.StartActivity($"Class Unregistration Behavior | Unregistered {existingRegistration.AssociatedElementName}");
+
+        // when a class registration is removed, we need to remove the character class from the character
+        
+        var characters = _persistence.GetRepository<ICharactersRepository>();
+        var character = await characters.GetCharacterAsync(existingRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {existingRegistration.CharacterId} not found.");
+
+
+        _service.RemoveCharacterClass(character, existingRegistration);
     }
 }

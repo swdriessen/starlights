@@ -6,31 +6,25 @@ namespace Starlights.Modules.Characters.Services.Processing;
 
 public sealed class RegistrationCompletedEventHandler : IDomainEventHandler<RegistrationCreatedEvent>
 {
-    private readonly IRegistrationManager _registrationManager;
+    private readonly IRegistrationProcessor _registrationProcessor;
 
-    public RegistrationCompletedEventHandler(IRegistrationManager registrationManager)
+    public RegistrationCompletedEventHandler(IRegistrationProcessor registrationProcessor)
     {
-        _registrationManager = registrationManager;
+        _registrationProcessor = registrationProcessor;
     }
 
     public async Task HandleAsync(RegistrationCreatedEvent raisedEvent)
     {
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(RegistrationCompletedEventHandler)} | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
+        using var activity = CharactersInstrumentation.StartActivity($"{nameof(RegistrationCompletedEventHandler)} | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
+        
+        try
+        {
 
-        // raise specific domain events...
-        // e.g. if the registration is for an ability, we can raise an AbilityRegistrationCompletedEvent
-
-
-        //new AbilityRegistrationCompletedEvent
-        //{
-        //    CharacterId = r.CharacterId,
-        //    RegistrationId = r.Id,
-        //    AssociatedElementName = r.AssociatedElementName,
-        //    AssociatedElementType = r.AssociatedElementType
-        //}
-
-
-
-        await _registrationManager.ProcessRegistration(new(raisedEvent.RegistrationId));
+            await _registrationProcessor.ProcessRegistration(new(raisedEvent.RegistrationId));
+        }
+        catch (Exception ex)
+        {
+            activity?.AddException(ex);
+        }
     }
 }

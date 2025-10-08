@@ -6,7 +6,7 @@ using Starlights.Integration.Drivers.CharacterCreation;
 namespace Starlights.Integration.Tests.Characters.Manage;
 
 [TestClass]
-public sealed class CharacterCreationTests : IntegrationTestBase
+public sealed class ClassTests : IntegrationTestBase
 {
     private IntegrationHost _integration = default!;
     private CharacterCreationDriver _characterCreationDriver = default!;

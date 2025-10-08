@@ -41,7 +41,7 @@ public sealed class SavingThrowRegistrationBehavior : IRegistrationBehavior
         var primaryScore = await GetPrimaryAbilityScore(context, character, new(associatedElement.PrimaryAbilityElementId));
         if (primaryScore is null)
         {
-            _logger.LogWarning("Could not find primary ability score for saving throw '{SavingThrowName}' [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
+            _logger.LogError("Could not find primary ability score for saving throw '{SavingThrowName}' [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
             return;
         }
 
@@ -72,5 +72,15 @@ public sealed class SavingThrowRegistrationBehavior : IRegistrationBehavior
         }
 
         return null;
+    }
+
+    public Task Unregister(Registration existingRegistration)
+    {
+        if (existingRegistration.AssociatedElementType != "Saving Throw")
+        {
+            return Task.CompletedTask;
+        }
+
+        throw new NotImplementedException();
     }
 }

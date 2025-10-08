@@ -8,7 +8,22 @@ namespace Starlights.Modules.Characters.Data.EntityFramework;
 
 internal class RegistrationRepository : RepositoryBase<Registration>, IRegistrationRepository
 {
-    public void Add(Registration registration) => Entities.Add(registration);
+    public void Add(Registration registration)
+    {
+        Entities.Add(registration);
+    }
+
+    public Task<bool> DeleteRegistrationAsync(RegistrationId id)
+    {
+        var toRemove = Entities.SingleOrDefault(r => r.Id == id);
+        if (toRemove != null)
+        {
+            Entities.Remove(toRemove);
+            return Task.FromResult(true);
+        }
+
+        return Task.FromResult(false);
+    }
 
     public Task<bool> DeleteRegistrationsAsync(CharacterId id)
     {
@@ -43,11 +58,26 @@ internal class RegistrationRepository : RepositoryBase<Registration>, IRegistrat
 
     public async Task<List<Registration>> GetRegistrationsByAssociationsAsync(CharacterId id, ElementId associatedElementId)
     {
-        return await Entities
+        var registrations = await Entities
             .Include(x => x.SelectionRules)
             .Include(x => x.IncludeRules)
             .Include(x => x.StatisticRules)
             .Where(r => r.CharacterId == id && r.AssociatedElementId == associatedElementId)
             .ToListAsync();
+
+        // include local entities that were added but untracked yet
+
+        var pending = Entities.Local
+            .OfType<Registration>()
+            .Where(r => r.CharacterId == id && r.AssociatedElementId == associatedElementId)
+            .Where(r => registrations.All(existing => existing.Id != r.Id))
+            .ToList();
+
+        if (pending.Count > 0)
+        {
+            registrations.AddRange(pending);
+        }
+
+        return registrations;
     }
 }

@@ -7,22 +7,19 @@ using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Services.Processing;
 
-public class RegistrationManager : IRegistrationManager
+public class RegistrationProcessor : IRegistrationProcessor
 {
-    private readonly ILogger<RegistrationManager> _logger;
+    private readonly ILogger<RegistrationProcessor> _logger;
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
-    private readonly IEnumerable<IRegistrationBehavior> _registrationBehaviors;
+    private readonly INewRegistrationManager _registrationManager;
 
-    public RegistrationManager(ILogger<RegistrationManager> logger,
-                               IPersistence persistence,
-                               IElementsModuleQueries elements,
-                               IEnumerable<IRegistrationBehavior> registrationBehaviors)
+    public RegistrationProcessor(ILogger<RegistrationProcessor> logger, IPersistence persistence, IElementsModuleQueries elements, INewRegistrationManager registrationManager)
     {
         _logger = logger;
         _persistence = persistence;
         _elements = elements;
-        _registrationBehaviors = [.. registrationBehaviors];
+        _registrationManager = registrationManager;
     }
 
     public async Task<ProcessRegistrationResult> ProcessRegistration(RegistrationId registrationId)
@@ -56,6 +53,29 @@ public class RegistrationManager : IRegistrationManager
         processActivity?.SetTag("affectedRows", affectedRows);
 
         return new ProcessRegistrationResult() { AffectedRows = affectedRows };
+    }
+
+    public async Task<ProcessRegistrationResult> ProcessUnregistration(RegistrationId registrationId)
+    {
+        using var unprocessActivity = CharactersInstrumentation.StartActivity();
+
+        var characters = _persistence.GetRepository<ICharactersRepository>();
+        var registrations = _persistence.GetRepository<IRegistrationRepository>();
+
+        // ensure the registration exists before processing
+        var registration = await registrations.GetRegistrationAsync(registrationId);
+        if (registration is null)
+        {
+            _logger.LogError("Registration with ID {RegistrationId} not found.", registrationId);
+            return new ProcessRegistrationResult();
+        }
+
+        _logger.LogInformation("processing unregistration '{ElementName} ({ElementType})' [character='{CharacterId}']",
+                               registration.AssociatedElementName, registration.AssociatedElementType, registration.CharacterId.Value);
+
+        var context = new RegistrationProcessContext(registration, _persistence);
+
+        throw new NotImplementedException();
     }
 
     private async Task ProcessIncludeRules(RegistrationProcessContext context)
@@ -104,10 +124,7 @@ public class RegistrationManager : IRegistrationManager
             context.NewRegistrations.Add(newRegistration);
 
             // apply any registration behavior in the current context
-            foreach (var behavior in _registrationBehaviors)
-            {
-                await behavior.Registered(newRegistration, context);
-            }
+            await _registrationManager.Register(newRegistration, context);
         }
     }
 
@@ -182,4 +199,5 @@ public class RegistrationManager : IRegistrationManager
             _ = currentRegistration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
         }
     }
+
 }

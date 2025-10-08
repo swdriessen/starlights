@@ -13,14 +13,17 @@ using Starlights.Platform.Data;
 namespace Starlights.Modules.Characters.Tests.Registrations;
 
 [TestClass]
-public sealed class RegistrationManagerTests
+public sealed class RegistrationProcessorTests
 {
     private readonly Mock<IPersistence> _persistence = new();
     private readonly Mock<IElementsModuleQueries> _elements = new();
     private readonly Mock<IRegistrationRepository> _registrations = new();
 
-    private RegistrationManager CreateSut(params IRegistrationBehavior[] behaviors)
-        => new(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, _elements.Object, behaviors);
+    private RegistrationProcessor CreateSut(params IRegistrationBehavior[] behaviors)
+    {
+        var manager = new NewRegistrationManager(Mock.Of<ILogger<NewRegistrationManager>>(), _persistence.Object, behaviors);
+        return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, _elements.Object, manager);
+    }
 
     [TestInitialize]
     public void Setup()

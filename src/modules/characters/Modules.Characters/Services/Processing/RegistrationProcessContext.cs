@@ -1,4 +1,5 @@
-﻿using Starlights.Modules.Characters.Domain.Registrations;
+﻿using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Services.Processing;

@@ -70,6 +70,25 @@ public sealed class ClassComponent : CharacterComponentBase
     }
 
     /// <summary>
+    /// Removes the class associated with the specified registration ID from the character.
+    /// </summary>
+    /// <remarks>If the removed class is the character's primary class and other classes remain, a new primary
+    /// class may need to be set. This method also raises a domain event to signal that a class has been
+    /// removed.</remarks>
+    /// <exception cref="InvalidOperationException">Thrown if no class is associated with the specified registration ID.</exception>
+    public void RemoveClass(RegistrationId existinRegistration)
+    {
+        var existingClass = _classes.SingleOrDefault(c => c.Registration == existinRegistration) 
+            ?? throw new InvalidOperationException($"Character does not have a class associated with registration ID {existinRegistration}");
+
+        // TODO: multiclassing, if the class being removed is the primary class, we need to set a new primary class if there are any classes left
+
+        _classes.Remove(existingClass);
+
+        AddDomainEvent(new CharacterClassRemovedEvent() { CharacterId = ParentCharacter, ClassId = existingClass.Id });
+    }
+
+    /// <summary>
     /// Creates a new instance of the ClassComponent associated with the specified character.
     /// </summary>
     public static ClassComponent Create(CharacterId parentCharacter)

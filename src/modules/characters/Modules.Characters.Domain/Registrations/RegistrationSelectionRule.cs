@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Platform.Domain;
 using Starlights.Platform.SourceGenerators.Entities.Attributes;
@@ -9,7 +10,7 @@ namespace Starlights.Modules.Characters.Domain.Registrations;
 /// Represents a selection rule that has been applied to a registration via a selection rule component.
 /// </summary>
 [Entity]
-[DebuggerDisplay("Id = {Id}, Parent = {ParentRegistrationId} RuleId = {AssociatedSelectionRuleId}, ElementType = {ElementType}, Name = {Name}")]
+[DebuggerDisplay("ElementType = {ElementType}, Name = {Name}, Id = {Id}, Parent = {ParentRegistrationId} RuleId = {AssociatedSelectionRuleId}")]
 public sealed class RegistrationSelectionRule : EntityBase<RegistrationSelectionRuleId>
 {
     private RegistrationSelectionRule(RegistrationId parentRegistrationId, ElementComponentId associatedSelectionRuleId, string elementType, string name)
@@ -42,16 +43,43 @@ public sealed class RegistrationSelectionRule : EntityBase<RegistrationSelection
     public string Name { get; }
 
     /// <summary>
-    /// Gets the currently selected element for this selection rule, if any.
+    /// Gets the registration id of the registration that was created as a result of this selection rule. This will be null if no selection has been made yet.
     /// </summary>
-    public ElementId? CurrentSelection { get; private set; }
+    public RegistrationId? SelectionRegistrationId { get; private set; }
+
+    /// <summary>
+    /// Gets the element id for the current selection made via this selection rule. This will be null if no selection has been made yet.
+    /// </summary>
+    public ElementId? SelectedOption { get; private set; }
 
     /// <summary>
     /// Updates the current selection for this selection rule.
     /// </summary>
-    public void UpdateCurrentSelection(ElementId? newSelection)
+    public void UpdateCurrentSelection(Registration selectionRegistration)
     {
-        CurrentSelection = newSelection;
+        if (SelectionRegistrationId is not null)
+        {
+            throw new InvalidOperationException("Cannot update the current selection of a selection rule that already has a selection registration. Clear the current selection first.");
+        }
+
+        if (SelectedOption is not null)
+        {
+            throw new InvalidOperationException("Cannot update the current selection of a selection rule that already has a selection. Clear the current selection first.");
+        }
+
+        SelectionRegistrationId = selectionRegistration.Id;
+        SelectedOption = selectionRegistration.AssociatedElementId;
+    }
+
+    public void ClearCurrentSelection()
+    {
+        SelectionRegistrationId = null;
+        SelectedOption = null;
+    }
+
+    public bool HasCurrentSelection()
+    {
+        return SelectionRegistrationId is not null && SelectedOption is not null;
     }
 
     /// <summary>

@@ -45,7 +45,7 @@ public sealed class Program
             // characters module
             options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
             options.AdditionalAssemblies.Add(typeof(CreateCharacterEndpoint).Assembly);
-            options.AdditionalAssemblies.Add(typeof(RegistrationManager).Assembly);
+            options.AdditionalAssemblies.Add(typeof(RegistrationProcessor).Assembly);
             options.AddEventProcessingComponent();
 
             // elements module

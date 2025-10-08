@@ -72,4 +72,14 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
 
         return null;
     }
+
+    public Task Unregister(Registration existingRegistration)
+    {
+        if (existingRegistration.AssociatedElementType != "Skill")
+        {
+            return Task.CompletedTask;
+        }
+
+        throw new NotImplementedException();
+    }
 }

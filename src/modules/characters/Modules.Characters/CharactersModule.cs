@@ -14,7 +14,8 @@ internal class CharactersModule : IPlatformServiceComponent
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IRegistrationManager, RegistrationManager>();
+        builder.Services.AddScoped<IRegistrationProcessor, RegistrationProcessor>();
+        builder.Services.AddScoped<INewRegistrationManager, NewRegistrationManager>();
 
         builder.Services.AddScoped<ClassManagementService>();
         builder.Services.AddScoped<ICharacterCreationService, CharacterCreationService>();

@@ -50,12 +50,13 @@ public sealed class GetSelectionRulesEndpoint : Endpoint<GetSelectionRulesReques
 
         var response = new GetSelectionRulesResponse
         {
-            Rules = selectionRules.ConvertAll(x => new SelectionRuleDataModel
+            Rules = selectionRules.ConvertAll(r => new SelectionRuleDataModel
             {
-                RegistrationId = x.ParentRegistrationId,
-                RegistrationSelectionRuleId = x.Id,
-                Type = x.ElementType,
-                Name = x.Name
+                RegistrationId = r.ParentRegistrationId,
+                RegistrationSelectionRuleId = r.Id,
+                Type = r.ElementType,
+                Name = r.Name, 
+                ActiveRegistration = r.SelectedOption
             })
         };
 

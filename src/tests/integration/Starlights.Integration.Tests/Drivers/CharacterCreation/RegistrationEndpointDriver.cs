@@ -6,6 +6,7 @@ using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegist
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetSelectionRuleOptions;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetSelectionRules;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.RegisterSelectionRule;
+using Starlights.Modules.Characters.Endpoints.Generation.Registrations.UnregisterSelectionRule;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
@@ -86,5 +87,17 @@ internal sealed class RegistrationEndpointDriver : IDriver
         data.RegistrationId.Should().NotBe(Guid.Empty, "Expected a valid registration ID to be returned.");
 
         return data;
+    }
+
+    public async Task UnregisterSelectionRuleAsync(Guid parentRegistrationId, Guid selectionRuleId, Guid elementId)
+    {
+        var api = _integration.CreateClient();
+
+        var characterId = _integration.GetCharacterIdentifier();
+        var url = $"/api/characters/{characterId}/builder/selection-rules/{selectionRuleId}/unregister";
+        var payload = new UnregisterSelectionRuleRequest() { ElementId = elementId, ParentRegistration = parentRegistrationId };
+
+        var response = await api.PostAsJsonAsync(url, payload);
+        response.EnsureSuccessStatusCode();
     }
 }

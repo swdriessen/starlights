@@ -42,4 +42,14 @@ public sealed class AbilityRegistrationBehavior : IRegistrationBehavior
         character.UpdateComponent<AbilitiesComponent>((abilities, _) =>
             abilities.CreateAbilityScore(newRegistration.Id, associatedElement.Name, associatedElement.Abbreviation));
     }
+
+    public Task Unregister(Registration existingRegistration)
+    {
+        if (existingRegistration.AssociatedElementType != "Ability")
+        {
+            return Task.CompletedTask;
+        }
+
+        throw new NotImplementedException();
+    }
 }
