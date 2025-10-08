@@ -41,21 +41,4 @@ public sealed class UnregisterSelectionRuleEndpointTests : IntegrationTestBase
         classRule = await _driver.GetSingleSelectionRule(SelectionRuleTypes.Class);
         classRule.ActiveRegistration.Should().BeNull();
     }
-
-    [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
-    public async Task UnregisterSelectionRule_Removes_ExistingRegistration_For_Class2()
-    {
-        // Arrange
-        var (rule, barbarianOption, _) = await _driver.RegisterClass("Barbarian");
-        rule = await _driver.GetSingleSelectionRule(SelectionRuleTypes.Class); // get the rule again to verify the active registration
-        rule.ActiveRegistration.Should().Be(barbarianOption.ElementId, "Expected the selection rule to have an active registration after registering a class.");
-
-        // Act
-        await _driver.UnregisterClass(barbarianOption.Name);
-
-        // Assert
-        rule = await _driver.GetSingleSelectionRule(SelectionRuleTypes.Class);
-        rule.ActiveRegistration.Should().BeNull();
-    }
 }

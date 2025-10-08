@@ -11,6 +11,7 @@ public static class ElementTypeConstants
     public static readonly string Alignment = "Alignment";
     public static readonly string Class = "Class";
     public static readonly string ClassFeature = "Class Feature";
+    public static readonly string SubClass = "SubClass";
     public static readonly string Species = "Species";
     public static readonly string SpeciesFeature = "Species Feature";
     public static readonly string Race = "Race";
@@ -19,4 +20,5 @@ public static class ElementTypeConstants
     public static readonly string BackgroundFeature = "Background Feature";
     public static readonly string Language = "Language";
     public static readonly string LanguageFeature = "Language Feature";
+    public static readonly string Proficiency = "Proficiency";
 }

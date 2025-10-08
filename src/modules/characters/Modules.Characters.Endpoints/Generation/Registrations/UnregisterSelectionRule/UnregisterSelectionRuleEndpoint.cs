@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using FastEndpoints;
+﻿using FastEndpoints;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Characters;
@@ -53,7 +52,7 @@ public class UnregisterSelectionRuleEndpoint : Endpoint<UnregisterSelectionRuleR
             AddError($"The parent registration '{req.ParentRegistration}' does not exist.");
             await Send.NotFoundAsync(cancellation: ct);
             return;
-        }        
+        }
 
         var selectionRule = parentRegistration.SelectionRules.SingleOrDefault(r => r.Id == ruleId);
         if (selectionRule is null)
@@ -63,25 +62,87 @@ public class UnregisterSelectionRuleEndpoint : Endpoint<UnregisterSelectionRuleR
             return;
         }
 
-        if(!selectionRule.HasCurrentSelection())
+        if (!selectionRule.HasCurrentSelection())
         {
             AddError($"The selection rule '{ruleId}' does not have a current selection on the parent registration '{req.ParentRegistration}'.");
             await Send.ErrorsAsync(cancellation: ct);
             return;
         }
 
-        // unregister the current selection
-        var selectionRegistration = await registrations.GetRegistrationAsync(selectionRule.SelectionRegistrationId.Value);
-        await _registrationManager.Unregister(selectionRegistration);
+        // TODO: WORKING, BUT MOVE THIS TO THE REGISTRATION MANAGER
+        // re-processing needs to unregister...
+        // make sure first it is covered by integration tests
+        // then refactor
 
-        // clear the selection
-        selectionRule.ClearCurrentSelection(); 
+        // Retrieve the registration that is currently selected by the rule.
+        var selectionRegistration = await registrations.GetRegistrationAsync(selectionRule.SelectionRegistrationId!.Value);
+        if (selectionRegistration is null)
+        {
+            // Inconsistent state: rule points to non-existing registration.
+            AddError($"The selected registration '{selectionRule.SelectionRegistrationId}' no longer exists.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
 
-        // remove registration when?
-        await registrations.DeleteRegistrationAsync(selectionRegistration.Id);
+        // Sanity check: ensure the selected registration is actually a child of the parent registration.
+        if (selectionRegistration.ParentRegistrationId != parentRegistration.Id)
+        {
+            AddError($"Selected registration '{selectionRegistration.Id}' is not a child of parent registration '{parentRegistration.Id}'.");
+            await Send.ErrorsAsync(cancellation: ct);
+            return;
+        }
+
+        // Load all registrations for the character so we can build the subtree (includes rules & children relationships).
+        var allCharacterRegistrations = await registrations.GetRegistrationsAsync(character.Id);
+
+        // Build parent -> children lookup
+        var childrenLookup = allCharacterRegistrations
+            .Where(r => r.ParentRegistrationId is not null)
+            .GroupBy(r => r.ParentRegistrationId!.Value)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        // Collect the full subtree (root included)
+        var subtree = CollectSubtree(selectionRegistration, childrenLookup);
+
+        // Depth-first removal: unregister children before parents
+        // subtree now contains root first (due to stack order). We reverse for leaf-first processing.
+        subtree.Reverse();
+
+        foreach (var reg in subtree)
+        {
+            await _registrationManager.Unregister(reg);
+            await registrations.DeleteRegistrationAsync(reg.Id);
+        }
+
+        // Clear the selection on the rule now that the associated registration is gone.
+        selectionRule.ClearCurrentSelection();
 
         await _persistence.SaveChangesAsync();
 
+        unregistrationActivity?.AddTag("unregistered.count", subtree.Count.ToString());
+
         await Send.OkAsync(cancellation: ct);
+    }
+
+    private static List<Registration> CollectSubtree(Registration root, Dictionary<RegistrationId, List<Registration>> childrenLookup)
+    {
+        var collected = new List<Registration> { root };
+        var stack = new Stack<Registration>();
+        stack.Push(root);
+
+        while (stack.Count > 0)
+        {
+            var current = stack.Pop();
+            if (childrenLookup.TryGetValue(current.Id, out var children))
+            {
+                foreach (var child in children)
+                {
+                    collected.Add(child);
+                    stack.Push(child);
+                }
+            }
+        }
+
+        return collected;
     }
 }

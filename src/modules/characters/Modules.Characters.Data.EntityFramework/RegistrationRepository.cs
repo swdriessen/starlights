@@ -69,8 +69,9 @@ internal class RegistrationRepository : RepositoryBase<Registration>, IRegistrat
 
         var pending = Entities.Local
             .OfType<Registration>()
-            .Where(r => r.CharacterId == id && r.AssociatedElementId == associatedElementId)
-            .Where(r => registrations.All(existing => existing.Id != r.Id))
+            .Where(r => r.CharacterId == id
+                && r.AssociatedElementId == associatedElementId
+                && registrations.All(existing => existing.Id != r.Id))
             .ToList();
 
         if (pending.Count > 0)

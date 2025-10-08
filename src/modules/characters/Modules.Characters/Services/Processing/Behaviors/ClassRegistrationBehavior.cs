@@ -1,5 +1,4 @@
-﻿using System;
-using Starlights.Modules.Characters.Data;
+﻿using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Domain.Services;
@@ -45,7 +44,7 @@ public sealed class ClassRegistrationBehavior : IRegistrationBehavior
 
     public async Task Unregister(Registration existingRegistration)
     {
-        if(existingRegistration.AssociatedElementType != "Class")
+        if (existingRegistration.AssociatedElementType != "Class")
         {
             return;
         }
@@ -53,10 +52,9 @@ public sealed class ClassRegistrationBehavior : IRegistrationBehavior
         using var _ = CharactersInstrumentation.StartActivity($"Class Unregistration Behavior | Unregistered {existingRegistration.AssociatedElementName}");
 
         // when a class registration is removed, we need to remove the character class from the character
-        
+
         var characters = _persistence.GetRepository<ICharactersRepository>();
         var character = await characters.GetCharacterAsync(existingRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {existingRegistration.CharacterId} not found.");
-
 
         _service.RemoveCharacterClass(character, existingRegistration);
     }

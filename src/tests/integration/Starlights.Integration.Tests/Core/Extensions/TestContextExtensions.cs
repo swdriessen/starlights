@@ -24,4 +24,13 @@ public static class TestContextExtensions
     {
         return host.Properties["TestContext"] as TestContext ?? throw new InvalidOperationException("TestContext not found in properties.");
     }
+
+    /// <summary>
+    /// Writes the specified message to the test output associated with the integration host.
+    /// </summary>
+    /// <param name="message">The message to write to the test output.</param>
+    public static void WriteLine(this IIntegrationHost host, string? message)
+    {
+        host.GetTestContext().WriteLine(message);
+    }
 }

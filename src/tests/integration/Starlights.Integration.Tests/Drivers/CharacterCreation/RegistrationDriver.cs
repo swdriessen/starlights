@@ -4,6 +4,7 @@ using Starlights.Integration.Core;
 using Starlights.Integration.Core.Eventing;
 using Starlights.Integration.Core.Extensions;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
+using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegistrations;
 using Starlights.Modules.Characters.Endpoints.Models;
 
@@ -76,6 +77,8 @@ internal sealed class RegistrationDriver : IDriver
         var response = await _api.RegisterSelectionRuleAsync(rule.RegistrationId, rule.RegistrationSelectionRuleId, option.ElementId);
         response.RegistrationId.Should().NotBe(Guid.Empty, "Expected a valid registration ID to be returned.");
 
+        await _events.EnsureObservation<RegistrationCreatedEvent>(x => x.RegistrationId == response.RegistrationId);
+
         return response.RegistrationId;
     }
 
@@ -84,13 +87,10 @@ internal sealed class RegistrationDriver : IDriver
         return _api.UnregisterSelectionRuleAsync(rule.RegistrationId, rule.RegistrationSelectionRuleId, option.ElementId);
     }
 
-    /// <summary>
-    /// Registers a new character class with the specified name and returns the unique registration identifier.
-    /// </summary>
-    /// <param name="className">The name of the character class to register. Cannot be null or empty.</param>
-    /// <returns>A <see cref="Guid"/> representing the unique identifier of the registered character class.</returns>
+    #region Potential Extension Methods
     public async Task<(SelectionRuleDataModel Rule, SelectionRuleOptionModel Option, Guid RegistrationId)> RegisterClass(string className)
     {
+        _integration.WriteLine($"Registering class '{className}'...");
         var classRule = await GetSingleSelectionRule(SelectionRuleTypes.Class);
         var classOption = await GetSelectionRuleOption(classRule.RegistrationSelectionRuleId, className);
         var registrationId = await RegisterSelectionRule(classRule, classOption);
@@ -105,4 +105,14 @@ internal sealed class RegistrationDriver : IDriver
         await UnregisterSelectionRule(classRule, classOption);
         await _events.EnsureObservation<CharacterClassRemovedEvent>();
     }
+
+    public async Task<(SelectionRuleDataModel Rule, SelectionRuleOptionModel Option, Guid RegistrationId)> RegisterSubClass(string name)
+    {
+        var classRule = await GetSingleSelectionRule(SelectionRuleTypes.SubClass);
+        var classOption = await GetSelectionRuleOption(classRule.RegistrationSelectionRuleId, name);
+        var registrationId = await RegisterSelectionRule(classRule, classOption);
+        await _events.EnsureObservation<RegistrationCreatedEvent>(x => x.RegistrationId == registrationId); // wait for the registration event
+        return (classRule, classOption, registrationId);
+    }
+    #endregion
 }
