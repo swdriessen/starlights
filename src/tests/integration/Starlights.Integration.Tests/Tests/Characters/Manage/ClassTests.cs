@@ -57,6 +57,7 @@ public sealed class ClassTests : IntegrationTestBase
 
         // Assert
         var actualRegistrations = await _registrationDriver.GetRegistrations();
+        actualRegistrations.Count.Should().Be(expectedRegistrations.Count, "Expected the same number of registrations after unregistering the class.");
         actualRegistrations.Should().BeEquivalentTo(expectedRegistrations, "Expected registrations to return to their original state after unregistering the class.");
     }
 
@@ -92,6 +93,7 @@ public sealed class ClassTests : IntegrationTestBase
 
         // Assert
         var actualRegistrations = await _registrationDriver.GetRegistrations();
+        actualRegistrations.Count.Should().Be(expectedRegistrations.Count, "Expected the same number of registrations after unregistering the class.");
         actualRegistrations.Should().BeEquivalentTo(expectedRegistrations, "Expected registrations to return to their original state after unregistering the class.");
         actualRegistrations.Should().NotContain(r => r.Type == "SubClass", "Expected all subclass registrations to be removed after unregistering the class.");
     }

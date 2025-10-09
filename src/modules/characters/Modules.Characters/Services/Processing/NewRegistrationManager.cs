@@ -1,29 +1,32 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Starlights.Modules.Characters.Data;
+using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Services.Processing;
 
-public class NewRegistrationManager : INewRegistrationManager
+public sealed class NewRegistrationManager : INewRegistrationManager
 {
     private readonly ILogger<NewRegistrationManager> _logger;
     private readonly IPersistence _persistence;
-    private readonly List<IRegistrationBehavior> _registrationBehaviors;
+    private readonly List<IRegistrationBehavior> _behaviors;
 
-    public NewRegistrationManager(ILogger<NewRegistrationManager> logger, IPersistence persistence, IEnumerable<IRegistrationBehavior> registrationBehaviors)
+    public NewRegistrationManager(ILogger<NewRegistrationManager> logger, IPersistence persistence, IEnumerable<IRegistrationBehavior> behaviors)
     {
         _logger = logger;
         _persistence = persistence;
-        _registrationBehaviors = [.. registrationBehaviors];
+        _behaviors = [.. behaviors];
     }
 
     public async Task Register(Registration newRegistration, RegistrationProcessContext context)
     {
-        _logger.LogInformation("Registering new registration '{ElementName} ({ElementType})' [character='{CharacterId}']", 
+        using var _ = CharactersInstrumentation.StartActivity(nameof(Register));
+
+        _logger.LogInformation("Registering new registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
             newRegistration.AssociatedElementName, newRegistration.AssociatedElementType, newRegistration.CharacterId);
 
-        foreach (var behavior in _registrationBehaviors)
+        foreach (var behavior in _behaviors)
         {
             await behavior.Registered(newRegistration, context);
         }
@@ -31,12 +34,59 @@ public class NewRegistrationManager : INewRegistrationManager
 
     public async Task Unregister(Registration existingRegistration)
     {
-        _logger.LogInformation("Unregistering registration '{ElementName} ({ElementType})' [character='{CharacterId}']", 
+        using var _ = CharactersInstrumentation.StartActivity(nameof(Unregister));
+
+        _logger.LogInformation("Unregistering registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
             existingRegistration.AssociatedElementName, existingRegistration.AssociatedElementType, existingRegistration.CharacterId);
 
-        foreach (var behavior in _registrationBehaviors)
+        var registrations = _persistence.GetRepository<IRegistrationRepository>();
+
+        // Load all registrations for the character to determine subtree
+        var allCharacterRegistrations = await registrations.GetRegistrationsAsync(existingRegistration.CharacterId);
+
+        // Build parent -> children lookup
+        var childrenByParent = allCharacterRegistrations
+            .Where(r => r.ParentRegistrationId is not null)
+            .GroupBy(r => r.ParentRegistrationId!.Value)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        // Collect full set of registrations affected by this unregister (root + descendants)
+        var registrationsToUnregister = BuildRegistrationsSubtree(existingRegistration, childrenByParent);
+        registrationsToUnregister.Reverse(); // leaf-first (children before parents)
+
+        foreach (var reg in registrationsToUnregister)
         {
-            await behavior.Unregister(existingRegistration);
+            _logger.LogInformation("Unregistering registration {RegistrationId} ({ElementName})", reg.Id.Value, reg.AssociatedElementName);
+
+            foreach (var behavior in _behaviors)
+            {
+                await behavior.Unregister(reg);
+            }
+
+            await registrations.DeleteRegistrationAsync(reg.Id);
         }
+    }
+
+    private static List<Registration> BuildRegistrationsSubtree(Registration rootRegistration, Dictionary<RegistrationId, List<Registration>> childrenByParent)
+    {
+        var subtreeRegistrations = new List<Registration> { rootRegistration };
+        var nodesPendingTraversal = new Stack<Registration>();
+        nodesPendingTraversal.Push(rootRegistration);
+
+        while (nodesPendingTraversal.Count > 0)
+        {
+            var currentRegistration = nodesPendingTraversal.Pop();
+
+            if (childrenByParent.TryGetValue(currentRegistration.Id, out var childRegistrations))
+            {
+                foreach (var child in childRegistrations)
+                {
+                    subtreeRegistrations.Add(child);
+                    nodesPendingTraversal.Push(child);
+                }
+            }
+        }
+
+        return subtreeRegistrations;
     }
 }
