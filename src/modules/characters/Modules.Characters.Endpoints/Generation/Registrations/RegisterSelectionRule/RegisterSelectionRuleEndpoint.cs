@@ -13,9 +13,9 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
-    private readonly INewRegistrationManager _registrationManager;
+    private readonly IRegistrationManager _registrationManager;
 
-    public RegisterSelectionRuleEndpoint(IPersistence persistence, IElementsModuleQueries elements, INewRegistrationManager registrationManager)
+    public RegisterSelectionRuleEndpoint(IPersistence persistence, IElementsModuleQueries elements, IRegistrationManager registrationManager)
     {
         _persistence = persistence;
         _elements = elements;
@@ -75,9 +75,8 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
         var newRegistration = Registration.Create(character.Id, new(element.Id), element.Name, element.Type);
         newRegistration.UpdateParentRegistration(parentRegistration);
 
-
         // register the new registration (this will also trigger any registration behaviors)
-        await _registrationManager.Register(newRegistration, new RegistrationProcessContext(parentRegistration, _persistence));
+        await _registrationManager.Register(newRegistration);
 
         // update the selection rule to point to the new registration
         selectionRule.UpdateCurrentSelection(newRegistration);

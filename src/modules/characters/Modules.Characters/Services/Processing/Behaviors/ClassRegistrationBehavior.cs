@@ -13,17 +13,17 @@ namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 public sealed class ClassRegistrationBehavior : IRegistrationBehavior
 {
     private readonly IElementsModuleQueries _elements;
-    private readonly ClassManagementService _service;
     private readonly IPersistence _persistence;
+    private readonly ClassManagementService _service;
 
-    public ClassRegistrationBehavior(IElementsModuleQueries elements, ClassManagementService service, IPersistence persistence)
+    public ClassRegistrationBehavior(IElementsModuleQueries elements, IPersistence persistence, ClassManagementService service)
     {
         _elements = elements;
-        _service = service;
         _persistence = persistence;
+        _service = service;
     }
 
-    public async Task Registered(Registration newRegistration, RegistrationProcessContext context)
+    public async Task Registered(Registration newRegistration)
     {
         if (newRegistration.AssociatedElementType != "Class")
         {
@@ -36,7 +36,7 @@ public sealed class ClassRegistrationBehavior : IRegistrationBehavior
         var associatedElement = await _elements.GetElementWithRules(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Class with ID {newRegistration.AssociatedElementId} not found.");
 
         // get the character (could be a property in the context, specially if we need character level and other data later for requirements)
-        var characters = context.GetRepository<ICharactersRepository>();
+        var characters = _persistence.GetRepository<ICharactersRepository>();
         var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
         _service.AddCharacterClass(character, newRegistration, associatedElement.Name);

@@ -6,20 +6,20 @@ using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Services.Processing;
 
-public sealed class NewRegistrationManager : INewRegistrationManager
+public sealed class RegistrationManager : IRegistrationManager
 {
-    private readonly ILogger<NewRegistrationManager> _logger;
+    private readonly ILogger<RegistrationManager> _logger;
     private readonly IPersistence _persistence;
     private readonly List<IRegistrationBehavior> _behaviors;
 
-    public NewRegistrationManager(ILogger<NewRegistrationManager> logger, IPersistence persistence, IEnumerable<IRegistrationBehavior> behaviors)
+    public RegistrationManager(ILogger<RegistrationManager> logger, IPersistence persistence, IEnumerable<IRegistrationBehavior> behaviors)
     {
         _logger = logger;
         _persistence = persistence;
         _behaviors = [.. behaviors];
     }
 
-    public async Task Register(Registration newRegistration, RegistrationProcessContext context)
+    public async Task Register(Registration newRegistration)
     {
         using var _ = CharactersInstrumentation.StartActivity(nameof(Register));
 
@@ -28,7 +28,7 @@ public sealed class NewRegistrationManager : INewRegistrationManager
 
         foreach (var behavior in _behaviors)
         {
-            await behavior.Registered(newRegistration, context);
+            await behavior.Registered(newRegistration);
         }
 
         var registrations = _persistence.GetRepository<IRegistrationRepository>();

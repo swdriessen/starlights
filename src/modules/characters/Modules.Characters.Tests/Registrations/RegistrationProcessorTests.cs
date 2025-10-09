@@ -21,7 +21,7 @@ public sealed class RegistrationProcessorTests
 
     private RegistrationProcessor CreateSut(params IRegistrationBehavior[] behaviors)
     {
-        var manager = new NewRegistrationManager(Mock.Of<ILogger<NewRegistrationManager>>(), _persistence.Object, behaviors);
+        var manager = new RegistrationManager(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, behaviors);
         return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, _elements.Object, manager);
     }
 
@@ -172,7 +172,7 @@ public sealed class RegistrationProcessorTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
         var sut = CreateSut(behavior.Object);
@@ -208,7 +208,7 @@ public sealed class RegistrationProcessorTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
         var sut = CreateSut(behavior.Object);
@@ -254,7 +254,7 @@ public sealed class RegistrationProcessorTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
         var sut = CreateSut(behavior.Object);
@@ -282,10 +282,7 @@ public sealed class RegistrationProcessorTests
         _ = await sut.ProcessRegistration(registrationId);
 
         // Assert
-        behavior.Verify(b => b.Registered(
-            It.Is<Registration>(r => r.AssociatedElementId.Value == includedElementId && r.ParentRegistrationId == registration.Id),
-            It.IsAny<RegistrationProcessContext>()),
-            Times.Once);
+        behavior.Verify(b => b.Registered(It.Is<Registration>(r => r.AssociatedElementId.Value == includedElementId && r.ParentRegistrationId == registration.Id)), Times.Once);
     }
 
     [TestMethod]
@@ -293,7 +290,7 @@ public sealed class RegistrationProcessorTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
         var sut = CreateSut(behavior.Object);
 
@@ -325,7 +322,7 @@ public sealed class RegistrationProcessorTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
         var sut = CreateSut(behavior.Object);
 
@@ -349,7 +346,7 @@ public sealed class RegistrationProcessorTests
 
         // Assert
         _registrations.Verify(r => r.Add(It.IsAny<Registration>()), Times.Never);
-        behavior.Verify(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()), Times.Never);
+        behavior.Verify(b => b.Registered(It.IsAny<Registration>()), Times.Never);
     }
 
     [TestMethod]
@@ -357,7 +354,7 @@ public sealed class RegistrationProcessorTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
         var sut = CreateSut(behavior.Object);
 

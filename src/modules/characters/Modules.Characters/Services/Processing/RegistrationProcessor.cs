@@ -12,9 +12,9 @@ public class RegistrationProcessor : IRegistrationProcessor
     private readonly ILogger<RegistrationProcessor> _logger;
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
-    private readonly INewRegistrationManager _registrationManager;
+    private readonly IRegistrationManager _registrationManager;
 
-    public RegistrationProcessor(ILogger<RegistrationProcessor> logger, IPersistence persistence, IElementsModuleQueries elements, INewRegistrationManager registrationManager)
+    public RegistrationProcessor(ILogger<RegistrationProcessor> logger, IPersistence persistence, IElementsModuleQueries elements, IRegistrationManager registrationManager)
     {
         _logger = logger;
         _persistence = persistence;
@@ -121,7 +121,7 @@ public class RegistrationProcessor : IRegistrationProcessor
             context.NewRegistrations.Add(newRegistration);
 
             // apply any registration behavior in the current context
-            await _registrationManager.Register(newRegistration, context);
+            await _registrationManager.Register(newRegistration);
         }
     }
 

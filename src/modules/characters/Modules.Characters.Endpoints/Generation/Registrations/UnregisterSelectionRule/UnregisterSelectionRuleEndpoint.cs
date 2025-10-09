@@ -13,9 +13,9 @@ public class UnregisterSelectionRuleEndpoint : Endpoint<UnregisterSelectionRuleR
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
-    private readonly INewRegistrationManager _registrationManager;
+    private readonly IRegistrationManager _registrationManager;
 
-    public UnregisterSelectionRuleEndpoint(IPersistence persistence, IElementsModuleQueries elements, INewRegistrationManager registrationManager)
+    public UnregisterSelectionRuleEndpoint(IPersistence persistence, IElementsModuleQueries elements, IRegistrationManager registrationManager)
     {
         _persistence = persistence;
         _elements = elements;
