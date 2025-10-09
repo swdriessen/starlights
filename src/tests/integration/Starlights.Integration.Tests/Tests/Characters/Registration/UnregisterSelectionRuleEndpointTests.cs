@@ -26,7 +26,7 @@ public sealed class UnregisterSelectionRuleEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task UnregisterSelectionRule_Removes_ExistingRegistration_For_Class()
     {
         // Arrange

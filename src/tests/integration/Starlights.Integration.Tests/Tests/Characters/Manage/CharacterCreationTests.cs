@@ -24,7 +24,7 @@ public sealed class CharacterCreationTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task CreateDefaultCharacter()
     {
         // Act

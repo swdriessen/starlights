@@ -25,7 +25,7 @@ public sealed class GetRegistrationsEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetRegistrations_Returns_Hierarchy()
     {
         // Act

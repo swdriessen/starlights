@@ -30,7 +30,7 @@ public sealed class ClassTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.TimeoutForDebugging, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task NewRegistrationShouldHaveAdditionalRegistrations()
     {
         // Arrange
@@ -45,7 +45,7 @@ public sealed class ClassTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.TimeoutForDebugging, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task RemoveRegistrationShouldRemoveAllNewRegistrations()
     {
         // Arrange
@@ -61,9 +61,8 @@ public sealed class ClassTests : IntegrationTestBase
         actualRegistrations.Should().BeEquivalentTo(expectedRegistrations, "Expected registrations to return to their original state after unregistering the class.");
     }
 
-
     [TestMethod]
-    [Timeout(IntegrationHost.TimeoutForDebugging, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task NewRegistrationNestedSubClass()
     {
         // Arrange
@@ -80,7 +79,7 @@ public sealed class ClassTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.TimeoutForDebugging, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task RemoveRegistrationShouldRemoveNestedRegistrations()
     {
         // Arrange

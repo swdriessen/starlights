@@ -11,7 +11,7 @@ namespace Starlights.Modules.Characters.Domain.Registrations;
 /// Represents a registration for an element in the system.
 /// </summary>
 [Entity]
-[DebuggerDisplay("Id = {Id}, AssociatedElementName = {AssociatedElementName}, Parent = {ParentRegistrationId}")]
+[DebuggerDisplay("Element = {AssociatedElementName} ({AssociatedElementType}), Includes = {IncludeRules.Count}, Selections = {SelectionRules.Count}, Statistics = {StatisticRules.Count}")]
 public sealed class Registration : AggregateRoot<RegistrationId>
 {
     private readonly List<RegistrationIncludeRule> _includeRules = [];

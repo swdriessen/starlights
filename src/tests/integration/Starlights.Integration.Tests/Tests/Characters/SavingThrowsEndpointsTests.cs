@@ -27,7 +27,7 @@ public sealed class SavingThrowsEndpointsTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetSavingThrows_Returns_Data()
     {
         // Act

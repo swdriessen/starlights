@@ -2,8 +2,7 @@
 
 namespace Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegistrations;
 
-//DebuggerDisplay
-[DebuggerDisplay("{Name} ({Type}) Children = {Children.Count}")]
+[DebuggerDisplay("Name = {Name} ({Type}), Children = {Children.Count}")]
 public sealed class RegistrationDataModel
 {
     public required Guid RegistrationId { get; set; }

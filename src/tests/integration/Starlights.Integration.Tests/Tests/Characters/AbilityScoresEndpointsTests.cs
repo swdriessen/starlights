@@ -26,7 +26,7 @@ public sealed class AbilityScoresEndpointsTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetAbilities_Returns_DefaultScores()
     {
         // Arrange
@@ -55,7 +55,7 @@ public sealed class AbilityScoresEndpointsTests : IntegrationTestBase
     [DataRow("Wisdom")]
     [DataRow("Charisma")]
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task UpdateBaseScore_Updates_CalculatedFields(string abilityName)
     {
         // Arrange
@@ -78,7 +78,7 @@ public sealed class AbilityScoresEndpointsTests : IntegrationTestBase
     [DataRow("Wisdom")]
     [DataRow("Charisma")]
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task UpdateAdditionalScore_Updates_CalculatedFields(string abilityName)
     {
         // Arrange

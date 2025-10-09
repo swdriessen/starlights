@@ -24,7 +24,7 @@ public sealed class GetCharactersEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetCharacters_Returns_List_Including_Created_Character()
     {
         // Arrange
@@ -46,7 +46,7 @@ public sealed class GetCharactersEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetCharacter_Returns_Created_Character()
     {
         // Arrange

@@ -28,7 +28,7 @@ public sealed class GetFeaturesEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetFeatures_Returns_Class_And_ClassFeatures()
     {
         // Arrange

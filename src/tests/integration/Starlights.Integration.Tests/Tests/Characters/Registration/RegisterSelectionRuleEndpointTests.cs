@@ -26,7 +26,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetSelectionRules_Returns_Rules()
     {
         // Act
@@ -46,7 +46,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetSelectionRuleOptions_Returns_Options()
     {
         // Arrange        
@@ -65,7 +65,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task RegisterSelectionRule_Adds_NewRegistration_For_Class()
     {
         // Arrange

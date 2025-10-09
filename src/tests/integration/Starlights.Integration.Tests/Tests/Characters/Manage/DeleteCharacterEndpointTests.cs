@@ -24,7 +24,7 @@ public sealed class DeleteCharacterEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task DeleteCharacter_Removes_Character_From_List()
     {
         // Arrange
