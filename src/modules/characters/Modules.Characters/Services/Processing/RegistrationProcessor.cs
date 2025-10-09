@@ -93,8 +93,6 @@ public class RegistrationProcessor : IRegistrationProcessor
 
         // if the current element has no include rules, we can skip processing
 
-        var registrations = context.GetRepository<IRegistrationRepository>();
-
         includeActivity?.DisplayName = $"ProcessIncludeRules | {currentElement.IncludeRules.Count}";
 
         foreach (var rule in currentElement.IncludeRules)
@@ -120,7 +118,6 @@ public class RegistrationProcessor : IRegistrationProcessor
             // create the new registration include rule, this is to keep track of the rules applied
             currentRegistration.CreateIncludeRule(new(rule.RuleId), new(newIncludeElement.Id), newIncludeElement.Name);
 
-            registrations.Add(newRegistration);
             context.NewRegistrations.Add(newRegistration);
 
             // apply any registration behavior in the current context

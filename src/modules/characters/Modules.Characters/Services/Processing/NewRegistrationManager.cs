@@ -30,6 +30,9 @@ public sealed class NewRegistrationManager : INewRegistrationManager
         {
             await behavior.Registered(newRegistration, context);
         }
+
+        var registrations = _persistence.GetRepository<IRegistrationRepository>();
+        registrations.Add(newRegistration);
     }
 
     public async Task Unregister(Registration existingRegistration)

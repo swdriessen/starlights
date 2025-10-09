@@ -74,13 +74,13 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
         // create a new registration for the selected element
         var newRegistration = Registration.Create(character.Id, new(element.Id), element.Name, element.Type);
         newRegistration.UpdateParentRegistration(parentRegistration);
-        registrations.Add(newRegistration);
 
-        // update the selection rule to point to the new registration
-        selectionRule.UpdateCurrentSelection(newRegistration);
 
         // register the new registration (this will also trigger any registration behaviors)
         await _registrationManager.Register(newRegistration, new RegistrationProcessContext(parentRegistration, _persistence));
+
+        // update the selection rule to point to the new registration
+        selectionRule.UpdateCurrentSelection(newRegistration);
 
         // save changes after all is handled, registration manager itself does not call save changes, nor to the behaviors
         // save changes triggers the processing of the new registration
@@ -91,7 +91,7 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
 
         var response = new RegisterSelectionRuleResponse
         {
-            RegistrationId = newRegistration.Id            
+            RegistrationId = newRegistration.Id
         };
 
         await Send.OkAsync(response, ct);
