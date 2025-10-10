@@ -27,10 +27,15 @@ public class RegistrationSelectionRuleTypeConfiguration : IEntityTypeConfigurati
             .IsRequired()
             .HasConversion(m => m.Value, v => new ElementComponentId(v));
 
-        builder.Property(e => e.CurrentSelection)
+        builder.Property(e => e.SelectedOption)
             .HasColumnName("current_selection")
             .IsRequired(false)
             .HasConversion(m => m.HasValue ? m.Value.Value : (Guid?)null, v => v.HasValue ? new ElementId(v.Value) : null);
+
+        builder.Property(e => e.SelectionRegistrationId)
+            .HasColumnName("current_selection_registration_id")
+            .IsRequired(false)
+            .HasConversion(m => m.HasValue ? m.Value.Value : (Guid?)null, v => v.HasValue ? new RegistrationId(v.Value) : null);
 
         builder.Property(e => e.ElementType)
             .HasColumnName("element_type")

@@ -25,7 +25,7 @@ public sealed class SkillsEndpointsTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetSkills_Returns_SkillData()
     {
         // Act

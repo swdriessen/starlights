@@ -13,14 +13,17 @@ using Starlights.Platform.Data;
 namespace Starlights.Modules.Characters.Tests.Registrations;
 
 [TestClass]
-public sealed class RegistrationManagerTests
+public sealed class RegistrationProcessorTests
 {
     private readonly Mock<IPersistence> _persistence = new();
     private readonly Mock<IElementsModuleQueries> _elements = new();
     private readonly Mock<IRegistrationRepository> _registrations = new();
 
-    private RegistrationManager CreateSut(params IRegistrationBehavior[] behaviors)
-        => new(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, _elements.Object, behaviors);
+    private RegistrationProcessor CreateSut(params IRegistrationBehavior[] behaviors)
+    {
+        var manager = new RegistrationManager(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, behaviors);
+        return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, _elements.Object, manager);
+    }
 
     [TestInitialize]
     public void Setup()
@@ -169,7 +172,7 @@ public sealed class RegistrationManagerTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
         var sut = CreateSut(behavior.Object);
@@ -205,7 +208,7 @@ public sealed class RegistrationManagerTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
         var sut = CreateSut(behavior.Object);
@@ -251,7 +254,7 @@ public sealed class RegistrationManagerTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
         var sut = CreateSut(behavior.Object);
@@ -279,10 +282,7 @@ public sealed class RegistrationManagerTests
         _ = await sut.ProcessRegistration(registrationId);
 
         // Assert
-        behavior.Verify(b => b.Registered(
-            It.Is<Registration>(r => r.AssociatedElementId.Value == includedElementId && r.ParentRegistrationId == registration.Id),
-            It.IsAny<RegistrationProcessContext>()),
-            Times.Once);
+        behavior.Verify(b => b.Registered(It.Is<Registration>(r => r.AssociatedElementId.Value == includedElementId && r.ParentRegistrationId == registration.Id)), Times.Once);
     }
 
     [TestMethod]
@@ -290,7 +290,7 @@ public sealed class RegistrationManagerTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
         var sut = CreateSut(behavior.Object);
 
@@ -322,7 +322,7 @@ public sealed class RegistrationManagerTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
         var sut = CreateSut(behavior.Object);
 
@@ -346,7 +346,7 @@ public sealed class RegistrationManagerTests
 
         // Assert
         _registrations.Verify(r => r.Add(It.IsAny<Registration>()), Times.Never);
-        behavior.Verify(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()), Times.Never);
+        behavior.Verify(b => b.Registered(It.IsAny<Registration>()), Times.Never);
     }
 
     [TestMethod]
@@ -354,7 +354,7 @@ public sealed class RegistrationManagerTests
     {
         // Arrange
         var behavior = new Mock<IRegistrationBehavior>();
-        behavior.Setup(b => b.Registered(It.IsAny<Registration>(), It.IsAny<RegistrationProcessContext>()))
+        behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
         var sut = CreateSut(behavior.Object);
 

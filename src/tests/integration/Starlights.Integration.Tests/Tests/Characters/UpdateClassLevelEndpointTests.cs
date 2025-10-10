@@ -28,7 +28,7 @@ public sealed class UpdateClassLevelEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task LevelUpRegisteredClass()
     {
         // Arrange

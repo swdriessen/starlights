@@ -7,6 +7,7 @@ using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Domain.Skills;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
+using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 
@@ -16,15 +17,17 @@ namespace Starlights.Modules.Characters.Services.Processing.Behaviors;
 public sealed class SkillRegistrationBehavior : IRegistrationBehavior
 {
     private readonly ILogger<SkillRegistrationBehavior> _logger;
+    private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
 
-    public SkillRegistrationBehavior(ILogger<SkillRegistrationBehavior> logger, IElementsModuleQueries elements)
+    public SkillRegistrationBehavior(ILogger<SkillRegistrationBehavior> logger, IPersistence persistence, IElementsModuleQueries elements)
     {
         _logger = logger;
+        _persistence = persistence;
         _elements = elements;
     }
 
-    public async Task Registered(Registration newRegistration, RegistrationProcessContext context)
+    public async Task Registered(Registration newRegistration)
     {
         if (newRegistration.AssociatedElementType != "Skill")
         {
@@ -32,14 +35,14 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
         }
 
         // when a new skill element is registered, we need to create the skill for the character
-        var characters = context.GetRepository<ICharactersRepository>();
+        var characters = _persistence.GetRepository<ICharactersRepository>();
         var character = await characters.GetCharacterAsync(newRegistration.CharacterId) ?? throw new InvalidOperationException($"Character with ID {newRegistration.CharacterId} not found.");
 
         // fetch the associated skill element
         var associatedElement = await _elements.GetSkillModel(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Skill with ID {newRegistration.AssociatedElementId} not found.");
 
         // try to find the primary ability score for this skill
-        var primaryScore = await GetPrimaryAbilityScore(context, character, associatedElement);
+        var primaryScore = await GetPrimaryAbilityScore(character, associatedElement);
         if (primaryScore is null)
         {
             _logger.LogWarning("Creating skill '{SkillName}' without primary ability score [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
@@ -51,18 +54,12 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
             component.CreateSkill(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation));
     }
 
-    private static async Task<AbilityScore?> GetPrimaryAbilityScore(RegistrationProcessContext context, Character character, SkillDataModel skill)
+    private async Task<AbilityScore?> GetPrimaryAbilityScore(Character character, SkillDataModel skill)
     {
         var abilities = character.GetRequiredComponent<AbilitiesComponent>();
 
-        // first check if the skill is already associated with a new registration
-        foreach (var registration in context.NewRegistrations.Where(registration => registration.AssociatedElementId == skill.PrimaryAbilityElementId))
-        {
-            return abilities.AbilityScores.SingleOrDefault(a => a.AssociatedRegistrationId == registration.Id);
-        }
-
         // otherwise, we need to fetch the registrations from the repository
-        var existingRegistrations = await context.GetRepository<IRegistrationRepository>()
+        var existingRegistrations = await _persistence.GetRepository<IRegistrationRepository>()
             .GetRegistrationsByAssociationsAsync(character.Id, new ElementId(skill.PrimaryAbilityElementId));
 
         foreach (var abilityRegistration in existingRegistrations.Where(registration => registration.AssociatedElementId == skill.PrimaryAbilityElementId))
@@ -71,5 +68,15 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
         }
 
         return null;
+    }
+
+    public Task Unregister(Registration existingRegistration)
+    {
+        if (existingRegistration.AssociatedElementType != "Skill")
+        {
+            return Task.CompletedTask;
+        }
+
+        throw new NotImplementedException();
     }
 }

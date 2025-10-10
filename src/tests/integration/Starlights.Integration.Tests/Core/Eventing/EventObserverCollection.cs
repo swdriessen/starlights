@@ -30,6 +30,7 @@ public sealed class EventObserverCollection
         SkillCreated = new(_cancellationToken);
         SavingThrowCreated = new(_cancellationToken);
         CharacterClassCreated = new(_cancellationToken);
+        CharacterClassRemoved = new(_cancellationToken);
         RegistrationSelectionRuleCreated = new(_cancellationToken);
         RegistrationCreated = new(_cancellationToken);
         CharacterLevelChanged = new(_cancellationToken);
@@ -41,6 +42,7 @@ public sealed class EventObserverCollection
     public EventObserverT<SkillCreatedEvent> SkillCreated { get; }
     public EventObserverT<SavingThrowCreatedEvent> SavingThrowCreated { get; }
     public EventObserverT<CharacterClassCreatedEvent> CharacterClassCreated { get; }
+    public EventObserverT<CharacterClassRemovedEvent> CharacterClassRemoved { get; }
     public EventObserverT<RegistrationSelectionRuleCreatedEvent> RegistrationSelectionRuleCreated { get; }
     public EventObserverT<RegistrationCreatedEvent> RegistrationCreated { get; }
     public EventObserverT<CharacterLevelChangedEvent> CharacterLevelChanged { get; }
@@ -54,6 +56,7 @@ public sealed class EventObserverCollection
             _ when typeof(T) == typeof(SkillCreatedEvent) => (EventObserverT<T>)(object)SkillCreated,
             _ when typeof(T) == typeof(SavingThrowCreatedEvent) => (EventObserverT<T>)(object)SavingThrowCreated,
             _ when typeof(T) == typeof(CharacterClassCreatedEvent) => (EventObserverT<T>)(object)CharacterClassCreated,
+            _ when typeof(T) == typeof(CharacterClassRemovedEvent) => (EventObserverT<T>)(object)CharacterClassRemoved,
             _ when typeof(T) == typeof(RegistrationSelectionRuleCreatedEvent) => (EventObserverT<T>)(object)RegistrationSelectionRuleCreated,
             _ when typeof(T) == typeof(RegistrationCreatedEvent) => (EventObserverT<T>)(object)RegistrationCreated,
             _ when typeof(T) == typeof(CharacterLevelChangedEvent) => (EventObserverT<T>)(object)CharacterLevelChanged,

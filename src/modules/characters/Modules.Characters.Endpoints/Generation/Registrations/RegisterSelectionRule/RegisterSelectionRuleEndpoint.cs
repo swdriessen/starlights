@@ -13,13 +13,13 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
 {
     private readonly IPersistence _persistence;
     private readonly IElementsModuleQueries _elements;
-    private readonly IEnumerable<IRegistrationBehavior> _registrationBehaviors;
+    private readonly IRegistrationManager _registrationManager;
 
-    public RegisterSelectionRuleEndpoint(IPersistence persistence, IElementsModuleQueries elements, IEnumerable<IRegistrationBehavior> registrationBehaviors)
+    public RegisterSelectionRuleEndpoint(IPersistence persistence, IElementsModuleQueries elements, IRegistrationManager registrationManager)
     {
         _persistence = persistence;
         _elements = elements;
-        _registrationBehaviors = [.. registrationBehaviors];
+        _registrationManager = registrationManager;
     }
 
     public override void Configure()
@@ -70,24 +70,19 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
             return;
         }
 
+
+        // create a new registration for the selected element
         var newRegistration = Registration.Create(character.Id, new(element.Id), element.Name, element.Type);
         newRegistration.UpdateParentRegistration(parentRegistration);
 
-        // mark the selection rule with the selected element
-        selectionRule.UpdateCurrentSelection(newRegistration.AssociatedElementId);
-        // TODO: add domain event, aka go through parent registration
+        // register the new registration (this will also trigger any registration behaviors)
+        await _registrationManager.Register(newRegistration);
 
-        registrations.Add(newRegistration);
+        // update the selection rule to point to the new registration
+        selectionRule.UpdateCurrentSelection(newRegistration);
 
-        // move this to the registration manager? - aka if a class is selected, registration behavior will add the character class entity to the classcomponent
-        var context = new RegistrationProcessContext(parentRegistration, _persistence);
-        context.NewRegistrations.Add(newRegistration);
-
-        foreach (var behavior in _registrationBehaviors)
-        {
-            await behavior.Registered(newRegistration, context);
-        }
-
+        // save changes after all is handled, registration manager itself does not call save changes, nor to the behaviors
+        // save changes triggers the processing of the new registration
         await _persistence.SaveChangesAsync();
 
         registrationActivity?.AddTag("registration.id", newRegistration.Id.ToString());

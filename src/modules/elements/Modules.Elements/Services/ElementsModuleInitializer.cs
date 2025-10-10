@@ -354,13 +354,25 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
             .WithIncludeRule(barbarianFeature2.Id, levelRequirement: 2)
             .WithIncludeRule(barbarianFeature2_1.Id, levelRequirement: 2)
             .WithIncludeRule(barbarianFeature3.Id, levelRequirement: 3)
+            .WithSelectionRule(ElementTypeConstants.SubClass, "Primal Path", levelRequirement: 3)
             .Build();
+
+        var subclass1 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Barbarian SubClass 1")
+            .WithDescription("This is a barbarian subclass")
+            .Build();
+
+        var subclass2 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Barbarian SubClass 2")
+            .WithDescription("This is another barbarian subclass")
+            .Build();
+
 
         repository.Add(barbarian);
         repository.Add(barbarianFeature1);
         repository.Add(barbarianFeature2);
         repository.Add(barbarianFeature2_1);
         repository.Add(barbarianFeature3);
+        repository.Add(subclass1);
+        repository.Add(subclass2);
 
 
         var rogueFeature1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Rogue Feature 1")

@@ -26,5 +26,9 @@ public class RegistrationProcessContext
     /// <summary>
     /// Gets a repository for the current persistence context.
     /// </summary>
-    public T GetRepository<T>() where T : IRepository => _persistence.GetRepository<T>();
+    public T GetRepository<T>() where T : IRepository
+    {
+        return _persistence.GetRepository<T>();
+    }
 }
+

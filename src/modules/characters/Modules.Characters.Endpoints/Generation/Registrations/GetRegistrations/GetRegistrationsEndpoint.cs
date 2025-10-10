@@ -52,7 +52,7 @@ public sealed class GetRegistrationsEndpoint : Endpoint<GetRegistrationsRequest,
 
 
 
-        await Send.OkAsync(new GetRegistrationsResponse { Registrations = BuildHierarchy(models) }, ct);
+        await Send.OkAsync(new GetRegistrationsResponse { Registrations = models }, ct);
     }
 
     private static List<RegistrationDataModel> BuildHierarchy(List<RegistrationDataModel> registrations)

@@ -26,7 +26,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetSelectionRules_Returns_Rules()
     {
         // Act
@@ -46,7 +46,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
     public async Task GetSelectionRuleOptions_Returns_Options()
     {
         // Arrange        
@@ -65,8 +65,8 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
     }
 
     [TestMethod]
-    [Timeout(IntegrationHost.Timeout, CooperativeCancellation = true)]
-    public async Task RegisterSelectionRule_Adds_NewRegistration_For_ClassElement()
+    [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
+    public async Task RegisterSelectionRule_Adds_NewRegistration_For_Class()
     {
         // Arrange
         var rule = await _driver.GetSingleSelectionRule(SelectionRuleTypes.Class);
@@ -78,5 +78,7 @@ public sealed class RegisterSelectionRuleEndpointTests : IntegrationTestBase
 
         // Assert
         newRegistrationId.Should().NotBe(Guid.Empty);
+        rule = await _driver.GetSingleSelectionRule(SelectionRuleTypes.Class);
+        rule.ActiveRegistration.Should().Be(chosenOption.ElementId, "Expected the selection rule to have an active registration after registering a class.");
     }
 }

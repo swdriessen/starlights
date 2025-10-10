@@ -50,6 +50,23 @@ export function useRegisterSelectionMutation(
   });
 }
 
+// unregister selection
+
+export type UnregisterSelectionRequest = { parentRegistration: string; elementId: string };
+
+export function useUnregisterSelectionMutation(characterId: string, selectionRuleId: string): UseMutationResult<void, Error, UnregisterSelectionRequest> {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, UnregisterSelectionRequest>({
+    mutationFn: (payload) =>
+      postJson<UnregisterSelectionRequest, void>(`/api/characters/${characterId}/builder/selection-rules/${selectionRuleId}/unregister`, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["character-selection-rules", characterId, selectionRuleId] });
+      queryClient.invalidateQueries({ queryKey: ["character-registrations", characterId] });
+    },
+  });
+}
+
 // get registrations
 export type RegistrationModels = { registrations: RegistrationModel[] };
 

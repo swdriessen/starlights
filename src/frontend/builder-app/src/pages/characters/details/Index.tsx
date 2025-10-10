@@ -6,6 +6,7 @@ import {
   useRegistrationModels,
   useSelectionRuleDataModels,
   useSelectionRuleOptionModels,
+  useUnregisterSelectionMutation,
 } from "@/lib/api/builder/registration-api";
 import {
   useAbilityScores,
@@ -223,6 +224,7 @@ function SelectionRulesSectionOptionsComponent({
   const { data: optionsData, isLoading, error } = useSelectionRuleOptionModels(characterId, selectionRuleId);
 
   const registerSelectionMutation = useRegisterSelectionMutation(characterId, selectionRuleId);
+  const unregisterSelectionMutation = useUnregisterSelectionMutation(characterId, selectionRuleId);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -243,6 +245,15 @@ function SelectionRulesSectionOptionsComponent({
                   >
                     Register
                   </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    disabled={unregisterSelectionMutation.isPending}
+                    onClick={() => unregisterSelectionMutation.mutate({ parentRegistration: parentRegistration, elementId: option.elementId })}
+                    className="ml-2"
+                  >
+                    Unregister
+                  </Button>
                 </li>
               ))}
             </ul>
@@ -253,7 +264,7 @@ function SelectionRulesSectionOptionsComponent({
   );
 }
 
-function SelectionRulesSectionComponent({ characterId, type }: { characterId: string; type: "Class" | "Race" | "Background" }) {
+function SelectionRulesSectionComponent({ characterId, type }: { characterId: string; type: "Class" | "Race" | "Background" | "SubClass" | "Proficiency" }) {
   const { data: selectionRulesData, isLoading, error } = useSelectionRuleDataModels(characterId, type);
 
   if (isLoading) return <div>Loading...</div>;
@@ -407,6 +418,7 @@ export default function CharactersDetailsPage() {
           </TabsList>
           <TabsContent value="tab-selection-rules-class">
             <SelectionRulesSectionComponent characterId={id} type="Class" />
+            <SelectionRulesSectionComponent characterId={id} type="SubClass" />
           </TabsContent>
           <TabsContent value="tab-selection-rules-race">
             <SelectionRulesSectionComponent characterId={id} type="Race" />

@@ -12,6 +12,7 @@ internal static class IntegrationHostBuilderExtensions
     public static IntegrationHostBuilder WithTestContext(this IntegrationHostBuilder builder, TestContext testContext)
     {
         builder.Properties["TestContext"] = testContext;
+
         return builder;
     }
 

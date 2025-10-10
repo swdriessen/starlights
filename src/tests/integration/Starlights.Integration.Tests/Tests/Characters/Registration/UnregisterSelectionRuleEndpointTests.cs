@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Starlights.Integration.Constants;
 using Starlights.Integration.Core;
 using Starlights.Integration.Core.Extensions;
 using Starlights.Integration.Drivers.CharacterCreation;
@@ -6,7 +7,7 @@ using Starlights.Integration.Drivers.CharacterCreation;
 namespace Starlights.Integration.Tests.Characters.Registration;
 
 [TestClass]
-public sealed class GetRegistrationsEndpointTests : IntegrationTestBase
+public sealed class UnregisterSelectionRuleEndpointTests : IntegrationTestBase
 {
     private IntegrationHost _integration = default!;
     private RegistrationDriver _driver = default!;
@@ -26,12 +27,18 @@ public sealed class GetRegistrationsEndpointTests : IntegrationTestBase
 
     [TestMethod]
     [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
-    public async Task GetRegistrations_Returns_Hierarchy()
+    public async Task UnregisterSelectionRule_Removes_ExistingRegistration_For_Class()
     {
+        // Arrange
+        var (classRule, barbarianOption, _) = await _driver.RegisterClass("Barbarian");
+        classRule = await _driver.GetSingleSelectionRule(SelectionRuleTypes.Class); // get the rule again to verify the active registration
+        classRule.ActiveRegistration.Should().Be(barbarianOption.ElementId, "Expected the selection rule to have an active registration after registering a class.");
+
         // Act
-        var registrations = await _driver.GetRegistrations();
+        await _driver.UnregisterSelectionRule(classRule, barbarianOption);
 
         // Assert
-        registrations.Should().NotBeEmpty();
+        classRule = await _driver.GetSingleSelectionRule(SelectionRuleTypes.Class);
+        classRule.ActiveRegistration.Should().BeNull();
     }
 }

@@ -2,184 +2,94 @@
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Registrations;
-using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Services.Processing;
 
-public class RegistrationManager : IRegistrationManager
+public sealed class RegistrationManager : IRegistrationManager
 {
     private readonly ILogger<RegistrationManager> _logger;
     private readonly IPersistence _persistence;
-    private readonly IElementsModuleQueries _elements;
-    private readonly IEnumerable<IRegistrationBehavior> _registrationBehaviors;
+    private readonly List<IRegistrationBehavior> _behaviors;
 
-    public RegistrationManager(ILogger<RegistrationManager> logger,
-                               IPersistence persistence,
-                               IElementsModuleQueries elements,
-                               IEnumerable<IRegistrationBehavior> registrationBehaviors)
+    public RegistrationManager(ILogger<RegistrationManager> logger, IPersistence persistence, IEnumerable<IRegistrationBehavior> behaviors)
     {
         _logger = logger;
         _persistence = persistence;
-        _elements = elements;
-        _registrationBehaviors = [.. registrationBehaviors];
+        _behaviors = [.. behaviors];
     }
 
-    public async Task<ProcessRegistrationResult> ProcessRegistration(RegistrationId registrationId)
+    public async Task Register(Registration newRegistration)
     {
-        using var processActivity = CharactersInstrumentation.StartActivity();
+        using var _ = CharactersInstrumentation.StartActivity(nameof(Register));
 
-        var characters = _persistence.GetRepository<ICharactersRepository>();
+        _logger.LogInformation("Registering new registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
+            newRegistration.AssociatedElementName, newRegistration.AssociatedElementType, newRegistration.CharacterId);
+
+        foreach (var behavior in _behaviors)
+        {
+            await behavior.Registered(newRegistration);
+        }
+
+        var registrations = _persistence.GetRepository<IRegistrationRepository>();
+        registrations.Add(newRegistration);
+    }
+
+    public async Task Unregister(Registration existingRegistration)
+    {
+        using var _ = CharactersInstrumentation.StartActivity(nameof(Unregister));
+
+        _logger.LogInformation("Unregistering registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
+            existingRegistration.AssociatedElementName, existingRegistration.AssociatedElementType, existingRegistration.CharacterId);
+
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
 
-        // ensure the registration exists before processing
-        var registration = await registrations.GetRegistrationAsync(registrationId);
-        if (registration is null)
+        // Load all registrations for the character to determine subtree
+        var allCharacterRegistrations = await registrations.GetRegistrationsAsync(existingRegistration.CharacterId);
+
+        // Build parent -> children lookup
+        var childrenByParent = allCharacterRegistrations
+            .Where(r => r.ParentRegistrationId is not null)
+            .GroupBy(r => r.ParentRegistrationId!.Value)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        // Collect full set of registrations affected by this unregister (root + descendants)
+        var registrationsToUnregister = BuildRegistrationsSubtree(existingRegistration, childrenByParent);
+        registrationsToUnregister.Reverse(); // leaf-first (children before parents)
+
+        foreach (var reg in registrationsToUnregister)
         {
-            _logger.LogError("Registration with ID {RegistrationId} not found.", registrationId);
-            return new ProcessRegistrationResult();
-        }
+            _logger.LogInformation("Unregistering registration {RegistrationId} ({ElementName})", reg.Id.Value, reg.AssociatedElementName);
 
-        _logger.LogInformation("processing registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
-                               registration.AssociatedElementName, registration.AssociatedElementType, registration.CharacterId.Value);
-
-        var context = new RegistrationProcessContext(registration, _persistence);
-
-        await ProcessIncludeRules(context);
-        await ProcessStatisticRules(context);
-        await ProcessSelectionRules(context);
-
-        registration.Processed();
-
-        var affectedRows = await _persistence.SaveChangesAsync();
-
-        processActivity?.SetTag("affectedRows", affectedRows);
-
-        return new ProcessRegistrationResult() { AffectedRows = affectedRows };
-    }
-
-    private async Task ProcessIncludeRules(RegistrationProcessContext context)
-    {
-        using var includeActivity = CharactersInstrumentation.StartActivity();
-
-        var currentRegistration = context.Registration;
-
-        var currentElement = await _elements.GetElementWithRules(currentRegistration.AssociatedElementId);
-        if (currentElement is null)
-        {
-            _logger.LogError("Element with ID {ElementId} not found for registration {RegistrationId}. Skipping include rules processing.", currentRegistration.AssociatedElementId, currentRegistration.Id);
-            return;
-        }
-
-        // if the current element has no include rules, we can skip processing
-
-        var registrations = context.GetRepository<IRegistrationRepository>();
-
-        includeActivity?.DisplayName = $"ProcessIncludeRules | {currentElement.IncludeRules.Count}";
-
-        foreach (var rule in currentElement.IncludeRules)
-        {
-            if (currentRegistration.HasAssociatedRule(rule.RuleId))
+            foreach (var behavior in _behaviors)
             {
-                continue;
+                await behavior.Unregister(reg);
             }
 
-            // when all requirements are met, we can include the element
-            var newIncludeElement = await _elements.GetElementWithRules(rule.IncludedElementId);
-
-            if (newIncludeElement is null)
-            {
-                _logger.LogError("Element with ID {ElementId} not found for registration {AssociatedElementName}. Skipping include rules processing.", rule.IncludedElementId, currentRegistration.AssociatedElementName);
-                continue;
-            }
-
-            // create the new registration for the included element
-            var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name, newIncludeElement.Type);
-            newRegistration.UpdateParentRegistration(currentRegistration);
-
-            // create the new registration include rule, this is to keep track of the rules applied
-            currentRegistration.CreateIncludeRule(new(rule.RuleId), new(newIncludeElement.Id), newIncludeElement.Name);
-
-            registrations.Add(newRegistration);
-            context.NewRegistrations.Add(newRegistration);
-
-            // apply any registration behavior in the current context
-            foreach (var behavior in _registrationBehaviors)
-            {
-                await behavior.Registered(newRegistration, context);
-            }
+            await registrations.DeleteRegistrationAsync(reg.Id);
         }
     }
 
-    private async Task ProcessStatisticRules(RegistrationProcessContext context)
+    private static List<Registration> BuildRegistrationsSubtree(Registration rootRegistration, Dictionary<RegistrationId, List<Registration>> childrenByParent)
     {
-        using var statisticsActivity = CharactersInstrumentation.StartActivity();
+        var subtreeRegistrations = new List<Registration> { rootRegistration };
+        var nodesPendingTraversal = new Stack<Registration>();
+        nodesPendingTraversal.Push(rootRegistration);
 
-        var currentRegistration = context.Registration;
-
-        var currentElement = await _elements.GetElementWithRules(currentRegistration.AssociatedElementId);
-        if (currentElement is null)
+        while (nodesPendingTraversal.Count > 0)
         {
-            _logger.LogError("Element with ID {ElementId} not found for registration {RegistrationId}. Skipping include rules processing.", currentRegistration.AssociatedElementId, currentRegistration.Id);
-            return;
-        }
+            var currentRegistration = nodesPendingTraversal.Pop();
 
-        // if the current element has no statistic rules, we can skip processing
-
-        var registrations = context.GetRepository<IRegistrationRepository>();
-
-        statisticsActivity?.DisplayName = $"ProcessStatisticRules | {currentElement.StatisticRules.Count}";
-
-        foreach (var rule in currentElement.StatisticRules)
-        {
-            if (currentRegistration.HasAssociatedRule(rule.RuleId))
+            if (childrenByParent.TryGetValue(currentRegistration.Id, out var childRegistrations))
             {
-                continue;
-            }
-
-            // create the new registration statistic rule, this is to keep track of the rules applied
-            var newStatisticRule = currentRegistration.CreateStatisticRule(new(rule.RuleId), rule.Name, rule.Value);
-
-            if (rule.StackingBonus is not null)
-            {
-                newStatisticRule.UpdateStackingBonus(rule.StackingBonus);
-            }
-
-            if (rule.LevelRequirement > 0)
-            {
-                newStatisticRule.UpdateLevelRequirement(rule.LevelRequirement);
+                foreach (var child in childRegistrations)
+                {
+                    subtreeRegistrations.Add(child);
+                    nodesPendingTraversal.Push(child);
+                }
             }
         }
-    }
 
-    private async Task ProcessSelectionRules(RegistrationProcessContext context)
-    {
-        using var selectionActivity = CharactersInstrumentation.StartActivity();
-
-        var currentRegistration = context.Registration;
-
-        var currentElement = await _elements.GetElementWithRules(currentRegistration.AssociatedElementId);
-        if (currentElement is null)
-        {
-            _logger.LogError("Element with ID {ElementId} not found for registration {RegistrationId}. Skipping include rules processing.", currentRegistration.AssociatedElementId, currentRegistration.Id);
-            return;
-        }
-
-        // if the current element has no selection rules, we can skip processing
-
-        var registrations = context.GetRepository<IRegistrationRepository>();
-
-        selectionActivity?.DisplayName = $"ProcessSelectionRules | {currentElement.SelectionRules.Count}";
-
-        foreach (var rule in currentElement.SelectionRules)
-        {
-            if (currentRegistration.HasAssociatedRule(rule.RuleId))
-            {
-                continue;
-            }
-
-            // create the new registration selection rule, this is to keep track of the rules applied
-            _ = currentRegistration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
-        }
+        return subtreeRegistrations;
     }
 }

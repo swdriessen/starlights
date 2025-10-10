@@ -50,8 +50,6 @@ internal sealed class CharacterManagementDriver : IDriver
         await _api.UpdateClassLevel(characterId, classId, newLevel);
     }
 
-
-
     public async Task<List<RegistrationDataModel>> GetFeatures()
     {
         var characterId = _integration.GetCharacterIdentifier();
@@ -61,7 +59,4 @@ internal sealed class CharacterManagementDriver : IDriver
 
         return response.Features;
     }
-
-
-
 }
