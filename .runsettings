@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-    <DataCollectionRunSettings>
-        <DataCollectors>
-            <DataCollector friendlyName="Code Coverage">
-                <Configuration>
-                    <ExcludeByFile>
-                        <File>**/Migrations/*.cs</File>
-                        <File>**/Migrations/**/*.cs</File>
-                    </ExcludeByFile>
-                </Configuration>
-            </DataCollector>
-        </DataCollectors>
-    </DataCollectionRunSettings>
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0">
+				<Configuration>
+					<CodeCoverage>
+						<IncludeTestAssembly>False</IncludeTestAssembly>
+						<ModulePaths>
+							<Include>
+								<ModulePath>.*\.dll$</ModulePath>
+							</Include>
+							<Exclude>
+								<ModulePath>.*serilog.*</ModulePath>
+								<ModulePath>.*moq.*</ModulePath>
+								<ModulePath>.*fluentvalidation.*</ModulePath>
+								<ModulePath>.*microsoft.extensions.servicediscovery.*</ModulePath>
+							</Exclude>
+						</ModulePaths>
+						<Sources>
+							<Exclude>
+								<Source>.*\\Migrations\\.*</Source>
+							</Exclude>
+						</Sources>
+					</CodeCoverage>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
 </RunSettings>

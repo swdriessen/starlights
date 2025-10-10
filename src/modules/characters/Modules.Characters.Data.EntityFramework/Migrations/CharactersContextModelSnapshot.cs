@@ -11,7 +11,6 @@ using Starlights.Modules.Characters.Data.EntityFramework;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 {
-    [ExcludeFromCodeCoverage]
     [DbContext(typeof(CharactersContext))]
     partial class CharactersContextModelSnapshot : ModelSnapshot
     {
