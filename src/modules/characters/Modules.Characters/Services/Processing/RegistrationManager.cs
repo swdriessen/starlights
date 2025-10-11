@@ -21,10 +21,9 @@ public sealed class RegistrationManager : IRegistrationManager
 
     public async Task Register(Registration newRegistration)
     {
-        using var _ = CharactersInstrumentation.StartActivity(nameof(Register));
+        using var activity = CharactersInstrumentation.StartActivity(nameof(Register));
 
-        _logger.LogInformation("Registering new registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
-            newRegistration.AssociatedElementName, newRegistration.AssociatedElementType, newRegistration.CharacterId);
+        _logger.LogInformation("Registering new registration '{ElementName} ({ElementType})'", newRegistration.AssociatedElementName, newRegistration.AssociatedElementType);
 
         foreach (var behavior in _behaviors)
         {
@@ -37,10 +36,9 @@ public sealed class RegistrationManager : IRegistrationManager
 
     public async Task Unregister(Registration existingRegistration)
     {
-        using var _ = CharactersInstrumentation.StartActivity(nameof(Unregister));
+        using var activity = CharactersInstrumentation.StartActivity(nameof(Unregister));
 
-        _logger.LogInformation("Unregistering registration '{ElementName} ({ElementType})' [character='{CharacterId}']",
-            existingRegistration.AssociatedElementName, existingRegistration.AssociatedElementType, existingRegistration.CharacterId);
+        _logger.LogInformation("Unregistering registration '{ElementName} ({ElementType})'", existingRegistration.AssociatedElementName, existingRegistration.AssociatedElementType);
 
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
 
@@ -59,15 +57,20 @@ public sealed class RegistrationManager : IRegistrationManager
 
         foreach (var reg in registrationsToUnregister)
         {
-            _logger.LogInformation("Unregistering registration {RegistrationId} ({ElementName})", reg.Id.Value, reg.AssociatedElementName);
 
             foreach (var behavior in _behaviors)
             {
                 await behavior.Unregister(reg);
             }
 
+            _logger.LogInformation("deleting registration {RegistrationId} ({ElementName})", reg.Id.Value, reg.AssociatedElementName);
+
             await registrations.DeleteRegistrationAsync(reg.Id);
+            reg.MarkDeleted();
         }
+
+        // mark character as re-processing required (some flag and event raised)
+        // then a handler will pick this up and re-process all remaining registrations
     }
 
     private static List<Registration> BuildRegistrationsSubtree(Registration rootRegistration, Dictionary<RegistrationId, List<Registration>> childrenByParent)

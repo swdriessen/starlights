@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Starlights.Modules.Characters.Data.EntityFramework;
 
@@ -11,9 +12,11 @@ using Starlights.Modules.Characters.Data.EntityFramework;
 namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 {
     [DbContext(typeof(CharactersContext))]
-    partial class CharactersContextModelSnapshot : ModelSnapshot
+    [Migration("20251010201121_AddProgressionOrigin")]
+    partial class AddProgressionOrigin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,10 +182,6 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.Migrations
 
                     b.Property<bool>("IsProcessed")
                         .HasColumnType("bit");
-
-                    b.Property<Guid?>("OriginatingRule")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("originating_rule_id");
 
                     b.Property<Guid?>("ParentRegistrationId")
                         .HasColumnType("uniqueidentifier")

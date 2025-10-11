@@ -18,8 +18,9 @@ public sealed class RegistrationProcessorTests
     private readonly Mock<IPersistence> _persistence = new();
     private readonly Mock<IElementsModuleQueries> _elements = new();
     private readonly Mock<IRegistrationRepository> _registrations = new();
+    private readonly Mock<ICharactersRepository> _characters = new();
 
-    private RegistrationProcessor CreateSut(params IRegistrationBehavior[] behaviors)
+    private RegistrationProcessor CreateProcessor(params IRegistrationBehavior[] behaviors)
     {
         var manager = new RegistrationManager(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, behaviors);
         return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, _elements.Object, manager);
@@ -31,9 +32,12 @@ public sealed class RegistrationProcessorTests
         _persistence.Reset();
         _elements.Reset();
         _registrations.Reset();
+        _characters.Reset();
 
         _persistence.Setup(p => p.GetRepository<IRegistrationRepository>())
                     .Returns(_registrations.Object);
+        _persistence.Setup(p => p.GetRepository<ICharactersRepository>())
+                    .Returns(_characters.Object);
         _persistence.Setup(p => p.SaveChangesAsync())
                     .ReturnsAsync(1);
     }
@@ -42,13 +46,13 @@ public sealed class RegistrationProcessorTests
     public async Task ProcessRegistration_ShouldNotSaveChanges_WhenRegistrationNotFound()
     {
         // Arrange
-        var sut = CreateSut();
         var registrationId = RegistrationId.New();
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync((Registration?)null);
 
         // Act
-        await sut.ProcessRegistration(registrationId);
+        var processor = CreateProcessor();
+        await processor.ProcessRegistration(registrationId);
 
         // Assert
         _persistence.Verify(p => p.SaveChangesAsync(), Times.Never);
@@ -58,7 +62,7 @@ public sealed class RegistrationProcessorTests
     public async Task ProcessRegistration_ShouldSaveChanges_WhenIncludeAddsRegistration()
     {
         // Arrange
-        var sut = CreateSut();
+        var processor = CreateProcessor();
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -67,6 +71,11 @@ public sealed class RegistrationProcessorTests
 
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
+
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
 
         var includeRuleId = Guid.NewGuid();
         var includedElementId = Guid.NewGuid();
@@ -78,7 +87,7 @@ public sealed class RegistrationProcessorTests
                  .ReturnsAsync(CreateIncludedElement(includedElementId));
 
         // Act
-        _ = await sut.ProcessRegistration(registrationId);
+        _ = await processor.ProcessRegistration(registrationId);
 
         // Assert
         _persistence.Verify(p => p.SaveChangesAsync(), Times.Once);
@@ -88,7 +97,7 @@ public sealed class RegistrationProcessorTests
     public async Task ProcessRegistration_ShouldCreateSelectionRules_WhenPresentOnElement()
     {
         // Arrange
-        var sut = CreateSut();
+        var processor = CreateProcessor();
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -98,13 +107,18 @@ public sealed class RegistrationProcessorTests
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
 
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
+
         var selectionRuleId = Guid.NewGuid();
 
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
                  .ReturnsAsync(CreateBaseElementWithSelectionRules(baseElementId, selectionRuleId));
 
         // Act
-        var result = await sut.ProcessRegistration(registrationId);
+        var result = await processor.ProcessRegistration(registrationId);
 
         // Assert
         result.AffectedRows.Should().Be(1);
@@ -119,7 +133,7 @@ public sealed class RegistrationProcessorTests
     public async Task ProcessRegistration_ShouldNotDuplicateSelectionRules_WhenAlreadyAssociated()
     {
         // Arrange
-        var sut = CreateSut();
+        var processor = CreateProcessor();
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -132,11 +146,16 @@ public sealed class RegistrationProcessorTests
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
 
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
+
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
                  .ReturnsAsync(CreateBaseElementWithSelectionRules(baseElementId, selectionRuleId));
 
         // Act
-        var result = await sut.ProcessRegistration(registrationId);
+        var result = await processor.ProcessRegistration(registrationId);
 
         // Assert
         result.AffectedRows.Should().Be(1);
@@ -147,7 +166,7 @@ public sealed class RegistrationProcessorTests
     public async Task ProcessRegistration_MarksRegistrationProcessed_WhenIncludeAddsRegistration()
     {
         // Arrange
-        var sut = CreateSut();
+        var processor = CreateProcessor();
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -157,11 +176,16 @@ public sealed class RegistrationProcessorTests
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
 
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
+
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
                  .ReturnsAsync(CreateBaseElementWithoutRules(baseElementId));
 
         // Act
-        _ = await sut.ProcessRegistration(registrationId);
+        _ = await processor.ProcessRegistration(registrationId);
 
         // Assert
         registration.IsProcessed.Should().BeTrue();
@@ -175,7 +199,7 @@ public sealed class RegistrationProcessorTests
         behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
-        var sut = CreateSut(behavior.Object);
+        var processor = CreateProcessor(behavior.Object);
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -184,6 +208,11 @@ public sealed class RegistrationProcessorTests
 
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
+
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
 
         var includeRuleId = Guid.NewGuid();
         var includedElementId = Guid.NewGuid();
@@ -197,7 +226,7 @@ public sealed class RegistrationProcessorTests
         _persistence.Setup(p => p.SaveChangesAsync()).ReturnsAsync(2);
 
         // Act
-        _ = await sut.ProcessRegistration(registrationId);
+        _ = await processor.ProcessRegistration(registrationId);
 
         // Assert
         registration.HasAssociatedRule(includeRuleId).Should().BeTrue();
@@ -211,7 +240,7 @@ public sealed class RegistrationProcessorTests
         behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
-        var sut = CreateSut(behavior.Object);
+        var processor = CreateProcessor(behavior.Object);
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -220,6 +249,11 @@ public sealed class RegistrationProcessorTests
 
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
+
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
 
         var includeRuleId = Guid.NewGuid();
         var includedElementId = Guid.NewGuid();
@@ -237,7 +271,7 @@ public sealed class RegistrationProcessorTests
         _persistence.Setup(p => p.SaveChangesAsync()).ReturnsAsync(2);
 
         // Act
-        _ = await sut.ProcessRegistration(registrationId);
+        _ = await processor.ProcessRegistration(registrationId);
 
         // Assert
         added.Should().NotBeNull();
@@ -257,7 +291,7 @@ public sealed class RegistrationProcessorTests
         behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
 
-        var sut = CreateSut(behavior.Object);
+        var processor = CreateProcessor(behavior.Object);
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -266,6 +300,11 @@ public sealed class RegistrationProcessorTests
 
         _registrations.Setup(r => r.GetRegistrationAsync(registrationId))
                       .ReturnsAsync(registration);
+
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
 
         var includeRuleId = Guid.NewGuid();
         var includedElementId = Guid.NewGuid();
@@ -279,7 +318,7 @@ public sealed class RegistrationProcessorTests
         _persistence.Setup(p => p.SaveChangesAsync()).ReturnsAsync(2);
 
         // Act
-        _ = await sut.ProcessRegistration(registrationId);
+        _ = await processor.ProcessRegistration(registrationId);
 
         // Assert
         behavior.Verify(b => b.Registered(It.Is<Registration>(r => r.AssociatedElementId.Value == includedElementId && r.ParentRegistrationId == registration.Id)), Times.Once);
@@ -292,7 +331,7 @@ public sealed class RegistrationProcessorTests
         var behavior = new Mock<IRegistrationBehavior>();
         behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
-        var sut = CreateSut(behavior.Object);
+        var processor = CreateProcessor(behavior.Object);
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -306,11 +345,16 @@ public sealed class RegistrationProcessorTests
         _registrations.Setup(r => r.GetRegistrationAsync(registration.Id))
                       .ReturnsAsync(registration);
 
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
+
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
                  .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
 
         // Act
-        var result = await sut.ProcessRegistration(registration.Id);
+        var result = await processor.ProcessRegistration(registration.Id);
 
         // Assert
         result.AffectedRows.Should().Be(1);
@@ -324,7 +368,7 @@ public sealed class RegistrationProcessorTests
         var behavior = new Mock<IRegistrationBehavior>();
         behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
-        var sut = CreateSut(behavior.Object);
+        var processor = CreateProcessor(behavior.Object);
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -338,11 +382,16 @@ public sealed class RegistrationProcessorTests
         _registrations.Setup(r => r.GetRegistrationAsync(registration.Id))
                       .ReturnsAsync(registration);
 
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
+
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
                  .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
 
         // Act
-        _ = await sut.ProcessRegistration(registration.Id);
+        _ = await processor.ProcessRegistration(registration.Id);
 
         // Assert
         _registrations.Verify(r => r.Add(It.IsAny<Registration>()), Times.Never);
@@ -356,7 +405,7 @@ public sealed class RegistrationProcessorTests
         var behavior = new Mock<IRegistrationBehavior>();
         behavior.Setup(b => b.Registered(It.IsAny<Registration>()))
                 .Returns(Task.CompletedTask);
-        var sut = CreateSut(behavior.Object);
+        var processor = CreateProcessor(behavior.Object);
 
         var characterId = CharacterId.New();
         var baseElementId = Guid.NewGuid();
@@ -370,11 +419,16 @@ public sealed class RegistrationProcessorTests
         _registrations.Setup(r => r.GetRegistrationAsync(registration.Id))
                       .ReturnsAsync(registration);
 
+        // character lookup
+        var character = Character.Create("Test");
+        _characters.Setup(c => c.GetCharacterAsync(characterId.Value))
+                   .ReturnsAsync(character);
+
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
                  .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
 
         // Act
-        _ = await sut.ProcessRegistration(registration.Id);
+        _ = await processor.ProcessRegistration(registration.Id);
 
         // Assert
         _elements.Verify(m => m.GetElementWithRules(includedElementId), Times.Never);
