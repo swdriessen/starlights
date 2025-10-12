@@ -36,8 +36,8 @@ public class RegistrationProcessor : IRegistrationProcessor
         _logger.LogInformation("processing registration '{ElementName} ({ElementType})'", context.Registration.AssociatedElementName, context.Registration.AssociatedElementType);
 
         await ProcessIncludeRules(context);
-        await ProcessStatisticRules(context);
         await ProcessSelectionRules(context);
+        await ProcessStatisticRules(context);
 
         context.Registration.Processed();
 
@@ -93,6 +93,8 @@ public class RegistrationProcessor : IRegistrationProcessor
         return ProcessRegistrationResult.Success(affectedRows);
     }
 
+    #region Include Rules
+
     private async Task ProcessIncludeRules(ProcessingContext context)
     {
         using var _ = CharactersInstrumentation.StartActivity();
@@ -112,7 +114,6 @@ public class RegistrationProcessor : IRegistrationProcessor
         }
 
         var registrationRepository = _persistence.GetRepository<IRegistrationRepository>();
-
         var associatedElement = context.GetAssociatedElement();
 
         foreach (var existingRule in context.Registration.IncludeRules.ToList())
@@ -157,8 +158,8 @@ public class RegistrationProcessor : IRegistrationProcessor
 
             if (ruleDefinition.LevelRequirement > 0)
             {
-                var progressionLevel = context.GetProgressionLevel(context.Registration);
-                if (progressionLevel < ruleDefinition.LevelRequirement)
+                var levelProgression = context.GetProgressionLevel(context.Registration);
+                if (levelProgression < ruleDefinition.LevelRequirement)
                 {
                     // level requirement not met, skip
                     continue;
@@ -186,6 +187,100 @@ public class RegistrationProcessor : IRegistrationProcessor
             await _registrationManager.Register(newRegistration);
         }
     }
+
+    #endregion
+
+    #region Selection Rules
+
+    private async Task ProcessSelectionRules(ProcessingContext context)
+    {
+        using var _ = CharactersInstrumentation.StartActivity();
+
+        _logger.LogInformation("processing selection rules for registration '{ElementName} ({ElementType})'",
+            context.Registration.AssociatedElementName, context.Registration.AssociatedElementType);
+
+        await ProcessExistingSelectionRules(context);
+        await ProcessElementSelectionRules(context);
+    }
+
+    private async Task ProcessExistingSelectionRules(ProcessingContext context)
+    {
+        if (!context.Registration.HasSelectionRules())
+        {
+            return;
+        }
+
+        var registrationRepository = _persistence.GetRepository<IRegistrationRepository>();
+        var associatedElement = context.GetAssociatedElement();
+
+        foreach (var existingRule in context.Registration.SelectionRules.ToList())
+        {
+            var ruleDefinition = associatedElement.SelectionRules.SingleOrDefault(r => r.RuleId == existingRule.AssociatedSelectionRuleId)
+                ?? throw new RegistrationProcessingException($"The associated selection rule not found for existing rule '{existingRule.Id}'.");
+
+            // apply progression-aware level gating
+            if (ruleDefinition.LevelRequirement > 0) // no lookup needed if no level requirement
+            {
+                var level = context.GetProgressionLevel(context.Registration);
+                if (level < ruleDefinition.LevelRequirement)
+                {
+                    _logger.LogInformation("removing selection rule '{RuleId}' from registration {ElementName} ({ElementType}) due to level requirement not met (required: {RequiredLevel}, current: {CurrentLevel})",
+                        existingRule.Id, context.Registration.AssociatedElementName, context.Registration.AssociatedElementType, ruleDefinition.LevelRequirement, level);
+
+                    // remove the selection rule from the current registration
+                    context.Registration.RemoveSelectionRule(existingRule);
+
+                    // check if there is an associated registration for the current selection rule
+                    if (existingRule.HasCurrentSelection())
+                    {
+                        // unregister the selected registration, as the rule is now removed
+                        var selectedRegistation = await registrationRepository.GetRegistrationByOriginatingRuleAsync(existingRule.Id);
+                        if (selectedRegistation is not null)
+                        {
+                            _logger.LogInformation("unregistering selected registration {SelectedRegistrationId} for selection rule {RuleId} from registration {RegistrationId}", selectedRegistation.Id, existingRule.AssociatedSelectionRuleId, context.Registration.Id);
+                            await _registrationManager.Unregister(selectedRegistation);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Task ProcessElementSelectionRules(ProcessingContext context)
+    {
+        var registrationElement = context.GetAssociatedElement();
+
+        foreach (var rule in registrationElement.SelectionRules)
+        {
+            if (context.Registration.HasAssociatedRule(rule.RuleId))
+            {
+                // rule applied, skip
+                continue;
+            }
+
+            if (rule.LevelRequirement > 0)
+            {
+                var levelProgression = context.GetProgressionLevel(context.Registration);
+                if (levelProgression < rule.LevelRequirement)
+                {
+                    // level requirement not met, skip
+                    continue;
+                }
+            }
+
+            // create the new registration selection rule, this is to keep track of the rules applied
+            var newSelectionRule = context.Registration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
+
+            _logger.LogInformation("created new selection rule '{RuleId}' on registration {ElementName} ({ElementType})",
+                newSelectionRule.Id, context.Registration.AssociatedElementName, context.Registration.AssociatedElementType);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region Statistic Rules
 
     private async Task ProcessStatisticRules(ProcessingContext context)
     {
@@ -238,90 +333,7 @@ public class RegistrationProcessor : IRegistrationProcessor
         }
     }
 
-    private async Task ProcessSelectionRules(ProcessingContext context)
-    {
-        using var selectionActivity = CharactersInstrumentation.StartActivity();
-
-        var currentRegistration = context.Registration;
-
-        var currentElement = await _elements.GetElementWithRules(currentRegistration.AssociatedElementId);
-        if (currentElement is null)
-        {
-            _logger.LogError("Element with ID {ElementId} not found for registration {RegistrationId}. Skipping include rules processing.", currentRegistration.AssociatedElementId, currentRegistration.Id);
-            return;
-        }
-
-
-        var registrationRepository = context.GetRepository<IRegistrationRepository>();
-
-        // check for existing include rules first - this is done when reprocessing registrations e.g. at character level up
-        if (currentRegistration.SelectionRules.Count > 0)
-        {
-            var registrations = await registrationRepository.GetRegistrationsAsync(context.Character.Id);
-            // check if processed include rules still meet the requirements,
-            // if not, we should remove them
-
-            foreach (var existingRule in currentRegistration.SelectionRules.ToList())
-            {
-                _logger.LogInformation("checking existing selection rule {ElementType}", existingRule.ElementType);
-
-
-                var ruleDefinition = currentElement.SelectionRules.SingleOrDefault(r => r.RuleId == existingRule.AssociatedSelectionRuleId);
-                if (ruleDefinition is null)
-                {
-                    _logger.LogError("Selection rule with ID {RuleId} not found for registration {RegistrationId}. Skipping selection rules processing.", existingRule.AssociatedSelectionRuleId, currentRegistration.Id);
-                    continue;
-                }
-
-                // apply progression-aware level gating
-                if (ruleDefinition.LevelRequirement > 0)
-                {
-                    var level = context.GetProgressionLevel(currentRegistration);
-                    if (level < ruleDefinition.LevelRequirement)
-                    {
-                        _logger.LogInformation("removing selection rule {RuleId} from registration {RegistrationId} due to level requirement not met (required: {RequiredLevel}, current: {CurrentLevel})", existingRule.AssociatedSelectionRuleId, currentRegistration.Id, ruleDefinition.LevelRequirement, level);
-                        // remove the include rule from the current registration
-                        currentRegistration.RemoveSelectionRule(existingRule);
-
-                        // unregister the associated registration, as it is now removed
-                        // we can assume that there is only one registration per character per included element
-                        var associated = registrations.SingleOrDefault(r => r.OriginatingRule == existingRule.Id && r.CharacterId == currentRegistration.CharacterId);
-                        if (associated is not null)
-                        {
-                            _logger.LogInformation("unregistering associated registration {AssociatedRegistrationId} for selection rule {RuleId} from registration {RegistrationId}", associated.Id, existingRule.AssociatedSelectionRuleId, currentRegistration.Id);
-                            await _registrationManager.Unregister(associated);
-                        }
-                    }
-                }
-            }
-
-        }
-
-        // if the current element has no selection rules, we can skip processing
-
-        selectionActivity?.DisplayName = $"ProcessSelectionRules | {currentElement.SelectionRules.Count}";
-
-        foreach (var rule in currentElement.SelectionRules)
-        {
-            if (currentRegistration.HasAssociatedRule(rule.RuleId))
-            {
-                continue;
-            }
-
-            // apply progression-aware level gating
-            if (rule.LevelRequirement > 0)
-            {
-                var level = context.GetProgressionLevel(currentRegistration);
-                if (level < rule.LevelRequirement)
-                {
-                    continue;
-                }
-            }
-
-            // create the new registration selection rule, this is to keep track of the rules applied
-            _ = currentRegistration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
-        }
-    }
+    #endregion
 
     /// <summary>
     /// Initializes a new processing context for the specified registration by retrieving all required domain entities.
@@ -335,14 +347,14 @@ public class RegistrationProcessor : IRegistrationProcessor
     {
         var registrationRepository = _persistence.GetRepository<IRegistrationRepository>();
         var registration = await registrationRepository.GetRegistrationAsync(registrationId)
-            ?? throw new RegistrationProcessingException($"The registration with ID '{registrationId}' not found.");
+            ?? throw new RegistrationProcessingException($"The registration with ID '{registrationId}' not found while creating the context.");
 
         var characterRepository = _persistence.GetRepository<ICharactersRepository>();
         var character = await characterRepository.GetCharacterAsync(registration.CharacterId)
-            ?? throw new RegistrationProcessingException($"The character with ID '{registration.CharacterId}' not found for registration {registration.Id}.");
+            ?? throw new RegistrationProcessingException($"The character with ID '{registration.CharacterId}' not found for registration '{registration.Id}' while creating the context.");
 
         var associatedElement = await _elements.GetElementWithRules(registration.AssociatedElementId) ??
-            throw new RegistrationProcessingException($"The associated element '{registration.AssociatedElementId}' for the registration '{registration.Id.Value}' was not found.");
+            throw new RegistrationProcessingException($"The associated element '{registration.AssociatedElementId}' for the registration '{registration.Id.Value}' was not found while creating the context.");
 
         // we have the registration, character and associated element, we can now create the context for processing
         var context = new ProcessingContext(registration, character, _persistence);
