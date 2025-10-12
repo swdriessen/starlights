@@ -67,8 +67,6 @@ public class RegistrationProcessor : IRegistrationProcessor
 
         _logger.LogInformation("found {RegistrationCount} registrations for character '{CharacterName}'", registrations.Count, character.Name);
 
-
-
         foreach (var registration in registrations)
         {
             // temp to fix tests, use init context method later
@@ -167,13 +165,8 @@ public class RegistrationProcessor : IRegistrationProcessor
             }
 
             // get the element to be included according to the rule
-            var newElement = await _elements.GetElementWithRules(ruleDefinition.IncludedElementId);
-            if (newElement is null)
-            {
-                throw new RegistrationProcessingException($"The included element '{ruleDefinition.IncludedElementId}' for the include rule '{ruleDefinition.RuleId}' was not found.");
-                //_logger.LogError("Included element with ID {ElementId} not found for include rule {RuleId}. Skipping include rules processing.", ruleDefinition.IncludedElementId, ruleDefinition.RuleId);
-                //continue;
-            }
+            var newElement = await _elements.GetElementWithRules(ruleDefinition.IncludedElementId)
+                ?? throw new RegistrationProcessingException($"The included element '{ruleDefinition.IncludedElementId}' for the include rule '{ruleDefinition.RuleId}' was not found.");
 
             // create the new registration include rule, this is to keep track of the rules applied
             var newIncludeRule = context.Registration.CreateIncludeRule(new(ruleDefinition.RuleId), new(newElement.Id), newElement.Name);
@@ -183,6 +176,10 @@ public class RegistrationProcessor : IRegistrationProcessor
             newRegistration.SetParentRegistration(context.Registration);
             newRegistration.SetOriginatingRule(newIncludeRule.Id);
             newRegistration.SetProgressionOrigin(context.Registration);
+
+            _logger.LogInformation("created new include rule '{RuleId}' on registration {ElementName} ({ElementType}) including element '{IncludedElementName} ({IncludedElementType})' as registration '{IncludedRegistrationId}'",
+                newIncludeRule.Id.Value, context.Registration.AssociatedElementName, context.Registration.AssociatedElementType,
+                newElement.Name, newElement.Type, newRegistration.Id.Value);
 
             await _registrationManager.Register(newRegistration);
         }
@@ -272,7 +269,7 @@ public class RegistrationProcessor : IRegistrationProcessor
             var newSelectionRule = context.Registration.CreateSelectionRule(new(rule.RuleId), rule.ElementType, rule.Name);
 
             _logger.LogInformation("created new selection rule '{RuleId}' on registration {ElementName} ({ElementType})",
-                newSelectionRule.Id, context.Registration.AssociatedElementName, context.Registration.AssociatedElementType);
+                newSelectionRule.Id.Value, context.Registration.AssociatedElementName, context.Registration.AssociatedElementType);
         }
 
         return Task.CompletedTask;
@@ -284,24 +281,53 @@ public class RegistrationProcessor : IRegistrationProcessor
 
     private async Task ProcessStatisticRules(ProcessingContext context)
     {
-        using var statisticsActivity = CharactersInstrumentation.StartActivity();
+        using var _ = CharactersInstrumentation.StartActivity();
 
-        var currentRegistration = context.Registration;
+        _logger.LogInformation("processing statistic rules for registration '{ElementName} ({ElementType})'",
+            context.Registration.AssociatedElementName, context.Registration.AssociatedElementType);
 
-        var currentElement = await _elements.GetElementWithRules(currentRegistration.AssociatedElementId);
-        if (currentElement is null)
+        await ProcessExistingStatisticRules(context);
+        await ProcessElementStatisticRules(context);
+    }
+
+    private Task ProcessExistingStatisticRules(ProcessingContext context)
+    {
+        if (!context.Registration.HasStatisticRules())
         {
-            _logger.LogError("Element with ID {ElementId} not found for registration {RegistrationId}. Skipping include rules processing.", currentRegistration.AssociatedElementId, currentRegistration.Id);
-            return;
+            return Task.CompletedTask;
         }
 
-        // if the current element has no statistic rules, we can skip processing
+        var associatedElement = context.GetAssociatedElement();
 
-        var registrations = context.GetRepository<IRegistrationRepository>();
+        foreach (var existingRule in context.Registration.StatisticRules.ToList())
+        {
+            var ruleDefinition = associatedElement.StatisticRules.SingleOrDefault(r => r.RuleId == existingRule.AssociatedStatisticRuleId)
+                ?? throw new RegistrationProcessingException($"The associated statistic rule not found for existing rule '{existingRule.Id}'.");
 
-        statisticsActivity?.DisplayName = $"ProcessStatisticRules | {currentElement.StatisticRules.Count}";
+            // apply progression-aware level gating
+            if (ruleDefinition.LevelRequirement > 0)
+            {
+                var level = context.GetProgressionLevel(context.Registration);
+                if (level < ruleDefinition.LevelRequirement)
+                {
+                    _logger.LogInformation("removing statistic rule '{RuleId}' from registration {ElementName} ({ElementType}) due to level requirement not met (required: {RequiredLevel}, current: {CurrentLevel})",
+                        existingRule.Id, context.Registration.AssociatedElementName, context.Registration.AssociatedElementType, ruleDefinition.LevelRequirement, level);
 
-        foreach (var rule in currentElement.StatisticRules)
+                    // remove the statistic rule from the current registration
+                    context.Registration.RemoveStatisticRule(existingRule);
+                }
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task ProcessElementStatisticRules(ProcessingContext context)
+    {
+        var registrationElement = context.GetAssociatedElement();
+        var currentRegistration = context.Registration;
+
+        foreach (var rule in registrationElement.StatisticRules)
         {
             if (currentRegistration.HasAssociatedRule(rule.RuleId))
             {
@@ -330,7 +356,13 @@ public class RegistrationProcessor : IRegistrationProcessor
             {
                 newStatisticRule.UpdateLevelRequirement(rule.LevelRequirement);
             }
+
+            _logger.LogInformation("created new statistic rule '{RuleId}' on registration {ElementName} ({ElementType}) [{StatisticName}/{StatisticValue}]",
+                newStatisticRule.Id.Value, context.Registration.AssociatedElementName, context.Registration.AssociatedElementType,
+                newStatisticRule.Name, newStatisticRule.Value);
         }
+
+        return Task.CompletedTask;
     }
 
     #endregion
