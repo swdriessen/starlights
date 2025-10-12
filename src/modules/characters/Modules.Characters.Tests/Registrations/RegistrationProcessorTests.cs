@@ -43,7 +43,7 @@ public sealed class RegistrationProcessorTests
     }
 
     [TestMethod]
-    public async Task ProcessRegistration_ShouldNotSaveChanges_WhenRegistrationNotFound()
+    public async Task ProcessRegistration_ShouldThrowAndNotSaveChanges_WhenRegistrationNotFound()
     {
         // Arrange
         var registrationId = RegistrationId.New();
@@ -52,7 +52,8 @@ public sealed class RegistrationProcessorTests
 
         // Act
         var processor = CreateProcessor();
-        await processor.ProcessRegistration(registrationId);
+        var act = () => processor.ProcessRegistration(registrationId);
+        await act.Should().ThrowAsync<RegistrationProcessingException>();
 
         // Assert
         _persistence.Verify(p => p.SaveChangesAsync(), Times.Never);
@@ -243,7 +244,7 @@ public sealed class RegistrationProcessorTests
         var processor = CreateProcessor(behavior.Object);
 
         var characterId = CharacterId.New();
-        var baseElementId = Guid.NewGuid();
+        var baseElementId = Guid.Parse("11111111-0000-4000-0000-000000000000");
         var registration = Registration.Create(characterId, new(baseElementId), "Base", "Type");
         var registrationId = registration.Id;
 
@@ -256,7 +257,7 @@ public sealed class RegistrationProcessorTests
                    .ReturnsAsync(character);
 
         var includeRuleId = Guid.NewGuid();
-        var includedElementId = Guid.NewGuid();
+        var includedElementId = Guid.Parse("22222222-0000-4000-0000-000000000000");
 
         _elements.Setup(m => m.GetElementWithRules(baseElementId))
                  .ReturnsAsync(CreateBaseElementWithIncludeRule(baseElementId, includeRuleId, includedElementId));
@@ -436,38 +437,46 @@ public sealed class RegistrationProcessorTests
     }
 
     private static ElementDataModel CreateBaseElementWithIncludeRule(Guid baseElementId, Guid includeRuleId, Guid includedElementId, string name = "Base", string type = "Type", int levelRequirement = 0)
-        => new()
+    {
+        return new()
         {
             Id = baseElementId,
             Name = name,
             Type = type,
             IncludeRules = [new IncludeRuleDataModel(includeRuleId, includedElementId, levelRequirement)]
         };
+    }
 
     private static ElementDataModel CreateBaseElementWithSelectionRules(Guid baseElementId, Guid selectionRuleId, string name = "Base", string type = "Type")
-        => new()
+    {
+        return new()
         {
             Id = baseElementId,
             Name = name,
             Type = type,
             SelectionRules = [new SelectionRuleDataModel(selectionRuleId, "Skill", "Choose Skill", 0)]
         };
+    }
 
     private static ElementDataModel CreateIncludedElement(Guid includedElementId, string name = "Included-1", string type = "IncludedType-1")
-        => new()
+    {
+        return new()
         {
             Id = includedElementId,
             Name = name,
             Type = type,
             IncludeRules = []
         };
+    }
 
     private static ElementDataModel CreateBaseElementWithoutRules(Guid baseElementId, string name = "Base", string type = "Type")
-        => new()
+    {
+        return new()
         {
             Id = baseElementId,
             Name = name,
             Type = type,
             IncludeRules = []
         };
+    }
 }

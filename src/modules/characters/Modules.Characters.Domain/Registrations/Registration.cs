@@ -74,6 +74,30 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public string AssociatedElementType { get; }
 
     /// <summary>
+    /// Gets a value indicating whether any include rules are defined.
+    /// </summary>
+    public bool HasIncludeRules()
+    {
+        return _includeRules.Count > 0;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether any statistic rules are defined.
+    /// </summary>
+    public bool HasStatisticRules()
+    {
+        return _statisticRules.Count > 0;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether any selection rules are defined.
+    /// </summary>
+    public bool HasSelectionRules()
+    {
+        return _selectionRules.Count > 0;
+    }
+
+    /// <summary>
     /// Sets the parent registration ID for this registration.
     /// </summary>
     public void SetParentRegistration(Registration parentRegistration)

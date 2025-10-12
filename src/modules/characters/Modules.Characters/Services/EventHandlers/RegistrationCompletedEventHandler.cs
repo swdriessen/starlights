@@ -31,9 +31,8 @@ public sealed class RegistrationCompletedEventHandler :
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing registration {RegistrationId}", raisedEvent.RegistrationId);
+            _logger.LogError(ex, "Error processing registration '{RegistrationId}'", raisedEvent.RegistrationId);
             activity?.AddException(ex);
-            throw;
         }
     }
 
@@ -49,7 +48,6 @@ public sealed class RegistrationCompletedEventHandler :
         {
             _logger.LogError(ex, "Error reprocessing registrations for character {CharacterId} after deletion of registration {RegistrationId}", domainEvent.CharacterId, domainEvent.RegistrationId);
             activity?.AddException(ex);
-            throw;
         }
     }
 
@@ -65,7 +63,6 @@ public sealed class RegistrationCompletedEventHandler :
         {
             _logger.LogError(ex, "Error reprocessing registrations for character {CharacterId} after level change to {NewLevel}", domainEvent.CharacterId, domainEvent.NewLevel);
             activity?.AddException(ex);
-            throw;
         }
     }
 }

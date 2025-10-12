@@ -66,6 +66,13 @@ internal class RegistrationRepository : RepositoryBase<Registration>, IRegistrat
         return registration;
     }
 
+    public async Task<Registration?> GetRegistrationByOriginatingRuleAsync(Guid originatingRuleId)
+    {
+        var associated = await Entities.SingleOrDefaultAsync(r => r.OriginatingRule == originatingRuleId);
+
+        return associated;
+    }
+
     public async Task<List<Registration>> GetRegistrationsAsync(CharacterId id)
     {
         var registrations = await Entities

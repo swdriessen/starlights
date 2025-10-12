@@ -2,6 +2,7 @@
 using Starlights.Modules.Characters.Domain.Classes;
 using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Elements.Integration.Models;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Services.Processing;
@@ -60,26 +61,63 @@ public class ProcessingContext
                 return originClass.Level;
             }
 
-            // Future origins (e.g., Item) could be added here by probing their components by registration id
             // If not found, fall back to character level
         }
 
         return Character.GetRequiredComponent<ProgressionComponent>().CharacterLevel;
-    }
 
-    private static RegistrationId? GetProgressionOrigin(Registration registration, params string[] progressionCapableTypes)
-    {
-        if (registration.ProgressionOriginRegistrationId is RegistrationId progressionOrigin)
+        static RegistrationId? GetProgressionOrigin(Registration registration, params string[] progressionCapableTypes)
         {
-            return progressionOrigin;
-        }
+            if (registration.ProgressionOriginRegistrationId is RegistrationId progressionOrigin)
+            {
+                return progressionOrigin;
+            }
 
-        if (progressionCapableTypes.Contains(registration.AssociatedElementType, StringComparer.OrdinalIgnoreCase))
-        {
-            return registration.Id;
-        }
+            if (progressionCapableTypes.Contains(registration.AssociatedElementType, StringComparer.OrdinalIgnoreCase))
+            {
+                return registration.Id;
+            }
 
-        return null;
+            return null;
+        }
     }
 }
 
+
+// experimental extensions for strongly typed access to common items in the processing context
+// in .NET 10 prefer extension properties
+public static class ProcessingContextExtensions
+{
+    public static T GetRequiredItem<T>(this ProcessingContext context, object key)
+    {
+        if (context.Items.TryGetValue(key, out var value) && value is T typedValue)
+        {
+            return typedValue;
+        }
+        throw new KeyNotFoundException($"The required item with key '{key}' was not found in the processing context.");
+    }
+    public static void SetItem<T>(this ProcessingContext context, object key, T value)
+    {
+        context.Items[key] = value;
+    }
+
+    public static ElementDataModel GetAssociatedElement(this ProcessingContext context)
+    {
+        return context.GetRequiredItem<ElementDataModel>("AssociatedElement");
+    }
+
+    public static void SetAssociatedElement(this ProcessingContext context, ElementDataModel associatedElement)
+    {
+        context.SetItem("AssociatedElement", associatedElement);
+    }
+
+    public static void SetCharacterRegistations(this ProcessingContext context, List<Registration> registrations)
+    {
+        context.SetItem("CharacterRegistrations", registrations);
+    }
+
+    public static List<Registration> GetCharacterRegistrations(this ProcessingContext context)
+    {
+        return context.GetRequiredItem<List<Registration>>("CharacterRegistrations");
+    }
+}

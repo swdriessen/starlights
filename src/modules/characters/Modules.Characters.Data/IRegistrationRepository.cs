@@ -18,6 +18,11 @@ public interface IRegistrationRepository : IRepository
     Task<Registration?> GetRegistrationAsync(RegistrationId id);
 
     /// <summary>
+    /// Asynchronously retrieves the registration associated with the specified originating rule identifier.
+    /// </summary>    
+    Task<Registration?> GetRegistrationByOriginatingRuleAsync(Guid originatingRuleId);
+
+    /// <summary>
     /// Retrieves all registrations for a specific character.
     /// </summary>
     Task<List<Registration>> GetRegistrationsAsync(CharacterId id);
