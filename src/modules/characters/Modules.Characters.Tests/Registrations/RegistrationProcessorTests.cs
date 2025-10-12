@@ -23,7 +23,7 @@ public sealed class RegistrationProcessorTests
     private RegistrationProcessor CreateProcessor(params IRegistrationBehavior[] behaviors)
     {
         var manager = new RegistrationManager(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, behaviors);
-        return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, _elements.Object, manager);
+        return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, manager, _elements.Object);
     }
 
     [TestInitialize]

@@ -76,26 +76,36 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// <summary>
     /// Sets the parent registration ID for this registration.
     /// </summary>
-    public void SetParentRegistration(Registration parentRegistration) => ParentRegistrationId = parentRegistration.Id;
+    public void SetParentRegistration(Registration parentRegistration)
+    {
+        ParentRegistrationId = parentRegistration.Id;
+
+    }
 
     /// <summary>
     /// Updates the progression origin registration for this registration.
     /// </summary>
-    public void SetProgressionOrigin(RegistrationId originRegistrationId) => ProgressionOriginRegistrationId = originRegistrationId;
-
-    // TODO: move or... should not be here
-    public RegistrationId? GetProgressionOriginForChild()
+    public void SetProgressionOrigin(RegistrationId originRegistrationId)
     {
-        if (ProgressionOriginRegistrationId is not null)
-        {
-            return ProgressionOriginRegistrationId.Value;
-        }
-        else if (string.Equals(AssociatedElementType, "Class", StringComparison.OrdinalIgnoreCase))
-        {
-            return Id;
-        }
+        ProgressionOriginRegistrationId = originRegistrationId;
+    }
 
-        return null;
+    /// <summary>
+    /// Updates the progression origin registration for this registration.
+    /// </summary>
+    public void SetProgressionOrigin(Registration originRegistration)
+    {
+        // determine progression origin based on parent
+        var capableTypes = new[] { "class" }; // this should come from system based config or similar
+
+        if (originRegistration.ProgressionOriginRegistrationId is not null)
+        {
+            SetProgressionOrigin(originRegistration.ProgressionOriginRegistrationId.Value);
+        }
+        else if (capableTypes.Contains(originRegistration.AssociatedElementType, StringComparer.OrdinalIgnoreCase))
+        {
+            SetProgressionOrigin(originRegistration.Id);
+        }
     }
 
     /// <summary>
@@ -300,3 +310,5 @@ public sealed class Registration : AggregateRoot<RegistrationId>
         OriginatingRule = originatingRuleId;
     }
 }
+
+

@@ -55,7 +55,7 @@ public sealed class UpdateClassLevelEndpoint : Endpoint<UpdateClassLevelRequest>
 
         character.UpdateComponents<ClassComponent, ProgressionComponent>((classComponent, progressionComponent, _) =>
         {
-            classComponent.LevelUpClass(classId, req.NewLevel);
+            classComponent.SetClassLevel(classId, req.NewLevel);
             progressionComponent.SetCharacterLevel(classComponent.CalculateCharacterLevel()); // CharacterLevelChangedEvent
         });
 

@@ -12,15 +12,15 @@ public class RegistrationProcessor : IRegistrationProcessor
 {
     private readonly ILogger<RegistrationProcessor> _logger;
     private readonly IPersistence _persistence;
-    private readonly IElementsModuleQueries _elements;
     private readonly IRegistrationManager _registrationManager;
+    private readonly IElementsModuleQueries _elements;
 
-    public RegistrationProcessor(ILogger<RegistrationProcessor> logger, IPersistence persistence, IElementsModuleQueries elements, IRegistrationManager registrationManager)
+    public RegistrationProcessor(ILogger<RegistrationProcessor> logger, IPersistence persistence, IRegistrationManager registrationManager, IElementsModuleQueries elements)
     {
         _logger = logger;
         _persistence = persistence;
-        _elements = elements;
         _registrationManager = registrationManager;
+        _elements = elements;
     }
 
     public async Task<ProcessRegistrationResult> ProcessRegistration(RegistrationId registrationId)
@@ -32,7 +32,7 @@ public class RegistrationProcessor : IRegistrationProcessor
         if (registration is null)
         {
             _logger.LogError("Registration with ID {RegistrationId} not found.", registrationId);
-            return new ProcessRegistrationResult();
+            return ProcessRegistrationResult.Failure("Registration not found");
         }
 
         _logger.LogInformation("processing registration '{ElementName} ({ElementType})'", registration.AssociatedElementName, registration.AssociatedElementType);
@@ -42,10 +42,10 @@ public class RegistrationProcessor : IRegistrationProcessor
         if (character is null)
         {
             _logger.LogError("Character with ID {CharacterId} not found for registration {RegistrationId}.", registration.CharacterId, registration.Id);
-            return new ProcessRegistrationResult();
+            return ProcessRegistrationResult.Failure("Character associated with registration not found");
         }
 
-        var context = new RegistrationProcessingContext(registration, character, _persistence);
+        var context = new ProcessingContext(registration, character, _persistence);
 
         await ProcessIncludeRules(context);
         await ProcessStatisticRules(context);
@@ -55,9 +55,7 @@ public class RegistrationProcessor : IRegistrationProcessor
 
         var affectedRows = await _persistence.SaveChangesAsync();
 
-        processActivity?.SetTag("affectedRows", affectedRows);
-
-        return new ProcessRegistrationResult() { AffectedRows = affectedRows };
+        return ProcessRegistrationResult.Success(affectedRows);
     }
 
     public async Task<ProcessRegistrationResult> ReproccessRegistrations(CharacterId characterId)
@@ -69,7 +67,7 @@ public class RegistrationProcessor : IRegistrationProcessor
         if (character is null)
         {
             _logger.LogError("Character with ID {CharacterId} not found.", characterId);
-            return new ProcessRegistrationResult();
+            return ProcessRegistrationResult.Failure("Character not found");
         }
 
         _logger.LogInformation("reprocessing registrations for '{CharacterName}'", character.Name);
@@ -84,7 +82,7 @@ public class RegistrationProcessor : IRegistrationProcessor
 
         foreach (var registration in registrations)
         {
-            var context = new RegistrationProcessingContext(registration, character, _persistence);
+            var context = new ProcessingContext(registration, character, _persistence);
 
             // TODO: check if the registration itself still meets its requirements
 
@@ -100,10 +98,10 @@ public class RegistrationProcessor : IRegistrationProcessor
 
         _logger.LogInformation("reprocessing complete for '{CharacterName}' with affectedRows {AffectedRows}", character.Name, affectedRows);
 
-        return new ProcessRegistrationResult() { AffectedRows = affectedRows };
+        return ProcessRegistrationResult.Success(affectedRows);
     }
 
-    private async Task ProcessIncludeRules(RegistrationProcessingContext context)
+    private async Task ProcessIncludeRules(ProcessingContext context)
     {
         using var includeActivity = CharactersInstrumentation.StartActivity();
 
@@ -174,10 +172,14 @@ public class RegistrationProcessor : IRegistrationProcessor
                 continue;
             }
 
+            // IRuleConditionEvaluator could be used here to
+            // evaluate other requirements here in the future (e.g. stats, tags, etc.)
+
             // apply progression-aware level gating
             if (rule.LevelRequirement > 0)
             {
                 var level = context.GetProgressionLevel(currentRegistration);
+
                 if (level < rule.LevelRequirement)
                 {
                     continue;
@@ -199,25 +201,13 @@ public class RegistrationProcessor : IRegistrationProcessor
             var newRegistration = Registration.Create(currentRegistration.CharacterId, new(newIncludeElement.Id), newIncludeElement.Name, newIncludeElement.Type);
             newRegistration.SetParentRegistration(currentRegistration);
             newRegistration.SetOriginatingRule(newIncludeRule.Id);
+            newRegistration.SetProgressionOrigin(currentRegistration);
 
-            // inherit or set progression origin: if parent has one, inherit; else if parent is progression-capable (e.g., Class), set to parent id
-            if (currentRegistration.ProgressionOriginRegistrationId is not null)
-            {
-                newRegistration.SetProgressionOrigin(currentRegistration.ProgressionOriginRegistrationId.Value);
-            }
-            else if (string.Equals(currentRegistration.AssociatedElementType, "Class", StringComparison.OrdinalIgnoreCase))
-            {
-                newRegistration.SetProgressionOrigin(currentRegistration.Id);
-            }
-
-            context.NewRegistrations.Add(newRegistration);
-
-            // apply any registration behavior in the current context
             await _registrationManager.Register(newRegistration);
         }
     }
 
-    private async Task ProcessStatisticRules(RegistrationProcessingContext context)
+    private async Task ProcessStatisticRules(ProcessingContext context)
     {
         using var statisticsActivity = CharactersInstrumentation.StartActivity();
 
@@ -268,7 +258,7 @@ public class RegistrationProcessor : IRegistrationProcessor
         }
     }
 
-    private async Task ProcessSelectionRules(RegistrationProcessingContext context)
+    private async Task ProcessSelectionRules(ProcessingContext context)
     {
         using var selectionActivity = CharactersInstrumentation.StartActivity();
 

@@ -48,6 +48,10 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
             .IsRequired(false)
             .HasConversion(m => m.HasValue ? m.Value.Value : (Guid?)null, v => v.HasValue ? new RegistrationId(v.Value) : null);
 
+        builder.Property(e => e.OriginatingRule)
+            .HasColumnName("originating_rule_id")
+            .IsRequired(false);
+
         builder.HasMany(x => x.IncludeRules)
             .WithOne()
             .HasForeignKey(x => x.ParentRegistrationId)
@@ -65,10 +69,5 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
             .HasForeignKey(x => x.ParentRegistrationId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
-
-        builder.Property(e => e.OriginatingRule)
-            .HasColumnName("originating_rule_id")
-            .IsRequired(false);
-
     }
 }

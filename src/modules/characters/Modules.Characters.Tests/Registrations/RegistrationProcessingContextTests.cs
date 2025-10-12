@@ -50,9 +50,9 @@ public sealed class RegistrationProcessingContextTests
         featureReg.SetProgressionOrigin(classReg.Id);
 
         var fighter = classes.CreateClass(classReg.Id, classReg.AssociatedElementName);
-        classes.LevelUpClass(fighter.Id, 3);
+        classes.SetClassLevel(fighter.Id, 3);
 
-        var ctx = new RegistrationProcessingContext(featureReg, character, Mock.Of<IPersistence>());
+        var ctx = new ProcessingContext(featureReg, character, Mock.Of<IPersistence>());
 
         // Act
         var level = ctx.GetProgressionLevel(featureReg);
@@ -72,7 +72,7 @@ public sealed class RegistrationProcessingContextTests
         var reg = Registration.Create(character.Id, new ElementId(Guid.NewGuid()), "Something", "Type");
         reg.SetProgressionOrigin(unrelatedReg.Id); // no class exists with this registration id
 
-        var ctx = new RegistrationProcessingContext(reg, character, Mock.Of<IPersistence>());
+        var ctx = new ProcessingContext(reg, character, Mock.Of<IPersistence>());
 
         // Act
         var level = ctx.GetProgressionLevel(reg);
@@ -91,7 +91,7 @@ public sealed class RegistrationProcessingContextTests
         var reg = Registration.Create(character.Id, new ElementId(Guid.NewGuid()), "Something", "Type");
         // no origin set
 
-        var ctx = new RegistrationProcessingContext(reg, character, Mock.Of<IPersistence>());
+        var ctx = new ProcessingContext(reg, character, Mock.Of<IPersistence>());
 
         // Act
         var level = ctx.GetProgressionLevel(reg);

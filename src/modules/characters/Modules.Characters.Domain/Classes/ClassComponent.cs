@@ -36,7 +36,7 @@ public sealed class ClassComponent : CharacterComponentBase
     /// <summary>
     /// Updates the level of the specified class to the new level.
     /// </summary>
-    public void LevelUpClass(CharacterClassId classId, int newLevel)
+    public void SetClassLevel(CharacterClassId classId, int newLevel)
     {
         var characterClass = _classes.SingleOrDefault(c => c.Id == classId)
             ?? throw new InvalidOperationException($"Character does not have a class with ID {classId}");
@@ -78,7 +78,7 @@ public sealed class ClassComponent : CharacterComponentBase
     /// <exception cref="InvalidOperationException">Thrown if no class is associated with the specified registration ID.</exception>
     public void RemoveClass(RegistrationId existinRegistration)
     {
-        var existingClass = _classes.SingleOrDefault(c => c.Registration == existinRegistration) 
+        var existingClass = _classes.SingleOrDefault(c => c.Registration == existinRegistration)
             ?? throw new InvalidOperationException($"Character does not have a class associated with registration ID {existinRegistration}");
 
         // TODO: multiclassing, if the class being removed is the primary class, we need to set a new primary class if there are any classes left
@@ -86,6 +86,11 @@ public sealed class ClassComponent : CharacterComponentBase
         _classes.Remove(existingClass);
 
         AddDomainEvent(new CharacterClassRemovedEvent() { CharacterId = ParentCharacter, ClassId = existingClass.Id });
+    }
+
+    public CharacterClass? GetClassByRegistration(RegistrationId registrationId)
+    {
+        return _classes.SingleOrDefault(c => c.Registration == registrationId);
     }
 
     /// <summary>
