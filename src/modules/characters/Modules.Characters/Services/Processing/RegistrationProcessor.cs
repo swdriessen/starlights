@@ -324,10 +324,10 @@ public class RegistrationProcessor : IRegistrationProcessor
 
     private Task ProcessElementStatisticRules(ProcessingContext context)
     {
-        var registrationElement = context.GetAssociatedElement();
+        var associatedElement = context.GetAssociatedElement();
         var currentRegistration = context.Registration;
 
-        foreach (var rule in registrationElement.StatisticRules)
+        foreach (var rule in associatedElement.StatisticRules)
         {
             if (currentRegistration.HasAssociatedRule(rule.RuleId))
             {
@@ -391,9 +391,6 @@ public class RegistrationProcessor : IRegistrationProcessor
         // we have the registration, character and associated element, we can now create the context for processing
         var context = new ProcessingContext(registration, character, _persistence);
         context.SetAssociatedElement(associatedElement);
-
-        var registrations = await registrationRepository.GetRegistrationsAsync(context.Character.Id);
-        context.SetCharacterRegistations(registrations);
 
         return context;
     }

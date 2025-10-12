@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Starlights.Modules.Characters.Domain;
 using Starlights.Platform.Components.Data.EntityFramework;
 using Starlights.Platform.Eventing;
 
@@ -16,7 +15,7 @@ namespace Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
 public sealed class DomainEventProcessingService : BackgroundService
 {
     internal const int InitialInterval = 10;
-    internal const int MaximumInterval = 10_000;
+    internal const int MaximumInterval = 1_000;
     internal const int BatchSize = 100;
 
     private readonly ILogger<DomainEventProcessingService> _logger;
@@ -50,7 +49,7 @@ public sealed class DomainEventProcessingService : BackgroundService
 
                 if (newEvents.Count > 0)
                 {
-                    using var _ = CharactersInstrumentation.StartActivity($"Process Event Messages ({newEvents.Count})", a => a.AddTag("newEvents", newEvents.Count));
+                    //using var _ = CharactersInstrumentation.StartActivity($"Process Event Messages ({newEvents.Count})", a => a.AddTag("newEvents", newEvents.Count));
 
                     _logger.LogDebug("processing {Count} new domain events", newEvents.Count);
 

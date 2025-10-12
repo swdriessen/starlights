@@ -21,7 +21,7 @@ public sealed class RegistrationManager : IRegistrationManager
 
     public async Task Register(Registration newRegistration)
     {
-        using var activity = CharactersInstrumentation.StartActivity(nameof(Register));
+        using var activity = CharactersInstrumentation.StartActivity($"{nameof(Register)} | {newRegistration.AssociatedElementName} ({newRegistration.AssociatedElementType})");
 
         _logger.LogInformation("Registering new registration '{ElementName} ({ElementType})'", newRegistration.AssociatedElementName, newRegistration.AssociatedElementType);
 
@@ -36,7 +36,7 @@ public sealed class RegistrationManager : IRegistrationManager
 
     public async Task Unregister(Registration existingRegistration)
     {
-        using var activity = CharactersInstrumentation.StartActivity(nameof(Unregister));
+        using var activity = CharactersInstrumentation.StartActivity($"{nameof(Unregister)} | {existingRegistration.AssociatedElementName} ({existingRegistration.AssociatedElementType})");
 
         _logger.LogInformation("Unregistering registration '{ElementName} ({ElementType})'", existingRegistration.AssociatedElementName, existingRegistration.AssociatedElementType);
 

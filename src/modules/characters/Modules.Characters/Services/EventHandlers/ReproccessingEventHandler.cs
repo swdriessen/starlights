@@ -7,38 +7,20 @@ using Starlights.Platform.Eventing;
 
 namespace Starlights.Modules.Characters.Services.EventHandlers;
 
-public sealed class RegistrationCompletedEventHandler :
-    IDomainEventHandler<RegistrationCreatedEvent>,
-    IDomainEventHandler<RegistrationDeletedEvent>,
-    IDomainEventHandler<CharacterLevelChangedEvent>
+public sealed class ReproccessingEventHandler : IDomainEventHandler<RegistrationDeletedEvent>, IDomainEventHandler<CharacterLevelChangedEvent>
 {
-    private readonly ILogger<RegistrationCompletedEventHandler> _logger;
+    private readonly ILogger<ReproccessingEventHandler> _logger;
     private readonly IRegistrationProcessor _registrationProcessor;
 
-    public RegistrationCompletedEventHandler(ILogger<RegistrationCompletedEventHandler> logger, IRegistrationProcessor registrationProcessor)
+    public ReproccessingEventHandler(ILogger<ReproccessingEventHandler> logger, IRegistrationProcessor registrationProcessor)
     {
         _logger = logger;
         _registrationProcessor = registrationProcessor;
     }
 
-    public async Task HandleAsync(RegistrationCreatedEvent raisedEvent)
-    {
-        using var activity = CharactersInstrumentation.StartActivity($"{nameof(RegistrationCreatedEvent)}Handler | {raisedEvent.AssociatedElementName} ({raisedEvent.AssociatedElementType})");
-
-        try
-        {
-            await _registrationProcessor.ProcessRegistration(new(raisedEvent.RegistrationId));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error processing registration '{RegistrationId}'", raisedEvent.RegistrationId);
-            activity?.AddException(ex);
-        }
-    }
-
     public async Task HandleAsync(RegistrationDeletedEvent domainEvent)
     {
-        using var activity = CharactersInstrumentation.StartActivity($"{nameof(RegistrationDeletedEvent)}Handler | {domainEvent.AssociatedElementName} ({domainEvent.AssociatedElementType})");
+        using var activity = CharactersInstrumentation.StartActivity($"{nameof(RegistrationDeletedEvent)} | {domainEvent.AssociatedElementName} ({domainEvent.AssociatedElementType})");
 
         try
         {
@@ -53,7 +35,7 @@ public sealed class RegistrationCompletedEventHandler :
 
     public async Task HandleAsync(CharacterLevelChangedEvent domainEvent)
     {
-        using var activity = CharactersInstrumentation.StartActivity($"{nameof(CharacterLevelChangedEvent)}Handler | New Level {domainEvent.NewLevel}");
+        using var activity = CharactersInstrumentation.StartActivity($"{nameof(CharacterLevelChangedEvent)} | Level {domainEvent.NewLevel}");
 
         try
         {

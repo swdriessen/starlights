@@ -32,7 +32,7 @@ public sealed class UpdateClassLevelEndpoint : Endpoint<UpdateClassLevelRequest>
         var characterId = new CharacterId(Route<Guid>("characterId"));
         var classId = new CharacterClassId(Route<Guid>("classId"));
 
-        using var _ = CharactersInstrumentation.StartActivity($"{nameof(UpdateClassLevelEndpoint)} | {characterId} | {classId}");
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(UpdateClassLevelEndpoint)} | {characterId.Value} | {classId.Value}");
 
         var characters = _persistence.GetRepository<ICharactersRepository>();
         var character = await characters.GetCharacterAsync(characterId);
