@@ -2,12 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  useCharacterClasses,
   useRegisterSelectionMutation,
   useRegistrationModels,
   useSelectionRuleDataModels,
   useSelectionRuleOptionModels,
   useUnregisterSelectionMutation,
+  useUpdateClassLevelMutation,
 } from "@/lib/api/builder/registration-api";
+import type { CharacterClass } from "@/lib/api/builder/types";
 import {
   useAbilityScores,
   useCharacterDetails,
@@ -302,6 +305,53 @@ function SelectionRulesSectionComponent({ characterId, type }: { characterId: st
   );
 }
 
+function CharacterClassesComponent({ characterId }: { characterId: string }) {
+  const { data: characterClassesData, isLoading, error } = useCharacterClasses(characterId);
+  const updateClassLevelMutation = useUpdateClassLevelMutation(characterId, "");
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      <h4>Character Classes</h4>
+      <ul>
+        {characterClassesData?.classes.map((characterClass) => (
+          <li key={characterClass.characterClassId}>
+            <CharacterClassComponent characterId={characterId} characterClass={characterClass} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function CharacterClassComponent({ characterId, characterClass }: { characterId: string; characterClass: CharacterClass }) {
+  const updateClassLevelMutation = useUpdateClassLevelMutation(characterId, characterClass.characterClassId);
+
+  return (
+    <>
+      {characterClass.name} (Level {characterClass.level}){characterClass.isPrimary ? " [Primary]" : ""}
+      <Button
+        size="sm"
+        className="ml-2"
+        onClick={() => updateClassLevelMutation.mutate({ newLevel: characterClass.level + 1 })}
+        disabled={updateClassLevelMutation.isPending || characterClass.level >= 20}
+      >
+        Level Up
+      </Button>
+      <Button
+        size="sm"
+        className="ml-2"
+        onClick={() => updateClassLevelMutation.mutate({ newLevel: characterClass.level - 1 })}
+        disabled={updateClassLevelMutation.isPending || characterClass.level <= 1}
+      >
+        Level Down
+      </Button>
+    </>
+  );
+}
+
 export default function CharactersDetailsPage() {
   const { id } = useParams<{ id: string }>();
 
@@ -397,6 +447,7 @@ export default function CharactersDetailsPage() {
             <div className="border border-dashed rounded p-4 my-2">
               <p>This section will eventually contain character actions such as resting, leveling up, etc.</p>
               <p>For now, it's just a placeholder.</p>
+              <CharacterClassesComponent characterId={id} />
             </div>
           </TabsContent>
           <TabsContent value="tab-actions-2">

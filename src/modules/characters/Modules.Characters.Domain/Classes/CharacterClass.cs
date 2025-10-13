@@ -49,6 +49,16 @@ public sealed class CharacterClass : EntityBase<CharacterClassId>
     /// </summary>
     public void UpdateLevel(int value)
     {
+        if (value < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), "Level must be at least 1.");
+        }
+
+        if (Level > 20)
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), "Level cannot exceed 20.");
+        }
+
         Level = value;
     }
 

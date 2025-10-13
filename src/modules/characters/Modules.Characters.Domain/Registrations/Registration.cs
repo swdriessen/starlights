@@ -48,6 +48,12 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public CharacterId CharacterId { get; }
 
     /// <summary>
+    /// Gets or sets the progression origin registration ID used for level-gated rule evaluation.
+    /// When set, level requirements are evaluated against the level of the origin (e.g., a class) rather than the character.
+    /// </summary>
+    public RegistrationId? ProgressionOriginRegistrationId { get; private set; }
+
+    /// <summary>
     /// Gets the ID of the parent registration, if this registration is part of a hierarchy (e.g. the root element or manually added character options have no direct parent).
     /// </summary>
     public RegistrationId? ParentRegistrationId { get; private set; }
@@ -68,9 +74,63 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public string AssociatedElementType { get; }
 
     /// <summary>
-    /// Updates the parent registration ID for this registration.
+    /// Gets a value indicating whether any include rules are defined.
     /// </summary>
-    public void UpdateParentRegistration(Registration parentRegistration) => ParentRegistrationId = parentRegistration.Id;
+    public bool HasIncludeRules()
+    {
+        return _includeRules.Count > 0;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether any statistic rules are defined.
+    /// </summary>
+    public bool HasStatisticRules()
+    {
+        return _statisticRules.Count > 0;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether any selection rules are defined.
+    /// </summary>
+    public bool HasSelectionRules()
+    {
+        return _selectionRules.Count > 0;
+    }
+
+    /// <summary>
+    /// Sets the parent registration ID for this registration.
+    /// </summary>
+    public void SetParentRegistration(Registration parentRegistration)
+    {
+        ParentRegistrationId = parentRegistration.Id;
+
+    }
+
+    /// <summary>
+    /// Updates the progression origin registration for this registration.
+    /// </summary>
+    public void SetProgressionOrigin(RegistrationId originRegistrationId)
+    {
+        ProgressionOriginRegistrationId = originRegistrationId;
+    }
+
+    /// <summary>
+    /// Updates the progression origin registration for this registration.
+    /// </summary>
+    public void SetProgressionOrigin(Registration originRegistration)
+    {
+        // determine progression origin based on parent
+        var capableTypes = new[] { "class" }; // this should come from system based config or similar
+
+        if (originRegistration.ProgressionOriginRegistrationId is not null)
+        {
+            SetProgressionOrigin(originRegistration.ProgressionOriginRegistrationId.Value);
+        }
+        else if (capableTypes.Contains(originRegistration.AssociatedElementType, StringComparer.OrdinalIgnoreCase))
+        {
+            SetProgressionOrigin(originRegistration.Id);
+        }
+    }
 
     /// <summary>
     /// Indicates whether this registration has been processed after it has been added.
@@ -83,7 +143,27 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public void Processed()
     {
         IsProcessed = true;
-        AddDomainEvent(new RegistrationProcessedEvent { CharacterId = CharacterId, RegistrationId = Id });
+        AddDomainEvent(new RegistrationProcessedEvent
+        {
+            CharacterId = CharacterId,
+            RegistrationId = Id,
+            ElementName = AssociatedElementName,
+            ElementType = AssociatedElementType
+        });
+    }
+
+    /// <summary>
+    /// Marks the registration as deleted by raising a domain event indicating its deletion.
+    /// </summary>
+    public void MarkDeleted()
+    {
+        AddDomainEvent(new RegistrationDeletedEvent
+        {
+            CharacterId = CharacterId,
+            RegistrationId = Id,
+            AssociatedElementName = AssociatedElementName,
+            AssociatedElementType = AssociatedElementType
+        });
     }
 
     /// <summary>
@@ -94,24 +174,6 @@ public sealed class Registration : AggregateRoot<RegistrationId>
         return _includeRules.Any(r => r.AssociatedIncludeRuleId.Value == associatedRuleId)
                || _statisticRules.Any(r => r.AssociatedStatisticRuleId.Value == associatedRuleId)
                || _selectionRules.Any(r => r.AssociatedSelectionRuleId.Value == associatedRuleId);
-    }
-
-    /// <summary>
-    /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
-    /// </summary>
-    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
-    {
-        var newRegistration = new Registration(characterId, associatedElementId, associatedElementName, associatedElementType);
-
-        newRegistration.AddDomainEvent(new RegistrationCreatedEvent
-        {
-            CharacterId = newRegistration.CharacterId,
-            RegistrationId = newRegistration.Id,
-            AssociatedElementName = associatedElementName,
-            AssociatedElementType = associatedElementType
-        });
-
-        return newRegistration;
     }
 
     /// <summary>
@@ -173,4 +235,104 @@ public sealed class Registration : AggregateRoot<RegistrationId>
 
         return newSelectionRule;
     }
+
+
+
+
+
+
+
+    public void RemoveIncludeRule(RegistrationIncludeRule includeRule)
+    {
+        if (_includeRules.Remove(includeRule))
+        {
+            AddDomainEvent(new RegistrationIncludeRuleDeletedEvent
+            {
+                CharacterId = CharacterId,
+                RegistrationId = Id,
+                RegistrationIncludeRuleId = includeRule.Id,
+                ElementId = includeRule.IncludedElementId,
+                Name = includeRule.IncludedElementName
+            });
+        }
+    }
+
+    public void RemoveStatisticRule(RegistrationStatisticRule statisticRule)
+    {
+        if (_statisticRules.Remove(statisticRule))
+        {
+            AddDomainEvent(new RegistrationStatisticRuleDeletedEvent
+            {
+                CharacterId = CharacterId,
+                RegistrationId = Id,
+                RegistrationStatisticRuleId = statisticRule.Id,
+                Name = statisticRule.Name,
+                Value = statisticRule.Value
+            });
+        }
+    }
+
+    public void RemoveSelectionRule(RegistrationSelectionRule selectionRule)
+    {
+        if (_selectionRules.Remove(selectionRule))
+        {
+            AddDomainEvent(new RegistrationSelectionRuleDeletedEvent
+            {
+                CharacterId = CharacterId,
+                RegistrationId = Id,
+                RegistrationSelectionRuleId = selectionRule.Id,
+                ElementType = selectionRule.ElementType,
+                Name = selectionRule.Name
+            });
+        }
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Registration"/> class with the specified character ID, element ID, and element name.
+    /// </summary>
+    public static Registration Create(CharacterId characterId, ElementId associatedElementId, string associatedElementName, string associatedElementType)
+    {
+        var newRegistration = new Registration(characterId, associatedElementId, associatedElementName, associatedElementType);
+
+        newRegistration.AddDomainEvent(new RegistrationCreatedEvent
+        {
+            CharacterId = newRegistration.CharacterId,
+            RegistrationId = newRegistration.Id,
+            AssociatedElementName = associatedElementName,
+            AssociatedElementType = associatedElementType
+        });
+
+        return newRegistration;
+    }
+
+
+    /// <summary>
+    /// When reprocessing registrations, this field tracks the originating rule that caused this registration to be created.
+    /// In case the originating rule is deleted, this allows us to identify and remove registrations that were created as a result of that rule.
+    /// </summary>
+    /// <remarks>
+    /// This can currently be an include rule or a selection rule.
+    /// </remarks>
+    public Guid? OriginatingRule { get; private set; }
+
+    /// <summary>
+    /// Sets the originating rule identifier for this instance.
+    /// </summary>
+    /// <param name="originatingRuleId">The unique identifier of the originating rule to associate with this instance.</param>
+    public void SetOriginatingRule(Guid originatingRuleId)
+    {
+        if (originatingRuleId == Guid.Empty)
+        {
+            throw new ArgumentException("The originating rule ID cannot be an empty GUID.", nameof(originatingRuleId));
+        }
+
+        if (OriginatingRule is not null)
+        {
+            throw new InvalidOperationException("The originating rule has already been set and cannot be changed.");
+        }
+
+        OriginatingRule = originatingRuleId;
+    }
 }
+
+

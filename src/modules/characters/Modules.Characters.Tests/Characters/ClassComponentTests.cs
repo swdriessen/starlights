@@ -150,7 +150,7 @@ public class ClassComponentTests
         characterClass.Level.Should().Be(1); // default
 
         // Act
-        component.LevelUpClass(characterClass.Id, 5);
+        component.SetClassLevel(characterClass.Id, 5);
 
         // Assert
         characterClass.Level.Should().Be(5);
@@ -166,7 +166,7 @@ public class ClassComponentTests
         var missingId = CharacterClassId.New();
 
         // Act
-        var action = () => component.LevelUpClass(missingId, 2);
+        var action = () => component.SetClassLevel(missingId, 2);
 
         // Assert
         action.Should().Throw<InvalidOperationException>();
@@ -181,7 +181,7 @@ public class ClassComponentTests
         var characterClass = component.CreateClass(RegistrationId.New(), "Wizard");
 
         // Act
-        var action = () => component.LevelUpClass(characterClass.Id, 0);
+        var action = () => component.SetClassLevel(characterClass.Id, 0);
 
         // Assert
         action.Should().Throw<ArgumentOutOfRangeException>();
@@ -196,7 +196,7 @@ public class ClassComponentTests
         var characterClass = component.CreateClass(RegistrationId.New(), "Wizard");
 
         // Act
-        var action = () => component.LevelUpClass(characterClass.Id, -5);
+        var action = () => component.SetClassLevel(characterClass.Id, -5);
 
         // Assert
         action.Should().Throw<ArgumentOutOfRangeException>();
@@ -211,8 +211,8 @@ public class ClassComponentTests
         var characterClass = component.CreateClass(RegistrationId.New(), "Wizard");
 
         // Act
-        component.LevelUpClass(characterClass.Id, 2);
-        component.LevelUpClass(characterClass.Id, 7);
+        component.SetClassLevel(characterClass.Id, 2);
+        component.SetClassLevel(characterClass.Id, 7);
 
         // Assert
         characterClass.Level.Should().Be(7);

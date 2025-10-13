@@ -30,7 +30,7 @@ public sealed class ClassRegistrationBehavior : IRegistrationBehavior
             return;
         }
 
-        using var _ = CharactersInstrumentation.StartActivity($"Class Registration Behavior | Registered {newRegistration.AssociatedElementName}");
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(ClassRegistrationBehavior)} | {newRegistration.AssociatedElementName}");
 
         // when a new class element is registered, we need to create the character class for the character
         var associatedElement = await _elements.GetElementWithRules(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Class with ID {newRegistration.AssociatedElementId} not found.");

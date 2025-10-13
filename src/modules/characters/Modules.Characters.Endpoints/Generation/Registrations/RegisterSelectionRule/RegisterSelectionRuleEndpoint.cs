@@ -70,10 +70,11 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
             return;
         }
 
-
         // create a new registration for the selected element
         var newRegistration = Registration.Create(character.Id, new(element.Id), element.Name, element.Type);
-        newRegistration.UpdateParentRegistration(parentRegistration);
+        newRegistration.SetParentRegistration(parentRegistration);
+        newRegistration.SetProgressionOrigin(parentRegistration);
+        newRegistration.SetOriginatingRule(selectionRule.Id);
 
         // register the new registration (this will also trigger any registration behaviors)
         await _registrationManager.Register(newRegistration);

@@ -34,6 +34,7 @@ public sealed class EventObserverCollection
         RegistrationSelectionRuleCreated = new(_cancellationToken);
         RegistrationCreated = new(_cancellationToken);
         CharacterLevelChanged = new(_cancellationToken);
+        RegistrationProcessed = new(_cancellationToken);
     }
 
 
@@ -46,6 +47,7 @@ public sealed class EventObserverCollection
     public EventObserverT<RegistrationSelectionRuleCreatedEvent> RegistrationSelectionRuleCreated { get; }
     public EventObserverT<RegistrationCreatedEvent> RegistrationCreated { get; }
     public EventObserverT<CharacterLevelChangedEvent> CharacterLevelChanged { get; }
+    public EventObserverT<RegistrationProcessedEvent> RegistrationProcessed { get; }
 
     private EventObserverT<T> Event<T>() where T : IDomainEvent
     {
@@ -60,6 +62,7 @@ public sealed class EventObserverCollection
             _ when typeof(T) == typeof(RegistrationSelectionRuleCreatedEvent) => (EventObserverT<T>)(object)RegistrationSelectionRuleCreated,
             _ when typeof(T) == typeof(RegistrationCreatedEvent) => (EventObserverT<T>)(object)RegistrationCreated,
             _ when typeof(T) == typeof(CharacterLevelChangedEvent) => (EventObserverT<T>)(object)CharacterLevelChanged,
+            _ when typeof(T) == typeof(RegistrationProcessedEvent) => (EventObserverT<T>)(object)RegistrationProcessed,
             _ => throw new NotSupportedException($"No event listener registered for event type {typeof(T).FullName}.")
         };
     }
@@ -73,7 +76,8 @@ public sealed class EventObserverCollection
 
         try
         {
-            await Event<T>().WaitForEvent(predicate, count);
+            var e = Event<T>();
+            await e.WaitForEvent(predicate, count);
         }
         catch (TaskCanceledException)
         {
@@ -87,6 +91,41 @@ public sealed class EventObserverCollection
             throw new TimeoutException(message);
         }
         _logger.LogInformation("Observed {EventType} event{Count}", typeof(T).Name, count > 1 ? $" x{count}" : string.Empty);
+    }
+
+    /// <summary>
+    /// Clears all recorded invocations and events for the specified domain event type.
+    /// </summary>
+    /// <remarks>Use this method to reset the invocation and event history for a particular domain event type,
+    /// typically in test scenarios where event handling needs to be verified or reset between tests.</remarks>
+    /// <typeparam name="T">The type of domain event whose invocations and events will be cleared. Must implement <see
+    /// cref="IDomainEvent"/>.</typeparam>
+    internal void ClearInvocations<T>() where T : IDomainEvent
+    {
+        var e = Event<T>();
+        e.Mock.Invocations.Clear();
+        e.Events.Clear();
+    }
+
+    /// <summary>
+    /// Clears all recorded invocations for character-related events within the current context.
+    /// </summary>
+    /// <remarks>This method removes invocation records for multiple event types, including character
+    /// creation, ability score creation, skill creation, saving throw creation, class changes, registration events, and
+    /// level changes. Use this method to reset the invocation state before running new tests or processing new event
+    /// sequences.</remarks>
+    internal void ClearInvocations()
+    {
+        ClearInvocations<CharacterCreatedEvent>();
+        ClearInvocations<AbilityScoreCreatedEvent>();
+        ClearInvocations<SkillCreatedEvent>();
+        ClearInvocations<SavingThrowCreatedEvent>();
+        ClearInvocations<CharacterClassCreatedEvent>();
+        ClearInvocations<CharacterClassRemovedEvent>();
+        ClearInvocations<RegistrationSelectionRuleCreatedEvent>();
+        ClearInvocations<RegistrationCreatedEvent>();
+        ClearInvocations<CharacterLevelChangedEvent>();
+        ClearInvocations<RegistrationProcessedEvent>();
     }
 }
 
@@ -113,6 +152,7 @@ public class EventObserverT<T> where T : IDomainEvent
 
     public Task WaitForEvent(Predicate<T>? predicate = null, int count = 1)
     {
+        Trace.WriteLine($"[TRC] waiting for event {typeof(T).Name} .... current invocations: {Mock.Invocations.Count}");
         var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         var callCount = 0;

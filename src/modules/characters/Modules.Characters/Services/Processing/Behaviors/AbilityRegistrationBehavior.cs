@@ -31,7 +31,7 @@ public sealed class AbilityRegistrationBehavior : IRegistrationBehavior
             return;
         }
 
-        using var _ = CharactersInstrumentation.StartActivity("Ability Registration Behavior");
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(AbilityRegistrationBehavior)} | {newRegistration.AssociatedElementName}");
 
         // when a new ability element is registered, we need to create the ability score for the character
         var associatedElement = await _elements.GetAbilityModel(newRegistration.AssociatedElementId) ?? throw new InvalidOperationException($"Ability with ID {newRegistration.AssociatedElementId} not found.");

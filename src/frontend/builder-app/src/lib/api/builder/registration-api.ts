@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
 import { fetchJson, postJson } from "@/lib/api";
-import type { RegistrationModel, SelectionRuleDataModel, SelectionRuleOptionDataModel } from "./types";
+import type { CharacterClass, RegistrationModel, SelectionRuleDataModel, SelectionRuleOptionDataModel } from "./types";
 
 // get selection rules
 type GetSelectionRulesResponse = { rules: SelectionRuleDataModel[] };
@@ -46,6 +46,8 @@ export function useRegisterSelectionMutation(
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["character-selection-rules", characterId, selectionRuleId] });
       queryClient.invalidateQueries({ queryKey: ["character-registrations", characterId] });
+      queryClient.invalidateQueries({ queryKey: ["character-classes", characterId] });
+      queryClient.invalidateQueries({ queryKey: ["character-details", characterId] });
     },
   });
 }
@@ -63,6 +65,8 @@ export function useUnregisterSelectionMutation(characterId: string, selectionRul
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["character-selection-rules", characterId, selectionRuleId] });
       queryClient.invalidateQueries({ queryKey: ["character-registrations", characterId] });
+      queryClient.invalidateQueries({ queryKey: ["character-classes", characterId] });
+      queryClient.invalidateQueries({ queryKey: ["character-details", characterId] });
     },
   });
 }
@@ -76,5 +80,30 @@ export function useRegistrationModels(characterId: string): UseQueryResult<Regis
     queryFn: () => fetchJson<RegistrationModels>(`/api/characters/${characterId}/registrations`),
     staleTime: 0,
     refetchOnWindowFocus: true,
+  });
+}
+
+// get character classes
+export type CharacterClassesResponse = { classes: CharacterClass[] };
+export function useCharacterClasses(characterId: string): UseQueryResult<CharacterClassesResponse, Error> {
+  return useQuery<CharacterClassesResponse, Error>({
+    queryKey: ["character-classes", characterId],
+    queryFn: () => fetchJson<CharacterClassesResponse>(`/api/characters/${characterId}/classes`),
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+  });
+}
+
+// update class level
+export type UpdateClassLevelRequest = { newLevel: number };
+export function useUpdateClassLevelMutation(characterId: string, characterClassId: string): UseMutationResult<void, Error, UpdateClassLevelRequest> {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, UpdateClassLevelRequest>({
+    mutationFn: (payload) => postJson<UpdateClassLevelRequest, void>(`/api/characters/${characterId}/classes/${characterClassId}/level`, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["character-registrations", characterId] });
+      queryClient.invalidateQueries({ queryKey: ["character-classes", characterId] });
+      queryClient.invalidateQueries({ queryKey: ["character-details", characterId] });
+    },
   });
 }

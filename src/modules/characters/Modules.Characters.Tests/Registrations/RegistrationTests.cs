@@ -28,6 +28,7 @@ public sealed class RegistrationTests
         registration.AssociatedElementType.Should().Be(elementType);
         registration.IsProcessed.Should().BeFalse();
         registration.ParentRegistrationId.Should().BeNull();
+        registration.ProgressionOriginRegistrationId.Should().BeNull();
         registration.IncludeRules.Should().BeEmpty();
     }
 
@@ -40,7 +41,7 @@ public sealed class RegistrationTests
         var child = Registration.Create(characterId, new ElementId(Guid.NewGuid()), "Child", "Type");
 
         // Act
-        child.UpdateParentRegistration(parent);
+        child.SetParentRegistration(parent);
 
         // Assert
         child.ParentRegistrationId.Should().Be(parent.Id);

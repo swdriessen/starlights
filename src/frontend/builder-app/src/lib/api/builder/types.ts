@@ -22,3 +22,11 @@ export type RegistrationModel = {
   characterId: string;
   children?: RegistrationModel[];
 };
+
+export type CharacterClass = {
+  characterClassId: string;
+  registrationId: string;
+  name: string;
+  level: number;
+  isPrimary: boolean;
+};

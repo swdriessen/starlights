@@ -19,7 +19,7 @@ public sealed class ClassManagementService
     {
         character.UpdateComponents<ClassComponent, ProgressionComponent>((classes, progression, _) =>
         {
-            _logger.LogInformation("creating class '{ClassName}' [CharacterId='{CharacterId}']", className, character.Id.Value);
+            _logger.LogInformation("creating class '{ClassName}' [character='{CharacterId}']", className, character.Id.Value);
 
             classes.CreateClass(newRegistration.Id, className);
 
@@ -27,7 +27,7 @@ public sealed class ClassManagementService
 
             progression.SetCharacterLevel(newLevel);
 
-            _logger.LogInformation("created new class '{ClassName}' [CharacterId='{CharacterId}', CharacterLevel={CharacterLevel}]", className, character.Id.Value, newLevel);
+            _logger.LogInformation("created new class '{ClassName}' [character='{CharacterId}', level={CharacterLevel}]", className, character.Id.Value, newLevel);
         });
     }
 
@@ -35,7 +35,7 @@ public sealed class ClassManagementService
     {
         character.UpdateComponents<ClassComponent, ProgressionComponent>((classes, progression, _) =>
         {
-            _logger.LogInformation("removing class for registration '{RegistrationId}' [CharacterId='{CharacterId}']", existingRegistration.Id.Value, character.Id.Value);
+            _logger.LogInformation("removing class for registration '{Registration}' [character='{CharacterId}']", existingRegistration.AssociatedElementName, character.Id.Value);
 
             classes.RemoveClass(existingRegistration.Id);
 
@@ -43,7 +43,7 @@ public sealed class ClassManagementService
 
             progression.SetCharacterLevel(newLevel);
 
-            _logger.LogInformation("removed class for registration '{RegistrationId}' [CharacterId='{CharacterId}', CharacterLevel={CharacterLevel}]", existingRegistration.Id.Value, character.Id.Value, newLevel);
+            _logger.LogInformation("removed class for registration '{Registration}' [character='{CharacterId}', level={CharacterLevel}]", existingRegistration.AssociatedElementName, character.Id.Value, newLevel);
         });
     }
 }

@@ -47,5 +47,8 @@ public sealed class RegistrationIncludeRule : EntityBase<RegistrationIncludeRule
     /// <remarks>
     /// This method is typically used when creating a new include rule for a registration, such as when processing an element's include rules.
     /// </remarks>
-    internal static RegistrationIncludeRule Create(RegistrationId parentRegistrationId, ElementComponentId associatedIncludeRuleId, ElementId includedElementId, string includedElementName) => new(parentRegistrationId, associatedIncludeRuleId, includedElementId, includedElementName);
+    internal static RegistrationIncludeRule Create(RegistrationId parentRegistrationId, ElementComponentId associatedIncludeRuleId, ElementId includedElementId, string includedElementName)
+    {
+        return new(parentRegistrationId, associatedIncludeRuleId, includedElementId, includedElementName);
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Starlights.Modules.Characters.Domain.Registrations;
+﻿using Starlights.Modules.Characters.Domain.Characters;
+using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Services.Processing;
 
@@ -10,7 +11,8 @@ public interface IRegistrationProcessor
     Task<ProcessRegistrationResult> ProcessRegistration(RegistrationId registrationId);
 
     /// <summary>
-    /// Processes the removal of a registration by its unique identifier.
+    /// Reprocesses all registrations associated with the specified character asynchronously.
     /// </summary>
-    Task<ProcessRegistrationResult> ProcessUnregistration(RegistrationId registrationId);
+    Task<ProcessRegistrationResult> ReproccessRegistrations(CharacterId characterId);
 }
+

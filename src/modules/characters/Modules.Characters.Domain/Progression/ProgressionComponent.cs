@@ -8,8 +8,7 @@ public sealed class ProgressionComponent : CharacterComponentBase
 {
     private ProgressionComponent(CharacterId parentCharacter)
         : base(parentCharacter)
-    {
-    }
+    { }
 
     /// <summary>
     /// Gets the current level of the character.
@@ -17,7 +16,7 @@ public sealed class ProgressionComponent : CharacterComponentBase
     public int CharacterLevel { get; private set; }
 
     /// <summary>
-    /// Sets the character's level to the specified value.
+    /// Sets the character's level to the specified value which can not be less than 0. It has no effect when the character level already had the same value.
     /// </summary>
     public void SetCharacterLevel(int level)
     {

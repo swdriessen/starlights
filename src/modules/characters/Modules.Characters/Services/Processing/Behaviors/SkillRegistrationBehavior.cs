@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Data;
+using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Elements;
@@ -33,6 +34,8 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
         {
             return;
         }
+        using var _ = CharactersInstrumentation.StartActivity($"{nameof(SkillRegistrationBehavior)} | {newRegistration.AssociatedElementName}");
+
 
         // when a new skill element is registered, we need to create the skill for the character
         var characters = _persistence.GetRepository<ICharactersRepository>();

@@ -43,6 +43,15 @@ public class RegistrationTypeConfiguration : IEntityTypeConfiguration<Registrati
             .HasColumnName("associated_element_type")
             .HasMaxLength(128);
 
+        builder.Property(e => e.ProgressionOriginRegistrationId)
+            .HasColumnName("progression_origin_registration_id")
+            .IsRequired(false)
+            .HasConversion(m => m.HasValue ? m.Value.Value : (Guid?)null, v => v.HasValue ? new RegistrationId(v.Value) : null);
+
+        builder.Property(e => e.OriginatingRule)
+            .HasColumnName("originating_rule_id")
+            .IsRequired(false);
+
         builder.HasMany(x => x.IncludeRules)
             .WithOne()
             .HasForeignKey(x => x.ParentRegistrationId)
