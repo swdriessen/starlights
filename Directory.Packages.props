@@ -6,7 +6,7 @@
   <PropertyGroup Label="Package Versions">
     <MicrosoftExtensionsVersion>9.0.9</MicrosoftExtensionsVersion>
     <EntityFrameworkCoreVersion>9.0.9</EntityFrameworkCoreVersion>
-    <AspireVersion>9.5.0</AspireVersion>
+    <AspireVersion>9.5.1</AspireVersion>
     <OpenTelemetryVersion>1.12.0</OpenTelemetryVersion>
   </PropertyGroup>
   <ItemGroup Label="Generic Packages">
@@ -23,7 +23,7 @@
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.NodeJs" Version="$(AspireVersion)" />
-		<PackageVersion Include="Aspire.Hosting.DevTunnels" Version="9.5.0-preview.1.25474.7" />
+		<PackageVersion Include="Aspire.Hosting.DevTunnels" Version="9.5.1-preview.1.25502.11" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryVersion)" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryVersion)" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryVersion)" />
