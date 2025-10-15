@@ -52,16 +52,74 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     public int LevelRequirement { get; private set; }
 
     /// <summary>
+    /// Gets the minimum value for the individual statistic rule, regardless of value provided based on assigned value, if one is defined.
+    /// </summary>
+    public int? MinimumValue { get; private set; }
+
+    /// <summary>
+    /// Gets the maximum allowable value for this individual statistic rule, if one is specified.
+    /// </summary>
+    public int? MaximumValue { get; private set; }
+
+    /// <summary>
+    /// Determines whether the <see cref="Value"/> represents a valid integer, optionally prefixed with a plus or minus sign.
+    /// </summary>
+    /// <returns>true if the value is a valid integer; otherwise, false.</returns>
+    public bool IsNumberValue()
+    {
+        if (Value.StartsWith('+') || Value.StartsWith('-'))
+        {
+            return int.TryParse(Value[1..], out _);
+        }
+
+        return int.TryParse(Value, out _);
+    }
+
+    /// <summary>
+    /// Retrieves the integer value represented by the current object if it contains a valid number.
+    /// </summary>
+    /// <remarks>If the value starts with a '+' or '-' sign, the sign is ignored and only the numeric portion
+    /// is parsed. This method does not support parsing negative numbers; only the sign character is skipped.</remarks>
+    public int GetValue()
+    {
+        if (IsNumberValue())
+        {
+            if (Value.StartsWith('+') || Value.StartsWith('-'))
+            {
+                return int.Parse(Value[1..]);
+            }
+            return int.Parse(Value);
+        }
+
+        throw new InvalidOperationException($"The value '{Value}' is not a valid number.");
+
+    }
+
+    /// <summary>
     /// Factory for creating a new applied registration statistic rule.
     /// </summary>
     internal static RegistrationStatisticRule Create(RegistrationId parentRegistrationId, ElementComponentId associatedStatisticRuleId, string name, string value)
-        => new(parentRegistrationId, associatedStatisticRuleId, name, value);
+    {
+        return new(parentRegistrationId, associatedStatisticRuleId, name, value);
+    }
 
-
-
-    public void UpdateStackingBonus(string stackingBonus) =>
+    public void UpdateStackingBonus(string stackingBonus)
+    {
         StackingBonus = stackingBonus.Trim();
+    }
 
     public void UpdateLevelRequirement(int levelRequirement)
-        => LevelRequirement = levelRequirement;
+    {
+        LevelRequirement = levelRequirement;
+    }
+
+    public void UpdateMinimumValue(int? minimumValue)
+    {
+        MinimumValue = minimumValue;
+    }
+
+    public void UpdateMaximumValue(int? maximumValue)
+    {
+        MaximumValue = maximumValue;
+    }
 }
