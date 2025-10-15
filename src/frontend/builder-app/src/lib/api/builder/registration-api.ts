@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
 import { fetchJson, postJson } from "@/lib/api";
-import type { CharacterClass, RegistrationModel, SelectionRuleDataModel, SelectionRuleOptionDataModel } from "./types";
+import type { CharacterClass, RegistrationModel, SelectionRuleDataModel, SelectionRuleOptionDataModel, StatisticGroupDataModel } from "./types";
 
 // get selection rules
 type GetSelectionRulesResponse = { rules: SelectionRuleDataModel[] };
@@ -78,6 +78,17 @@ export function useRegistrationModels(characterId: string): UseQueryResult<Regis
   return useQuery<RegistrationModels, Error>({
     queryKey: ["character-registrations", characterId],
     queryFn: () => fetchJson<RegistrationModels>(`/api/characters/${characterId}/registrations`),
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+  });
+}
+
+// get statistics
+export type StatisticsResponse = { statistics: StatisticGroupDataModel[] };
+export function useStatistics(characterId: string): UseQueryResult<StatisticsResponse, Error> {
+  return useQuery<StatisticsResponse, Error>({
+    queryKey: ["character-statistics", characterId],
+    queryFn: () => fetchJson<StatisticsResponse>(`/api/characters/${characterId}/statistics`),
     staleTime: 0,
     refetchOnWindowFocus: true,
   });

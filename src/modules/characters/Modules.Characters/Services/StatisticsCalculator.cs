@@ -5,7 +5,7 @@ using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Services;
 
-internal class StatisticsCalculator
+public class StatisticsCalculator
 {
     public StatisticValuesGroupCollection Calculate(Character character, List<Registration> registrations)
     {

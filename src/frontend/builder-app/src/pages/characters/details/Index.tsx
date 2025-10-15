@@ -7,6 +7,7 @@ import {
   useRegistrationModels,
   useSelectionRuleDataModels,
   useSelectionRuleOptionModels,
+  useStatistics,
   useUnregisterSelectionMutation,
   useUpdateClassLevelMutation,
 } from "@/lib/api/builder/registration-api";
@@ -358,6 +359,7 @@ export default function CharactersDetailsPage() {
   if (!id) return <div>Character ID is required.</div>;
   const { data: characterDetails } = useCharacterDetails(id);
   const { data: registrationModels } = useRegistrationModels(id);
+  const { data: statisticsData } = useStatistics(id);
 
   return (
     <>
@@ -396,6 +398,7 @@ export default function CharactersDetailsPage() {
             <TabsTrigger value="tab-sheet-2">Saving Throws</TabsTrigger>
             <TabsTrigger value="tab-sheet-3">Skills</TabsTrigger>
             <TabsTrigger value="tab-sheet-4">Class Features</TabsTrigger>
+            <TabsTrigger value="tab-statistics">Statistics</TabsTrigger>
           </TabsList>
           <TabsContent value="tab-sheet-1">
             <AbilitiesComponent id={id} />
@@ -423,6 +426,45 @@ export default function CharactersDetailsPage() {
 
                     return <div>{registrationModels.registrations.map((r: any) => renderNode(r, 0))}</div>;
                   })()}
+                </div>
+              ) : (
+                <span className="text-yellow-700">Loading...</span>
+              )}
+            </>
+          </TabsContent>
+          <TabsContent value="tab-statistics">
+            <>
+              {statisticsData ? (
+                <div className="border border-dashed rounded p-4 overflow-x-auto text-sm">
+                  <table className="min-w-full text-center">
+                    <thead className="text-xs uppercase font-semibold">
+                      <tr>
+                        <th className="px-2 py-2 border-b text-left">Statistic Group</th>
+                        <th className="px-2 py-2 border-b">Total Value</th>
+                        <th className="px-2 py-2 border-b">Finalized</th>
+                        <th className="px-2 py-2 border-b text-left">Details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {statisticsData.statistics.map((group) => (
+                        <tr key={group.groupName}>
+                          <td className="px-2 py-1 border-b text-left font-semibold">{group.groupName}</td>
+                          <td className="px-2 py-1 border-b">{group.totalValue}</td>
+                          <td className="px-2 py-1 border-b">{group.isFinalized ? "Yes" : "No"}</td>
+                          <td className="px-2 py-1 border-b text-left">
+                            <div className="space-y-1">
+                              {group.values.map((value, index) => (
+                                <div key={`${value.source}-${index}`} className="text-xs">
+                                  <span className="text-muted-foreground">{value.displayName || value.source}:</span>{" "}
+                                  <span className="font-medium">{value.value}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               ) : (
                 <span className="text-yellow-700">Loading...</span>

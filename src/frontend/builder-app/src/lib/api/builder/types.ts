@@ -30,3 +30,17 @@ export type CharacterClass = {
   level: number;
   isPrimary: boolean;
 };
+
+export type StatisticValueDataModel = {
+  source: string;
+  value: number;
+  displayName?: string;
+  ruleId?: string;
+};
+
+export type StatisticGroupDataModel = {
+  groupName: string;
+  totalValue: number;
+  values: StatisticValueDataModel[];
+  isFinalized: boolean;
+};
