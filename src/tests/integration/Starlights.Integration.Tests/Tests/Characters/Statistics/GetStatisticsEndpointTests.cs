@@ -1,7 +1,9 @@
 using FluentAssertions;
 using Starlights.Integration.Core;
+using Starlights.Integration.Core.Eventing;
 using Starlights.Integration.Core.Extensions;
 using Starlights.Integration.Drivers.CharacterCreation;
+using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 
 namespace Starlights.Integration.Tests.Characters.Statistics;
 
@@ -9,7 +11,9 @@ namespace Starlights.Integration.Tests.Characters.Statistics;
 public sealed class GetStatisticsEndpointTests : IntegrationTestBase
 {
     private IntegrationHost _integration = default!;
-    private RegistrationDriver _driver = default!;
+    private EventObserverCollection _events = default!;
+    private RegistrationDriver _registration = default!;
+    private CharacterManagementDriver _characterManagementDriver = default!;
 
     [TestInitialize]
     public async Task Initialize()
@@ -18,7 +22,9 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
             .WithTestContext(TestContext)
             .Build();
 
-        _driver = _integration.GetDriver<RegistrationDriver>();
+        _events = _integration.GetEventObserverCollection();
+        _registration = _integration.GetDriver<RegistrationDriver>();
+        _characterManagementDriver = _integration.GetDriver<CharacterManagementDriver>();
 
         await _integration.InitializeElements();
         await _integration.GetDriver<CharacterCreationDriver>().CreateCharacterAsync();
@@ -29,7 +35,7 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
     public async Task GetStatistics_Returns_CalculatedStatistics()
     {
         // Act
-        var statistics = await _driver.GetStatistics();
+        var statistics = await _registration.GetStatistics();
 
         // Assert
         statistics.Should().NotBeEmpty();
@@ -42,7 +48,7 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
     public async Task GetStatistics_Returns_AbilityScoreStatistics()
     {
         // Act
-        var statistics = await _driver.GetStatistics();
+        var statistics = await _registration.GetStatistics();
 
         // Assert
         statistics.Should().Contain(s => s.GroupName == "strength:score", "Expected strength score statistic to be present");
@@ -59,7 +65,7 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
     public async Task GetStatistics_Returns_FinalizedGroups()
     {
         // Act
-        var statistics = await _driver.GetStatistics();
+        var statistics = await _registration.GetStatistics();
 
         // Assert
         statistics.Should().AllSatisfy(s => s.IsFinalized.Should().BeTrue("All statistic groups should be finalized"));
@@ -70,7 +76,7 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
     public async Task GetStatistics_Includes_ValueBreakdown()
     {
         // Act
-        var statistics = await _driver.GetStatistics();
+        var statistics = await _registration.GetStatistics();
 
         // Assert
         var proficiency = statistics.FirstOrDefault(s => s.GroupName == "proficiency");
@@ -79,29 +85,31 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
         proficiency.TotalValue.Should().BeGreaterThan(0, "Expected proficiency bonus to be greater than zero");
     }
 
-    // get statitics for a level 5 barbarian
+    [DataRow(1, 2)]
+    [DataRow(4, 2)]
+    [DataRow(5, 3)]
+    [DataRow(8, 3)]
+    [DataRow(9, 4)]
+    [DataRow(12, 4)]
+    [DataRow(13, 5)]
+    [DataRow(16, 5)]
+    [DataRow(17, 6)]
+    [DataRow(20, 6)]
     [TestMethod]
     [Timeout(TestConstants.Timeout, CooperativeCancellation = true)]
-    public async Task GetStatistics_Level5Barbarian_HasCorrectProficiencyBonus()
+    public async Task GetStatistics_HasCorrectProficiencyBonus_WhenLevelingUp(int level, int expectedProficiencyValue)
     {
         // Arrange
-        var reg = _integration.GetDriver<RegistrationDriver>();
-        var characterDriver = _integration.GetDriver<CharacterManagementDriver>();
-        //await characterDriver.UpdateCharacterAsync(updates =>
-        //{
-        //    updates.SetLevel(5);
-        //    updates.SetClass("Barbarian");
-        //});
-        await reg.RegisterClass("Barbarian");
-        await characterDriver.LevelUp("Barbarian", 5);
-
+        await _registration.RegisterClass("Barbarian");
+        await _characterManagementDriver.LevelUp("Barbarian", level);
+        await _events.EnsureObservation<RegistrationStatisticRuleCreatedEvent>(e => e.Name == "proficiency" && e.Value == $"{expectedProficiencyValue}");
 
         // Act
-        await Task.Delay(2000);
-        var statistics = await _driver.GetStatistics();
+        var statistics = await _registration.GetStatistics();
+
         // Assert
-        var proficiency = statistics.FirstOrDefault(s => s.GroupName == "proficiency");
+        var proficiency = statistics.SingleOrDefault(s => s.GroupName == "proficiency");
         proficiency.Should().NotBeNull("Expected proficiency statistic to be present");
-        proficiency!.TotalValue.Should().Be(3, "Expected proficiency bonus for level 5 character to be 3");
+        proficiency.TotalValue.Should().Be(expectedProficiencyValue, $"Expected proficiency bonus for level {level} character to be {expectedProficiencyValue}");
     }
 }
