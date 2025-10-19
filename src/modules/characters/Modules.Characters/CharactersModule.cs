@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Starlights.Modules.Characters.Domain.Services;
-using Starlights.Modules.Characters.Services;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Characters.Services.Processing.Behaviors;
+using Starlights.Modules.Characters.Services.Statistics;
+using Starlights.Modules.Characters.Services.Statistics.Processors;
 using Starlights.Platform.Eventing.EventPublisher;
 using Starlights.Platform.Hosting;
 
@@ -21,6 +22,17 @@ internal class CharactersModule : IPlatformServiceComponent
         builder.Services.AddScoped<ClassManagementService>();
         builder.Services.AddScoped<ICharacterCreationService, CharacterCreationService>();
         builder.Services.AddScoped<ICharacterAbilitiesUpdateService, CharacterAbilitiesUpdateService>();
+
+        // statistics seed processors (run before direct value rules)
+        builder.Services.AddScoped<IStatisticsCalculationInitializer, CharacterStatisticsInitializer>();
+        builder.Services.AddScoped<IStatisticsCalculationInitializer, ClassStatisticsInitializer>();
+        builder.Services.AddScoped<IStatisticsCalculationInitializer, AbilitiesStatisticsInitializer>();
+        builder.Services.AddScoped<IStatisticsCalculationInitializer, SavingThrowStatisticsInitializer>();
+        builder.Services.AddScoped<IStatisticsCalculationInitializer, SkillStatisticsInitializer>();
+
+        // statistics post processors (run after direct value rules)
+        builder.Services.AddScoped<IStatisticsPostProcessor, ProficiencyVariantsCalculator>();
+
         builder.Services.AddScoped<StatisticsCalculator>();
 
         // registration behaviors

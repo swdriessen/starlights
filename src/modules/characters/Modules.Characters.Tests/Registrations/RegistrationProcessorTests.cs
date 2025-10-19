@@ -5,6 +5,7 @@ using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Services.Processing;
+using Starlights.Modules.Characters.Services.Statistics;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
 using Starlights.Modules.Elements.Integration.Models.Rules;
@@ -23,7 +24,10 @@ public sealed class RegistrationProcessorTests
     private RegistrationProcessor CreateProcessor(params IRegistrationBehavior[] behaviors)
     {
         var manager = new RegistrationManager(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, behaviors);
-        return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, manager, _elements.Object);
+        var statisticsCalculator = new StatisticsCalculator(
+            Enumerable.Empty<IStatisticsCalculationInitializer>(),
+            Enumerable.Empty<IStatisticsPostProcessor>());
+        return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, manager, _elements.Object, statisticsCalculator);
     }
 
     [TestInitialize]

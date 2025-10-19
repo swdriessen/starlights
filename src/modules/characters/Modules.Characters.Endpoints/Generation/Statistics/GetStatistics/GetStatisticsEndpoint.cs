@@ -1,7 +1,7 @@
 using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Data;
-using Starlights.Modules.Characters.Services;
+using Starlights.Modules.Characters.Services.Statistics;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Characters.Endpoints.Generation.Statistics.GetStatistics;
@@ -13,7 +13,7 @@ public sealed class GetStatisticsEndpoint : Endpoint<GetStatisticsRequest, GetSt
     private readonly StatisticsCalculator _statisticsCalculator;
 
     public GetStatisticsEndpoint(
-        ILogger<GetStatisticsEndpoint> logger, 
+        ILogger<GetStatisticsEndpoint> logger,
         IPersistence persistence,
         StatisticsCalculator statisticsCalculator)
     {
