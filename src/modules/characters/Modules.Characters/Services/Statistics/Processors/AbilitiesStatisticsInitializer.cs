@@ -23,8 +23,8 @@ internal sealed class AbilitiesStatisticsInitializer : IStatisticsCalculationIni
             context.Statistics.WithGroup($"{slug}:modifier", g => g.WithValue(score.CalculatedModifier, $"{score.Name} Modifier"));
             context.Statistics.WithGroup($"{slug}:max", g => g.WithInternalValue(20));
 
-            context.Statistics.WithGroupVariants($"{slug}:score");
-            context.Statistics.WithGroupVariants($"{slug}:modifier");
+            context.Statistics.WithGroupVariants($"{slug}:score", score.Name);
+            context.Statistics.WithGroupVariants($"{slug}:modifier", score.Name);
         }
     }
 }

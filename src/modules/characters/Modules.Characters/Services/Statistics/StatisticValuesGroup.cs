@@ -18,6 +18,11 @@ public class StatisticValuesGroup
     public string GroupName { get; }
 
     /// <summary>
+    /// Gets or sets the display name associated with the object.
+    /// </summary>
+    public string? DisplayName { get; set; }
+
+    /// <summary>
     /// Indicate that all provided rules have been handled and that this group can be used to get the total sum without missing out on pending additions.
     /// </summary>
     public bool IsFinalized { get; private set; }

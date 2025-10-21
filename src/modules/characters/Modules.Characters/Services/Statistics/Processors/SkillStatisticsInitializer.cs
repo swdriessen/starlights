@@ -12,7 +12,12 @@ internal sealed class SkillStatisticsInitializer : IStatisticsCalculationInitial
         {
             var slug = save.Name.ToLowerInvariant().Replace(' ', '_');
 
-            context.Statistics.WithGroup($"{slug}", g => g.WithValue(save.CalculatedBonus, save.Name));
+            context.Statistics.WithGroup($"{slug}", g =>
+            {
+                g.WithDisplayName(save.Name);
+                g.WithValue(save.CalculatedBonus, save.Name);
+            });
+
             context.Statistics.WithGroup($"{slug}:proficiency");
             context.Statistics.WithGroup($"{slug}:misc");
             context.Statistics.WithGroup($"{slug}:passive");

@@ -14,11 +14,12 @@ internal sealed class ClassStatisticsInitializer : IStatisticsCalculationInitial
     {
         var component = context.Character.GetRequiredComponent<ClassComponent>();
 
-        foreach (var c in component.Classes)
+        foreach (var item in component.Classes)
         {
-            var slug = c.Name.ToLowerInvariant().Trim().Replace(' ', '-');
-            var group = context.Statistics.WithGroup($"{slug}:level", g => g.WithInternalValue(c.Level));
-            context.Statistics.WithGroupVariants(group.GroupName);
+            var slug = item.Name.ToLowerInvariant().Trim().Replace(' ', '-');
+            var group = context.Statistics.WithGroup($"{slug}:level", g => g.WithValue(item.Level, item.Name));
+
+            context.Statistics.WithGroupVariants(group.GroupName, item.Name);
         }
     }
 }

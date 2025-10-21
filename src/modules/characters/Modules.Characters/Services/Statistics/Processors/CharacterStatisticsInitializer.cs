@@ -15,15 +15,17 @@ internal sealed class CharacterStatisticsInitializer : IStatisticsCalculationIni
     {
         var progression = context.Character.GetRequiredComponent<ProgressionComponent>();
 
-        context.Statistics.WithGroup("level", g => g.WithValue(progression.CharacterLevel, "Character"));
-        context.Statistics.WithGroupVariants("level");
+        context.Statistics.WithGroup("level", g =>
+        {
+            g.WithDisplayName("Level");
+            g.WithValue(progression.CharacterLevel, "Character");
+        });
+        context.Statistics.WithGroupVariants("level", "Character");
 
-        context.Statistics.WithGroup("initiative");
+        context.Statistics.WithGroup("initiative", g => g.WithDisplayName("Initiative"));
         context.Statistics.WithGroup("initiative:misc");
 
-
-
-        context.Statistics.WithGroup("proficiency");
+        context.Statistics.WithGroup("proficiency", g => g.WithDisplayName("Proficiency"));
         context.Statistics.WithGroup("proficiency:misc");
     }
 }
