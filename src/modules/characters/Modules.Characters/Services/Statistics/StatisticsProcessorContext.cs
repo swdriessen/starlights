@@ -34,4 +34,30 @@ public sealed class StatisticsProcessorContext
     /// A lookup dictionary mapping registration IDs to their associated element names use for display purpose.
     /// </summary>
     public IReadOnlyDictionary<RegistrationId, string> RegistrationLookup { get; }
+
+    public void AddError(string errorMessage)
+    {
+        _errors.Add(errorMessage);
+    }
+
+    private readonly List<string> _errors = [];
+
+    public bool HasErrors => _errors.Count > 0;
+    public IReadOnlyList<string> Errors => _errors;
+}
+
+public sealed class StatisticCalculationResult
+{
+    public StatisticCalculationResult(StatisticValuesGroupCollection statistics, IEnumerable<string>? errors = null)
+    {
+        Statistics = statistics;
+        if (errors is not null)
+        {
+            Errors.AddRange(errors);
+        }
+    }
+
+    public StatisticValuesGroupCollection Statistics { get; }
+    public bool HasErrors => Errors.Count > 0;
+    public List<string> Errors { get; } = [];
 }

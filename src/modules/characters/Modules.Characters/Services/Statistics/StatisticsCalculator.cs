@@ -1,23 +1,23 @@
 ﻿using System.Diagnostics;
+using Microsoft.Extensions.Logging;
+using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Characters;
-using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Domain.Registrations;
 
 namespace Starlights.Modules.Characters.Services.Statistics;
 
-
-
 public class StatisticsCalculator
 {
     public const int MaxReferenceResolutionIterations = 10;
-
+    private readonly ILogger<StatisticsCalculator> _logger;
     private readonly IEnumerable<IStatisticsCalculationInitializer> _initializers;
     private readonly IEnumerable<IStatisticsPostProcessor> _postProcessors;
 
-    public StatisticsCalculator(
+    public StatisticsCalculator(ILogger<StatisticsCalculator> logger,
         IEnumerable<IStatisticsCalculationInitializer> initializers,
         IEnumerable<IStatisticsPostProcessor> postProcessors)
     {
+        _logger = logger;
         _initializers = initializers;
         _postProcessors = postProcessors;
     }
@@ -36,30 +36,151 @@ public class StatisticsCalculator
             processor.Initialize(context);
         }
 
-        // split into direct value rules (numeric value) and reference rules (reference to another statistic by name)
-        var (simpleRules, pendingRules) = SeparateStatisticRules(characterStatisticRules);
+        // split into direct value rules (numeric value) and reference rules (reference to another statistic by name)        
+        var valueRules = characterStatisticRules.Where(r => !r.HasReferenceValue() && !r.HasStackingBonus()).ToList();
+        var pendingGroups = GetPendingGroups([.. characterStatisticRules.Except(valueRules)], context);
 
         // process all value rules that only set direct numeric values
-        ProcessDirectValueRules(simpleRules, context);
-
-        // process all pending rules, including reference value rules, stacking bonus rules, min/max constraints, etc.
-        var unprocessedRules = ProcessPendingRules(pendingRules, context);
-        if (unprocessedRules.Count > 0)
+        foreach (var rule in valueRules)
         {
-            Trace.WriteLine($"[StatisticsCalculator] Warning: {unprocessedRules.Count} rules could not be processed due to unresolved dependencies.");
-            foreach (var item in unprocessedRules)
+            var originalName = rule.Name; // TODO: rule can have optional display name to override this and prevent using parent element name
+            var originalValue = rule.GetValue();
+
+            context.Statistics.WithGroup(rule.Name, group =>
             {
-                Trace.WriteLine($" - Unprocessed Rule: Name={item.Name}, Value={item.Value}, StackingBonus={item.StackingBonus}");
+                var determinedName = originalName;
+                var determinedValue = originalValue;
+
+                // resolve parent name if available
+                if (context.RegistrationLookup.TryGetValue(rule.ParentRegistrationId, out var parentName))
+                {
+                    determinedName = parentName;
+                }
+
+                // apply max constraint if applicable
+                if (rule.MaximumValue.HasValue && rule.MaximumValue > 0 && originalValue > rule.MaximumValue)
+                {
+                    // cap the value
+                    determinedValue = rule.MaximumValue.Value;
+                }
+
+                // apply min constraint if applicable
+                if (rule.MinimumValue.HasValue && rule.MinimumValue > 0 && originalValue < rule.MinimumValue)
+                {
+                    // raise to min value
+                    determinedValue = rule.MinimumValue.Value;
+                }
+
+                // add the value to the statistic group
+                group.WithValue(determinedValue, determinedName);
+
+                // if this group does not exist in pending groups, mark it as complete, this helps with dependency resolution later
+                if (!pendingGroups.ContainsKey(rule.Name))
+                {
+                    group.Complete();
+                }
+            });
+        }
+
+        // first process proficiency and ability rules as those are needed for other calculations
+        if (pendingGroups.TryGetValue("proficiency", out var proficiencyNode))
+        {
+            var result = ProcessGroupNode(proficiencyNode, context);
+            if (result is StatisticValuesGroup group && group.IsFinalized)
+            {
+                pendingGroups.Remove(group.GroupName);
             }
         }
 
-        ApplyStackingBonuses(simpleRules, context);
-        ApplyMinMaxConstraints(characterStatisticRules, context);
+        context.Statistics.WithGroupVariants("proficiency");
 
-        foreach (var processor in _postProcessors)
+        // make sure pendingRules do not contain more proficiency related rules as those are now processed
+        if (pendingGroups.Any(r => r.Key.StartsWith("proficiency")))
         {
-            processor.Process(context);
+            _logger.LogError("[StatisticsCalculator] Pending statistic rules contain proficiency related rules that should have been processed already.");
         }
+
+        character.UpdateComponent<AbilitiesComponent>((a, _) =>
+        {
+            foreach (var score in a.AbilityScores)
+            {
+                var key = score.Name.ToLowerInvariant();
+                var group = context.Statistics.GetGroup(key);
+                score.UpdateAdditionalScore(group.Sum());
+                // TODO: max score
+
+                context.Statistics.WithGroup($"{key}:score", g =>
+                {
+                    g.WithValue(score.CalculatedScore, $"{score.Name}");
+                    g.Complete();
+                });
+                context.Statistics.WithGroup($"{key}:modifier", g =>
+                {
+                    g.WithValue(score.CalculatedModifier, $"{score.Name} Modifier");
+                    g.Complete();
+                });
+
+                context.Statistics.WithGroupVariants($"{key}:score", score.Name);
+                context.Statistics.WithGroupVariants($"{key}:modifier", score.Name);
+
+                // make sure pendingRules do not container more ability score related rules as those are now processed
+                // throw exception for now if they do
+                if (pendingGroups.Any(r => r.Key.StartsWith(key)))
+                {
+                    throw new InvalidOperationException($"Pending statistic rules contain ability score related rules that should have been processed already");
+                }
+            }
+        });
+
+
+        // Detect circular dependencies before processing
+        var circularDeps = DetectCircularDependencies(pendingGroups, context);
+        if (circularDeps.Count > 0)
+        {
+            var cyclePath = string.Join(" -> ", circularDeps);
+            _logger.LogError("[StatisticsCalculator] Circular dependency detected in statistic rules: {cyclePath}", cyclePath);
+            context.AddError($"A circular dependency detected in statistic rules: {cyclePath}");
+            //throw new StatisticsCalculatorException($"Circular dependency detected in statistic rules: {cyclePath}");
+        }
+
+        foreach (var (key, pendingGroup) in pendingGroups)
+        {
+            var result = ProcessGroupNode(pendingGroup, context);
+            if (result is StatisticValuesGroup group && group.IsFinalized)
+            {
+                pendingGroups.Remove(group.GroupName);
+            }
+            else
+            {
+                // add warning to context
+                _logger.LogWarning("[StatisticsCalculator] Statistic group '{GroupName}' could not be finalized due to unresolved dependencies.", key);
+            }
+        }
+
+
+        // process all other pending rules (references, stacking bonuses, etc.)
+        //var unprocessedRules = ProcessPendingRules(pendingRules, context);
+        //if (unprocessedRules.Count > 0)
+        //{
+        //    Trace.WriteLine($"[StatisticsCalculator] Warning: {unprocessedRules.Count} rules could not be processed due to unresolved dependencies.");
+        //    foreach (var item in unprocessedRules)
+        //    {
+        //        Trace.WriteLine($" - Unprocessed Rule: Name={item.Name}, Value={item.Value}, StackingBonus={item.StackingBonus}");
+        //    }
+        //}
+
+
+
+        //var (simpleRulesOld, _) = SeparateStatisticRules(characterStatisticRules);
+
+
+        // ApplyStackingBonuses(simpleRulesOld, context);
+        // ApplyMinMaxConstraints(characterStatisticRules, context);
+
+        //foreach (var processor in _postProcessors)
+        //{
+        //    processor.Process(context);
+        //}
         FinalizeStatistics(context);
 
 
@@ -69,423 +190,294 @@ public class StatisticsCalculator
 
 
 
+
         return context.Statistics;
     }
 
-    private static int GetCharacterLevel(Character character)
+    #region Used 
+
+    private StatisticValuesGroup? ProcessGroupNode(RuleGroupNode group, StatisticsProcessorContext context)
     {
-        var progressionComponent = character.GetRequiredComponent<ProgressionComponent>();
-        return progressionComponent.CharacterLevel;
-    }
+        group.Dependencies
+            .RemoveWhere(d => context.Statistics.ContainsGroup(d) && context.Statistics.GetGroup(d).IsFinalized);
 
-
-    private static (List<(RegistrationStatisticRule Rule, int Value)> DirectValueRules, List<RegistrationStatisticRule> ReferenceValueRules)
-        SeparateStatisticRules(List<RegistrationStatisticRule> validStatistics)
-    {
-        var directValueRules = new List<(RegistrationStatisticRule Rule, int Value)>();
-        var pendingRules = new List<RegistrationStatisticRule>();
-
-        foreach (var stat in validStatistics)
+        // handle the group, taking into account stacking bonuses, etc
+        var hasDependencies = group.Dependencies.Count > 0;
+        if (hasDependencies)
         {
-            if (stat.IsNumberValue() && stat.StackingBonus is null)
+            _logger.LogError($"[StatisticsCalculator] Statistic rules for '{group.Name}' have unresolved dependencies: {string.Join(", ", group.Dependencies)}");
+
+            // skip processing for now
+            // add error to context
+            // maybe return int.MinValue for now to indicate error but not break the calculation flow
+            return null;
+        }
+
+        var statisticsGroup = context.Statistics.GetGroup(group.Name);
+
+
+        // process rules without stacking bonus first
+        var pendingRules = new List<RegistrationStatisticRule>(group.Rules);
+
+        var rulesWithoutBonus = pendingRules.Where(r => !r.HasStackingBonus()).ToList();
+        var rulesWithBonus = pendingRules.Except(rulesWithoutBonus).ToList();
+
+        // process rules without stacking bonus
+        foreach (var rule in rulesWithoutBonus)
+        {
+            var determinedName = rule.Name;
+            var determinedValue = rule.HasReferenceValue() ? context.Statistics.GetValue(rule.Value) : rule.GetValue();
+
+            // resolve parent name if available
+            if (context.RegistrationLookup.TryGetValue(rule.ParentRegistrationId, out var parentName))
             {
-                var value = stat.GetValue();
-                if (stat.Value.StartsWith("-"))
+                determinedName = parentName;
+            }
+
+            // apply max constraint if applicable
+            if (rule.MaximumValue.HasValue && rule.MaximumValue > 0 && determinedValue > rule.MaximumValue)
+            {
+                determinedValue = rule.MaximumValue.Value;
+            }
+
+            // apply min constraint if applicable
+            if (rule.MinimumValue.HasValue && rule.MinimumValue > 0 && determinedValue < rule.MinimumValue)
+            {
+                determinedValue = rule.MinimumValue.Value;
+            }
+
+            statisticsGroup.AddValue(determinedName, determinedValue, determinedName, rule.AssociatedStatisticRuleId.Value);
+
+            pendingRules.Remove(rule);
+
+            if (pendingRules.Count == 0)
+            {
+                statisticsGroup.Complete();
+            }
+        }
+
+        // process rules with stacking bonus
+        var bonusGroups = rulesWithBonus.GroupBy(r => r.StackingBonus);
+
+        foreach (var bonusGroup in bonusGroups)
+        {
+            // find highest value in the group
+            var highestValue = int.MinValue;
+            RegistrationStatisticRule? highestRule = null;
+
+            foreach (var rule in bonusGroup)
+            {
+                var determinedValue = rule.HasReferenceValue() ? context.Statistics.GetValue(rule.Value) : rule.GetValue();
+
+                // apply max constraint if applicable
+                if (rule.MaximumValue.HasValue && rule.MaximumValue > 0 && determinedValue > rule.MaximumValue)
                 {
-                    value = -value;
+                    determinedValue = rule.MaximumValue.Value;
                 }
-                directValueRules.Add((stat, value));
+
+                // apply min constraint if applicable
+                if (rule.MinimumValue.HasValue && rule.MinimumValue > 0 && determinedValue < rule.MinimumValue)
+                {
+                    determinedValue = rule.MinimumValue.Value;
+                }
+
+                if (determinedValue > highestValue)
+                {
+                    highestValue = determinedValue;
+                    highestRule = rule;
+                }
             }
-            else
+
+            // add highest value to the statistics group
+            if (highestRule != null)
             {
-                pendingRules.Add(stat);
+                var determinedName = highestRule.Name;
+
+                // resolve parent name if available
+                if (context.RegistrationLookup.TryGetValue(highestRule.ParentRegistrationId, out var parentName))
+                {
+                    determinedName = parentName;
+                }
+
+                statisticsGroup.AddValue(determinedName, highestValue, $"{determinedName} ({bonusGroup.Key})", highestRule.AssociatedStatisticRuleId.Value);
+
+                pendingRules.Remove(highestRule);
+
+                foreach (var item in bonusGroup) // rules in the bonus group that were not highest, still remove them from pending
+                {
+                    pendingRules.Remove(item);
+                }
+
+                if (pendingRules.Count == 0)
+                {
+                    statisticsGroup.Complete();
+                }
             }
+
         }
 
-        return (directValueRules, pendingRules);
+
+
+        return statisticsGroup;
     }
 
-    private void ProcessDirectValueRules(List<(RegistrationStatisticRule Rule, int Value)> directValueRules, StatisticsProcessorContext context)
-    {
-        var nonStackingRules = directValueRules.Where(r => string.IsNullOrWhiteSpace(r.Rule.StackingBonus));
-
-        foreach (var (rule, value) in nonStackingRules)
-        {
-            var group = context.Statistics.GetGroup(rule.Name);
-
-
-
-
-            var source = rule.AssociatedStatisticRuleId.Value.ToString();
-            var displayName = context.RegistrationLookup.GetValueOrDefault(rule.ParentRegistrationId) ?? rule.Name;
-
-            group.AddValue(source, value, displayName, rule.AssociatedStatisticRuleId.Value);
-        }
-    }
 
     /// <summary>
-    /// Processes pending rules that couldn't be handled in the initial pass.
-    /// Handles reference values, stacking bonuses, and rules with dependencies on other statistics.
+    /// Builds a dependency graph for pending rules, identifying which statistics reference others.
     /// </summary>
-    /// <returns>List of rules that still couldn't be processed after max iterations.</returns>
-    private List<RegistrationStatisticRule> ProcessPendingRules(List<RegistrationStatisticRule> pendingRules, StatisticsProcessorContext context)
+    private Dictionary<string, RuleGroupNode> GetPendingGroups(List<RegistrationStatisticRule> pendingRules, StatisticsProcessorContext context)
     {
-        var remainingRules = new List<RegistrationStatisticRule>();
-        var ruleGroups = new Queue<IGrouping<string, RegistrationStatisticRule>>(pendingRules.GroupBy(r => r.Name));
-        var requeuedGroupNames = new HashSet<string>();
-        var iteration = 0;
+        var pendingGroups = new Dictionary<string, RuleGroupNode>();
+        var ruleGroups = pendingRules.GroupBy(r => r.Name);
 
-        while (ruleGroups.Count > 0 && iteration < MaxReferenceResolutionIterations)
+        foreach (var group in ruleGroups)
         {
-            iteration++;
-            var currentGroup = ruleGroups.Dequeue();
-            var groupName = currentGroup.Key;
+            var dependencies = new HashSet<string>();
 
-            // Get names of statistics still pending (potential dependencies)
-            var pendingStatisticNames = ruleGroups.Select(g => g.Key).ToHashSet();
-
-            var statGroup = context.Statistics.GetGroup(groupName, createNonExisting: false)
-                            ?? new StatisticValuesGroup(groupName);
-            var unhandledRules = new List<RegistrationStatisticRule>();
-
-            // Process rules without stacking bonuses first
-            var rulesWithoutBonus = currentGroup.Where(r => string.IsNullOrWhiteSpace(r.StackingBonus)).ToList();
-            foreach (var rule in rulesWithoutBonus)
+            foreach (var rule in group)
             {
-                if (!TryProcessSinglePendingRule(rule, statGroup, context, pendingStatisticNames))
+                if (rule.HasReferenceValue())
                 {
-                    unhandledRules.Add(rule);
+                    dependencies.Add(rule.Value);
                 }
             }
 
-            // Process rules grouped by stacking bonus
-            var stackingBonusGroups = currentGroup
-                .Where(r => !string.IsNullOrWhiteSpace(r.StackingBonus))
-                .GroupBy(r => r.StackingBonus);
-
-            foreach (var bonusGroup in stackingBonusGroups)
-            {
-                if (!TryProcessStackingBonusGroup(bonusGroup, statGroup, context, pendingStatisticNames, out var unprocessedInGroup))
-                {
-                    unhandledRules.AddRange(unprocessedInGroup);
-                }
-            }
-
-            // Determine what to do with this group
-            if (unhandledRules.Count == 0)
-            {
-                // Successfully processed all rules in this group
-                if (!context.Statistics.ContainsGroup(groupName))
-                {
-                    context.Statistics.AddGroup(statGroup);
-                }
-            }
-            else if (requeuedGroupNames.Contains(groupName))
-            {
-                // Already requeued once - add what we can and track remaining
-                if (statGroup.GetValues().Any() && !context.Statistics.ContainsGroup(groupName))
-                {
-                    context.Statistics.AddGroup(statGroup);
-                }
-                remainingRules.AddRange(unhandledRules);
-            }
-            else
-            {
-                // First time we couldn't process - requeue for another pass
-                ruleGroups.Enqueue(currentGroup);
-                requeuedGroupNames.Add(groupName);
-            }
+            pendingGroups[group.Key] = new RuleGroupNode(group.Key, [.. group], dependencies);
         }
 
-        // Add any groups still in queue to remaining rules
-        while (ruleGroups.Count > 0)
-        {
-            remainingRules.AddRange(ruleGroups.Dequeue());
-        }
-
-        return remainingRules;
+        return pendingGroups;
     }
 
-    /// <summary>
-    /// Attempts to process a single pending rule by resolving references or evaluating expressions.
-    /// </summary>
-    private bool TryProcessSinglePendingRule(
-        RegistrationStatisticRule rule,
-        StatisticValuesGroup statGroup,
-        StatisticsProcessorContext context,
-        HashSet<string> pendingStatisticNames)
-    {
-        // Check if this is a reference to another statistic
-        if (!rule.IsNumberValue())
-        {
-            // Don't try to resolve if the referenced statistic is still pending
-            if (pendingStatisticNames.Contains(rule.Value))
-            {
-                return false;
-            }
-
-            // Try to resolve the reference
-            if (!context.Statistics.ContainsGroup(rule.Value))
-            {
-                return false;
-            }
-
-            var referencedValue = context.Statistics.GetValue(rule.Value);
-            var cappedValue = ApplyCap(rule, referencedValue, context, pendingStatisticNames);
-
-            var source = rule.AssociatedStatisticRuleId.Value.ToString();
-            var displayName = context.RegistrationLookup.GetValueOrDefault(rule.ParentRegistrationId) ?? rule.Name;
-
-            statGroup.AddValue(source, cappedValue, displayName, rule.AssociatedStatisticRuleId.Value);
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Processes a group of rules with the same stacking bonus, keeping only the highest value.
-    /// </summary>
-    private bool TryProcessStackingBonusGroup(
-        IGrouping<string?, RegistrationStatisticRule> bonusGroup,
-        StatisticValuesGroup statGroup,
-        StatisticsProcessorContext context,
-        HashSet<string> pendingStatisticNames,
-        out List<RegistrationStatisticRule> unprocessedRules)
-    {
-        unprocessedRules = [];
-
-        if (bonusGroup.Count() == 1)
-        {
-            var rule = bonusGroup.First();
-
-            // Try to get the value (handles both numeric and reference values)
-            if (TryGetRuleValue(rule, context, pendingStatisticNames, out var value))
-            {
-                var sourcex = $"{bonusGroup.Key}:{rule.AssociatedStatisticRuleId.Value}";
-                var displayNamex = context.RegistrationLookup.GetValueOrDefault(rule.ParentRegistrationId) ?? rule.Name;
-
-                statGroup.AddValue(sourcex, value, $"{displayNamex} ({bonusGroup.Key})", rule.AssociatedStatisticRuleId.Value);
-                return true;
-            }
-
-            unprocessedRules.Add(rule);
-            return false;
-        }
-
-        var highestValue = int.MinValue;
-        var sourceRules = new List<RegistrationStatisticRule>();
-        var allResolved = true;
-
-        foreach (var rule in bonusGroup)
-        {
-            if (!TryGetRuleValue(rule, context, pendingStatisticNames, out var value))
-            {
-                unprocessedRules.Add(rule);
-                allResolved = false;
-                continue;
-            }
-
-            if (value > highestValue)
-            {
-                highestValue = value;
-                sourceRules.Clear();
-                sourceRules.Add(rule);
-            }
-            else if (value == highestValue)
-            {
-                sourceRules.Add(rule);
-            }
-        }
-
-        if (!allResolved)
-        {
-            return false;
-        }
-
-        // Build display name from all sources with the highest value
-        var displayNames = sourceRules
-            .Select(r => context.RegistrationLookup.GetValueOrDefault(r.ParentRegistrationId) ?? r.Name)
-            .ToList();
-        var displayName = string.Join(" | ", displayNames);
-
-        var firstRule = sourceRules.First();
-        var source = $"{bonusGroup.Key}:{firstRule.AssociatedStatisticRuleId.Value}";
-
-        statGroup.AddValue(source, highestValue, $"{displayName} ({bonusGroup.Key})", firstRule.AssociatedStatisticRuleId.Value);
-        return true;
-    }
-
-    /// <summary>
-    /// Gets the numeric value for a rule, resolving references if necessary.
-    /// </summary>
-    private bool TryGetRuleValue(
-        RegistrationStatisticRule rule,
-        StatisticsProcessorContext context,
-        HashSet<string> pendingStatisticNames,
-        out int value)
-    {
-        value = 0;
-
-        if (rule.IsNumberValue())
-        {
-            value = rule.GetValue();
-            if (rule.Value.StartsWith("-"))
-            {
-                value = -value;
-            }
-
-            value = ApplyCap(rule, value, context, pendingStatisticNames);
-            return true;
-        }
-
-        // Reference to another statistic
-        if (pendingStatisticNames.Contains(rule.Value))
-        {
-            return false;
-        }
-
-        if (!context.Statistics.ContainsGroup(rule.Value))
-        {
-            return false;
-        }
-
-        value = context.Statistics.GetValue(rule.Value);
-        value = ApplyCap(rule, value, context, pendingStatisticNames);
-        return true;
-    }
-
-    /// <summary>
-    /// Applies maximum cap constraint if specified on the rule.
-    /// </summary>
-    private int ApplyCap(
-        RegistrationStatisticRule rule,
-        int value,
-        StatisticsProcessorContext context,
-        HashSet<string> pendingStatisticNames)
-    {
-        if (!rule.MaximumValue.HasValue || rule.MaximumValue.Value <= 0)
-        {
-            return value;
-        }
-
-        // If max is a reference, try to resolve it
-        // For now, just use the MaximumValue as-is since it's an int
-        return Math.Min(value, rule.MaximumValue.Value);
-    }
-
-    private void ProcessReferenceValueRules(List<RegistrationStatisticRule> referenceValueRules, StatisticsProcessorContext context)
-    {
-        var iteration = 0;
-
-        while (referenceValueRules.Count > 0 && iteration < MaxReferenceResolutionIterations)
-        {
-            iteration++;
-            var processed = new List<RegistrationStatisticRule>();
-
-            foreach (var rule in referenceValueRules)
-            {
-                if (TryResolveReference(rule, context))
-                {
-                    processed.Add(rule);
-                }
-            }
-
-            foreach (var processedRule in processed)
-            {
-                referenceValueRules.Remove(processedRule);
-            }
-
-            if (processed.Count == 0)
-            {
-                break;
-            }
-        }
-    }
-
-    private bool TryResolveReference(RegistrationStatisticRule rule, StatisticsProcessorContext context)
-    {
-        var referencedStatName = rule.Value;
-
-        if (!context.Statistics.ContainsGroup(referencedStatName))
-        {
-            return false;
-        }
-
-        var referencedValue = context.Statistics.GetValue(referencedStatName);
-        var group = context.Statistics.GetGroup(rule.Name);
-        var source = rule.AssociatedStatisticRuleId.Value.ToString();
-        var displayName = context.RegistrationLookup.GetValueOrDefault(rule.ParentRegistrationId) ?? rule.Name;
-
-        group.AddValue(source, referencedValue, displayName, rule.AssociatedStatisticRuleId.Value);
-        return true;
-    }
-
-    private void ApplyStackingBonuses(List<(RegistrationStatisticRule Rule, int Value)> directValueRules, StatisticsProcessorContext context)
-    {
-        var stackingGroups = directValueRules
-            .Where(r => !string.IsNullOrWhiteSpace(r.Rule.StackingBonus))
-            .GroupBy(r => new { r.Rule.Name, r.Rule.StackingBonus });
-
-        foreach (var stackingGroup in stackingGroups)
-        {
-            ApplyStackingGroup(stackingGroup, context);
-        }
-    }
-
-    private void ApplyStackingGroup(IGrouping<dynamic, (RegistrationStatisticRule Rule, int Value)> stackingGroup, StatisticsProcessorContext context)
-    {
-        var highestValue = stackingGroup.Max(r => r.Value);
-        var (rule, _) = stackingGroup.First(r => r.Value == highestValue);
-
-        var group = context.Statistics.GetGroup(stackingGroup.Key.Name);
-        var source = $"{stackingGroup.Key.StackingBonus}:{rule.AssociatedStatisticRuleId.Value}";
-        var displayName = context.RegistrationLookup.GetValueOrDefault(rule.ParentRegistrationId) ?? rule.Name;
-
-        group.AddValue(source, highestValue, $"{displayName} ({stackingGroup.Key.StackingBonus})", rule.AssociatedStatisticRuleId.Value);
-    }
-
-    private void ApplyMinMaxConstraints(List<RegistrationStatisticRule> validStatistics, StatisticsProcessorContext context)
-    {
-        foreach (var stat in validStatistics)
-        {
-            if (!context.Statistics.ContainsGroup(stat.Name))
-            {
-                continue;
-            }
-
-            var group = context.Statistics.GetGroup(stat.Name);
-            var currentSum = group.Sum();
-            var displayName = context.RegistrationLookup.GetValueOrDefault(stat.ParentRegistrationId) ?? stat.Name;
-
-            ApplyMaximumConstraint(stat, group, currentSum, displayName);
-            ApplyMinimumConstraint(stat, group, currentSum, displayName);
-        }
-    }
-
-    private static void ApplyMaximumConstraint(RegistrationStatisticRule stat, StatisticValuesGroup group, int currentSum, string displayName)
-    {
-        if (stat.MaximumValue.HasValue && stat.MaximumValue > 0 && currentSum > stat.MaximumValue)
-        {
-            var excess = currentSum - stat.MaximumValue.Value;
-            group.AddValue($"cap_max:{stat.AssociatedStatisticRuleId.Value}", -excess, $"{displayName} (Max Cap)", stat.AssociatedStatisticRuleId.Value);
-        }
-    }
-
-    private static void ApplyMinimumConstraint(RegistrationStatisticRule stat, StatisticValuesGroup group, int currentSum, string displayName)
-    {
-        if (stat.MinimumValue.HasValue && stat.MinimumValue > 0 && currentSum < stat.MinimumValue)
-        {
-            var deficit = stat.MinimumValue.Value - currentSum;
-            group.AddValue($"cap_min:{stat.AssociatedStatisticRuleId.Value}", deficit, $"{displayName} (Min Floor)", stat.AssociatedStatisticRuleId.Value);
-        }
-    }
+    #endregion
 
     private void FinalizeStatistics(StatisticsProcessorContext context)
     {
         foreach (var group in context.Statistics)
         {
-            group.MarkAsFinalized();
+            if (group.IsFinalized)
+            {
+                continue;
+            }
+
+            if (group.GetValues().Count == 0)
+            {
+                group.Complete();
+                continue;
+            }
+
+            _logger.LogWarning($"[StatisticsCalculator] Finalizing statistic group '{group.GroupName}' with total value {group.Sum()} and values: {group.GetSummary()}");
+            group.Complete();
         }
     }
+
+    #region Circular Dependencies
+
+    /// <summary>
+    /// Detects circular dependencies in the pending groups using depth-first search.
+    /// </summary>
+    /// <returns>A list of statistic names involved in circular dependencies, or empty if none found.</returns>
+    private static List<string> DetectCircularDependencies(Dictionary<string, RuleGroupNode> pendingGroups, StatisticsProcessorContext context)
+    {
+        var visited = new HashSet<string>();
+        var recursionStack = new HashSet<string>();
+        var circularDependencies = new List<string>();
+
+        foreach (var groupName in pendingGroups.Keys)
+        {
+            if (!visited.Contains(groupName))
+            {
+                if (HasCircularDependency(groupName, pendingGroups, context, visited, recursionStack, out var cycle))
+                {
+                    circularDependencies.AddRange(cycle);
+                }
+            }
+        }
+
+        return circularDependencies.Distinct().ToList();
+    }
+
+    /// <summary>
+    /// Recursively checks for circular dependencies starting from a given node.
+    /// </summary>
+    private static bool HasCircularDependency(
+        string currentNode,
+        Dictionary<string, RuleGroupNode> pendingGroups,
+        StatisticsProcessorContext context,
+        HashSet<string> visited,
+        HashSet<string> recursionStack,
+        out List<string> cycle)
+    {
+        cycle = [];
+        visited.Add(currentNode);
+        recursionStack.Add(currentNode);
+
+        if (pendingGroups.TryGetValue(currentNode, out var node))
+        {
+            foreach (var dependency in node.Dependencies)
+            {
+                // Skip dependencies that are already finalized in context
+                if (context.Statistics.ContainsGroup(dependency) && context.Statistics.GetGroup(dependency).IsFinalized)
+                {
+                    continue;
+                }
+
+                // If dependency is in recursion stack, we found a cycle
+                if (recursionStack.Contains(dependency))
+                {
+                    cycle = BuildCyclePath(dependency, currentNode, recursionStack, pendingGroups);
+                    return true;
+                }
+
+                // If not visited, recursively check
+                if (!visited.Contains(dependency))
+                {
+                    if (HasCircularDependency(dependency, pendingGroups, context, visited, recursionStack, out cycle))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        recursionStack.Remove(currentNode);
+        return false;
+    }
+
+    /// <summary>
+    /// Builds a readable path of the circular dependency chain.
+    /// </summary>
+    private static List<string> BuildCyclePath(string startNode, string endNode, HashSet<string> recursionStack, Dictionary<string, RuleGroupNode> pendingGroups)
+    {
+        var path = new List<string> { endNode };
+        var current = endNode;
+
+        // Trace back through dependencies to find the cycle
+        while (current != startNode && pendingGroups.TryGetValue(current, out var node))
+        {
+            var nextInCycle = node.Dependencies.FirstOrDefault(d => recursionStack.Contains(d));
+            if (nextInCycle != null)
+            {
+                path.Add(nextInCycle);
+                current = nextInCycle;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        path.Reverse();
+        return path;
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Represents a group of rules with their dependencies.
+    /// </summary>
+    private sealed record RuleGroupNode(string Name, List<RegistrationStatisticRule> Rules, HashSet<string> Dependencies)
+    {
+        public bool HasDependencies => Dependencies.Count > 0;
+    }
 }
+

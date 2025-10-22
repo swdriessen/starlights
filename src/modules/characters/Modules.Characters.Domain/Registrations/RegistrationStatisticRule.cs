@@ -75,6 +75,15 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
         return int.TryParse(Value, out _);
     }
 
+    public bool HasReferenceValue()
+    {
+        return !IsNumberValue();
+    }
+    public bool HasStackingBonus()
+    {
+        return !string.IsNullOrWhiteSpace(StackingBonus);
+    }
+
     /// <summary>
     /// Retrieves the integer value represented by the current object if it contains a valid number.
     /// </summary>
@@ -84,7 +93,7 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     {
         if (IsNumberValue())
         {
-            if (Value.StartsWith('+') || Value.StartsWith('-'))
+            if (Value.StartsWith('+'))
             {
                 return int.Parse(Value[1..]);
             }
@@ -122,4 +131,7 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     {
         MaximumValue = maximumValue;
     }
+
+
+    // TODO: DisplayName =/ instead of parent name
 }

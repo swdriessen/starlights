@@ -24,7 +24,7 @@ public static class StatisticValuesGroupCollectionExtensions
         return group;
     }
 
-    public static StatisticValue WithValue(this StatisticValuesGroup group, int numericValue, string originName = "Internal", string? displayName = null)
+    public static StatisticValue WithValue(this StatisticValuesGroup group, int numericValue, string originName = "Internal")
     {
         var value = new StatisticValue(originName, numericValue, originName);
         group.AddValue(value);
@@ -35,22 +35,38 @@ public static class StatisticValuesGroupCollectionExtensions
     {
         var originGroup = collection.GetGroup(groupName);
 
+        // remove existing variants
+        var variants = collection.Where(g => g.GroupName.StartsWith($"{originGroup.GroupName}:")).ToList();
+        foreach (var variant in variants)
+        {
+            if (variant.GetValues().Count > 1)
+            {
+                throw new InvalidOperationException($"Cannot create variants for group '{originGroup.GroupName}' because variant '{variant.GroupName}' has multiple values.");
+            }
+
+            collection.Remove(variant);
+        }
+
+        // create variants
         var h = collection.WithGroup($"{originGroup.GroupName}:half", g => g.WithValue(originGroup.Sum() / 2));
         var hup = collection.WithGroup($"{originGroup.GroupName}:half:up", g => g.WithInternalValue((int)Math.Ceiling(originGroup.Sum() / 2.0)));
-        var hdown = collection.WithGroup($"{originGroup.GroupName}:half:down", g => g.WithInternalValue((int)Math.Floor(originGroup.Sum() / 2.0)));
+        //var hdown = collection.WithGroup($"{originGroup.GroupName}:half:down", g => g.WithInternalValue((int)Math.Floor(originGroup.Sum() / 2.0)));
 
         if (displayName is not null)
         {
             h.WithDisplayName(displayName);
             hup.WithDisplayName(displayName);
-            hdown.WithDisplayName(displayName);
+            //hdown.WithDisplayName(displayName);
         }
         else if (originGroup.DisplayName is not null)
         {
             h.WithDisplayName(originGroup.DisplayName);
             hup.WithDisplayName(originGroup.DisplayName);
-            hdown.WithDisplayName(originGroup.DisplayName);
+            //hdown.WithDisplayName(originGroup.DisplayName);
         }
+
+        h.Complete();
+        hup.Complete();
 
         return collection;
     }

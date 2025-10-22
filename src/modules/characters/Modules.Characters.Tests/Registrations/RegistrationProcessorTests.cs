@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain.Characters;
@@ -23,8 +24,9 @@ public sealed class RegistrationProcessorTests
 
     private RegistrationProcessor CreateProcessor(params IRegistrationBehavior[] behaviors)
     {
+
         var manager = new RegistrationManager(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, behaviors);
-        var statisticsCalculator = new StatisticsCalculator(
+        var statisticsCalculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance,
             Enumerable.Empty<IStatisticsCalculationInitializer>(),
             Enumerable.Empty<IStatisticsPostProcessor>());
         return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, manager, _elements.Object, statisticsCalculator);

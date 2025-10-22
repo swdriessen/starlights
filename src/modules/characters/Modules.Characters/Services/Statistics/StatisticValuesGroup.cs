@@ -130,7 +130,7 @@ public class StatisticValuesGroup
     /// <summary>
     /// Marks this group as finalized, indicating all rules have been processed.
     /// </summary>
-    public void MarkAsFinalized()
+    public void Complete()
     {
         IsFinalized = true;
     }

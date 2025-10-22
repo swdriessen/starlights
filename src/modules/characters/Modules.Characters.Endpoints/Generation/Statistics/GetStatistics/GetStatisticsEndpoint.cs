@@ -44,18 +44,18 @@ public sealed class GetStatisticsEndpoint : Endpoint<GetStatisticsRequest, GetSt
 
         var statistics = _statisticsCalculator.Calculate(character, characterRegistrations);
 
-        var models = statistics.Select(group => new StatisticGroupDataModel
+        var models = statistics.Where(g => g.GetValues().Count > 0).Select(group => new StatisticGroupDataModel
         {
             GroupName = group.GroupName,
             TotalValue = group.Sum(),
             IsFinalized = group.IsFinalized,
-            Values = group.GetValues().Select(v => new StatisticValueDataModel
+            Values = [.. group.GetValues().Select(v => new StatisticValueDataModel
             {
                 Source = v.Source,
                 Value = v.Value,
                 DisplayName = v.DisplayName,
                 RuleId = v.RuleId
-            }).ToList()
+            })]
         }).ToList();
 
         await Send.OkAsync(new GetStatisticsResponse { Statistics = models }, ct);

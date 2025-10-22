@@ -19,11 +19,12 @@ internal sealed class CharacterStatisticsInitializer : IStatisticsCalculationIni
         {
             g.WithDisplayName("Level");
             g.WithValue(progression.CharacterLevel, "Character");
+            g.Complete();
         });
         context.Statistics.WithGroupVariants("level", "Character");
 
-        context.Statistics.WithGroup("initiative", g => g.WithDisplayName("Initiative"));
-        context.Statistics.WithGroup("initiative:misc");
+        //context.Statistics.WithGroup("initiative", g => g.WithDisplayName("Initiative"));
+        //context.Statistics.WithGroup("initiative:misc");
 
         context.Statistics.WithGroup("proficiency", g => g.WithDisplayName("Proficiency"));
         context.Statistics.WithGroup("proficiency:misc");

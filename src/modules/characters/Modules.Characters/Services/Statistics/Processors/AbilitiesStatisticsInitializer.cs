@@ -19,9 +19,9 @@ internal sealed class AbilitiesStatisticsInitializer : IStatisticsCalculationIni
             var slug = score.Name.ToLowerInvariant().Replace(' ', '_');
             var abbreviation = score.Abbreviation.ToLowerInvariant();
 
-            context.Statistics.WithGroup($"{slug}:score", g => g.WithValue(score.CalculatedScore, score.Name));
-            context.Statistics.WithGroup($"{slug}:modifier", g => g.WithValue(score.CalculatedModifier, $"{score.Name} Modifier"));
-            context.Statistics.WithGroup($"{slug}:max", g => g.WithInternalValue(20));
+            context.Statistics.WithGroup($"{slug}:score");
+            context.Statistics.WithGroup($"{slug}:modifier");
+            context.Statistics.WithGroup($"{slug}:max");
 
             context.Statistics.WithGroupVariants($"{slug}:score", score.Name);
             context.Statistics.WithGroupVariants($"{slug}:modifier", score.Name);

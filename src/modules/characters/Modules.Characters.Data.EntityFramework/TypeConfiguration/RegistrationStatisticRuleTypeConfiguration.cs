@@ -41,7 +41,7 @@ public class RegistrationStatisticRuleTypeConfiguration : IEntityTypeConfigurati
 
         builder.Property(e => e.StackingBonus)
             .HasColumnName("stacking_bonus")
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(e => e.MinimumValue)
             .HasColumnName("min_value")

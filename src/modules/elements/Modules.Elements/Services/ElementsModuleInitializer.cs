@@ -329,22 +329,25 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
     {
         var barbarianFeature1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 1")
             .WithComponent(id => new SortingComponent(id, 1))
+            .WithStatisticRule("barbarian-stat", "1", "", 0)
             .WithDescription("This is the first feature of the Barbarian class.")
             .Build();
 
         var barbarianFeature2 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 2")
             .WithComponent(id => new SortingComponent(id, 2))
+            .WithStatisticRule("barbarian-stat", "2", "base", 2)
             .WithDescription("This is the second feature of the Barbarian class.")
             .Build();
 
         var barbarianFeature2_1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 2.1")
             .WithComponent(id => new SortingComponent(id, 2.1))
-            .WithStatisticRule("barbarian-stat", "2", "base", 2)
+            .WithStatisticRule("barbarian-stat", "1", "", 0)
             .WithDescription("This is a nested feature of the second feature of the Barbarian class.")
             .Build();
 
         var barbarianFeature3 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 3")
             .WithComponent(id => new SortingComponent(id, 3))
+            .WithStatisticRule("barbarian-stat", "4", "base", 3)
             .WithDescription("This is the third feature of the Barbarian class.")
             .Build();
 
@@ -359,10 +362,12 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
         var subclass1 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Barbarian SubClass 1")
             .WithDescription("This is a barbarian subclass")
+            .WithStatisticRule("barbarian-stat", "10", "base", 0)
             .Build();
 
         var subclass2 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Barbarian SubClass 2")
             .WithDescription("This is another barbarian subclass")
+            .WithStatisticRule("barbarian-stat", "20", "base", 0)
             .Build();
 
 

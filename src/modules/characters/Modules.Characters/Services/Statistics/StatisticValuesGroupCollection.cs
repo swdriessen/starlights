@@ -62,6 +62,6 @@ public class StatisticValuesGroupCollection : List<StatisticValuesGroup>
             return GetGroup(groupName).Sum();
         }
 
-        return 0;
+        return int.MinValue;
     }
 }
