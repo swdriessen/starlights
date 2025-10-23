@@ -39,7 +39,7 @@ public static class StatisticValuesGroupCollectionExtensions
         var variants = collection.Where(g => g.GroupName.StartsWith($"{originGroup.GroupName}:")).ToList();
         foreach (var variant in variants)
         {
-            if (variant.GetValues().Count > 1)
+            if (variant.GetStatisticValues().Count > 1)
             {
                 throw new InvalidOperationException($"Cannot create variants for group '{originGroup.GroupName}' because variant '{variant.GroupName}' has multiple values.");
             }

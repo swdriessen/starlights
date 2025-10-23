@@ -8,7 +8,7 @@ using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Services.Statistics;
 using Starlights.Modules.Characters.Services.Statistics.Processors;
 
-namespace Starlights.Modules.Characters.Tests.Services;
+namespace Starlights.Modules.Characters.Tests.Statistics;
 
 [TestClass]
 public sealed class StatisticsCalculatorTests
@@ -22,15 +22,10 @@ public sealed class StatisticsCalculatorTests
         var seedProcessors = new List<IStatisticsCalculationInitializer>
         {
             new CharacterStatisticsInitializer(),
-            new AbilitiesStatisticsInitializer()
+  new AbilitiesStatisticsInitializer(),
         };
 
-        var postProcessors = new List<IStatisticsPostProcessor>
-        {
-            new ProficiencyVariantsCalculator()
-        };
-
-        _calculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance, seedProcessors, postProcessors);
+        _calculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance, seedProcessors);
     }
 
     #region Helper Methods
@@ -54,11 +49,11 @@ public sealed class StatisticsCalculatorTests
     }
 
     private static Registration CreateRegistrationWithStatisticRule(
-        Character character,
+     Character character,
         string featureName,
         string featureType,
-        string statName,
-        string statValue,
+   string statName,
+     string statValue,
         Action<RegistrationStatisticRule>? configureRule = null)
     {
         var registration = Registration.Create(character.Id, new ElementId(Guid.NewGuid()), featureName, featureType);
@@ -72,7 +67,7 @@ public sealed class StatisticsCalculatorTests
     #region Basic Functionality Tests
 
     [TestMethod]
-    public void Calculate_WithNoRegistrations_ShouldReturnEmptyStatistics()
+    public void Calculate_WithNoRegistrations_ShouldReturnResult()
     {
         // Arrange
         var character = CreateTestCharacter();
@@ -83,7 +78,8 @@ public sealed class StatisticsCalculatorTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<StatisticValuesGroupCollection>();
+        result.Statistics.Should().NotBeNull();
+        result.HasErrors.Should().BeFalse();
     }
 
     [TestMethod]
@@ -97,8 +93,8 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.Should().NotBeEmpty();
-        result.Should().OnlyContain(group => group.IsFinalized);
+        result.Statistics.Should().NotBeEmpty();
+        result.Statistics.Should().OnlyContain(group => group.IsCompleted);
     }
 
     #endregion
@@ -116,9 +112,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("level").Should().BeTrue();
-        result.GetValue("level").Should().Be(5);
-        result.GetGroup("level").GetValues().Should().ContainSingle(v => v.DisplayName == "Character");
+        result.Statistics.ContainsGroup("level").Should().BeTrue();
+        result.Statistics.GetValue("level").Should().Be(5);
+        result.Statistics.GetGroup("level").GetStatisticValues().Should().ContainSingle(v => v.DisplayName == "Character");
     }
 
     [TestMethod]
@@ -136,7 +132,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("level").Should().Be(level);
+        result.Statistics.GetValue("level").Should().Be(level);
     }
 
     #endregion
@@ -155,19 +151,19 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("strength:score").Should().BeTrue();
-        result.GetValue("strength:score").Should().Be(16);
-        result.GetGroup("strength:score").GetValues().Should().ContainSingle(v => v.DisplayName == "Strength");
+        result.Statistics.ContainsGroup("strength:score").Should().BeTrue();
+        result.Statistics.GetValue("strength:score").Should().Be(16);
+        result.Statistics.GetGroup("strength:score").GetStatisticValues().Should().ContainSingle(v => v.DisplayName == "Strength");
 
-        result.ContainsGroup("strength:modifier").Should().BeTrue();
-        result.GetValue("strength:modifier").Should().Be(3);
-        result.GetGroup("strength:modifier").GetValues().Should().ContainSingle(v => v.DisplayName == "Strength Modifier");
+        result.Statistics.ContainsGroup("strength:modifier").Should().BeTrue();
+        result.Statistics.GetValue("strength:modifier").Should().Be(3);
+        result.Statistics.GetGroup("strength:modifier").GetStatisticValues().Should().ContainSingle(v => v.DisplayName == "Strength Modifier");
 
-        result.ContainsGroup("strength:modifier:half").Should().BeTrue();
-        result.GetValue("strength:modifier:half").Should().Be(1); // floor(3/2) = 1
+        result.Statistics.ContainsGroup("strength:modifier:half").Should().BeTrue();
+        result.Statistics.GetValue("strength:modifier:half").Should().Be(1); // floor(3/2) = 1
 
-        result.ContainsGroup("strength:modifier:half:up").Should().BeTrue();
-        result.GetValue("strength:modifier:half:up").Should().Be(2); // ceil(3/2) = 2
+        result.Statistics.ContainsGroup("strength:modifier:half:up").Should().BeTrue();
+        result.Statistics.GetValue("strength:modifier:half:up").Should().Be(2); // ceil(3/2) = 2
     }
 
     [TestMethod]
@@ -189,7 +185,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("strength:modifier").Should().Be(expectedModifier);
+        result.Statistics.GetValue("strength:modifier").Should().Be(expectedModifier);
     }
 
     [TestMethod]
@@ -206,12 +202,12 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("strength:score").Should().BeTrue();
-        result.ContainsGroup("dexterity:score").Should().BeTrue();
-        result.ContainsGroup("constitution:score").Should().BeTrue();
-        result.GetValue("strength:modifier").Should().Be(3);
-        result.GetValue("dexterity:modifier").Should().Be(2);
-        result.GetValue("constitution:modifier").Should().Be(1);
+        result.Statistics.ContainsGroup("strength:score").Should().BeTrue();
+        result.Statistics.ContainsGroup("dexterity:score").Should().BeTrue();
+        result.Statistics.ContainsGroup("constitution:score").Should().BeTrue();
+        result.Statistics.GetValue("strength:modifier").Should().Be(3);
+        result.Statistics.GetValue("dexterity:modifier").Should().Be(2);
+        result.Statistics.GetValue("constitution:modifier").Should().Be(1);
     }
 
     #endregion
@@ -230,9 +226,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("test-stat").Should().BeTrue();
-        result.GetValue("test-stat").Should().Be(5);
-        result.GetGroup("test-stat").GetValues().Should().ContainSingle()
+        result.Statistics.ContainsGroup("test-stat").Should().BeTrue();
+        result.Statistics.GetValue("test-stat").Should().Be(5);
+        result.Statistics.GetGroup("test-stat").GetStatisticValues().Should().ContainSingle()
             .Which.DisplayName.Should().Be("Test Feature");
     }
 
@@ -248,8 +244,8 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("armor-class").Should().BeTrue();
-        result.GetValue("armor-class").Should().Be(-2);
+        result.Statistics.ContainsGroup("armor-class").Should().BeTrue();
+        result.Statistics.GetValue("armor-class").Should().Be(-2);
     }
 
     [TestMethod]
@@ -265,11 +261,11 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("bonus-stat").Should().BeTrue();
-        result.GetValue("bonus-stat").Should().Be(5, "Multiple additive bonuses should sum");
-        result.GetGroup("bonus-stat").GetValues().Should().HaveCount(2);
-        result.GetGroup("bonus-stat").GetValues().Should().Contain(v => v.DisplayName == "Feature 1");
-        result.GetGroup("bonus-stat").GetValues().Should().Contain(v => v.DisplayName == "Feature 2");
+        result.Statistics.ContainsGroup("bonus-stat").Should().BeTrue();
+        result.Statistics.GetValue("bonus-stat").Should().Be(5, "Multiple additive bonuses should sum");
+        result.Statistics.GetGroup("bonus-stat").GetStatisticValues().Should().HaveCount(2);
+        result.Statistics.GetGroup("bonus-stat").GetStatisticValues().Should().Contain(v => v.DisplayName == "Feature 1");
+        result.Statistics.GetGroup("bonus-stat").GetStatisticValues().Should().Contain(v => v.DisplayName == "Feature 2");
     }
 
     [TestMethod]
@@ -285,7 +281,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("test-stat").Should().Be(7); // 10 - 3 = 7
+        result.Statistics.GetValue("test-stat").Should().Be(7); // 10 - 3 = 7
     }
 
     #endregion
@@ -306,9 +302,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("attack-bonus").Should().BeTrue();
-        result.GetValue("attack-bonus").Should().Be(2, "Should resolve to the strength modifier value");
-        result.GetGroup("attack-bonus").GetValues().Should().ContainSingle()
+        result.Statistics.ContainsGroup("attack-bonus").Should().BeTrue();
+        result.Statistics.GetValue("attack-bonus").Should().Be(2, "Should resolve to the strength modifier value");
+        result.Statistics.GetGroup("attack-bonus").GetStatisticValues().Should().ContainSingle()
             .Which.DisplayName.Should().Be("Test Feature");
     }
 
@@ -326,9 +322,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("stat-a").Should().Be(5);
-        result.GetValue("stat-b").Should().Be(5);
-        result.GetValue("stat-c").Should().Be(5);
+        result.Statistics.GetValue("stat-a").Should().Be(5);
+        result.Statistics.GetValue("stat-b").Should().Be(5);
+        result.Statistics.GetValue("stat-c").Should().Be(5);
     }
 
     [TestMethod]
@@ -343,7 +339,8 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("test-stat").Should().BeFalse("Reference could not be resolved");
+        result.Statistics.ContainsGroup("test-stat").Should().BeFalse("Reference could not be resolved");
+        result.HasErrors.Should().BeFalse("The calculation should complete without errors, at best we should add a warning");
     }
 
     #endregion
@@ -365,9 +362,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("armor-class").Should().BeTrue();
-        result.GetValue("armor-class").Should().Be(3, "Only the highest stacking bonus should be applied");
-        result.GetGroup("armor-class").GetValues().Should().ContainSingle()
+        result.Statistics.ContainsGroup("armor-class").Should().BeTrue();
+        result.Statistics.GetValue("armor-class").Should().Be(3, "Only the highest stacking bonus should be applied");
+        result.Statistics.GetGroup("armor-class").GetStatisticValues().Should().ContainSingle()
             .Which.DisplayName.Should().Contain("enhancement");
     }
 
@@ -388,8 +385,8 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("armor-class").Should().Be(6, "Different stacking bonus types should stack");
-        result.GetGroup("armor-class").GetValues().Should().HaveCount(3);
+        result.Statistics.GetValue("armor-class").Should().Be(6, "Different stacking bonus types should stack");
+        result.Statistics.GetGroup("armor-class").GetStatisticValues().Should().HaveCount(3);
     }
 
     [TestMethod]
@@ -406,7 +403,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("armor-class").Should().Be(12);
+        result.Statistics.GetValue("armor-class").Should().Be(12);
     }
 
     [TestMethod]
@@ -424,8 +421,8 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("armor-class").Should().Be(2);
-        var displayName = result.GetGroup("armor-class").GetValues().Single().DisplayName;
+        result.Statistics.GetValue("armor-class").Should().Be(2);
+        var displayName = result.Statistics.GetGroup("armor-class").GetStatisticValues().Single().DisplayName;
         displayName.Should().Contain("enhancement");
     }
 
@@ -446,7 +443,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("armor-class").Should().Be(3, "Should use the highest dexterity-based bonus");
+        result.Statistics.GetValue("armor-class").Should().Be(3, "Should use the highest dexterity-based bonus");
     }
 
     [TestMethod]
@@ -463,9 +460,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("dexterity").Should().Be(2);
-        result.GetValue("dexterity:score").Should().Be(18);
-        result.GetValue("dexterity:modifier").Should().Be(4);
+        result.Statistics.GetValue("dexterity").Should().Be(2);
+        result.Statistics.GetValue("dexterity:score").Should().Be(18);
+        result.Statistics.GetValue("dexterity:modifier").Should().Be(4);
     }
 
     [TestMethod]
@@ -483,9 +480,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("dexterity").Should().Be(2);
-        result.GetValue("dexterity:score").Should().Be(18);
-        result.GetValue("dexterity:modifier").Should().Be(4);
+        result.Statistics.GetValue("dexterity").Should().Be(2);
+        result.Statistics.GetValue("dexterity:score").Should().Be(18);
+        result.Statistics.GetValue("dexterity:modifier").Should().Be(4);
     }
 
     #endregion
@@ -505,9 +502,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("test-stat").Should().BeTrue();
-        result.GetValue("test-stat").Should().Be(20, "Value should be capped at maximum");
-        result.GetGroup("test-stat").GetValues().Should().Contain(v => v.DisplayName!.Contains("Test Feature"));
+        result.Statistics.ContainsGroup("test-stat").Should().BeTrue();
+        result.Statistics.GetValue("test-stat").Should().Be(20, "Value should be capped at maximum");
+        result.Statistics.GetGroup("test-stat").GetStatisticValues().Should().Contain(v => v.DisplayName!.Contains("Test Feature"));
     }
 
     [TestMethod]
@@ -523,9 +520,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("test-stat").Should().BeTrue();
-        result.GetValue("test-stat").Should().Be(5, "Value should be raised to minimum");
-        result.GetGroup("test-stat").GetValues().Should().Contain(v => v.DisplayName!.Contains("Test Feature"));
+        result.Statistics.ContainsGroup("test-stat").Should().BeTrue();
+        result.Statistics.GetValue("test-stat").Should().Be(5, "Value should be raised to minimum");
+        result.Statistics.GetGroup("test-stat").GetStatisticValues().Should().Contain(v => v.DisplayName!.Contains("Test Feature"));
     }
 
     [TestMethod]
@@ -544,9 +541,9 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("test-stat").Should().Be(10);
-        result.GetGroup("test-stat").GetValues().Should().NotContain(v => v.DisplayName!.Contains("Cap"));
-        result.GetGroup("test-stat").GetValues().Should().NotContain(v => v.DisplayName!.Contains("Floor"));
+        result.Statistics.GetValue("test-stat").Should().Be(10);
+        result.Statistics.GetGroup("test-stat").GetStatisticValues().Should().NotContain(v => v.DisplayName!.Contains("Cap"));
+        result.Statistics.GetGroup("test-stat").GetStatisticValues().Should().NotContain(v => v.DisplayName!.Contains("Floor"));
     }
 
     [TestMethod]
@@ -564,7 +561,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("armor-class").Should().Be(2, "Referenced value should be capped");
+        result.Statistics.GetValue("armor-class").Should().Be(2, "Referenced value should be capped");
     }
 
     [TestMethod]
@@ -583,7 +580,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("test-stat").Should().Be(30, "Should cap to maximum");
+        result.Statistics.GetValue("test-stat").Should().Be(30, "Should cap to maximum");
     }
 
     #endregion
@@ -602,13 +599,13 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("proficiency").Should().BeTrue();
-        result.GetValue("proficiency").Should().Be(3);
+        result.Statistics.ContainsGroup("proficiency").Should().BeTrue();
+        result.Statistics.GetValue("proficiency").Should().Be(3);
 
-        result.ContainsGroup("proficiency:half").Should().BeTrue();
-        result.GetValue("proficiency:half").Should().Be(1); // floor(3/2) = 1
-        result.ContainsGroup("proficiency:half:up").Should().BeTrue();
-        result.GetValue("proficiency:half:up").Should().Be(2); // ceil(3/2) = 2
+        result.Statistics.ContainsGroup("proficiency:half").Should().BeTrue();
+        result.Statistics.GetValue("proficiency:half").Should().Be(1); // floor(3/2) = 1
+        result.Statistics.ContainsGroup("proficiency:half:up").Should().BeTrue();
+        result.Statistics.GetValue("proficiency:half:up").Should().Be(2); // ceil(3/2) = 2
     }
 
     [TestMethod]
@@ -627,8 +624,8 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("proficiency:half").Should().Be(expectedHalf);
-        result.GetValue("proficiency:half:up").Should().Be(expectedHalfUp);
+        result.Statistics.GetValue("proficiency:half").Should().Be(expectedHalf);
+        result.Statistics.GetValue("proficiency:half:up").Should().Be(expectedHalfUp);
     }
 
     #endregion
@@ -655,7 +652,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("armor-class").Should().Be(16); // 10 + 3 + 3 = 16
+        result.Statistics.GetValue("armor-class").Should().Be(16); // 10 + 3 + 3 = 16
     }
 
     [TestMethod]
@@ -675,7 +672,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("max-spells").Should().Be(6); // 4 + 2 = 6
+        result.Statistics.GetValue("max-spells").Should().Be(6); // 4 + 2 = 6
     }
 
     [TestMethod]
@@ -698,7 +695,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("saving-throw").Should().Be(6); // +2 (deflection) + +1 (resistance) + +3 (untyped) = 6
+        result.Statistics.GetValue("saving-throw").Should().Be(6); // +2 (deflection) + +1 (resistance) + +3 (untyped) = 6
     }
 
     #endregion
@@ -719,7 +716,7 @@ public sealed class StatisticsCalculatorTests
     //    var result = _calculator.Calculate(character, registrations);
 
     //    // Assert
-    //    result.GetGroup("test-stat").GetValues().Should().ContainSingle()
+    //    result.Statistics.GetGroup("test-stat").GetValues().Should().ContainSingle()
     //        .Which.RuleId.Should().Be(ruleId.Value);
     //}
 
@@ -736,7 +733,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        var group = result.GetGroup("test-stat");
+        var group = result.Statistics.GetGroup("test-stat");
         var summary = group.GetSummary();
         summary.Should().Contain("Feature A (+3)");
         summary.Should().Contain("Feature B (-1)");
@@ -754,7 +751,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        var group = result.GetGroup("test-stat");
+        var group = result.Statistics.GetGroup("test-stat");
         var summary = group.GetSummary(includeValues: false);
         summary.Should().Be("Feature A");
     }
@@ -775,8 +772,8 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("test-stat").Should().BeTrue();
-        result.GetValue("test-stat").Should().Be(0);
+        result.Statistics.ContainsGroup("test-stat").Should().BeTrue();
+        result.Statistics.GetValue("test-stat").Should().Be(0);
     }
 
     [TestMethod]
@@ -795,8 +792,8 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.GetValue("test-stat").Should().Be(100);
-        result.GetGroup("test-stat").GetValues().Should().HaveCount(100);
+        result.Statistics.GetValue("test-stat").Should().Be(100);
+        result.Statistics.GetGroup("test-stat").GetStatisticValues().Should().HaveCount(100);
     }
 
     [TestMethod]
@@ -813,6 +810,7 @@ public sealed class StatisticsCalculatorTests
 
         // Assert - Should handle gracefully without infinite loop
         result.Should().NotBeNull();
+        result.HasErrors.Should().BeTrue("one or more circular dependencies should result in error messages along side completed statistic values");
     }
 
     [TestMethod]
@@ -828,7 +826,7 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("test-stat").Should().BeTrue();
+        result.Statistics.ContainsGroup("test-stat").Should().BeTrue();
     }
 
     [TestMethod]
@@ -843,11 +841,12 @@ public sealed class StatisticsCalculatorTests
         var result = _calculator.Calculate(character, registrations);
 
         // Assert
-        result.ContainsGroup("level").Should().BeTrue();
-        result.ContainsGroup("strength:score").Should().BeTrue();
-        result.GetValue("level").Should().Be(3);
-        result.GetValue("strength:score").Should().Be(14);
+        result.Statistics.ContainsGroup("level").Should().BeTrue();
+        result.Statistics.ContainsGroup("strength:score").Should().BeTrue();
+        result.Statistics.GetValue("level").Should().Be(3);
+        result.Statistics.GetValue("strength:score").Should().Be(14);
     }
 
     #endregion
 }
+

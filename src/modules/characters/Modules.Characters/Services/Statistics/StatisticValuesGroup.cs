@@ -1,15 +1,17 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Starlights.Modules.Characters.Services.Statistics;
 
+[DebuggerDisplay("Key = {GroupName} Sum = {Sum()} IsCompleted = {IsCompleted}")]
 public class StatisticValuesGroup
 {
-    private readonly Dictionary<string, StatisticValue> _values;
+    private readonly Dictionary<string, StatisticValue> _statisticValues;
 
     public StatisticValuesGroup(string groupName)
     {
         GroupName = groupName;
-        _values = [];
+        _statisticValues = [];
     }
 
     /// <summary>
@@ -18,14 +20,14 @@ public class StatisticValuesGroup
     public string GroupName { get; }
 
     /// <summary>
-    /// Gets or sets the display name associated with the object.
+    /// Gets or sets the display name associated with the object. This is a more user-friendly name compared to the GroupName.
     /// </summary>
     public string? DisplayName { get; set; }
 
     /// <summary>
     /// Indicate that all provided rules have been handled and that this group can be used to get the total sum without missing out on pending additions.
     /// </summary>
-    public bool IsFinalized { get; private set; }
+    public bool IsCompleted { get; private set; }
 
     /// <summary>
     /// Adds a statistic value to the group, aggregating if the source already exists.
@@ -41,7 +43,7 @@ public class StatisticValuesGroup
     /// </summary>
     public void AddValue(StatisticValue statisticValue)
     {
-        ref var existing = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, statisticValue.Source, out var exists);
+        ref var existing = ref CollectionsMarshal.GetValueRefOrAddDefault(_statisticValues, statisticValue.Source, out var exists);
         if (exists)
         {
             existing = existing with { Value = existing.Value + statisticValue.Value };
@@ -53,67 +55,62 @@ public class StatisticValuesGroup
     }
 
     /// <summary>
-    /// Checks if a value from the specified source exists in this group.
-    /// </summary>
-    public bool ContainsValue(string source)
-    {
-        return _values.ContainsKey(source);
-    }
-
-    /// <summary>
     /// Gets all statistic values that contribute to this group.
     /// </summary>
-    public IReadOnlyCollection<StatisticValue> GetValues()
+    public IReadOnlyCollection<StatisticValue> GetStatisticValues()
     {
-        return _values.Values.ToList().AsReadOnly();
+        return _statisticValues.Values.ToList().AsReadOnly();
     }
 
     /// <summary>
-    /// Gets the breakdown of values as a dictionary for backwards compatibility.
+    /// Determines whether any statistic values are present.
     /// </summary>
-    public Dictionary<string, int> GetValuesAsDictionary()
+    /// <returns>true if one or more statistic values exist; otherwise, false.</returns>
+    public bool HasStatisticValues()
     {
-        return _values.ToDictionary(x => x.Key, x => x.Value.Value);
+        return _statisticValues.Count > 0;
     }
 
     /// <summary>
-    /// Calculates the sum of all values in this group.
+    /// Calculates the sum of all statistic values in the collection.
     /// </summary>
+    /// <returns>The total sum of the values contained in the collection. Returns 0 if the collection is empty.</returns>
     public int Sum()
     {
-        return _values.Sum(x => x.Value.Value);
+        return _statisticValues.Sum(x => x.Value.Value);
     }
 
     /// <summary>
-    /// Gets a summary string of the group's values.
+    /// Generates a summary string of the current statistics, optionally including their values.
     /// </summary>
+    /// <param name="includeValues">true to include the values of each statistic in the summary; otherwise, false to include only the names.</param>
+    /// <returns>A comma-separated string containing the names of the statistics, with values included if specified; or an empty
+    /// string if there are no statistics.</returns>
     public string GetSummary(bool includeValues = true)
     {
-        if (_values.Count == 0)
+        if (_statisticValues.Count == 0)
         {
             return string.Empty;
         }
 
         if (includeValues)
         {
-            return string.Join(", ", _values.Values.Select(v =>
+            return string.Join(", ", _statisticValues.Values.Select(v =>
             {
                 var name = v.DisplayName ?? v.Source;
                 return $"{name} ({(v.Value >= 0 ? "+" : "")}{v.Value})";
             }));
         }
 
-        return string.Join(", ", _values.Values.Select(v => v.DisplayName ?? v.Source));
-    }
-
-    public override string ToString()
-    {
-        return $"{GroupName} [{Sum()}]";
+        return string.Join(", ", _statisticValues.Values.Select(v => v.DisplayName ?? v.Source));
     }
 
     /// <summary>
-    /// Merges another group's values into this group.
+    /// Merges the statistic values from the specified group into the current group.
     /// </summary>
+    /// <remarks>This method adds each statistic value from the provided group to the current group. If the
+    /// group contains no values, or if the group is null, the method performs no operation.</remarks>
+    /// <param name="group">The group whose statistic values are to be merged. If null, no action is taken.</param>
     public void Merge(StatisticValuesGroup? group)
     {
         if (group is null)
@@ -121,17 +118,24 @@ public class StatisticValuesGroup
             return;
         }
 
-        foreach (var value in group.GetValues())
+        foreach (var value in group.GetStatisticValues())
         {
             AddValue(value);
         }
     }
 
     /// <summary>
-    /// Marks this group as finalized, indicating all rules have been processed.
+    /// Marks the operation as completed, indicating all rules have been processed.
     /// </summary>
+    /// <remarks>Once this method is called, the operation is considered complete and cannot be marked as
+    /// incomplete again. Subsequent calls have no additional effect.</remarks>
     public void Complete()
     {
-        IsFinalized = true;
+        IsCompleted = true;
+    }
+
+    public override string ToString()
+    {
+        return $"{GroupName} [{Sum()}]";
     }
 }

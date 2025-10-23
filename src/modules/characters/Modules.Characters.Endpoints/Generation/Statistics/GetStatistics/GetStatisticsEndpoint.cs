@@ -42,17 +42,17 @@ public sealed class GetStatisticsEndpoint : Endpoint<GetStatisticsRequest, GetSt
         var registrationRepository = _persistence.GetRepository<IRegistrationRepository>();
         var characterRegistrations = await registrationRepository.GetRegistrationsAsync(new(req.CharacterId));
 
-        var statistics = _statisticsCalculator.Calculate(character, characterRegistrations);
+        var result = _statisticsCalculator.Calculate(character, characterRegistrations);
 
         await _persistence.SaveChangesAsync(); // temporary: save any changes made during calculation TODO: remove when calculation is done after processing too
 
 
-        var models = statistics.Where(g => g.GetValues().Count > 0).Select(group => new StatisticGroupDataModel
+        var models = result.Statistics.Where(g => g.GetStatisticValues().Count > 0).Select(group => new StatisticGroupDataModel
         {
             GroupName = group.GroupName,
             TotalValue = group.Sum(),
-            IsFinalized = group.IsFinalized,
-            Values = [.. group.GetValues().Select(v => new StatisticValueDataModel
+            IsFinalized = group.IsCompleted,
+            Values = [.. group.GetStatisticValues().Select(v => new StatisticValueDataModel
             {
                 Source = v.Source,
                 Value = v.Value,

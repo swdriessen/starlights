@@ -19,7 +19,7 @@ public class StatisticValuesGroupCollection : List<StatisticValuesGroup>
             var existingGroup = GetGroup(group.GroupName);
 
             //add values
-            foreach (var value in group.GetValues())
+            foreach (var value in group.GetStatisticValues())
             {
                 existingGroup.AddValue(value);
             }

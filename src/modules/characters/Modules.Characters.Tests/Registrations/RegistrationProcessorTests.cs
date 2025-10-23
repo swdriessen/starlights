@@ -24,11 +24,8 @@ public sealed class RegistrationProcessorTests
 
     private RegistrationProcessor CreateProcessor(params IRegistrationBehavior[] behaviors)
     {
-
         var manager = new RegistrationManager(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, behaviors);
-        var statisticsCalculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance,
-            Enumerable.Empty<IStatisticsCalculationInitializer>(),
-            Enumerable.Empty<IStatisticsPostProcessor>());
+        var statisticsCalculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance, Enumerable.Empty<IStatisticsCalculationInitializer>());
         return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, manager, _elements.Object, statisticsCalculator);
     }
 
