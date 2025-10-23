@@ -16,7 +16,7 @@ internal sealed class AbilitiesStatisticsInitializer : IStatisticsCalculationIni
 
         foreach (var score in component.AbilityScores)
         {
-            var slug = score.Name.ToLowerInvariant().Replace(' ', '_');
+            var slug = score.Name.ToSlug();
             var abbreviation = score.Abbreviation.ToLowerInvariant();
 
             context.Statistics.WithGroup($"{slug}:score");

@@ -322,6 +322,25 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
         repository.Add(skillsRule);
 
+
+        // create and element of type Proficiency for the arcana skill
+        // with a statistic rule that uses the proficiency bonus
+        var arcanaProficiency = ElementBuilder.Create(ElementTypeConstants.Proficiency, $"{arcana.Name} Proficiency")
+            .WithStatisticRule($"{arcana.Name.ToLowerInvariant().Replace(" ", "-")}:proficiency", "proficiency", "proficiency")
+            .Build();
+
+        var athleticsProficiency = ElementBuilder.Create(ElementTypeConstants.Proficiency, $"{athletics.Name} Proficiency")
+            .WithStatisticRule($"{athletics.Name.ToLowerInvariant().Replace(" ", "-")}:proficiency", "proficiency", "proficiency")
+            .Build();
+
+        var stealthProficiency = ElementBuilder.Create(ElementTypeConstants.Proficiency, $"{stealth.Name} Proficiency")
+            .WithStatisticRule($"{stealth.Name.ToLowerInvariant().Replace(" ", "-")}:proficiency", "proficiency", "proficiency")
+            .Build();
+
+        repository.Add(arcanaProficiency);
+        repository.Add(athleticsProficiency);
+        repository.Add(stealthProficiency);
+
         return skillsRule;
     }
 
@@ -363,11 +382,23 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         var subclass1 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Barbarian SubClass 1")
             .WithDescription("This is a barbarian subclass")
             .WithStatisticRule("barbarian-stat", "10", "base", 0)
+            .WithStatisticRule("extra-stat", "5", "base", 0)
+            .WithSelectionRule("Proficiency", "Skill Proficiency A")
             .Build();
 
         var subclass2 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Barbarian SubClass 2")
             .WithDescription("This is another barbarian subclass")
             .WithStatisticRule("barbarian-stat", "20", "base", 0)
+            .WithStatisticRule("extra-stat", "5", "base", 0)
+            .WithSelectionRule("Proficiency", "Skill Proficiency B")
+            .Build();
+
+        var subclass3 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Barbarian SubClass 3 Strong Dude")
+            .WithDescription("This is another barbarian subclass")
+            .WithStatisticRule("barbarian-stat", "50", "base", 0)
+            .WithStatisticRule("strength", "+2", "subclass", 0)
+            .WithStatisticRule("athletics:misc", "2", "strong dude base", 0)
+            .WithSelectionRule("Proficiency", "Skill Proficiency (Strong Dude)")
             .Build();
 
 
@@ -378,6 +409,7 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         repository.Add(barbarianFeature3);
         repository.Add(subclass1);
         repository.Add(subclass2);
+        repository.Add(subclass3);
 
 
         var rogueFeature1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Rogue Feature 1")

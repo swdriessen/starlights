@@ -16,8 +16,13 @@ internal sealed class ClassStatisticsInitializer : IStatisticsCalculationInitial
 
         foreach (var item in component.Classes)
         {
-            var slug = item.Name.ToLowerInvariant().Trim().Replace(' ', '-');
-            var group = context.Statistics.WithGroup($"{slug}:level", g => g.WithValue(item.Level, item.Name));
+            var slug = item.Name.ToSlug();
+
+            var group = context.Statistics.WithGroup($"{slug}:level", g =>
+            {
+                g.WithValue(item.Level, item.Name);
+                g.Complete();
+            });
 
             context.Statistics.WithGroupVariants(group.GroupName, item.Name);
         }

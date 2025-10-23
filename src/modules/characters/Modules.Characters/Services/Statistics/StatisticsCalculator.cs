@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
@@ -24,6 +26,7 @@ public class StatisticsCalculator
 
     public StatisticValuesGroupCollection Calculate(Character character, List<Registration> registrations)
     {
+        using var activity = CharactersInstrumentation.StartActivity("Statistics Calculator", a => a.AddTag("registrations", registrations.Count));
         var sw = Stopwatch.StartNew();
         var context = new StatisticsProcessorContext(character, registrations);
 
@@ -38,7 +41,7 @@ public class StatisticsCalculator
 
         // split into direct value rules (numeric value) and reference rules (reference to another statistic by name)        
         var valueRules = characterStatisticRules.Where(r => !r.HasReferenceValue() && !r.HasStackingBonus()).ToList();
-        var pendingGroups = GetPendingGroups([.. characterStatisticRules.Except(valueRules)], context);
+        var pendingGroups = GetPendingGroups([.. characterStatisticRules.Except(valueRules)]);
 
         // process all value rules that only set direct numeric values
         foreach (var rule in valueRules)
@@ -105,6 +108,21 @@ public class StatisticsCalculator
             foreach (var score in a.AbilityScores)
             {
                 var key = score.Name.ToLowerInvariant();
+
+
+                // check if pendingGroups contain ability score related rules
+                // if so, process them now
+                if (pendingGroups.TryGetValue(key, out var abilityNode))
+                {
+                    // TODO: if it has dependencies, those need to be processed first
+                    var result = ProcessGroupNode(abilityNode, context);
+                    if (result is StatisticValuesGroup g && g.IsFinalized)
+                    {
+                        pendingGroups.Remove(g.GroupName);
+                    }
+                }
+
+
                 var group = context.Statistics.GetGroup(key);
                 score.UpdateAdditionalScore(group.Sum());
                 // TODO: max score
@@ -157,39 +175,11 @@ public class StatisticsCalculator
             }
         }
 
-
-        // process all other pending rules (references, stacking bonuses, etc.)
-        //var unprocessedRules = ProcessPendingRules(pendingRules, context);
-        //if (unprocessedRules.Count > 0)
-        //{
-        //    Trace.WriteLine($"[StatisticsCalculator] Warning: {unprocessedRules.Count} rules could not be processed due to unresolved dependencies.");
-        //    foreach (var item in unprocessedRules)
-        //    {
-        //        Trace.WriteLine($" - Unprocessed Rule: Name={item.Name}, Value={item.Value}, StackingBonus={item.StackingBonus}");
-        //    }
-        //}
-
-
-
-        //var (simpleRulesOld, _) = SeparateStatisticRules(characterStatisticRules);
-
-
-        // ApplyStackingBonuses(simpleRulesOld, context);
-        // ApplyMinMaxConstraints(characterStatisticRules, context);
-
-        //foreach (var processor in _postProcessors)
-        //{
-        //    processor.Process(context);
-        //}
         FinalizeStatistics(context);
-
 
         sw.Stop();
 
         Trace.WriteLine($"[StatisticsCalculator] Calculated statistics (count:{context.Statistics.Count}) for CharacterId={character.Name} in {sw.ElapsedMilliseconds}ms");
-
-
-
 
         return context.Statistics;
     }
@@ -323,23 +313,23 @@ public class StatisticsCalculator
 
 
     /// <summary>
-    /// Builds a dependency graph for pending rules, identifying which statistics reference others.
+    /// Groups the specified pending rules by name and creates a dictionary of rule group nodes, each containing the
+    /// group's dependencies.
     /// </summary>
-    private Dictionary<string, RuleGroupNode> GetPendingGroups(List<RegistrationStatisticRule> pendingRules, StatisticsProcessorContext context)
+    /// <param name="pendingRules">The list of registration statistic rules to be grouped and analyzed for dependencies. Cannot be null.</param>
+    /// <returns>A dictionary mapping each group name to a corresponding rule group node that includes the group's rules and
+    /// their dependencies.</returns>
+    private static Dictionary<string, RuleGroupNode> GetPendingGroups(List<RegistrationStatisticRule> pendingRules)
     {
         var pendingGroups = new Dictionary<string, RuleGroupNode>();
-        var ruleGroups = pendingRules.GroupBy(r => r.Name);
 
-        foreach (var group in ruleGroups)
+        foreach (var group in pendingRules.GroupBy(r => r.Name))
         {
             var dependencies = new HashSet<string>();
 
-            foreach (var rule in group)
+            foreach (var rule in group.Where(rule => rule.HasReferenceValue()))
             {
-                if (rule.HasReferenceValue())
-                {
-                    dependencies.Add(rule.Value);
-                }
+                dependencies.Add(rule.Value);
             }
 
             pendingGroups[group.Key] = new RuleGroupNode(group.Key, [.. group], dependencies);
@@ -480,4 +470,3 @@ public class StatisticsCalculator
         public bool HasDependencies => Dependencies.Count > 0;
     }
 }
-

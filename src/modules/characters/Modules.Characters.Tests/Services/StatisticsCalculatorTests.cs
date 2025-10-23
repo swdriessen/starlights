@@ -449,6 +449,45 @@ public sealed class StatisticsCalculatorTests
         result.GetValue("armor-class").Should().Be(3, "Should use the highest dexterity-based bonus");
     }
 
+    [TestMethod]
+    public void Calculate_AbilityScoreIncrease_ShouldResolveAndApplyEarly()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+        AddAbilityScore(character, "Dexterity", "DEX", 16); // Modifier +3
+
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Dex to AC", "Feature", "dexterity", "2");
+        var registrations = new List<Registration> { registration1 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.GetValue("dexterity").Should().Be(2);
+        result.GetValue("dexterity:score").Should().Be(18);
+        result.GetValue("dexterity:modifier").Should().Be(4);
+    }
+
+    [TestMethod]
+    public void Calculate_AbilityScoreIncreaseWithStackingBonusReference_ShouldResolveAndApplyEarly()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+        AddAbilityScore(character, "Dexterity", "DEX", 16); // Modifier +3
+
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Dex to AC", "Feature", "dexterity", "2",
+            rule => rule.UpdateStackingBonus("stackdexterity"));
+        var registrations = new List<Registration> { registration1 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.GetValue("dexterity").Should().Be(2);
+        result.GetValue("dexterity:score").Should().Be(18);
+        result.GetValue("dexterity:modifier").Should().Be(4);
+    }
+
     #endregion
 
     #region Min/Max Constraint Tests

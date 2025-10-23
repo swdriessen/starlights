@@ -9,7 +9,7 @@ namespace Starlights.Modules.Characters.Domain.Registrations;
 /// Represents a statistic rule that has been applied to a registration via a statistic rule component.
 /// </summary>
 [Entity]
-[DebuggerDisplay("Id = {Id}, Parent = {ParentRegistrationId} RuleId = {AssociatedStatisticRuleId}, Name = {Name}, Value = {Value}")]
+[DebuggerDisplay("Name = {Name}, Value = {Value}, Stack = {StackingBonus}, Level = {LevelRequirement}, Minimum = {MinimumValue}, Maximum = {MaximumValue}")]
 public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatisticRuleId>
 {
     private RegistrationStatisticRule(RegistrationId parentRegistrationId, ElementComponentId associatedStatisticRuleId, string name, string value)
@@ -67,7 +67,7 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     /// <returns>true if the value is a valid integer; otherwise, false.</returns>
     public bool IsNumberValue()
     {
-        if (Value.StartsWith('+') || Value.StartsWith('-'))
+        if (Value.StartsWith('+'))
         {
             return int.TryParse(Value[1..], out _);
         }
@@ -75,20 +75,29 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
         return int.TryParse(Value, out _);
     }
 
+    /// <summary>
+    /// Determines whether the current value is a reference value rather than a numeric value.
+    /// </summary>
+    /// <returns>true if the value is a reference value; otherwise, false.</returns>
     public bool HasReferenceValue()
     {
         return !IsNumberValue();
     }
+
+    /// <summary>
+    /// Determines whether a stacking bonus is defined for the current instance.
+    /// </summary>
+    /// <returns>true if a stacking bonus is present and not empty; otherwise, false.</returns>
     public bool HasStackingBonus()
     {
         return !string.IsNullOrWhiteSpace(StackingBonus);
     }
 
     /// <summary>
-    /// Retrieves the integer value represented by the current object if it contains a valid number.
+    /// Parses the current value as a signed integer.
     /// </summary>
-    /// <remarks>If the value starts with a '+' or '-' sign, the sign is ignored and only the numeric portion
-    /// is parsed. This method does not support parsing negative numbers; only the sign character is skipped.</remarks>
+    /// <returns>The integer representation of the current value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the current value is not a valid number.</exception>
     public int GetValue()
     {
         if (IsNumberValue())
@@ -105,31 +114,47 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     }
 
     /// <summary>
-    /// Factory for creating a new applied registration statistic rule.
+    /// Updates the stacking bonus value after trimming any leading or trailing whitespace.
     /// </summary>
-    internal static RegistrationStatisticRule Create(RegistrationId parentRegistrationId, ElementComponentId associatedStatisticRuleId, string name, string value)
+    /// <param name="stackingBonus">The new stacking bonus value to set. Can be null. Leading and trailing whitespace will be removed if not null.</param>
+    public void UpdateStackingBonus(string? stackingBonus)
     {
-        return new(parentRegistrationId, associatedStatisticRuleId, name, value);
+        StackingBonus = stackingBonus?.Trim();
     }
 
-    public void UpdateStackingBonus(string stackingBonus)
-    {
-        StackingBonus = stackingBonus.Trim();
-    }
-
+    /// <summary>
+    /// Updates the minimum level required to access the associated feature or resource.
+    /// </summary>
+    /// <param name="levelRequirement">The new minimum level required. Must be a non-negative integer.</param>
     public void UpdateLevelRequirement(int levelRequirement)
     {
         LevelRequirement = levelRequirement;
     }
 
+    /// <summary>
+    /// Updates the minimum value used by the current instance.
+    /// </summary>
+    /// <param name="minimumValue">The new minimum value to set. Specify null to remove the minimum value constraint.</param>
     public void UpdateMinimumValue(int? minimumValue)
     {
         MinimumValue = minimumValue;
     }
 
+    /// <summary>
+    /// Updates the maximum value used by the current instance.
+    /// </summary>
+    /// <param name="maximumValue">The new maximum value to set. Specify null to remove any maximum value constraint.</param>
     public void UpdateMaximumValue(int? maximumValue)
     {
         MaximumValue = maximumValue;
+    }
+
+    /// <summary>
+    /// Factory for creating a new applied registration statistic rule.
+    /// </summary>
+    internal static RegistrationStatisticRule Create(RegistrationId parentRegistrationId, ElementComponentId associatedStatisticRuleId, string name, string value)
+    {
+        return new(parentRegistrationId, associatedStatisticRuleId, name, value);
     }
 
 

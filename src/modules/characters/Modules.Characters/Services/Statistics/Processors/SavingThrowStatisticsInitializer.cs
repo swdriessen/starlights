@@ -10,12 +10,13 @@ internal sealed class SavingThrowStatisticsInitializer : IStatisticsCalculationI
 
         foreach (var save in component.SavingThrows)
         {
-            var slug = save.Name.Replace("Saving Throw", "").Trim().ToLowerInvariant().Replace(' ', '_');
+            var slug = save.Name.Replace("Saving Throw", "").ToSlug();
 
             context.Statistics.WithGroup($"{slug}:save", g =>
             {
                 g.WithDisplayName(save.Name);
                 g.WithValue(save.CalculatedBonus, save.Name);
+                g.Complete();
             });
 
             context.Statistics.WithGroup($"{slug}:save:proficiency");

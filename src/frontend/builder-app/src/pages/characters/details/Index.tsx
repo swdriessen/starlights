@@ -268,7 +268,7 @@ function SelectionRulesSectionOptionsComponent({
   );
 }
 
-function SelectionRulesSectionComponent({ characterId, type }: { characterId: string; type: "Class" | "Race" | "Background" | "SubClass" | "Proficiency" }) {
+function SelectionRulesSectionComponent({ characterId, type }: { characterId: string; type: "Class" | "Species" | "Background" | "SubClass" | "Proficiency" }) {
   const { data: selectionRulesData, isLoading, error } = useSelectionRuleDataModels(characterId, type);
 
   if (isLoading) return <div>Loading...</div>;
@@ -512,9 +512,10 @@ export default function CharactersDetailsPage() {
           <TabsContent value="tab-selection-rules-class">
             <SelectionRulesSectionComponent characterId={id} type="Class" />
             <SelectionRulesSectionComponent characterId={id} type="SubClass" />
+            <SelectionRulesSectionComponent characterId={id} type="Proficiency" />
           </TabsContent>
           <TabsContent value="tab-selection-rules-race">
-            <SelectionRulesSectionComponent characterId={id} type="Race" />
+            <SelectionRulesSectionComponent characterId={id} type="Species" />
           </TabsContent>
           <TabsContent value="tab-selection-rules-background">
             <SelectionRulesSectionComponent characterId={id} type="Background" />

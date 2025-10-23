@@ -44,6 +44,9 @@ public sealed class GetStatisticsEndpoint : Endpoint<GetStatisticsRequest, GetSt
 
         var statistics = _statisticsCalculator.Calculate(character, characterRegistrations);
 
+        await _persistence.SaveChangesAsync(); // temporary: save any changes made during calculation TODO: remove when calculation is done after processing too
+
+
         var models = statistics.Where(g => g.GetValues().Count > 0).Select(group => new StatisticGroupDataModel
         {
             GroupName = group.GroupName,

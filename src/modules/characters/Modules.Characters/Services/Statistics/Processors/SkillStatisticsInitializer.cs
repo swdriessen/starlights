@@ -10,12 +10,13 @@ internal sealed class SkillStatisticsInitializer : IStatisticsCalculationInitial
 
         foreach (var save in component.Skills)
         {
-            var slug = save.Name.ToLowerInvariant().Replace(' ', '_');
+            var slug = save.Name.ToSlug();
 
             context.Statistics.WithGroup($"{slug}", g =>
             {
                 g.WithDisplayName(save.Name);
                 g.WithValue(save.CalculatedBonus, save.Name);
+                g.Complete();
             });
 
             context.Statistics.WithGroup($"{slug}:proficiency");
