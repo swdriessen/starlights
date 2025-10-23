@@ -22,10 +22,13 @@ public sealed class StatisticsCalculatorTests
         var seedProcessors = new List<IStatisticsCalculationInitializer>
         {
             new CharacterStatisticsInitializer(),
-  new AbilitiesStatisticsInitializer(),
+            new AbilitiesStatisticsInitializer(),
         };
 
-        _calculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance, seedProcessors);
+        _calculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance,
+            seedProcessors,
+            [new ProficiencyGroupProcessor(NullLogger<ProficiencyGroupProcessor>.Instance),
+            new AbilitiesGroupProcessor()]);
     }
 
     #region Helper Methods
@@ -365,7 +368,7 @@ public sealed class StatisticsCalculatorTests
         result.Statistics.ContainsGroup("armor-class").Should().BeTrue();
         result.Statistics.GetValue("armor-class").Should().Be(3, "Only the highest stacking bonus should be applied");
         result.Statistics.GetGroup("armor-class").GetStatisticValues().Should().ContainSingle()
-            .Which.DisplayName.Should().Contain("enhancement");
+            .Which.DisplayName.Should().Contain("Feature 2");
     }
 
     [TestMethod]
@@ -423,7 +426,7 @@ public sealed class StatisticsCalculatorTests
         // Assert
         result.Statistics.GetValue("armor-class").Should().Be(2);
         var displayName = result.Statistics.GetGroup("armor-class").GetStatisticValues().Single().DisplayName;
-        displayName.Should().Contain("enhancement");
+        displayName.Should().Contain("Item A");
     }
 
     [TestMethod]

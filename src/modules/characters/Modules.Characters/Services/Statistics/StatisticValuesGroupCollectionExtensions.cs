@@ -37,6 +37,7 @@ public static class StatisticValuesGroupCollectionExtensions
 
         // remove existing variants
         var variants = collection.Where(g => g.GroupName.StartsWith($"{originGroup.GroupName}:")).ToList();
+
         foreach (var variant in variants)
         {
             if (variant.GetStatisticValues().Count > 1)
@@ -48,8 +49,8 @@ public static class StatisticValuesGroupCollectionExtensions
         }
 
         // create variants
-        var h = collection.WithGroup($"{originGroup.GroupName}:half", g => g.WithValue(originGroup.Sum() / 2));
-        var hup = collection.WithGroup($"{originGroup.GroupName}:half:up", g => g.WithInternalValue((int)Math.Ceiling(originGroup.Sum() / 2.0)));
+        var h = collection.WithGroup($"{originGroup.GroupName}:half", g => g.WithValue(originGroup.Sum() / 2, displayName ?? originGroup.DisplayName ?? "Internal"));
+        var hup = collection.WithGroup($"{originGroup.GroupName}:half:up", g => g.WithValue((int)Math.Ceiling(originGroup.Sum() / 2.0), displayName ?? originGroup.DisplayName ?? "Internal"));
         //var hdown = collection.WithGroup($"{originGroup.GroupName}:half:down", g => g.WithInternalValue((int)Math.Floor(originGroup.Sum() / 2.0)));
 
         if (displayName is not null)

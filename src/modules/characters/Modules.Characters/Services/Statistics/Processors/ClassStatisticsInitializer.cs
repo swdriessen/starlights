@@ -14,17 +14,17 @@ internal sealed class ClassStatisticsInitializer : IStatisticsCalculationInitial
     {
         var component = context.Character.GetRequiredComponent<ClassComponent>();
 
-        foreach (var item in component.Classes)
+        foreach (var characterClass in component.Classes)
         {
-            var slug = item.Name.ToSlug();
+            var slug = characterClass.Name.ToSlug();
 
-            var group = context.Statistics.WithGroup($"{slug}:level", g =>
+            var levelGroup = context.Statistics.WithGroup($"{slug}:level", group =>
             {
-                g.WithValue(item.Level, item.Name);
-                g.Complete();
+                group.WithValue(characterClass.Level, characterClass.Name);
+                group.Complete();
             });
 
-            context.Statistics.WithGroupVariants(group.GroupName, item.Name);
+            context.Statistics.WithGroupVariants(levelGroup.GroupName, characterClass.Name);
         }
     }
 }

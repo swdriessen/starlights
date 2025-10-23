@@ -34,6 +34,11 @@ public class StatisticValuesGroup
     /// </summary>
     public void AddValue(string source, int value, string? displayName = null, Guid? ruleId = null)
     {
+        if (IsCompleted)
+        {
+            throw new InvalidOperationException("Cannot add values to a completed StatisticValuesGroup.");
+        }
+
         var statisticValue = new StatisticValue(source, value, displayName, ruleId);
         AddValue(statisticValue);
     }
@@ -43,6 +48,11 @@ public class StatisticValuesGroup
     /// </summary>
     public void AddValue(StatisticValue statisticValue)
     {
+        if (IsCompleted)
+        {
+            throw new InvalidOperationException("Cannot add values to a completed StatisticValuesGroup.");
+        }
+
         ref var existing = ref CollectionsMarshal.GetValueRefOrAddDefault(_statisticValues, statisticValue.Source, out var exists);
         if (exists)
         {

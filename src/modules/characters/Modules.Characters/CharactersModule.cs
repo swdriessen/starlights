@@ -29,9 +29,9 @@ internal class CharactersModule : IPlatformServiceComponent
         builder.Services.AddScoped<IStatisticsCalculationInitializer, AbilitiesStatisticsInitializer>();
         builder.Services.AddScoped<IStatisticsCalculationInitializer, SavingThrowStatisticsInitializer>();
         builder.Services.AddScoped<IStatisticsCalculationInitializer, SkillStatisticsInitializer>();
+        builder.Services.AddScoped<IStatisticGroupProcessor, AbilitiesGroupProcessor>();
+        builder.Services.AddScoped<IStatisticGroupProcessor, ProficiencyGroupProcessor>();
 
-        // statistics post processors (run after direct value rules)
-        builder.Services.AddScoped<IStatisticsPostProcessor, ProficiencyVariantsCalculator>();
 
         builder.Services.AddScoped<StatisticsCalculator>();
 

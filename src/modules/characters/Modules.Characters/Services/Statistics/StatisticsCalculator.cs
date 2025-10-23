@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Domain;
-using Starlights.Modules.Characters.Domain.Abilities;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
 
@@ -11,11 +10,16 @@ public class StatisticsCalculator
 {
     private readonly ILogger<StatisticsCalculator> _logger;
     private readonly IEnumerable<IStatisticsCalculationInitializer> _initializers;
+    private readonly IEnumerable<IStatisticGroupProcessor> _groupProcessors;
 
-    public StatisticsCalculator(ILogger<StatisticsCalculator> logger, IEnumerable<IStatisticsCalculationInitializer> initializers)
+    public StatisticsCalculator(
+        ILogger<StatisticsCalculator> logger,
+        IEnumerable<IStatisticsCalculationInitializer> initializers,
+        IEnumerable<IStatisticGroupProcessor> groupProcessors)
     {
         _logger = logger;
         _initializers = initializers;
+        _groupProcessors = groupProcessors;
     }
 
     public StatisticCalculationResult Calculate(Character character, List<Registration> registrations)
@@ -58,79 +62,21 @@ public class StatisticsCalculator
                 group.WithValue(determinedValue, determinedName);
 
                 // if this group does not exist in pending groups, mark it as complete, this helps with dependency resolution later
-                if (!pendingGroups.ContainsKey(rule.Name))
+                // also check that no other pending rules exist for this group in valueRules (in case of multiple registrations adding direct values to same group)
+                if (!pendingGroups.ContainsKey(rule.Name) && !valueRules.Except([rule]).Any(x => x.Name == rule.Name))
                 {
                     group.Complete();
                 }
             });
         }
 
-        // first process proficiency and ability rules as those are needed for other calculations
-        if (pendingGroups.TryGetValue("proficiency", out var proficiencyNode))
+        // process special group processors first, other statistic groups may depend on these
+        foreach (var groupProcessor in _groupProcessors)
         {
-            var result = ProcessGroupNode(proficiencyNode, context);
-            if (result is StatisticValuesGroup group && group.IsCompleted)
-            {
-                pendingGroups.Remove(group.GroupName);
-            }
+            groupProcessor.Process(pendingGroups, context, ProcessGroupNode);
         }
 
-        context.Statistics.WithGroupVariants("proficiency");
-
-        // make sure pendingRules do not contain more proficiency related rules as those are now processed
-        if (pendingGroups.Any(r => r.Key.StartsWith("proficiency")))
-        {
-            _logger.LogError("[StatisticsCalculator] Pending statistic rules contain proficiency related rules that should have been processed already.");
-        }
-
-        character.UpdateComponent<AbilitiesComponent>((a, _) =>
-        {
-            foreach (var score in a.AbilityScores)
-            {
-                var key = score.Name.ToLowerInvariant();
-
-
-                // check if pendingGroups contain ability score related rules
-                // if so, process them now
-                if (pendingGroups.TryGetValue(key, out var abilityNode))
-                {
-                    // TODO: if it has dependencies, those need to be processed first
-                    var result = ProcessGroupNode(abilityNode, context);
-                    if (result is StatisticValuesGroup g && g.IsCompleted)
-                    {
-                        pendingGroups.Remove(g.GroupName);
-                    }
-                }
-
-
-                var group = context.Statistics.GetGroup(key);
-                score.UpdateAdditionalScore(group.Sum());
-                // TODO: max score
-
-                context.Statistics.WithGroup($"{key}:score", g =>
-                {
-                    g.WithValue(score.CalculatedScore, $"{score.Name}");
-                    g.Complete();
-                });
-                context.Statistics.WithGroup($"{key}:modifier", g =>
-                {
-                    g.WithValue(score.CalculatedModifier, $"{score.Name} Modifier");
-                    g.Complete();
-                });
-
-                context.Statistics.WithGroupVariants($"{key}:score", score.Name);
-                context.Statistics.WithGroupVariants($"{key}:modifier", score.Name);
-
-                // make sure pendingRules do not container more ability score related rules as those are now processed
-                // throw exception for now if they do
-                if (pendingGroups.Any(r => r.Key.StartsWith(key)))
-                {
-                    throw new InvalidOperationException("Pending statistic rules contain ability score related rules that should have been processed already");
-                }
-            }
-        });
-
-        // Detect circular dependencies before processing
+        // detect circular dependencies before processing
         var detectedCircularDependencies = DetectCircularDependencies(pendingGroups, context);
         if (detectedCircularDependencies.Count > 0)
         {
@@ -281,7 +227,7 @@ public class StatisticsCalculator
                     determinedName = parentName;
                 }
 
-                statisticsGroup.AddValue(determinedName, highestValue, $"{determinedName} ({bonusGroup.Key})", highestRule.AssociatedStatisticRuleId.Value);
+                statisticsGroup.AddValue(determinedName, highestValue, determinedName, highestRule.AssociatedStatisticRuleId.Value);
 
                 pendingRules.Remove(highestRule);
 
@@ -437,8 +383,9 @@ public class StatisticsCalculator
 
     #endregion
 
-    /// <summary>
-    /// Represents a group of related registration statistic rules and their dependencies.
-    /// </summary>
-    private sealed record StatisticRuleGroup(string Name, List<RegistrationStatisticRule> Rules, HashSet<string> Dependencies);
 }
+
+/// <summary>
+/// Represents a group of related registration statistic rules and their dependencies.
+/// </summary>
+public sealed record StatisticRuleGroup(string Name, List<RegistrationStatisticRule> Rules, HashSet<string> Dependencies);

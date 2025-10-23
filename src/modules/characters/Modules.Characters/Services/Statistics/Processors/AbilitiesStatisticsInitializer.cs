@@ -17,14 +17,12 @@ internal sealed class AbilitiesStatisticsInitializer : IStatisticsCalculationIni
         foreach (var score in component.AbilityScores)
         {
             var slug = score.Name.ToSlug();
-            var abbreviation = score.Abbreviation.ToLowerInvariant();
 
-            context.Statistics.WithGroup($"{slug}:score");
-            context.Statistics.WithGroup($"{slug}:modifier");
-            context.Statistics.WithGroup($"{slug}:max");
+            var scoreGroup = context.Statistics.WithGroup($"{slug}:score");
+            var modifierGroup = context.Statistics.WithGroup($"{slug}:modifier");
 
-            context.Statistics.WithGroupVariants($"{slug}:score", score.Name);
-            context.Statistics.WithGroupVariants($"{slug}:modifier", score.Name);
+            context.Statistics.WithGroupVariants(scoreGroup.GroupName, score.Name);
+            context.Statistics.WithGroupVariants(modifierGroup.GroupName, score.Name);
         }
     }
 }

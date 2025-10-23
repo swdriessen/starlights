@@ -47,19 +47,21 @@ public sealed class GetStatisticsEndpoint : Endpoint<GetStatisticsRequest, GetSt
         await _persistence.SaveChangesAsync(); // temporary: save any changes made during calculation TODO: remove when calculation is done after processing too
 
 
-        var models = result.Statistics.Where(g => g.GetStatisticValues().Count > 0).Select(group => new StatisticGroupDataModel
-        {
-            GroupName = group.GroupName,
-            TotalValue = group.Sum(),
-            IsFinalized = group.IsCompleted,
-            Values = [.. group.GetStatisticValues().Select(v => new StatisticValueDataModel
+        var models = result.Statistics
+            .Where(g => g.GetStatisticValues().Count > 0 && !g.GroupName.Contains(":half"))
+            .Select(group => new StatisticGroupDataModel
+            {
+                GroupName = group.GroupName,
+                TotalValue = group.Sum(),
+                IsFinalized = group.IsCompleted,
+                Values = [.. group.GetStatisticValues().Select(v => new StatisticValueDataModel
             {
                 Source = v.Source,
                 Value = v.Value,
                 DisplayName = v.DisplayName,
                 RuleId = v.RuleId
             })]
-        }).ToList();
+            }).ToList();
 
         await Send.OkAsync(new GetStatisticsResponse { Statistics = models }, ct);
     }
