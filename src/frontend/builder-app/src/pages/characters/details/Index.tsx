@@ -103,7 +103,7 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
                             console.log(`Decrease ${ability.name} additional score to ${newScore}`);
                             updateAdditionalAbilityScore.mutate({ abilityScoreId: ability.abilityScoreId, value: newScore });
                           }}
-                          className="h-8 w-8 p-0"
+                          className="h-8 w-8 p-0 hidden"
                           title={`Decrease ${ability.name} additional score`}
                           aria-label={`Decrease ${ability.name} additional score`}
                         >
@@ -120,7 +120,7 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
                             console.log(`Increase ${ability.name} additional score to ${newScore}`);
                             updateAdditionalAbilityScore.mutate({ abilityScoreId: ability.abilityScoreId, value: newScore });
                           }}
-                          className="h-8 w-8 p-0"
+                          className="h-8 w-8 p-0 hidden"
                           title={`Increase ${ability.name} additional score`}
                           aria-label={`Increase ${ability.name} additional score`}
                         >
@@ -161,11 +161,14 @@ function SavingThrowsComponent({ characterId }: { characterId: string }) {
                 <tr key={save.savingThrowId}>
                   <td className="px-2 py-1 border-b ">
                     <span className="flex items-center gap-1 ">
-                      {save.name} ({save.abilityScoreAbbreviation})
+                      {save.name.replace("Saving Throw", "").trim()}
+                      {/* <span className="text-muted-foreground text-xxs">({save.abilityScoreAbbreviation})</span> */}
                     </span>
                   </td>
 
-                  <td className="px-2 py-1 border-b text-sm">{save.calculatedBonus}</td>
+                  <td className="px-2 py-1 border-b text-sm">
+                    {save.calculatedBonus != null ? (save.calculatedBonus >= 0 ? `+${save.calculatedBonus}` : `${save.calculatedBonus}`) : null}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -203,7 +206,9 @@ function SkillsComponent({ characterId }: { characterId: string }) {
 
                   <td className="px-2 py-1 border-b">
                     <div className="flex flex-row items-center justify-center gap-2 ">
-                      <span className="text-center">{skill.calculatedBonus}</span>
+                      <span className="text-center">
+                        {skill.calculatedBonus != null ? (skill.calculatedBonus >= 0 ? `+${skill.calculatedBonus}` : `${skill.calculatedBonus}`) : null}
+                      </span>
                     </div>
                   </td>
                 </tr>
@@ -268,7 +273,13 @@ function SelectionRulesSectionOptionsComponent({
   );
 }
 
-function SelectionRulesSectionComponent({ characterId, type }: { characterId: string; type: "Class" | "Species" | "Background" | "SubClass" | "Proficiency" }) {
+function SelectionRulesSectionComponent({
+  characterId,
+  type,
+}: {
+  characterId: string;
+  type: "Class" | "Species" | "Background" | "SubClass" | "Proficiency" | "Language" | "Alignment";
+}) {
   const { data: selectionRulesData, isLoading, error } = useSelectionRuleDataModels(characterId, type);
 
   if (isLoading) return <div>Loading...</div>;
@@ -392,16 +403,18 @@ export default function CharactersDetailsPage() {
         <div className="col-span-12">
           <h5>Character Sheet Data</h5>
         </div>
-        <Tabs defaultValue="tab-sheet-1" className="col-span-12">
+        <Tabs defaultValue="tab-sheet-abilities" className="col-span-12">
           <TabsList className="w-full">
-            <TabsTrigger value="tab-sheet-1">Ability Scores</TabsTrigger>
-            <TabsTrigger value="tab-sheet-2">Saving Throws</TabsTrigger>
-            <TabsTrigger value="tab-sheet-3">Skills</TabsTrigger>
+            <TabsTrigger value="tab-sheet-abilities">Abilities / Skills</TabsTrigger>
+            {/* <TabsTrigger value="tab-sheet-2">Saving Throws</TabsTrigger> */}
+            {/* <TabsTrigger value="tab-sheet-3">Skills</TabsTrigger> */}
             <TabsTrigger value="tab-sheet-4">Class Features</TabsTrigger>
             <TabsTrigger value="tab-statistics">Statistics</TabsTrigger>
           </TabsList>
-          <TabsContent value="tab-sheet-1">
+          <TabsContent value="tab-sheet-abilities" className="flex flex-row items-start gap-4 ">
             <AbilitiesComponent id={id} />
+            <SavingThrowsComponent characterId={id} />
+            <SkillsComponent characterId={id} />
           </TabsContent>
           <TabsContent value="tab-sheet-2">
             <SavingThrowsComponent characterId={id} />
@@ -482,18 +495,12 @@ export default function CharactersDetailsPage() {
         </div>
         <Tabs defaultValue="tab-actions-1" className="col-span-12">
           <TabsList className="w-full">
-            <TabsTrigger value="tab-actions-1">Character Actions</TabsTrigger>
-            <TabsTrigger value="tab-actions-2">Character Abilities</TabsTrigger>
+            <TabsTrigger value="tab-actions-1">Class Details</TabsTrigger>
           </TabsList>
           <TabsContent value="tab-actions-1">
             <div className="border border-dashed rounded p-4 my-2">
-              <p>This section will eventually contain character actions such as resting, leveling up, etc.</p>
-              <p>For now, it's just a placeholder.</p>
               <CharacterClassesComponent characterId={id} />
             </div>
-          </TabsContent>
-          <TabsContent value="tab-actions-2">
-            <AbilitiesComponent id={id} />
           </TabsContent>
         </Tabs>
       </div>
@@ -505,20 +512,31 @@ export default function CharactersDetailsPage() {
         </div>
         <Tabs defaultValue="tab-selection-rules-class" className="col-span-12">
           <TabsList className="w-full">
-            <TabsTrigger value="tab-selection-rules-class">Class</TabsTrigger>
-            <TabsTrigger value="tab-selection-rules-race">Race</TabsTrigger>
-            <TabsTrigger value="tab-selection-rules-background">Background</TabsTrigger>
+            <TabsTrigger value="tab-selection-rules-class">Character Class</TabsTrigger>
+            <TabsTrigger value="tab-selection-rules-race">Character Origin</TabsTrigger>
+            {/* <TabsTrigger value="tab-selection-rules-background">Background</TabsTrigger> */}
+            <TabsTrigger value="tab-selection-rules-proficiency">Proficiency</TabsTrigger>
+            <TabsTrigger value="tab-selection-rules-language">Language</TabsTrigger>
+            <TabsTrigger value="tab-selection-rules-alignment">Alignment</TabsTrigger>
           </TabsList>
           <TabsContent value="tab-selection-rules-class">
             <SelectionRulesSectionComponent characterId={id} type="Class" />
             <SelectionRulesSectionComponent characterId={id} type="SubClass" />
-            <SelectionRulesSectionComponent characterId={id} type="Proficiency" />
+            {/* <SelectionRulesSectionComponent characterId={id} type="Proficiency" /> */}
           </TabsContent>
           <TabsContent value="tab-selection-rules-race">
             <SelectionRulesSectionComponent characterId={id} type="Species" />
-          </TabsContent>
-          <TabsContent value="tab-selection-rules-background">
             <SelectionRulesSectionComponent characterId={id} type="Background" />
+          </TabsContent>
+          {/* <TabsContent value="tab-selection-rules-background"></TabsContent> */}
+          <TabsContent value="tab-selection-rules-proficiency">
+            <SelectionRulesSectionComponent characterId={id} type="Proficiency" />
+          </TabsContent>
+          <TabsContent value="tab-selection-rules-language">
+            <SelectionRulesSectionComponent characterId={id} type="Language" />
+          </TabsContent>
+          <TabsContent value="tab-selection-rules-alignment">
+            <SelectionRulesSectionComponent characterId={id} type="Alignment" />
           </TabsContent>
         </Tabs>
       </div>
