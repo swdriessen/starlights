@@ -8,6 +8,8 @@ namespace Starlights.Modules.Characters.Services.Statistics;
 /// </summary>
 public sealed class StatisticsProcessorContext
 {
+    private readonly List<string> _errors = [];
+
     public StatisticsProcessorContext(Character character, List<Registration> registrations)
     {
         Character = character;
@@ -35,13 +37,22 @@ public sealed class StatisticsProcessorContext
     /// </summary>
     public IReadOnlyDictionary<RegistrationId, string> RegistrationLookup { get; }
 
+    /// <summary>
+    /// Gets a read-only list of error messages.
+    /// </summary>
+    public IReadOnlyList<string> Errors => _errors;
+
+    /// <summary>
+    /// Adds an error message to the collection of errors.
+    /// </summary>
     public void AddError(string errorMessage)
     {
+        ArgumentNullException.ThrowIfNull(errorMessage);
         _errors.Add(errorMessage);
     }
 
-    private readonly List<string> _errors = [];
-
+    /// <summary>
+    /// Gets a value indicating whether any errors are present.
+    /// </summary>
     public bool HasErrors => _errors.Count > 0;
-    public IReadOnlyList<string> Errors => _errors;
 }

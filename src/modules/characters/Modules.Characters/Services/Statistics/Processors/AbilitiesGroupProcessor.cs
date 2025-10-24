@@ -8,9 +8,6 @@ internal sealed class AbilitiesGroupProcessor : IStatisticGroupProcessor
 
     public void Process(Dictionary<string, StatisticRuleGroup> pendingGroups, StatisticsProcessorContext context, Func<StatisticRuleGroup, StatisticsProcessorContext, StatisticValuesGroup?> processGroupNode)
     {
-
-
-
         context.Character.UpdateComponent<AbilitiesComponent>((a, _) =>
         {
             foreach (var score in a.AbilityScores)

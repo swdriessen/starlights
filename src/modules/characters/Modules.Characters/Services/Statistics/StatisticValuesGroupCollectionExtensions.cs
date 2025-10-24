@@ -12,12 +12,6 @@ public static class StatisticValuesGroupCollectionExtensions
         return group;
     }
 
-    public static StatisticValue WithInternalValue(this StatisticValuesGroup group, int numericValue)
-    {
-        var value = new StatisticValue("Internal", numericValue);
-        group.AddValue(value);
-        return value;
-    }
     public static StatisticValuesGroup WithDisplayName(this StatisticValuesGroup group, string displayName)
     {
         group.DisplayName = displayName;
@@ -51,24 +45,32 @@ public static class StatisticValuesGroupCollectionExtensions
         // create variants
         var h = collection.WithGroup($"{originGroup.GroupName}:half", g => g.WithValue(originGroup.Sum() / 2, displayName ?? originGroup.DisplayName ?? "Internal"));
         var hup = collection.WithGroup($"{originGroup.GroupName}:half:up", g => g.WithValue((int)Math.Ceiling(originGroup.Sum() / 2.0), displayName ?? originGroup.DisplayName ?? "Internal"));
-        //var hdown = collection.WithGroup($"{originGroup.GroupName}:half:down", g => g.WithInternalValue((int)Math.Floor(originGroup.Sum() / 2.0)));
 
         if (displayName is not null)
         {
             h.WithDisplayName(displayName);
             hup.WithDisplayName(displayName);
-            //hdown.WithDisplayName(displayName);
         }
         else if (originGroup.DisplayName is not null)
         {
             h.WithDisplayName(originGroup.DisplayName);
             hup.WithDisplayName(originGroup.DisplayName);
-            //hdown.WithDisplayName(originGroup.DisplayName);
         }
 
         h.Complete();
         hup.Complete();
 
         return collection;
+    }
+
+    /// <summary>
+    /// Calculates the sum of values in the specified statistics group.
+    /// </summary>
+    /// <param name="statistics">The collection of statistic value groups to search.</param>
+    /// <param name="groupName">The name of the group whose values will be summed. Cannot be null.</param>
+    /// <returns>The sum of the values in the specified group if it exists; otherwise, 0.</returns>
+    public static int GetGroupSum(this StatisticValuesGroupCollection statistics, string groupName)
+    {
+        return statistics.TryGetGroup(groupName, out var group) ? group.Sum() : 0;
     }
 }

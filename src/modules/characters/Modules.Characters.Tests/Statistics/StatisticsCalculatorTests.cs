@@ -6,6 +6,7 @@ using Starlights.Modules.Characters.Domain.Elements;
 using Starlights.Modules.Characters.Domain.Progression;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Services.Statistics;
+using Starlights.Modules.Characters.Services.Statistics.Initializers;
 using Starlights.Modules.Characters.Services.Statistics.Processors;
 
 namespace Starlights.Modules.Characters.Tests.Statistics;
@@ -28,7 +29,7 @@ public sealed class StatisticsCalculatorTests
         _calculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance,
             seedProcessors,
             [new ProficiencyGroupProcessor(NullLogger<ProficiencyGroupProcessor>.Instance),
-            new AbilitiesGroupProcessor()]);
+            new AbilitiesGroupProcessor()], []);
     }
 
     #region Helper Methods

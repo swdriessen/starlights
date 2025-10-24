@@ -360,7 +360,7 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
 
         var barbarianFeature2_1 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Barbarian Feature 2.1")
             .WithComponent(id => new SortingComponent(id, 2.1))
-            .WithStatisticRule("barbarian-stat", "1", "", 0)
+            .WithStatisticRule("barbarian-stat", "2", "", 0)
             .WithDescription("This is a nested feature of the second feature of the Barbarian class.")
             .Build();
 
@@ -393,11 +393,15 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
             .WithSelectionRule("Proficiency", "Skill Proficiency B")
             .Build();
 
-        var subclass3 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Barbarian SubClass 3 Strong Dude")
-            .WithDescription("This is another barbarian subclass")
-            .WithStatisticRule("barbarian-stat", "50", "base", 0)
-            .WithStatisticRule("strength", "+2", "subclass", 0)
-            .WithStatisticRule("athletics:misc", "2", "strong dude base", 0)
+        var subclass3 = ElementBuilder.Create(ElementTypeConstants.SubClass, "Path of the Strong Dude")
+            .WithDescription("This is yet another barbarian subclass")
+            .WithStatisticRule("barbarian-stat", "proficiency", "base", 0)
+            .WithStatisticRule("strength", "2", "strong-dude", 0)
+            .WithStatisticRule("constitution", "2", "strong-dude", 0)
+            .WithStatisticRule("intimidation", "proficiency", "strong-dude", 0)
+            .WithStatisticRule("athletics:misc", "2", "strong-dude", 0)
+            .WithStatisticRule("hp:dude", "constitution:modifier", "strong-dude", 0)
+            .WithStatisticRule("hp", "hp:dude", "strong-dude", 0)
             .WithSelectionRule("Proficiency", "Skill Proficiency (Strong Dude)")
             .Build();
 

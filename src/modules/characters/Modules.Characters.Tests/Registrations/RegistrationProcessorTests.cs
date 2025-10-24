@@ -29,7 +29,10 @@ public sealed class RegistrationProcessorTests
 
 
         var statisticsCalculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance,
-            Enumerable.Empty<IStatisticsCalculationInitializer>(), [new ProficiencyGroupProcessor(NullLogger<ProficiencyGroupProcessor>.Instance)]);
+            Enumerable.Empty<IStatisticsCalculationInitializer>(),
+            [new ProficiencyGroupProcessor(NullLogger<ProficiencyGroupProcessor>.Instance)],
+            []
+            );
 
 
         return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, manager, _elements.Object, statisticsCalculator);

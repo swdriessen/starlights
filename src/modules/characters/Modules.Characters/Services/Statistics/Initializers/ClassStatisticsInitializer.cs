@@ -1,6 +1,6 @@
 using Starlights.Modules.Characters.Domain.Classes;
 
-namespace Starlights.Modules.Characters.Services.Statistics.Processors;
+namespace Starlights.Modules.Characters.Services.Statistics.Initializers;
 
 /// <summary>
 /// Initializes class-based statistics for a character within the statistics processing context.
@@ -12,19 +12,20 @@ internal sealed class ClassStatisticsInitializer : IStatisticsCalculationInitial
 {
     public void Initialize(StatisticsProcessorContext context)
     {
-        var component = context.Character.GetRequiredComponent<ClassComponent>();
-
-        foreach (var characterClass in component.Classes)
+        context.Character.UpdateComponent<ClassComponent>((component, _) =>
         {
-            var slug = characterClass.Name.ToSlug();
-
-            var levelGroup = context.Statistics.WithGroup($"{slug}:level", group =>
+            foreach (var classObj in component.Classes)
             {
-                group.WithValue(characterClass.Level, characterClass.Name);
-                group.Complete();
-            });
+                var slug = classObj.Name.ToSlug();
 
-            context.Statistics.WithGroupVariants(levelGroup.GroupName, characterClass.Name);
-        }
+                var levelGroup = context.Statistics.WithGroup($"{slug}:level", group =>
+                {
+                    group.WithValue(classObj.Level, classObj.Name);
+                    group.Complete();
+                });
+
+                context.Statistics.WithGroupVariants(levelGroup.GroupName, classObj.Name);
+            }
+        });
     }
 }

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Starlights.Modules.Characters.Services.Statistics;
 
-[DebuggerDisplay("Key = {GroupName} Sum = {Sum()} IsCompleted = {IsCompleted}")]
+[DebuggerDisplay("Key = {GroupName} ({DisplayName}) Sum = {Sum()} IsCompleted = {IsCompleted}")]
 public class StatisticValuesGroup
 {
     private readonly Dictionary<string, StatisticValue> _statisticValues;
@@ -87,7 +87,7 @@ public class StatisticValuesGroup
     /// <returns>The total sum of the values contained in the collection. Returns 0 if the collection is empty.</returns>
     public int Sum()
     {
-        return _statisticValues.Sum(x => x.Value.Value);
+        return _statisticValues.Values.Sum(x => x.Value);
     }
 
     /// <summary>

@@ -54,13 +54,11 @@ public sealed class GetStatisticsEndpoint : Endpoint<GetStatisticsRequest, GetSt
                 GroupName = group.GroupName,
                 TotalValue = group.Sum(),
                 IsFinalized = group.IsCompleted,
-                Values = [.. group.GetStatisticValues().Select(v => new StatisticValueDataModel
-            {
-                Source = v.Source,
-                Value = v.Value,
-                DisplayName = v.DisplayName,
-                RuleId = v.RuleId
-            })]
+                Values = [.. group.GetStatisticValues().Select(v => new StatisticValueDataModel {
+                    Source = v.Source,
+                    Value = v.Value,
+                    DisplayName = v.DisplayName,
+                    RuleId = v.RuleId })]
             }).ToList();
 
         await Send.OkAsync(new GetStatisticsResponse { Statistics = models }, ct);

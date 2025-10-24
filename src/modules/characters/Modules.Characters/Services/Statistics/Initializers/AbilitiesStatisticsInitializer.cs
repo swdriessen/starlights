@@ -1,6 +1,6 @@
 using Starlights.Modules.Characters.Domain.Abilities;
 
-namespace Starlights.Modules.Characters.Services.Statistics.Processors;
+namespace Starlights.Modules.Characters.Services.Statistics.Initializers;
 
 /// <summary>
 /// Initializes ability score and modifier statistics for a character within the statistics processing context.

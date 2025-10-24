@@ -21,10 +21,7 @@ internal sealed class ProficiencyGroupProcessor : IStatisticGroupProcessor
         const string groupKey = "proficiency";
         const string groupDisplayName = "Proficiency Bonus"; // either from element or initializer
 
-        context.Statistics.WithGroup("proficiency", group =>
-        {
-            group.DisplayName = groupDisplayName;
-        });
+        context.Statistics.WithGroup("proficiency", group => group.DisplayName = groupDisplayName);
 
         if (pendingGroups.TryGetValue(groupKey, out var proficiencyNode))
         {

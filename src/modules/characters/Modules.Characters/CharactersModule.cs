@@ -4,6 +4,7 @@ using Starlights.Modules.Characters.Domain.Services;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Characters.Services.Processing.Behaviors;
 using Starlights.Modules.Characters.Services.Statistics;
+using Starlights.Modules.Characters.Services.Statistics.Initializers;
 using Starlights.Modules.Characters.Services.Statistics.Processors;
 using Starlights.Platform.Eventing.EventPublisher;
 using Starlights.Platform.Hosting;
@@ -31,6 +32,8 @@ internal class CharactersModule : IPlatformServiceComponent
         builder.Services.AddScoped<IStatisticsCalculationInitializer, SkillStatisticsInitializer>();
         builder.Services.AddScoped<IStatisticGroupProcessor, AbilitiesGroupProcessor>();
         builder.Services.AddScoped<IStatisticGroupProcessor, ProficiencyGroupProcessor>();
+        builder.Services.AddScoped<IStatisticsPostProcessor, SkillStatisticsPostProcessor>();
+        builder.Services.AddScoped<IStatisticsPostProcessor, SavingThrowStatisticsPostProcessor>();
 
 
         builder.Services.AddScoped<StatisticsCalculator>();

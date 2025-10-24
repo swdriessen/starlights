@@ -1,6 +1,6 @@
 using Starlights.Modules.Characters.Domain.Skills;
 
-namespace Starlights.Modules.Characters.Services.Statistics.Processors;
+namespace Starlights.Modules.Characters.Services.Statistics.Initializers;
 
 internal sealed class SkillStatisticsInitializer : IStatisticsCalculationInitializer
 {
@@ -11,13 +11,6 @@ internal sealed class SkillStatisticsInitializer : IStatisticsCalculationInitial
         foreach (var save in component.Skills)
         {
             var slug = save.Name.ToSlug();
-
-            context.Statistics.WithGroup($"{slug}", group =>
-            {
-                group.WithDisplayName(save.Name);
-                group.WithValue(save.CalculatedBonus, save.Name);
-                group.Complete();
-            });
 
             context.Statistics.WithGroup($"{slug}:proficiency");
             context.Statistics.WithGroup($"{slug}:misc");

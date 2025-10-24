@@ -11,18 +11,21 @@ public class StatisticsCalculator
     private readonly ILogger<StatisticsCalculator> _logger;
     private readonly IEnumerable<IStatisticsCalculationInitializer> _initializers;
     private readonly IEnumerable<IStatisticGroupProcessor> _groupProcessors;
+    private readonly IEnumerable<IStatisticsPostProcessor> _postProcessors;
 
     public StatisticsCalculator(
         ILogger<StatisticsCalculator> logger,
         IEnumerable<IStatisticsCalculationInitializer> initializers,
-        IEnumerable<IStatisticGroupProcessor> groupProcessors)
+        IEnumerable<IStatisticGroupProcessor> groupProcessors,
+        IEnumerable<IStatisticsPostProcessor> postProcessors)
     {
         _logger = logger;
         _initializers = initializers;
         _groupProcessors = groupProcessors;
+        _postProcessors = postProcessors;
     }
 
-    public StatisticCalculationResult Calculate(Character character, List<Registration> registrations)
+    public StatisticsCalculationResult Calculate(Character character, List<Registration> registrations)
     {
         using var activity = CharactersInstrumentation.StartActivity("Statistics Calculator", a => a.AddTag("registrations", registrations.Count));
         var sw = Stopwatch.StartNew();
@@ -96,7 +99,7 @@ public class StatisticsCalculator
             else
             {
                 // add warning to context
-                _logger.LogWarning("[StatisticsCalculator] Statistic group '{GroupName}' could not be finalized due to unresolved dependencies.", key);
+                _logger.LogError("[StatisticsCalculator] Statistic group '{GroupName}' could not be finalized due to unresolved dependencies.", key);
             }
         }
 
@@ -110,7 +113,12 @@ public class StatisticsCalculator
 
         _logger.LogInformation("[StatisticsCalculator] Calculated statistics (count:{StatisticCount}) for Character '{CharacterName}' in {ElapsedMilliseconds}ms", context.Statistics.Count, character.Name, sw.ElapsedMilliseconds);
 
-        return new StatisticCalculationResult(context.Statistics, context.Errors);
+        foreach (var postProcessor in _postProcessors)
+        {
+            postProcessor.Process(context);
+        }
+
+        return new StatisticsCalculationResult(context.Statistics, context.Errors);
     }
 
     /// <summary>
@@ -276,14 +284,15 @@ public class StatisticsCalculator
     {
         foreach (var group in context.Statistics.Where(s => !s.IsCompleted))
         {
-            if (!group.HasStatisticValues())
+            if (group.HasStatisticValues())
             {
-                // no values added, just complete it
-                group.Complete();
-                continue;
+                // incomplete but has values, log warning to indicate potential issue 
+                _logger.LogError("[StatisticsCalculator] incompleted statistic group '{GroupName}' with total value {TotalValue} and values: {Summary}", group.GroupName, group.Sum(), group.GetSummary());
             }
-
-            _logger.LogWarning("[StatisticsCalculator] incompleted statistic group '{GroupName}' with total value {TotalValue} and values: {Summary}", group.GroupName, group.Sum(), group.GetSummary());
+            else
+            {
+                group.Complete(); // no values added, just complete it
+            }
         }
     }
 
@@ -382,7 +391,6 @@ public class StatisticsCalculator
     }
 
     #endregion
-
 }
 
 /// <summary>

@@ -7,6 +7,11 @@ namespace Starlights.Modules.Characters.Services.Statistics;
 public interface IStatisticsPostProcessor
 {
     /// <summary>
+    /// Gets the execution order for this processor. Lower values execute first.
+    /// </summary>
+    int Order { get; }
+
+    /// <summary>
     /// Processes statistics, adding or modifying values in the collection.
     /// </summary>
     /// <param name="context">The context containing all information needed for processing.</param>

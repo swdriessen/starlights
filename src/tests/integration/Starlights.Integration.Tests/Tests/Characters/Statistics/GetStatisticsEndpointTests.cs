@@ -108,6 +108,7 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
         var statistics = await _registration.GetStatistics();
 
         // Assert
+        statistics.Should().NotBeEmpty();
         var proficiency = statistics.SingleOrDefault(s => s.GroupName == "proficiency");
         proficiency.Should().NotBeNull("Expected proficiency statistic to be present");
         proficiency.TotalValue.Should().Be(expectedProficiencyValue, $"Expected proficiency bonus for level {level} character to be {expectedProficiencyValue}");

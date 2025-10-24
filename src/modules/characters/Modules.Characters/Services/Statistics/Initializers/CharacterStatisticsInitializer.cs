@@ -1,6 +1,6 @@
 using Starlights.Modules.Characters.Domain.Progression;
 
-namespace Starlights.Modules.Characters.Services.Statistics.Processors;
+namespace Starlights.Modules.Characters.Services.Statistics.Initializers;
 
 /// <summary>
 /// Initializes character-related statistics for a statistics processor context, including the character's level
@@ -15,13 +15,13 @@ internal sealed class CharacterStatisticsInitializer : IStatisticsCalculationIni
     {
         var progression = context.Character.GetRequiredComponent<ProgressionComponent>();
 
-        context.Statistics.WithGroup("level", group =>
+        var levelGroup = context.Statistics.WithGroup("level", group =>
         {
             group.WithDisplayName("Level");
             group.WithValue(progression.CharacterLevel, "Character");
             group.Complete();
         });
 
-        context.Statistics.WithGroupVariants("level", "Character");
+        context.Statistics.WithGroupVariants(levelGroup.GroupName, levelGroup.DisplayName);
     }
 }
