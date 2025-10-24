@@ -62,18 +62,9 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     public int? MaximumValue { get; private set; }
 
     /// <summary>
-    /// Determines whether the <see cref="Value"/> represents a valid integer, optionally prefixed with a plus or minus sign.
+    /// Gets or sets a user-friendly name that identifies the statistic value. e.g. "Proficiency Bonus" instead of "proficiency".
     /// </summary>
-    /// <returns>true if the value is a valid integer; otherwise, false.</returns>
-    public bool IsNumberValue()
-    {
-        if (Value.StartsWith('+'))
-        {
-            return int.TryParse(Value[1..], out _);
-        }
-
-        return int.TryParse(Value, out _);
-    }
+    public string? FriendlyName { get; set; }
 
     /// <summary>
     /// Determines whether the current value is a reference value rather than a numeric value.
@@ -81,7 +72,7 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     /// <returns>true if the value is a reference value; otherwise, false.</returns>
     public bool HasReferenceValue()
     {
-        return !IsNumberValue();
+        return !int.TryParse(Value, out _);
     }
 
     /// <summary>
@@ -100,17 +91,12 @@ public sealed class RegistrationStatisticRule : EntityBase<RegistrationStatistic
     /// <exception cref="InvalidOperationException">Thrown if the current value is not a valid number.</exception>
     public int GetValue()
     {
-        if (IsNumberValue())
+        if (int.TryParse(Value, out int value))
         {
-            if (Value.StartsWith('+'))
-            {
-                return int.Parse(Value[1..]);
-            }
-            return int.Parse(Value);
+            return value;
         }
 
-        throw new InvalidOperationException($"The value '{Value}' is not a valid number.");
-
+        throw new FormatException($"The value '{Value}' is not a valid number.");
     }
 
     /// <summary>

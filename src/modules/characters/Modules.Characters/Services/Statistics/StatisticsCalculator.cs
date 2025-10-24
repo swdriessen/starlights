@@ -47,7 +47,7 @@ public class StatisticsCalculator
         // process all value rules that only set direct numeric values
         foreach (var rule in valueRules)
         {
-            var originalName = rule.Name; // TODO: rule can have optional display name to override this and prevent using parent element name
+            var originalName = rule.FriendlyName ?? rule.Name;
             var originalValue = rule.GetValue();
 
             context.Statistics.WithGroup(rule.Name, group =>
@@ -234,7 +234,7 @@ public class StatisticsCalculator
             var determinedValue = rule.HasReferenceValue() ? context.Statistics.GetValue(rule.Value) : rule.GetValue();
             determinedValue = EnforceRuleConstraints(determinedValue, rule);
 
-            var determinedName = rule.Name;
+            var determinedName = rule.FriendlyName ?? rule.Name;
 
             // resolve parent name if available
             if (context.RegistrationLookup.TryGetValue(rule.ParentRegistrationId, out var parentName))
@@ -276,7 +276,7 @@ public class StatisticsCalculator
             // add highest value to the statistics group
             if (highestRule != null)
             {
-                var determinedName = highestRule.Name;
+                var determinedName = highestRule.FriendlyName ?? highestRule.Name;
 
                 // resolve parent name if available
                 if (context.RegistrationLookup.TryGetValue(highestRule.ParentRegistrationId, out var parentName))

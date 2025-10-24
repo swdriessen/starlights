@@ -51,6 +51,10 @@ public class RegistrationStatisticRuleTypeConfiguration : IEntityTypeConfigurati
             .HasColumnName("max_value")
             .IsRequired(false);
 
+        builder.Property(e => e.FriendlyName)
+            .HasColumnName("friendly_name")
+            .IsRequired(false);
+
         builder.HasIndex(e => e.ParentRegistrationId);
     }
 }
