@@ -402,6 +402,7 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
             .WithStatisticRule("athletics:misc", "2", "strong-dude", 0)
             .WithStatisticRule("hp:dude", "constitution:modifier", "strong-dude", 0)
             .WithStatisticRule("hp", "hp:dude", "strong-dude", 0)
+            .WithStatisticRule("hp", "hp:dude", "strong-dude2", 0)
             .WithSelectionRule("Proficiency", "Skill Proficiency (Strong Dude)")
             .Build();
 

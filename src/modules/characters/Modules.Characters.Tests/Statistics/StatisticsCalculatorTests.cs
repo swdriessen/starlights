@@ -852,5 +852,322 @@ public sealed class StatisticsCalculatorTests
     }
 
     #endregion
+
+    #region Topological Sort Tests
+
+    [TestMethod]
+    public void Calculate_WithNoDependencies_ShouldProcessAllGroupsInOriginalOrder()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Feature A", "Feature", "stat-a", "+1");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Feature B", "Feature", "stat-b", "+2");
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Feature C", "Feature", "stat-c", "+3");
+        var registrations = new List<Registration> { registration1, registration2, registration3 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-a").Should().Be(1);
+        result.Statistics.GetValue("stat-b").Should().Be(2);
+        result.Statistics.GetValue("stat-c").Should().Be(3);
+        result.Statistics.GetGroup("stat-a").IsCompleted.Should().BeTrue();
+        result.Statistics.GetGroup("stat-b").IsCompleted.Should().BeTrue();
+        result.Statistics.GetGroup("stat-c").IsCompleted.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Calculate_WithSingleDependency_ShouldProcessInDependencyOrder()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Base Stat", "Feature", "stat-base", "+10");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Dependent Stat", "Feature", "stat-derived", "stat-base");
+        var registrations = new List<Registration> { registration2, registration1 }; // Intentionally out of order
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-base").Should().Be(10, "Base should be processed first");
+        result.Statistics.GetValue("stat-derived").Should().Be(10, "Derived should resolve reference correctly");
+        result.Statistics.GetGroup("stat-base").IsCompleted.Should().BeTrue();
+        result.Statistics.GetGroup("stat-derived").IsCompleted.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Calculate_WithMultipleDependencyLevels_ShouldProcessInCorrectOrder()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+        // Create a chain: stat-a -> stat-b -> stat-c -> stat-d
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Level 1", "Feature", "stat-a", "+5");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Level 2", "Feature", "stat-b", "stat-a");
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Level 3", "Feature", "stat-c", "stat-b");
+        var registration4 = CreateRegistrationWithStatisticRule(character, "Level 4", "Feature", "stat-d", "stat-c");
+
+        // Add in reverse order to test topological sort
+        var registrations = new List<Registration> { registration4, registration3, registration2, registration1 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-a").Should().Be(5);
+        result.Statistics.GetValue("stat-b").Should().Be(5);
+        result.Statistics.GetValue("stat-c").Should().Be(5);
+        result.Statistics.GetValue("stat-d").Should().Be(5);
+        result.HasErrors.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void Calculate_WithComplexDependencyGraph_ShouldResolveCorrectly()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+
+        // Create a diamond dependency: base -> left & right -> combined
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Base", "Feature", "stat-base", "+10");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Left Branch", "Feature", "stat-left", "stat-base");
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Right Branch", "Feature", "stat-right", "stat-base");
+        var registration4 = CreateRegistrationWithStatisticRule(character, "Combined Left", "Feature", "stat-combined", "stat-left");
+        var registration5 = CreateRegistrationWithStatisticRule(character, "Combined Right", "Feature", "stat-combined", "stat-right");
+
+        // Add in scrambled order
+        var registrations = new List<Registration> { registration5, registration2, registration4, registration1, registration3 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-base").Should().Be(10);
+        result.Statistics.GetValue("stat-left").Should().Be(10);
+        result.Statistics.GetValue("stat-right").Should().Be(10);
+        result.Statistics.GetValue("stat-combined").Should().Be(20, "Combined should have both left and right");
+        result.HasErrors.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void Calculate_WithMultipleIndependentChains_ShouldProcessAllCorrectly()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+
+        // Chain 1: a -> b
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Chain 1 Base", "Feature", "chain1-a", "+5");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Chain 1 Derived", "Feature", "chain1-b", "chain1-a");
+
+        // Chain 2: x -> y -> z
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Chain 2 Base", "Feature", "chain2-x", "+10");
+        var registration4 = CreateRegistrationWithStatisticRule(character, "Chain 2 Mid", "Feature", "chain2-y", "chain2-x");
+        var registration5 = CreateRegistrationWithStatisticRule(character, "Chain 2 End", "Feature", "chain2-z", "chain2-y");
+
+        // Add in random order
+        var registrations = new List<Registration> { registration4, registration2, registration5, registration1, registration3 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("chain1-a").Should().Be(5);
+        result.Statistics.GetValue("chain1-b").Should().Be(5);
+        result.Statistics.GetValue("chain2-x").Should().Be(10);
+        result.Statistics.GetValue("chain2-y").Should().Be(10);
+        result.Statistics.GetValue("chain2-z").Should().Be(10);
+        result.HasErrors.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void Calculate_WithAbilityModifierDependency_ShouldProcessAfterAbilityInitialization()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+        AddAbilityScore(character, "Dexterity", "DEX", 16); // Modifier +3
+
+        // Create registration that depends on ability modifier (which is initialized by seed processor)
+        var registration = CreateRegistrationWithStatisticRule(character, "AC from Dex", "Feature", "armor-class", "dexterity:modifier");
+        var registrations = new List<Registration> { registration };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("dexterity:modifier").Should().Be(3, "Ability modifier should be initialized first");
+        result.Statistics.GetValue("armor-class").Should().Be(3, "Dependent stat should resolve correctly");
+    }
+
+    [TestMethod]
+    public void Calculate_WithMixedDirectAndReferencedValues_ShouldOrderCorrectly()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+
+        // Mix of direct values and references
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Direct 1", "Feature", "stat-a", "+5");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Ref to A", "Feature", "stat-b", "stat-a");
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Direct 2", "Feature", "stat-c", "+10");
+        var registration4 = CreateRegistrationWithStatisticRule(character, "Ref to B and C", "Feature", "stat-d", "stat-b");
+        var registration5 = CreateRegistrationWithStatisticRule(character, "Direct to D", "Feature", "stat-d", "stat-c");
+
+        var registrations = new List<Registration> { registration4, registration5, registration2, registration3, registration1 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-a").Should().Be(5);
+        result.Statistics.GetValue("stat-b").Should().Be(5);
+        result.Statistics.GetValue("stat-c").Should().Be(10);
+        result.Statistics.GetValue("stat-d").Should().Be(15, "Should be 5 (from stat-b) + 10 (from stat-c)");
+    }
+
+    [TestMethod]
+    public void Calculate_WithStackingBonusInDependencyChain_ShouldResolveCorrectly()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Base", "Feature", "stat-base", "+8");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Bonus 1", "Feature", "stat-derived", "stat-base",
+        rule => rule.UpdateStackingBonus("enhancement"));
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Bonus 2", "Feature", "stat-derived", "+5",
+           rule => rule.UpdateStackingBonus("enhancement"));
+
+        var registrations = new List<Registration> { registration3, registration2, registration1 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-base").Should().Be(8);
+        result.Statistics.GetValue("stat-derived").Should().Be(8, "Should use the higher of the two enhancement bonuses");
+    }
+
+    [TestMethod]
+    public void Calculate_WithLongDependencyChain_ShouldNotTimeout()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+        var registrations = new List<Registration>
+ {
+     // Create a chain of 20 dependencies
+     CreateRegistrationWithStatisticRule(character, "Base", "Feature", "stat-0", "+1")
+ };
+
+        for (int i = 1; i < 20; i++)
+        {
+            var prevStat = $"stat-{i - 1}";
+            var currentStat = $"stat-{i}";
+            registrations.Add(CreateRegistrationWithStatisticRule(character, $"Level {i}", "Feature", currentStat, prevStat));
+        }
+
+        // Shuffle to ensure topological sort is working
+        registrations = registrations.OrderBy(x => Guid.NewGuid()).ToList();
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-0").Should().Be(1);
+        result.Statistics.GetValue("stat-19").Should().Be(1, "Final stat in chain should resolve to base value");
+        result.HasErrors.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void Calculate_WithExternalDependency_ShouldProcessAfterInitializers()
+    {
+        // Arrange
+        var character = CreateTestCharacter(level: 5);
+        AddAbilityScore(character, "Strength", "STR", 14); // Modifier +2
+
+        // Add proficiency as a base stat (normally would come from game element registrations)
+        var proficiencyRegistration = CreateRegistrationWithStatisticRule(character, "Proficiency Bonus", "Feature", "proficiency", "+3");
+
+        // Create stats that depend on initialized values (level, ability modifiers) and proficiency
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Attack Bonus", "Feature", "attack", "strength:modifier");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Proficiency to Attack", "Feature", "attack", "proficiency");
+
+        var registrations = new List<Registration> { proficiencyRegistration, registration1, registration2 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("strength:modifier").Should().Be(2);
+        result.Statistics.GetValue("proficiency").Should().Be(3);
+        result.Statistics.GetValue("attack").Should().Be(5, "Should include both strength modifier (2) and proficiency (3)");
+    }
+
+    [TestMethod]
+    public void Calculate_WithUnresolvableDependencyAtEnd_ShouldNotBlockOthers()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Good Stat", "Feature", "stat-good", "+5");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Bad Stat", "Feature", "stat-bad", "nonexistent-stat");
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Another Good", "Feature", "stat-good2", "+10");
+
+        var registrations = new List<Registration> { registration2, registration1, registration3 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-good").Should().Be(5, "Valid stats should still process");
+        result.Statistics.GetValue("stat-good2").Should().Be(10, "Valid stats should still process");
+        result.Statistics.ContainsGroup("stat-bad").Should().BeFalse("Unresolvable stat should not be added");
+    }
+
+    [TestMethod]
+    public void Calculate_WithCircularDependencies_ShouldRemainAtEndOfSort()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Good Stat", "Feature", "stat-good", "+5");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Circular A", "Feature", "stat-a", "stat-b");
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Circular B", "Feature", "stat-b", "stat-a");
+        var registration4 = CreateRegistrationWithStatisticRule(character, "Another Good", "Feature", "stat-good2", "+10");
+
+        var registrations = new List<Registration> { registration3, registration1, registration4, registration2 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-good").Should().Be(5, "Non-circular stats should process successfully");
+        result.Statistics.GetValue("stat-good2").Should().Be(10, "Non-circular stats should process successfully");
+        result.HasErrors.Should().BeTrue("Circular dependencies should be detected and reported");
+    }
+
+    [TestMethod]
+    public void Calculate_WithPartialCircularDependency_ShouldProcessNonCircularParts()
+    {
+        // Arrange
+        var character = CreateTestCharacter();
+
+        // stat-base -> stat-derived (valid)
+        // stat-circular-a <-> stat-circular-b (circular)
+        var registration1 = CreateRegistrationWithStatisticRule(character, "Base", "Feature", "stat-base", "+5");
+        var registration2 = CreateRegistrationWithStatisticRule(character, "Derived", "Feature", "stat-derived", "stat-base");
+        var registration3 = CreateRegistrationWithStatisticRule(character, "Circular A", "Feature", "stat-circular-a", "stat-circular-b");
+        var registration4 = CreateRegistrationWithStatisticRule(character, "Circular B", "Feature", "stat-circular-b", "stat-circular-a");
+
+        var registrations = new List<Registration> { registration4, registration2, registration3, registration1 };
+
+        // Act
+        var result = _calculator.Calculate(character, registrations);
+
+        // Assert
+        result.Statistics.GetValue("stat-base").Should().Be(5);
+        result.Statistics.GetValue("stat-derived").Should().Be(5);
+        result.Statistics.ContainsGroup("stat-circular-a").Should().BeFalse("Circular dependencies should not be resolved");
+        result.Statistics.ContainsGroup("stat-circular-b").Should().BeFalse("Circular dependencies should not be resolved");
+        result.HasErrors.Should().BeTrue();
+    }
+
+    #endregion
 }
 

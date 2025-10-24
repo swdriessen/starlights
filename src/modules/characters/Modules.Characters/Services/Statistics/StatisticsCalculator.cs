@@ -123,11 +123,12 @@ public class StatisticsCalculator
 
     /// <summary>
     /// Groups the specified pending rules by name and creates a dictionary of rule group nodes, each containing the
-    /// group's dependencies.
+    /// group's dependencies. The returned groups are ordered by dependencies using topological sort, with groups
+    /// having no dependencies appearing first.
     /// </summary>
     /// <param name="pendingRules">The list of registration statistic rules to be grouped and analyzed for dependencies. Cannot be null.</param>
     /// <returns>A dictionary mapping each group name to a corresponding rule group node that includes the group's rules and
-    /// their dependencies.</returns>
+    /// their dependencies, ordered so that groups with no dependencies appear first.</returns>
     private static Dictionary<string, StatisticRuleGroup> GetPendingGroups(List<RegistrationStatisticRule> pendingRules)
     {
         var pendingGroups = new Dictionary<string, StatisticRuleGroup>();
@@ -144,7 +145,55 @@ public class StatisticsCalculator
             pendingGroups[group.Key] = new StatisticRuleGroup(group.Key, [.. group], dependencies);
         }
 
-        return pendingGroups;
+        // Perform topological sort to order groups by dependencies
+        return TopologicalSort(pendingGroups);
+
+        static Dictionary<string, StatisticRuleGroup> TopologicalSort(Dictionary<string, StatisticRuleGroup> groups)
+        {
+            var result = new Dictionary<string, StatisticRuleGroup>();
+            var inDegree = new Dictionary<string, int>();
+            var queue = new Queue<string>();
+
+            // Calculate in-degree (number of dependencies) for each group
+            foreach (var (groupName, group) in groups)
+            {
+                inDegree[groupName] = group.Dependencies.Count(dep => groups.ContainsKey(dep));
+            }
+
+            // Start with groups that have no dependencies
+            foreach (var (groupName, degree) in inDegree.Where(kvp => kvp.Value == 0))
+            {
+                queue.Enqueue(groupName);
+            }
+
+            // Process groups in dependency order
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                result[current] = groups[current];
+
+                // Find groups that depend on the current group and reduce their in-degree
+                foreach (var (groupName, group) in groups)
+                {
+                    if (group.Dependencies.Contains(current))
+                    {
+                        inDegree[groupName]--;
+                        if (inDegree[groupName] == 0)
+                        {
+                            queue.Enqueue(groupName);
+                        }
+                    }
+                }
+            }
+
+            // Add remaining groups (those with circular dependencies or unresolved dependencies)
+            foreach (var (groupName, group) in groups.Where(kvp => !result.ContainsKey(kvp.Key)))
+            {
+                result[groupName] = group;
+            }
+
+            return result;
+        }
     }
 
     /// <summary>
@@ -392,8 +441,3 @@ public class StatisticsCalculator
 
     #endregion
 }
-
-/// <summary>
-/// Represents a group of related registration statistic rules and their dependencies.
-/// </summary>
-public sealed record StatisticRuleGroup(string Name, List<RegistrationStatisticRule> Rules, HashSet<string> Dependencies);
