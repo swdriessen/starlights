@@ -6,6 +6,7 @@ using Starlights.Integration.Core.Extensions;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegistrations;
+using Starlights.Modules.Characters.Endpoints.Generation.Statistics.GetStatistics;
 using Starlights.Modules.Characters.Endpoints.Models;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
@@ -31,6 +32,15 @@ internal sealed class RegistrationDriver : IDriver
         var response = await _api.GetRegistrationsAsync(characterId);
         response.Registrations.Should().NotBeEmpty("Expected at least one registration to be available.");
         return response.Registrations;
+    }
+
+    public async Task<List<StatisticGroupDataModel>> GetStatistics()
+    {
+        var characterId = _integration.GetCharacterIdentifier();
+
+        var response = await _api.GetStatisticsAsync(characterId);
+        response.Statistics.Should().NotBeEmpty("Expected at least one statistic to be available.");
+        return response.Statistics;
     }
 
     public async Task<List<SelectionRuleDataModel>> GetSelectionRules(params string[] types)

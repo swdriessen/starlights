@@ -7,6 +7,7 @@ using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetSelect
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetSelectionRules;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.RegisterSelectionRule;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.UnregisterSelectionRule;
+using Starlights.Modules.Characters.Endpoints.Generation.Statistics.GetStatistics;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
 
@@ -29,6 +30,21 @@ internal sealed class RegistrationEndpointDriver : IDriver
         response.EnsureSuccessStatusCode();
 
         var data = await response.Content.ReadFromJsonAsync<GetRegistrationsResponse>();
+        data.Should().NotBeNull("Expected response content to be deserializable.");
+
+        return data;
+    }
+
+    public async Task<GetStatisticsResponse> GetStatisticsAsync(Guid characterId)
+    {
+        var api = _integration.CreateClient();
+
+        var url = $"/api/characters/{characterId}/statistics";
+
+        var response = await api.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+
+        var data = await response.Content.ReadFromJsonAsync<GetStatisticsResponse>();
         data.Should().NotBeNull("Expected response content to be deserializable.");
 
         return data;

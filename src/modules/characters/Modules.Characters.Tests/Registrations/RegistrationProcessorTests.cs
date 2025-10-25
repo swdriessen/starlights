@@ -1,10 +1,13 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
 using Starlights.Modules.Characters.Services.Processing;
+using Starlights.Modules.Characters.Services.Statistics;
+using Starlights.Modules.Characters.Services.Statistics.Processors;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Modules.Elements.Integration.Models;
 using Starlights.Modules.Elements.Integration.Models.Rules;
@@ -23,7 +26,16 @@ public sealed class RegistrationProcessorTests
     private RegistrationProcessor CreateProcessor(params IRegistrationBehavior[] behaviors)
     {
         var manager = new RegistrationManager(Mock.Of<ILogger<RegistrationManager>>(), _persistence.Object, behaviors);
-        return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, manager, _elements.Object);
+
+
+        var statisticsCalculator = new StatisticsCalculator(NullLogger<StatisticsCalculator>.Instance,
+            Enumerable.Empty<IStatisticsCalculationInitializer>(),
+            [new ProficiencyGroupProcessor(NullLogger<ProficiencyGroupProcessor>.Instance)],
+            []
+            );
+
+
+        return new(Mock.Of<ILogger<RegistrationProcessor>>(), _persistence.Object, manager, _elements.Object, statisticsCalculator);
     }
 
     [TestInitialize]
@@ -40,6 +52,9 @@ public sealed class RegistrationProcessorTests
                     .Returns(_characters.Object);
         _persistence.Setup(p => p.SaveChangesAsync())
                     .ReturnsAsync(1);
+
+        _registrations.Setup(r => r.GetRegistrationsAsync(It.IsAny<CharacterId>()))
+                      .ReturnsAsync([]);
     }
 
     [TestMethod]

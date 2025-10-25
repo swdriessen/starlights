@@ -32,6 +32,7 @@ public sealed class EventObserverCollection
         CharacterClassCreated = new(_cancellationToken);
         CharacterClassRemoved = new(_cancellationToken);
         RegistrationSelectionRuleCreated = new(_cancellationToken);
+        RegistrationStatisticRuleCreated = new(_cancellationToken);
         RegistrationCreated = new(_cancellationToken);
         CharacterLevelChanged = new(_cancellationToken);
         RegistrationProcessed = new(_cancellationToken);
@@ -45,6 +46,7 @@ public sealed class EventObserverCollection
     public EventObserverT<CharacterClassCreatedEvent> CharacterClassCreated { get; }
     public EventObserverT<CharacterClassRemovedEvent> CharacterClassRemoved { get; }
     public EventObserverT<RegistrationSelectionRuleCreatedEvent> RegistrationSelectionRuleCreated { get; }
+    public EventObserverT<RegistrationStatisticRuleCreatedEvent> RegistrationStatisticRuleCreated { get; }
     public EventObserverT<RegistrationCreatedEvent> RegistrationCreated { get; }
     public EventObserverT<CharacterLevelChangedEvent> CharacterLevelChanged { get; }
     public EventObserverT<RegistrationProcessedEvent> RegistrationProcessed { get; }
@@ -60,6 +62,7 @@ public sealed class EventObserverCollection
             _ when typeof(T) == typeof(CharacterClassCreatedEvent) => (EventObserverT<T>)(object)CharacterClassCreated,
             _ when typeof(T) == typeof(CharacterClassRemovedEvent) => (EventObserverT<T>)(object)CharacterClassRemoved,
             _ when typeof(T) == typeof(RegistrationSelectionRuleCreatedEvent) => (EventObserverT<T>)(object)RegistrationSelectionRuleCreated,
+            _ when typeof(T) == typeof(RegistrationStatisticRuleCreatedEvent) => (EventObserverT<T>)(object)RegistrationStatisticRuleCreated,
             _ when typeof(T) == typeof(RegistrationCreatedEvent) => (EventObserverT<T>)(object)RegistrationCreated,
             _ when typeof(T) == typeof(CharacterLevelChangedEvent) => (EventObserverT<T>)(object)CharacterLevelChanged,
             _ when typeof(T) == typeof(RegistrationProcessedEvent) => (EventObserverT<T>)(object)RegistrationProcessed,

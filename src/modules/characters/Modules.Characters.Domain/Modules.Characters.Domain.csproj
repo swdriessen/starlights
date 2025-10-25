@@ -2,16 +2,16 @@
 	<PropertyGroup>
 		<RootNamespace>Starlights.Modules.Characters.Domain</RootNamespace>
 	</PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\platform\Starlights.Platform\Starlights.Platform.csproj" />
-    <ProjectReference Include="..\..\..\source-generators\Starlights.Platform.SourceGenerators\Starlights.Platform.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\platform\Starlights.Platform\Starlights.Platform.csproj" />
+		<ProjectReference Include="..\..\..\source-generators\Starlights.Platform.SourceGenerators\Starlights.Platform.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+	</ItemGroup>
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>Modules.Characters.Tests</_Parameter1>
 		</AssemblyAttribute>
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 	</ItemGroup>
 </Project>

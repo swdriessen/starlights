@@ -35,6 +35,26 @@ public class RegistrationStatisticRuleTypeConfiguration : IEntityTypeConfigurati
             .HasColumnName("value")
             .IsRequired();
 
+        builder.Property(e => e.LevelRequirement)
+            .HasColumnName("level_requirement")
+            .IsRequired();
+
+        builder.Property(e => e.StackingBonus)
+            .HasColumnName("stacking_bonus")
+            .IsRequired(false);
+
+        builder.Property(e => e.MinimumValue)
+            .HasColumnName("min_value")
+            .IsRequired(false);
+
+        builder.Property(e => e.MaximumValue)
+            .HasColumnName("max_value")
+            .IsRequired(false);
+
+        builder.Property(e => e.FriendlyName)
+            .HasColumnName("friendly_name")
+            .IsRequired(false);
+
         builder.HasIndex(e => e.ParentRegistrationId);
     }
 }

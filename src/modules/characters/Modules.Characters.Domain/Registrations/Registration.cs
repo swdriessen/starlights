@@ -28,6 +28,11 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     }
 
     /// <summary>
+    /// Gets the ID of the character associated with this registration.
+    /// </summary>
+    public CharacterId CharacterId { get; }
+
+    /// <summary>
     /// Gets the collection of include rules associated with this registration.
     /// </summary>
     public IReadOnlyCollection<RegistrationIncludeRule> IncludeRules => _includeRules.AsReadOnly();
@@ -41,11 +46,6 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     /// Gets the collection of selection rules associated with this registration.
     /// </summary>
     public IReadOnlyCollection<RegistrationSelectionRule> SelectionRules => _selectionRules.AsReadOnly();
-
-    /// <summary>
-    /// Gets the ID of the character associated with this registration.
-    /// </summary>
-    public CharacterId CharacterId { get; }
 
     /// <summary>
     /// Gets or sets the progression origin registration ID used for level-gated rule evaluation.
@@ -103,7 +103,6 @@ public sealed class Registration : AggregateRoot<RegistrationId>
     public void SetParentRegistration(Registration parentRegistration)
     {
         ParentRegistrationId = parentRegistration.Id;
-
     }
 
     /// <summary>

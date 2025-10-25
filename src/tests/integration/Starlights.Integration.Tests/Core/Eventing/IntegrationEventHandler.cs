@@ -16,6 +16,7 @@ internal sealed class IntegrationEventHandler :
     IDomainEventHandler<SavingThrowCreatedEvent>,
     IDomainEventHandler<CharacterClassCreatedEvent>,
     IDomainEventHandler<RegistrationSelectionRuleCreatedEvent>,
+    IDomainEventHandler<RegistrationStatisticRuleCreatedEvent>,
     IDomainEventHandler<RegistrationCreatedEvent>,
     IDomainEventHandler<CharacterLevelChangedEvent>,
     IDomainEventHandler<CharacterClassRemovedEvent>,
@@ -61,6 +62,10 @@ internal sealed class IntegrationEventHandler :
     public Task HandleAsync(RegistrationSelectionRuleCreatedEvent domainEvent)
     {
         return _observers.RegistrationSelectionRuleCreated.Mock.Object.HandleAsync(domainEvent);
+    }
+    public Task HandleAsync(RegistrationStatisticRuleCreatedEvent domainEvent)
+    {
+        return _observers.RegistrationStatisticRuleCreated.Mock.Object.HandleAsync(domainEvent);
     }
 
     public Task HandleAsync(RegistrationCreatedEvent domainEvent)

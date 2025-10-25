@@ -3,6 +3,7 @@ using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Domain.Registrations;
+using Starlights.Modules.Characters.Services.Statistics;
 using Starlights.Modules.Elements.Integration;
 using Starlights.Platform.Data;
 
@@ -14,17 +15,19 @@ public class RegistrationProcessor : IRegistrationProcessor
     private readonly IPersistence _persistence;
     private readonly IRegistrationManager _registrationManager;
     private readonly IElementsModuleQueries _elements;
+    private readonly StatisticsCalculator _statisticsCalculator;
 
     public RegistrationProcessor(
         ILogger<RegistrationProcessor> logger,
         IPersistence persistence,
         IRegistrationManager registrationManager,
-        IElementsModuleQueries elements)
+        IElementsModuleQueries elements, StatisticsCalculator statisticsCalculator)
     {
         _logger = logger;
         _persistence = persistence;
         _registrationManager = registrationManager;
         _elements = elements;
+        _statisticsCalculator = statisticsCalculator;
     }
 
     public async Task<ProcessRegistrationResult> ProcessRegistration(RegistrationId registrationId)
@@ -40,6 +43,11 @@ public class RegistrationProcessor : IRegistrationProcessor
         await ProcessStatisticRules(context);
 
         context.Registration.Processed();
+
+        var registrationRepository = _persistence.GetRepository<IRegistrationRepository>();
+        var registrations = await registrationRepository.GetRegistrationsAsync(context.Character.Id);
+        context.SetCharacterRegistations(registrations);
+        _statisticsCalculator.Calculate(context.Character, context.GetCharacterRegistrations());
 
         var affectedRows = await _persistence.SaveChangesAsync();
 
@@ -83,6 +91,8 @@ public class RegistrationProcessor : IRegistrationProcessor
             await ProcessStatisticRules(context);
             await ProcessSelectionRules(context);
         }
+
+        _statisticsCalculator.Calculate(character, registrations);
 
         var affectedRows = await _persistence.SaveChangesAsync();
 
