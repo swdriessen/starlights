@@ -79,6 +79,17 @@ public class StatisticsCalculator
             groupProcessor.Process(pendingGroups, context, ProcessGroupNode);
         }
 
+        // check what groups that are still pending are now completed
+        // this can happen if a group processor completed some groups
+        // so we can remove them from pending
+        foreach (var (key, pendingGroup) in pendingGroups.ToList())
+        {
+            if (context.Statistics.TryGetGroup(pendingGroup.Name, out var existingGroup) && existingGroup.IsCompleted)
+            {
+                pendingGroups.Remove(key);
+            }
+        }
+
         // detect circular dependencies before processing
         var detectedCircularDependencies = DetectCircularDependencies(pendingGroups, context);
         if (detectedCircularDependencies.Count > 0)

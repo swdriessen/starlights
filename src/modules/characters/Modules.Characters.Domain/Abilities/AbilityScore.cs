@@ -56,7 +56,7 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// Updates the base score to the specified value if it differs from the current value.
     /// </summary>
     /// <returns>true if the base score was updated; otherwise, false.</returns>
-    public bool UpdateBaseScore(int value)
+    internal bool UpdateBaseScore(int value)
     {
         if (BaseScore == value)
         {
@@ -72,7 +72,7 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// Updates the <see cref="AdditionalScore"/> and recalculates derived values.
     /// Returns true if the value changed (and recalculation occurred); otherwise false.
     /// </summary>
-    public bool UpdateAdditionalScore(int value)
+    internal bool UpdateAdditionalScore(int value)
     {
         if (AdditionalScore == value)
         {

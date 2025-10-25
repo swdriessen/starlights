@@ -20,19 +20,6 @@ public sealed class AbilitiesComponent : CharacterComponentBase
     public IReadOnlyCollection<AbilityScore> AbilityScores => _abilityScores.AsReadOnly();
 
     /// <summary>
-    /// Creates a new ability score for the character.
-    /// </summary>
-    public AbilityScore CreateAbilityScore(RegistrationId associatedRegistrationId, string name, string abbreviation)
-    {
-        var abilityScore = AbilityScore.Create(associatedRegistrationId, name, abbreviation);
-
-        AddDomainEvent(new AbilityScoreCreatedEvent() { CharacterId = ParentCharacter, AbilityScoreId = abilityScore.Id });
-
-        _abilityScores.Add(abilityScore);
-        return abilityScore;
-    }
-
-    /// <summary>
     /// Updates the base score of an ability score for the character.
     /// </summary>
     public void UpdateAbilityBaseScore(AbilityScoreId abilityScoreId, int value)
@@ -62,6 +49,7 @@ public sealed class AbilitiesComponent : CharacterComponentBase
     public void UpdateAbilityAdditionalScore(AbilityScoreId abilityScoreId, int value)
     {
         var ability = _abilityScores.SingleOrDefault(a => a.Id == abilityScoreId) ?? throw new InvalidOperationException($"AbilityScore with ID {abilityScoreId} not found for Character {Id}.");
+
         if (ability.UpdateAdditionalScore(value))
         {
             AddDomainEvent(new AbilityScoreUpdatedEvent()
@@ -72,6 +60,19 @@ public sealed class AbilitiesComponent : CharacterComponentBase
                 NewAbilityModifier = ability.CalculatedModifier
             });
         }
+    }
+
+    /// <summary>
+    /// Creates a new ability score for the character.
+    /// </summary>
+    public AbilityScore CreateAbilityScore(RegistrationId associatedRegistrationId, string name, string abbreviation)
+    {
+        var abilityScore = AbilityScore.Create(associatedRegistrationId, name, abbreviation);
+
+        AddDomainEvent(new AbilityScoreCreatedEvent() { CharacterId = ParentCharacter, AbilityScoreId = abilityScore.Id });
+
+        _abilityScores.Add(abilityScore);
+        return abilityScore;
     }
 
     /// <summary>

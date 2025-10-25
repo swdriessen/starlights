@@ -52,6 +52,9 @@ public sealed class RegistrationProcessorTests
                     .Returns(_characters.Object);
         _persistence.Setup(p => p.SaveChangesAsync())
                     .ReturnsAsync(1);
+
+        _registrations.Setup(r => r.GetRegistrationsAsync(It.IsAny<CharacterId>()))
+                      .ReturnsAsync([]);
     }
 
     [TestMethod]

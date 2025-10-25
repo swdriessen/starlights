@@ -44,10 +44,10 @@ public class RegistrationProcessor : IRegistrationProcessor
 
         context.Registration.Processed();
 
-        //var registrationRepository = _persistence.GetRepository<IRegistrationRepository>();
-        //var registrations = await registrationRepository.GetRegistrationsAsync(context.Character.Id);
-        //context.SetCharacterRegistations(registrations);
-        //_statisticsCalculator.Calculate(context.Character, context.GetCharacterRegistrations());
+        var registrationRepository = _persistence.GetRepository<IRegistrationRepository>();
+        var registrations = await registrationRepository.GetRegistrationsAsync(context.Character.Id);
+        context.SetCharacterRegistations(registrations);
+        _statisticsCalculator.Calculate(context.Character, context.GetCharacterRegistrations());
 
         var affectedRows = await _persistence.SaveChangesAsync();
 

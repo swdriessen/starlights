@@ -104,31 +104,37 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         var strength = ElementBuilder.Create(ElementTypeConstants.Ability, "Strength")
             .WithAbbreviationComponent("STR")
             .WithComponent(id => new SortingComponent(id, 1))
+            .WithStatisticRule("strength:max", "20", "base", 0)
             .Build();
 
         var dexterity = ElementBuilder.Create(ElementTypeConstants.Ability, "Dexterity")
             .WithAbbreviationComponent("DEX")
             .WithComponent(id => new SortingComponent(id, 2))
+            .WithStatisticRule("dexterity:max", "20", "base", 0)
             .Build();
 
         var constitution = ElementBuilder.Create(ElementTypeConstants.Ability, "Constitution")
             .WithAbbreviationComponent("CON")
             .WithComponent(id => new SortingComponent(id, 3))
+            .WithStatisticRule("constitution:max", "20", "base", 0)
             .Build();
 
         var intelligence = ElementBuilder.Create(ElementTypeConstants.Ability, "Intelligence")
             .WithAbbreviationComponent("INT")
             .WithComponent(id => new SortingComponent(id, 4))
+            .WithStatisticRule("intelligence:max", "20", "base", 0)
             .Build();
 
         var wisdom = ElementBuilder.Create(ElementTypeConstants.Ability, "Wisdom")
             .WithAbbreviationComponent("WIS")
             .WithComponent(id => new SortingComponent(id, 5))
+            .WithStatisticRule("wisdom:max", "20", "base", 0)
             .Build();
 
         var charisma = ElementBuilder.Create(ElementTypeConstants.Ability, "Charisma")
             .WithAbbreviationComponent("CHA")
             .WithComponent(id => new SortingComponent(id, 6))
+            .WithStatisticRule("charisma:max", "20", "base", 0)
             .Build();
 
         repository.Add(strength);
@@ -370,12 +376,22 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
             .WithDescription("This is the third feature of the Barbarian class.")
             .Build();
 
+        var barbarianFeature20 = ElementBuilder.Create(ElementTypeConstants.ClassFeature, "Primal Champion")
+            .WithComponent(id => new SortingComponent(id, 20))
+            .WithStatisticRule("strength", "4", "primal-champion")
+            .WithStatisticRule("constitution", "4", "primal-champion")
+            .WithStatisticRule("strength:max", "25", "base")
+            .WithStatisticRule("constitution:max", "25", "base")
+            .WithDescription("You embody primal power.")
+            .Build();
+
         var barbarian = ElementBuilder.Create(ElementTypeConstants.Class, "Barbarian")
             .WithDescription("This is the class description.")
             .WithIncludeRule(barbarianFeature1.Id, levelRequirement: 1)
             .WithIncludeRule(barbarianFeature2.Id, levelRequirement: 2)
             .WithIncludeRule(barbarianFeature2_1.Id, levelRequirement: 2)
             .WithIncludeRule(barbarianFeature3.Id, levelRequirement: 3)
+            .WithIncludeRule(barbarianFeature20.Id, levelRequirement: 20)
             .WithSelectionRule(ElementTypeConstants.SubClass, "Primal Path", levelRequirement: 3)
             .Build();
 
@@ -412,6 +428,7 @@ internal class ElementsModuleInitializer : IElementsModuleInitializer
         repository.Add(barbarianFeature2);
         repository.Add(barbarianFeature2_1);
         repository.Add(barbarianFeature3);
+        repository.Add(barbarianFeature20);
         repository.Add(subclass1);
         repository.Add(subclass2);
         repository.Add(subclass3);
