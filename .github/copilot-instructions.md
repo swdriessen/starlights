@@ -4,86 +4,200 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 
 ## Project Overview
 
-- Backend: .NET 9 Web API (C#) using FastEndpoints.
-- Testing: MSTest for unit tests; FluentAssertions for assertions; Moq for mocking.
+- **Backend**: .NET 9 Web API (C#) using FastEndpoints in a modular monolith architecture
+- **Frontend**: React 19 (TypeScript) with Vite, TanStack Query, React Router, Tailwind CSS, and Shadcn UI
+- **Data**: Entity Framework Core 9 with SQL Server
+- **Orchestration**: .NET Aspire 9.5 for local development and Azure deployment
+- **Testing**: MSTest for unit tests; FluentAssertions for assertions; Moq for mocking
+- **Observability**: Serilog for logging, OpenTelemetry for distributed tracing and metrics
 
-## C# Practices (concise)
+## C# Practices
 
 - Prefer immutability; minimize mutable state. Use explicit access modifiers.
 - Async/await for I/O. Log for diagnostics, not control flow.
-- Apply SOLID. Use DI for all services/abstractions via constructor injection.
-- Use records for simple data containers.
+- Apply SOLID principles. Use DI for all services/abstractions via constructor injection.
+- Use records for simple data containers and value objects.
 - Enable nullable reference types and rely on them:
   - Use `?` for optional members.
-  - Don’t add manual null checks for non-nullable DI parameters.
+  - Don't add manual null checks for non-nullable DI parameters.
   - Add explicit null checks only when null would cause runtime issues beyond compiler analysis.
 - Summary/XML comments for public APIs; use `<inheritdoc />` when implementing documented interfaces.
 - Use string interpolation; avoid magic values (prefer constants/enums).
 - Prefer pattern matching/switch expressions, LINQ, and collection initializers.
-- Dispose `IDisposable` properly.
+- Dispose `IDisposable` properly (use `using` statements/declarations).
+- Follow naming conventions: PascalCase for types/public members, camelCase for local variables/private fields.
 
 ## Architecture: Modular Monolith
 
-- Organize by business capability with domain/application/infrastructure per module.
-- Strict boundaries: modules interact via interfaces or events; avoid leaking internals.
+- Organize by business capability with clear module boundaries:
+  - **Elements Module**: Game data (classes, abilities, features, rules)
+  - **Characters Module**: Character creation and management
+  - **Platform Layer**: Shared infrastructure (hosting, logging, data, eventing)
+- Each module follows internal layering:
+  - `Domain`: Entities, value objects, aggregates, domain logic
+  - `Data`: Repository interfaces and abstractions
+  - `Data.EntityFramework`: EF Core configurations, DbContext, migrations
+  - `Endpoints`: FastEndpoints for API exposure
+  - `Integration`: Public contracts for inter-module communication
+- Strict boundaries: modules interact via interfaces or domain events; avoid leaking internals.
 - Favor internal visibility; expose only what’s necessary.
 - Use feature folders/namespaces for related functionality.
-- Keep a minimal, stable shared kernel.
+- Keep a minimal, stable shared kernel in the Platform layer.
 - Apply DDD concepts where beneficial (entities, aggregates, value objects).
-- Write integration tests for module interactions.
+- Write integration tests for module interactions and endpoint behavior.
 
-## Aspire 9.4 (local + Azure)
+## Aspire 9.5 (local + Azure)
 
-- Local:
+- **Local Development**:
   - Use Aspire AppHost to orchestrate all services; declare dependencies and env vars in the manifest.
-  - Use Aspire service discovery and local resource provisioning (SQL, Redis, storage emulators).
+  - Use Aspire service discovery for resource connections (SQL Server, APIs).
+  - SQL Server container runs on static port `61070` for consistency.
+  - Migration workers run at startup to initialize databases.
   - Monitor with Aspire dashboards; keep appsettings/secrets aligned across envs.
-- Azure:
-  - Use azd + Aspire; define IaC (Bicep) for all resources.
-  - Inject config via Aspire env vars and secret management.
+  - Frontend configured via Aspire with automatic environment variable injection.
+- **Azure Deployment**:
+  - Use `azd` + Aspire; define IaC (Bicep) for all resources.
+  - Inject config via Aspire env vars and Azure Key Vault for secrets.
   - Monitor with Azure Monitor, Application Insights, and Aspire dashboards; use health checks.
   - Keep local/cloud manifests aligned; group services modularly.
-- General: Document manifests/configs; keep tools up to date; test end-to-end locally; integrate with CI/CD.
+- **General**: Document manifests/configs; keep tools up to date; test end-to-end locally; integrate with CI/CD.
 
 ## Entity Framework Core + SQL Server
 
-- Query performance: indexes, efficient LINQ, avoid client eval/N+1, project with `.Select`, use `AsNoTracking()` for reads.
-- Data transfer: load only needed data, avoid cartesian explosion, batch where possible, paginate large sets.
-- Runtime: disable tracking when not needed; consider compiled queries for hot paths; use converters/shadow props carefully.
-- Caching: cache hot data appropriately; plan invalidation.
-- Diagnostics: enable EF logging; inspect SQL; use Profiler/App Insights; measure before optimizing.
-- General: use migrations; explicit relationships; transactions for multi-step ops; handle transient faults (retry); secure connection strings.
+- **Configuration**: All entities must have explicit `IEntityTypeConfiguration<T>` implementations in respective `*.Data.EntityFramework` projects.
+- **Query Performance**:
+  - Add indexes for frequently queried columns
+  - Use efficient LINQ queries; avoid client evaluation and N+1 queries
+  - Project with `.Select()` to load only needed columns
+  - Use `AsNoTracking()` for read-only queries
+- **Data Transfer**:
+  - Load only needed data
+  - Avoid cartesian explosion in joins
+  - Batch operations where possible
+  - Paginate large result sets
+- **Runtime**:
+  - Disable change tracking when not needed
+  - Consider compiled queries for hot paths
+  - Use value converters and shadow properties judiciously
+- **Caching**: Cache hot data appropriately; plan cache invalidation strategy.
+- **Diagnostics**: Enable EF logging; inspect generated SQL; use SQL Profiler/App Insights; measure before optimizing.
+- **Migrations**:
+  - Use EF Core migrations for schema changes
+  - Add migrations in respective module `*.Data.EntityFramework` projects
+  - Migration workers run automatically at startup via Aspire
+- **General**:
+  - Use transactions for multi-step operations
+  - Handle transient faults with retry policies
+  - Secure connection strings via Aspire service discovery
 
 ## FastEndpoints API
 
-- Follow REST principles and REPR (Request, Endpoint, Response) per feature.
-- Attribute-free endpoint classes; secure by default. Use policies/roles/claims; AllowAnonymous only when needed.
-- Validation: create `Validator<T>` for each request (auto-used by FastEndpoints).
-- Use async Task handlers; DI via constructor injection.
-- Standardize error responses; consider API versioning; enable CORS globally.
-- Identity: use cookies for auth and GitHub for OAuth.
-- Testing note: prefer integration tests for FastEndpoints (don’t create unit tests for endpoints).
+- Follow REST principles and REPR (Request, Endpoint, Response) pattern per feature.
+- Attribute-free endpoint classes; organize using endpoint groups (e.g., `CharactersGroup`, `ElementsGroup`).
+- Secure by default: use policies/roles/claims; `AllowAnonymous` only when needed.
+- **Validation**: Create `Validator<T>` for each request (auto-wired by FastEndpoints).
+- Use async `Task` handlers; DI via constructor injection.
+- Standardize error responses using FastEndpoints built-in error handling.
+- API versioning via endpoint groups (e.g., `/api/v1/characters`).
+- Enable CORS globally for development; configure appropriately for production.
+- **Authentication**: Use cookie-based auth; support GitHub OAuth for identity.
+- **Documentation**: Expose OpenAPI spec at `/openapi/v1.json`; interactive docs via Scalar at `/scalar`.
+- **Testing**: Prefer integration tests for endpoints using `WebApplicationFactory`; don't create unit tests for endpoint classes.
+
+## React/TypeScript Frontend
+
+- **Structure**: Organize by feature with clear separation:
+  - `src/pages`: Route-based page components
+  - `src/lib/api`: API client functions and TanStack Query hooks
+  - `src/components`: Reusable UI components (Shadcn-based)
+  - `src/lib/utils.ts`: Utility functions
+- **State Management**: Use TanStack Query for server state; React hooks for local state.
+- **Routing**: Use React Router 7 with route-based code splitting.
+- **Styling**: Tailwind CSS 4 with utility-first approach; Shadcn UI for component library.
+- **Forms**: React Hook Form + Zod for validation.
+- **API Integration**: Type-safe API calls; centralized error handling; loading states.
+- **TypeScript**: Strict mode enabled; proper typing for all components and functions.
+- **Environment**: Use `VITE_API_BASE` for API base URL (injected by Aspire in development).
 
 ## Unit Testing (MSTest + FluentAssertions + Moq)
 
-- Structure: clear names (Class_Method_Scenario). Use [TestClass]/[TestMethod]; [DataRow] for parameters.
-- Style: AAA pattern. Use FluentAssertions exclusively; use Moq with strong typing and strict behavior where critical.
-- Coverage for any new component (class/record/struct):
-  - Construction/defaults; all public members; happy path + edge cases.
-  - Avoid tests that expect `ArgumentNullException` for non-nullable parameters—trust NRT and DI.
-- Moq: Setup using .Setup(...), match with It.IsAny/It.Is, Verify calls as needed; reset between tests if needed.
-- Lifecycle: Use [TestInitialize]/[TestCleanup] where appropriate.
-- Always build and run the full test suite before considering work complete.
+- **Structure**:
+  - Clear test names: `Class_Method_Scenario` or `Method_WhenCondition_ExpectedBehavior`
+  - Use `[TestClass]` and `[TestMethod]` attributes
+  - Use `[DataRow]` for parameterized tests
+- **Style**:
+  - Follow AAA pattern (Arrange, Act, Assert)
+  - Use FluentAssertions exclusively for assertions
+  - Use Moq with strong typing and strict behavior where critical
+- **Coverage Requirements** for any new component (class/record/struct):
+  - Construction and defaults
+  - All public members (methods, properties)
+  - Happy path and edge cases
+  - Error conditions and validation
+  - Do NOT test for `ArgumentNullException` on non-nullable parameters—trust NRT and DI
+- **Moq Usage**:
+  - Setup using `.Setup(...)` with lambda expressions
+  - Match parameters with `It.IsAny<T>()` or `It.Is<T>(predicate)`
+  - Verify calls with `.Verify(...)` as needed
+  - Use `MockBehavior.Strict` when order and exact calls matter
+  - Reset mocks between tests if sharing instances
+- **Lifecycle**: Use `[TestInitialize]` and `[TestCleanup]` for setup/teardown.
+- **Integration Tests**:
+  - Use `WebApplicationFactory` pattern for endpoint testing
+  - Test module interactions and boundary contracts
+  - Verify database state changes where applicable
+- **Always build and run the full test suite before considering work complete**.
 
-## Repository-specific rules
+## Repository-Specific Rules
 
-- Characters module: when adding Entities, also add an `IEntityTypeConfiguration` in `Modules.Characters.Data.EntityFramework`.
-- Elements module: when adding Entities or ElementComponents, also add an `IEntityTypeConfiguration` in `Modules.Elements.Data.EntityFramework`.
+- **Characters Module**: When adding domain entities, also create an `IEntityTypeConfiguration<T>` in `Modules.Characters.Data.EntityFramework/Configurations/`.
+- **Elements Module**: When adding domain entities or element components, also create an `IEntityTypeConfiguration<T>` in `Modules.Elements.Data.EntityFramework/Configurations/`.
+- **Domain Events**: Use the platform's domain event publisher for inter-module communication; avoid direct module-to-module references.
+- **Value Objects**: Implement as records with proper equality semantics; configure as owned entities or with value converters in EF Core.
+- **Aggregates**: Keep aggregate roots as entry points for all modifications; enforce invariants within the aggregate.
 
-## PR checklist (quick)
+## Code Generation Guidelines
 
-- [ ] Build succeeds locally; all tests green (MSTest).
-- [ ] Aspire manifests updated (local + Azure) and aligned; secrets handled via Key Vault.
-- [ ] EF Core migrations added/updated; entity type configurations created where required (Characters/Elements).
-- [ ] Endpoints validated with integration tests; security and validation in place.
-- [ ] Docs/readme snippets updated if behavior or APIs changed.
+- When generating endpoint code:
+  - Create request/response record types
+  - Add validator class for requests
+  - Implement endpoint with proper group assignment
+  - Include XML documentation
+  - Don't generate unit tests for endpoint classes (integration tests only)
+- When generating domain entities:
+  - Include proper encapsulation (private setters, factory methods)
+  - Add domain validation in constructors or methods
+  - Create corresponding `IEntityTypeConfiguration<T>` class
+  - Generate unit tests covering construction, validation, and behavior
+- When generating services:
+  - Define interface first
+  - Implement with DI via constructor
+  - Add proper logging at appropriate levels
+  - Generate unit tests with mocked dependencies
+
+## Pull Request Checklist
+
+- [ ] Build succeeds locally with no warnings
+- [ ] All tests pass (`dotnet test`)
+- [ ] Code coverage meets minimum thresholds (configured in `.runsettings`)
+- [ ] Aspire manifests updated (local + Azure) and aligned
+- [ ] Secrets handled via Azure Key Vault (production) or Aspire service discovery (local)
+- [ ] EF Core migrations added/updated for schema changes
+- [ ] Entity type configurations created for new entities (Characters/Elements modules)
+- [ ] Endpoints validated with integration tests
+- [ ] Security policies and validation in place for new endpoints
+- [ ] Frontend types/API clients updated for backend changes
+- [ ] Documentation updated (README, XML comments, inline comments where needed)
+- [ ] No hardcoded secrets or configuration values
+- [ ] Proper error handling and logging added
+- [ ] Performance considerations addressed (indexes, query optimization, caching)
+
+## Additional Best Practices
+
+- **Logging**: Use structured logging with Serilog; include correlation IDs for distributed tracing.
+- **Error Handling**: Use problem details for API errors; handle exceptions at appropriate boundaries.
+- **Configuration**: Use strongly-typed options pattern; validate configuration at startup.
+- **Security**: Follow principle of least privilege; validate all inputs; sanitize outputs.
+- **Performance**: Profile before optimizing; use caching judiciously; consider async throughout.
+- **Documentation**: Keep README current; document architectural decisions; comment complex logic only.
+- **Git Workflow**: Use feature branches; write clear commit messages; keep PRs focused and reviewable.
