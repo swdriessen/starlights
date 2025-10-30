@@ -48,7 +48,7 @@ public sealed class StatisticsCalculatorTests
     {
         var abilitiesComponent = character.GetRequiredComponent<AbilitiesComponent>();
         var registration = Registration.Create(character.Id, new ElementId(Guid.NewGuid()), name, "Ability");
-        var abilityScore = abilitiesComponent.CreateAbilityScore(registration.Id, name, abbreviation);
+        var abilityScore = abilitiesComponent.CreateAbilityScore(registration.Id, name, abbreviation, 0);
         abilityScore.UpdateBaseScore(baseScore);
     }
 

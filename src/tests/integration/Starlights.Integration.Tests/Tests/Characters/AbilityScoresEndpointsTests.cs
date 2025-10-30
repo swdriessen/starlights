@@ -46,6 +46,9 @@ public sealed class AbilityScoresEndpointsTests : IntegrationTestBase
             score.CalculatedScore.Should().Be(expectedScore);
             score.CalculatedModifier.Should().Be(expectedModifier);
         });
+
+        abilityScores.Select(x => x.Name)
+            .Should().ContainInOrder(["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]);
     }
 
     [DataRow("Strength")]

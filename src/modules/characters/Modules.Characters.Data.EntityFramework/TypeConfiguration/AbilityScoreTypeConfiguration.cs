@@ -50,5 +50,9 @@ public class AbilityScoreTypeConfiguration : IEntityTypeConfiguration<AbilitySco
         builder.Property(e => e.CalculatedModifier)
             .HasColumnName("calculated_modifier")
             .HasDefaultValue(0);
+
+        builder.Property(e => e.SortingOrder)
+            .HasColumnName("sorting_order")
+            .HasDefaultValue(0);
     }
 }

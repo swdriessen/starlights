@@ -21,17 +21,6 @@ public sealed class SkillsComponent : CharacterComponentBase
     public IReadOnlyCollection<Skill> Skills => _skills.AsReadOnly();
 
     /// <summary>
-    /// Creates a new skill associated with the specified registration and ability score.
-    /// </summary>
-    public Skill CreateSkill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
-    {
-        var skill = Skill.Create(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
-        _skills.Add(skill);
-        AddDomainEvent(new SkillCreatedEvent() { CharacterId = Id, SkillId = skill.Id });
-        return skill;
-    }
-
-    /// <summary>
     /// Updates the ability score modifier for all skills associated with the specified ability score.
     /// </summary>
     public void UpdateAbilityScoreModifier(AbilityScoreId abilityScoreId, int modifier)
@@ -43,6 +32,17 @@ public sealed class SkillsComponent : CharacterComponentBase
                 AddDomainEvent(new SkillUpdatedEvent() { CharacterId = ParentCharacter, SkillId = skill.Id });
             }
         }
+    }
+
+    /// <summary>
+    /// Creates a new skill associated with the specified registration and ability score.
+    /// </summary>
+    public Skill CreateSkill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation, double sortingOrder = 0)
+    {
+        var skill = Skill.Create(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation, sortingOrder);
+        _skills.Add(skill);
+        AddDomainEvent(new SkillCreatedEvent() { CharacterId = Id, SkillId = skill.Id });
+        return skill;
     }
 
     /// <summary>

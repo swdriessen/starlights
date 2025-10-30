@@ -8,13 +8,14 @@ namespace Starlights.Modules.Characters.Domain.Skills;
 [Entity]
 public sealed class Skill : EntityBase<SkillId>
 {
-    private Skill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation)
+    private Skill(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation, double sortingOrder = 0)
         : base(SkillId.New())
     {
         AssociatedRegistrationId = associatedRegistrationId;
         Name = name;
         AbilityScoreId = abilityScoreId;
         AbilityScoreAbbreviation = abilityScoreAbbreviation;
+        SortingOrder = sortingOrder;
     }
 
     /// <summary>
@@ -51,6 +52,11 @@ public sealed class Skill : EntityBase<SkillId>
     /// The calculated bonus for this skill, derived from the associated ability score.
     /// </summary>
     public int CalculatedBonus { get; private set; }
+
+    /// <summary>
+    /// Gets the sorting order value used to determine the relative position of this item in sorted collections.
+    /// </summary>
+    public double SortingOrder { get; internal set; }
 
     /// <summary>
     /// Recalculates the derived bonus.
@@ -122,8 +128,8 @@ public sealed class Skill : EntityBase<SkillId>
     /// <summary>
     /// Creates a new Skill instance with the specified registration, name, ability score identifier, and ability score abbreviation.
     /// </summary>
-    internal static Skill Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
+    internal static Skill Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation, double sortingOrder = 0)
     {
-        return new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+        return new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation, sortingOrder);
     }
 }

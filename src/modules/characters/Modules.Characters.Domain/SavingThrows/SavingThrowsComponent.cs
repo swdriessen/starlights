@@ -21,17 +21,6 @@ public sealed class SavingThrowsComponent : CharacterComponentBase
     public IReadOnlyCollection<SavingThrow> SavingThrows => _savingThrows.AsReadOnly();
 
     /// <summary>
-    /// Creates a new saving throw associated with the specified registration and ability score.
-    /// </summary>
-    public SavingThrow CreateSavingThrow(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
-    {
-        var newSavingThrow = SavingThrow.Create(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
-        _savingThrows.Add(newSavingThrow);
-        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = ParentCharacter, SavingThrowId = newSavingThrow.Id });
-        return newSavingThrow;
-    }
-
-    /// <summary>
     /// Updates the ability score modifier for all saving throws associated with the specified ability score.
     /// </summary>
     public void UpdateAbilityScoreModifier(AbilityScoreId abilityScoreId, int modifier)
@@ -43,6 +32,17 @@ public sealed class SavingThrowsComponent : CharacterComponentBase
                 AddDomainEvent(new SavingThrowUpdatedEvent() { CharacterId = ParentCharacter, SavingThrowId = savingThrow.Id });
             }
         }
+    }
+
+    /// <summary>
+    /// Creates a new saving throw associated with the specified registration and ability score.
+    /// </summary>
+    public SavingThrow CreateSavingThrow(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation, double sortingOrder = 0)
+    {
+        var newSavingThrow = SavingThrow.Create(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation, sortingOrder);
+        _savingThrows.Add(newSavingThrow);
+        AddDomainEvent(new SavingThrowCreatedEvent { CharacterId = ParentCharacter, SavingThrowId = newSavingThrow.Id });
+        return newSavingThrow;
     }
 
     /// <summary>

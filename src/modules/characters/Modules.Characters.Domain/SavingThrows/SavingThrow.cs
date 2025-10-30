@@ -11,13 +11,14 @@ namespace Starlights.Modules.Characters.Domain.SavingThrows;
 [Entity]
 public sealed class SavingThrow : EntityBase<SavingThrowId>
 {
-    public SavingThrow(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation)
+    public SavingThrow(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string? abilityScoreAbbreviation, double sortingOrder = 0)
         : base(SavingThrowId.New())
     {
         AssociatedRegistrationId = associatedRegistrationId;
         Name = name;
         AbilityScoreId = abilityScoreId;
         AbilityScoreAbbreviation = abilityScoreAbbreviation;
+        SortingOrder = sortingOrder;
         Recalculate();
     }
 
@@ -55,6 +56,11 @@ public sealed class SavingThrow : EntityBase<SavingThrowId>
     /// Gets the calculated bonus value for the current instance.
     /// </summary>
     public int CalculatedBonus { get; private set; }
+
+    /// <summary>
+    /// Gets the sorting order value used to determine the relative position of this item in sorted collections.
+    /// </summary>
+    public double SortingOrder { get; internal set; }
 
     /// <summary>
     /// Updates the ability score modifier if the specified value differs from the current modifier.
@@ -104,8 +110,8 @@ public sealed class SavingThrow : EntityBase<SavingThrowId>
     /// <summary>
     /// Creates a new instance of the SavingThrow class with the specified registration and ability score information.
     /// </summary>
-    internal static SavingThrow Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation)
+    internal static SavingThrow Create(RegistrationId associatedRegistrationId, string name, AbilityScoreId abilityScoreId, string abilityScoreAbbreviation, double sortingOrder = 0)
     {
-        return new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation);
+        return new(associatedRegistrationId, name, abilityScoreId, abilityScoreAbbreviation, sortingOrder);
     }
 }

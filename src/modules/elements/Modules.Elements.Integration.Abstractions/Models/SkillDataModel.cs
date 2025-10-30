@@ -14,4 +14,5 @@ public record SkillDataModel
     public Guid ElementId { get; init; }
     public string Name { get; init; }
     public Guid PrimaryAbilityElementId { get; init; }
+    public double SortingOrder { get; init; }
 }
