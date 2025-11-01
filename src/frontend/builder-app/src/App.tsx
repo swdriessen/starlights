@@ -1,45 +1,14 @@
 import { Link, Outlet } from "react-router-dom";
-import {
-  AnvilIcon,
-  AudioLines,
-  AudioLinesIcon,
-  MapPlusIcon,
-  MoreHorizontalIcon,
-  PackagePlus,
-  Plus,
-  PlusIcon,
-  SendHorizonalIcon,
-  SwordsIcon,
-} from "lucide-react";
+import { Plus, SwordsIcon } from "lucide-react";
 import { ModeToggle } from "./components/mode-toggle";
 import { GitHubIconButton } from "./components/navigation/github-icon-button";
 import "./App.css";
 import { NavigationMenuDemo } from "./pages/landing/components/navigation";
 import { Separator } from "./components/ui/separator";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "./components/ui/navigation-menu";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "./components/ui/navigation-menu";
 import { useIsMobile } from "./hooks/use-mobile";
-
-import { AlertTriangleIcon, CheckIcon, ChevronDownIcon, CopyIcon, ShareIcon, TrashIcon, UserRoundXIcon, VolumeOffIcon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 import { Badge } from "./components/ui/badge";
 
 function SizeIndicatorBadge({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -158,10 +127,6 @@ function App() {
       </div> */}
 
       <div className="container mx-auto px-4 ">
-        {/* <header className="">
-          <AppNavigation2 />
-        </header> */}
-        {/* <hr className="my-4" /> */}
         <main className="mt-12">
           <Outlet />
         </main>
