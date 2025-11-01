@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Pencil, MoreHorizontal, Heart, LucideHeart, HeartIcon, Delete, Trash, CircleX, MoveVertical, MoreVertical } from "lucide-react";
+import { Trash2, Pencil, MoreHorizontal, MoreVertical } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 

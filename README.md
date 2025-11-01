@@ -6,6 +6,12 @@ There is no public-facing website hosted for this project at this time, and more
 
 If you'd like to see this project grow, please consider giving it a star :star: — thank you!
 
+<hr />
+
+_This is a screenshot from the experimental Development UI in this project._
+
+![Demo UI](./assets/images/development-ui.png)
+
 ## Tech Stack
 
 ### Backend
@@ -64,20 +70,6 @@ Once running:
 2. Initialize the database by running the "Initialize Database" command on the `backend` resource, or manually hitting `/api/elements/initialize`
 3. Access the frontend at the external URL shown in the dashboard (typically `http://localhost:5173`)
 
-### Frontend Development
-
-The frontend is served via Vite and automatically configured by Aspire. Environment variables for the API base URL are injected via Aspire service discovery.
-
-For standalone frontend development:
-
-```bash
-cd src/frontend/builder-app
-npm install
-npm run dev
-```
-
-Set `VITE_API_BASE` in a `.env` file if running without Aspire.
-
 ## Tests
 
 - **Unit tests**: Located in `*.Tests` projects (Platform, Characters, Elements modules)
@@ -126,22 +118,6 @@ Each module follows internal layering:
 - **Static Port**: `61070` (configurable in [`src/aspire/Starlights.AppHost/AppHost.cs`](src/aspire/Starlights.AppHost/AppHost.cs))
 - **Migrations**: Automatic via migration workers at startup; EF Core migrations in respective `*.Data.EntityFramework` projects
 
-### Adding Migrations
-
-For Characters module:
-
-```powershell
-cd src/modules/characters/Modules.Characters.Data.EntityFramework
-dotnet ef migrations add MigrationName
-```
-
-For Elements module:
-
-```powershell
-cd src/modules/elements/Modules.Elements.Data.EntityFramework
-dotnet ef migrations add MigrationName
-```
-
 ## API Documentation
 
 In Development, the backend exposes:
@@ -151,33 +127,6 @@ In Development, the backend exposes:
 - **API prefix**: All endpoints under `/api`
 
 FastEndpoints are grouped by module and version (e.g., [`CharactersGroup`](src/modules/characters/Modules.Characters.Endpoints/CharactersGroup.cs)).
-
-## Frontend Structure
-
-The React frontend is organized as follows:
-
-- [`src/pages`](src/frontend/builder-app/src/pages): Route-based page components
-- [`src/lib/api`](src/frontend/builder-app/src/lib/api): API client functions and TanStack Query hooks
-- [`src/components`](src/frontend/builder-app/src/components): Reusable UI components (based on Shadcn)
-- [`src/lib/utils.ts`](src/frontend/builder-app/src/lib/utils.ts): Utility functions
-
-### Key Frontend Features
-
-- Character creation and management
-- Ability score adjustments
-- Class selection and level progression
-- Saving throws and skills display
-- Selection rules (proficiencies, languages, alignment, etc.)
-
-## Coding Guidelines
-
-See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for detailed coding practices, including:
-
-- C# conventions (nullable reference types, immutability, SOLID principles)
-- Modular monolith boundaries
-- FastEndpoints patterns
-- EF Core optimization strategies
-- Unit testing requirements (MSTest, FluentAssertions, Moq)
 
 ## Troubleshooting
 
@@ -195,9 +144,4 @@ This project is being developed in the open under the [MIT License](./LICENSE).
 
 ## Acknowledgements
 
-This project builds on experience developing [Aurora](https://www.aurorabuilder.com) and leverages modern .NET web tooling, including:
-
-- .NET Aspire for orchestration
-- FastEndpoints for API design
-- Entity Framework Core for data persistence
-- React ecosystem for frontend development
+This project builds on experience developing [Aurora](https://www.aurorabuilder.com).
