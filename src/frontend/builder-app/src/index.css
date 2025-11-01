@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
+@plugin "@tailwindcss/typography";
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -59,7 +59,7 @@
   --card-foreground: oklch(0.93 0 0);
   --popover: oklch(0.22 0 0);
   --popover-foreground: oklch(0.93 0 0);
-  --primary: oklch(0.58 0.1 277.46);
+  --primary: oklch(0.48 0.1 257.46);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.3 0.01 254);
   --secondary-foreground: oklch(0.93 0 0);
@@ -155,6 +155,7 @@
   /* --text-tiny--font-weight: 500; */
 
   --font-heading: Rubik, sans-serif;
+  --font-overpass: Overpass, sans-serif;
 }
 
 @layer base {

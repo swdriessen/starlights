@@ -41,7 +41,7 @@ internal sealed class GetSkillsEndpoint : EndpointWithoutRequest<GetSkillsRespon
 
         var response = new GetSkillsResponse
         {
-            Skills = [.. skillsComponent.Skills.AsSkillDataModels()]
+            Skills = [.. skillsComponent.Skills.OrderBy(x => x.SortingOrder).AsSkillDataModels()]
         };
 
         await Send.OkAsync(response, ct);

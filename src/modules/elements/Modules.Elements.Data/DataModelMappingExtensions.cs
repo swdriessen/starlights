@@ -57,18 +57,37 @@ public static class DataModelMappingExtensions
     public static AbilityDataModel AsAbilityDataModel(this Element element)
     {
         ArgumentNullException.ThrowIfNull(element, nameof(element));
-        return new AbilityDataModel(element.Id, element.Name, element.GetComponent<AbbreviationComponent>().Abbreviation);
+
+        var abbreviationComponent = element.GetComponent<AbbreviationComponent>();
+        var sortingComponent = element.GetComponent<SortingComponent>();
+
+        return new AbilityDataModel(element.Id, element.Name, abbreviationComponent.Abbreviation)
+        {
+            SortingOrder = sortingComponent.SortingOrder
+        };
     }
 
     public static SkillDataModel AsSkillDataModel(this Element element)
     {
         ArgumentNullException.ThrowIfNull(element, nameof(element));
-        return new SkillDataModel(element.Id, element.Name, element.GetComponent<PrimaryAbilityComponent>().PrimaryAbility);
+
+        var sortingComponent = element.GetComponent<SortingComponent>();
+
+        return new SkillDataModel(element.Id, element.Name, element.GetComponent<PrimaryAbilityComponent>().PrimaryAbility)
+        {
+            SortingOrder = sortingComponent.SortingOrder
+        };
     }
 
     public static SavingThrowDataModel AsSavingThrowDataModel(this Element element)
     {
         ArgumentNullException.ThrowIfNull(element, nameof(element));
-        return new SavingThrowDataModel(element.Id, element.Name, element.GetComponent<PrimaryAbilityComponent>().PrimaryAbility);
+
+        var sortingComponent = element.GetComponent<SortingComponent>();
+
+        return new SavingThrowDataModel(element.Id, element.Name, element.GetComponent<PrimaryAbilityComponent>().PrimaryAbility)
+        {
+            SortingOrder = sortingComponent.SortingOrder
+        };
     }
 }

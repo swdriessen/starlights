@@ -39,7 +39,7 @@ internal sealed class GetAbilityScoresEndpoint : EndpointWithoutRequest<GetAbili
 
         var abilities = character.GetRequiredComponent<AbilitiesComponent>();
 
-        var response = new GetAbilityScoresResponse { AbilityScores = abilities.AbilityScores.AsAbilityScoreDataModels() };
+        var response = new GetAbilityScoresResponse { AbilityScores = abilities.AbilityScores.OrderBy(x => x.SortingOrder).AsAbilityScoreDataModels() };
 
         await Send.OkAsync(response, ct);
     }

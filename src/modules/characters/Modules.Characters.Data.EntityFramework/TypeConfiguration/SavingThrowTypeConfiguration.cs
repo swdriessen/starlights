@@ -52,5 +52,9 @@ public class SavingThrowTypeConfiguration : IEntityTypeConfiguration<SavingThrow
         builder.Property(e => e.CalculatedBonus)
             .HasColumnName("calculated_bonus")
             .HasDefaultValue(0);
+
+        builder.Property(e => e.SortingOrder)
+            .HasColumnName("sorting_order")
+            .HasDefaultValue(0);
     }
 }

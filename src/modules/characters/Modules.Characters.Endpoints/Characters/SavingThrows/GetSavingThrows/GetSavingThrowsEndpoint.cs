@@ -39,7 +39,7 @@ internal sealed class GetSavingThrowsEndpoint : EndpointWithoutRequest<GetSaving
 
         var savingThrowsComponent = character.GetRequiredComponent<SavingThrowsComponent>();
 
-        var response = new GetSavingThrowsResponse { SavingThrows = savingThrowsComponent.SavingThrows.AsSavingThrowDataModels() };
+        var response = new GetSavingThrowsResponse { SavingThrows = savingThrowsComponent.SavingThrows.OrderBy(x => x.SortingOrder).AsSavingThrowDataModels() };
 
         await Send.OkAsync(response, ct);
     }

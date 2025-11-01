@@ -54,7 +54,7 @@ public sealed class SkillRegistrationBehavior : IRegistrationBehavior
 
         // create the skill for the character
         character.UpdateComponent<SkillsComponent>((component, _) =>
-            component.CreateSkill(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation));
+            component.CreateSkill(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation, associatedElement.SortingOrder));
     }
 
     private async Task<AbilityScore?> GetPrimaryAbilityScore(Character character, SkillDataModel skill)

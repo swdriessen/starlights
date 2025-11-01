@@ -15,4 +15,5 @@ public record AbilityDataModel
     public Guid ElementId { get; init; }
     public string Name { get; init; }
     public string Abbreviation { get; init; }
+    public double SortingOrder { get; init; }
 }

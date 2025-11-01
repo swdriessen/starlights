@@ -42,7 +42,7 @@ public sealed class CharacterAbilitiesUpdateServiceTests
     public void UpdateAbilityBaseScore_ShouldUpdateAbilityAndCascadeToSkillAndSavingThrow()
     {
         // Arrange
-        var str = _abilitiesComponent.CreateAbilityScore(RegistrationId.New(), "Strength", "STR");
+        var str = _abilitiesComponent.CreateAbilityScore(RegistrationId.New(), "Strength", "STR", 0);
         var skill = _skillsComponent.CreateSkill(RegistrationId.New(), "Athletics", str.Id, str.Abbreviation);
         var save = _savingThrowsComponent.CreateSavingThrow(RegistrationId.New(), "Strength Save", str.Id, str.Abbreviation);
         _character.ClearDomainEvents(); // clear creation events for a clean slate
@@ -70,7 +70,7 @@ public sealed class CharacterAbilitiesUpdateServiceTests
     {
         // Arrange
         var registrationId = RegistrationId.New();
-        var str = _abilitiesComponent.CreateAbilityScore(registrationId, "Strength", "STR");
+        var str = _abilitiesComponent.CreateAbilityScore(registrationId, "Strength", "STR", 0);
 
         // Act
         var actLow = () => _service.UpdateAbilityBaseScore(_character, str.Id, 0);
@@ -86,7 +86,7 @@ public sealed class CharacterAbilitiesUpdateServiceTests
     {
         // Arrange
         var registrationId = RegistrationId.New();
-        var dex = _abilitiesComponent.CreateAbilityScore(registrationId, "Dexterity", "DEX"); // base 10 mod 0
+        var dex = _abilitiesComponent.CreateAbilityScore(registrationId, "Dexterity", "DEX", 0); // base 10 mod 0
         var skill = _skillsComponent.CreateSkill(registrationId, "Stealth", dex.Id, dex.Abbreviation);
         var save = _savingThrowsComponent.CreateSavingThrow(registrationId, "Dex Save", dex.Id, dex.Abbreviation);
         _character.ClearDomainEvents();
@@ -110,7 +110,7 @@ public sealed class CharacterAbilitiesUpdateServiceTests
     {
         // Arrange
         var registrationId = RegistrationId.New();
-        var intScore = _abilitiesComponent.CreateAbilityScore(registrationId, "Intelligence", "INT"); // base 10 mod 0
+        var intScore = _abilitiesComponent.CreateAbilityScore(registrationId, "Intelligence", "INT", 0); // base 10 mod 0
         var skill = _skillsComponent.CreateSkill(registrationId, "Arcana", intScore.Id, intScore.Abbreviation);
         var save = _savingThrowsComponent.CreateSavingThrow(registrationId, "Int Save", intScore.Id, intScore.Abbreviation);
         _character.ClearDomainEvents();

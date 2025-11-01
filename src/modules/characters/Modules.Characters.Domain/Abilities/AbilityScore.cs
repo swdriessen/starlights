@@ -7,12 +7,13 @@ namespace Starlights.Modules.Characters.Domain.Abilities;
 [Entity]
 public sealed class AbilityScore : EntityBase<AbilityScoreId>
 {
-    private AbilityScore(RegistrationId associatedRegistrationId, string name, string abbreviation)
+    private AbilityScore(RegistrationId associatedRegistrationId, string name, string abbreviation, double sortingOrder = 0)
         : base(AbilityScoreId.New())
     {
         AssociatedRegistrationId = associatedRegistrationId;
         Name = name;
         Abbreviation = abbreviation;
+        SortingOrder = sortingOrder;
         Recalculate();
     }
 
@@ -51,6 +52,11 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// Persisted and updated when <see cref="CalculatedScore"/> changes.
     /// </summary>
     public int CalculatedModifier { get; private set; }
+
+    /// <summary>
+    /// Gets the sorting order value used to determine the relative position of this item in sorted collections.
+    /// </summary>
+    public double SortingOrder { get; internal set; }
 
     /// <summary>
     /// Updates the base score to the specified value if it differs from the current value.
@@ -96,8 +102,8 @@ public sealed class AbilityScore : EntityBase<AbilityScoreId>
     /// <summary>
     /// Creates a new instance of the AbilityScore class with the specified registration identifier, name, and abbreviation.
     /// </summary>
-    internal static AbilityScore Create(RegistrationId associatedRegistrationId, string name, string abbreviation)
+    internal static AbilityScore Create(RegistrationId associatedRegistrationId, string name, string abbreviation, double sortingOrder = 0)
     {
-        return new AbilityScore(associatedRegistrationId, name, abbreviation);
+        return new AbilityScore(associatedRegistrationId, name, abbreviation, sortingOrder);
     }
 }

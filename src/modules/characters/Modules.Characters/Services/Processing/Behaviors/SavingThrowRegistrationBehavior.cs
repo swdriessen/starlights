@@ -53,7 +53,7 @@ public sealed class SavingThrowRegistrationBehavior : IRegistrationBehavior
         character.UpdateComponent<SavingThrowsComponent>((component, _) =>
         {
             // create the saving throw in the character
-            component.CreateSavingThrow(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation);
+            component.CreateSavingThrow(newRegistration.Id, associatedElement.Name, primaryScore.Id, primaryScore.Abbreviation, associatedElement.SortingOrder);
         });
     }
 

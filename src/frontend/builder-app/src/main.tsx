@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import LandingPage from "./pages/landing/Index.tsx";
+import { LandingPage2 } from "./pages/landing/Index.tsx";
 import AboutPage from "./pages/about/Index.tsx";
 import CharactersPage from "./pages/characters/Index.tsx";
 import CharactersCreatePage from "./pages/characters/create/Index.tsx";
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <LandingPage /> },
+      { index: true, element: <LandingPage2 /> },
       { path: "about", element: <AboutPage /> },
       { path: "characters", element: <CharactersPage /> },
       { path: "characters/:id", element: <CharactersDetailsPage /> },

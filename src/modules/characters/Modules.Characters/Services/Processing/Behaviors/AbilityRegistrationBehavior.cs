@@ -43,7 +43,7 @@ public sealed class AbilityRegistrationBehavior : IRegistrationBehavior
         _logger.LogInformation("Creating ability score '{AbilityName}' [character='{CharacterId}']", associatedElement.Name, character.Id.Value);
 
         character.UpdateComponent<AbilitiesComponent>((abilities, _) =>
-            abilities.CreateAbilityScore(newRegistration.Id, associatedElement.Name, associatedElement.Abbreviation));
+            abilities.CreateAbilityScore(newRegistration.Id, associatedElement.Name, associatedElement.Abbreviation, associatedElement.SortingOrder));
     }
 
     public Task Unregister(Registration existingRegistration)

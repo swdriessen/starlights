@@ -9,7 +9,7 @@ h6 {
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
 }
-h1 {
+/* h1 {
   font-size: 2rem;
 }
 h2 {
@@ -26,14 +26,24 @@ h5 {
 }
 h6 {
   font-size: 0.875rem;
-}
+} */
 .font-heading {
   font-family: var(--font-heading);
   letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
   font-weight: var(--font-weight-semibold);
-  font-size: 1.25rem;
+  text-transform: uppercase;
+  /* font-size: 1.25rem; */
 }
+.font-overpass {
+  font-family: var(--font-overpass);
+  /* letter-spacing: var(--tracking-wide); */
+  /* text-transform: uppercase; */
+  /* font-weight: var(--font-weight-semibold); */
+  /* font-size: 1.25rem; */
+}
+/* p {
+  font-family: var(--font-overpass);
+} */
 /* 
 p {
   font-family: var(--font-body);
@@ -41,9 +51,9 @@ p {
   font-size: 0.9rem;
 } */
 
-dl {
+/* dl {
   font-size: 0.9rem;
   dt {
     font-weight: var(--font-weight-semibold);
   }
-}
+} */

@@ -65,9 +65,9 @@ public sealed class AbilitiesComponent : CharacterComponentBase
     /// <summary>
     /// Creates a new ability score for the character.
     /// </summary>
-    public AbilityScore CreateAbilityScore(RegistrationId associatedRegistrationId, string name, string abbreviation)
+    public AbilityScore CreateAbilityScore(RegistrationId associatedRegistrationId, string name, string abbreviation, double sortingOrder)
     {
-        var abilityScore = AbilityScore.Create(associatedRegistrationId, name, abbreviation);
+        var abilityScore = AbilityScore.Create(associatedRegistrationId, name, abbreviation, sortingOrder);
 
         AddDomainEvent(new AbilityScoreCreatedEvent() { CharacterId = ParentCharacter, AbilityScoreId = abilityScore.Id });
 
