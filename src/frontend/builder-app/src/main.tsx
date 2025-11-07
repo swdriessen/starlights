@@ -44,7 +44,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark" storageKey="starlights-ui-theme">
         <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+        {/* <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> */}
         <Toaster />
       </ThemeProvider>
     </QueryClientProvider>

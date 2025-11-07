@@ -419,5 +419,7 @@ FodyWeavers.xsd
 
 
 # Local Customized Chatmodes
-/.github/chatmodes/
+/.github/chatmodes/local/
+/.github/prompts/local/
+/.github/instructions/local/
 /.vscode/tasks.json

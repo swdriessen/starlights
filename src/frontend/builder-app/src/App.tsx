@@ -14,22 +14,22 @@ import { Badge } from "./components/ui/badge";
 function SizeIndicatorBadge({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={className} {...props}>
-      <Badge variant={"outline"} className="uppercase block sm:hidden">
+      <Badge variant={"secondary"} className="uppercase block sm:hidden">
         xs
       </Badge>
-      <Badge variant={"outline"} className="uppercase hidden sm:block md:hidden">
+      <Badge variant={"secondary"} className="uppercase hidden sm:block md:hidden">
         sm
       </Badge>
-      <Badge variant={"outline"} className="uppercase hidden md:block lg:hidden">
+      <Badge variant={"secondary"} className="uppercase hidden md:block lg:hidden">
         md
       </Badge>
-      <Badge variant={"outline"} className="uppercase hidden lg:block xl:hidden">
+      <Badge variant={"secondary"} className="uppercase hidden lg:block xl:hidden">
         lg
       </Badge>
-      <Badge variant={"outline"} className="uppercase hidden xl:block 2xl:hidden ">
+      <Badge variant={"secondary"} className="uppercase hidden xl:block 2xl:hidden">
         xl
       </Badge>
-      <Badge variant={"outline"} className="uppercase hidden 2xl:block">
+      <Badge variant={"secondary"} className="uppercase hidden 2xl:block">
         2xl
       </Badge>
     </div>
@@ -102,7 +102,7 @@ function MainNavigation() {
           </div>
           <Separator orientation="vertical" className="min-h-5 mx-4 hidden lg:block" />
           <div className="flex items-center justify-end gap-2">
-            <SizeIndicatorBadge />
+            <SizeIndicatorBadge className="" />
             <GitHubIconButton />
             <ModeToggle />
           </div>
@@ -121,9 +121,7 @@ function App() {
         </header>
       </div>
       {/* <div className="border-b border-b-slate-200/50 dark:border-b-slate-700/50">
-        <div className="px-4 md:px-0 py-2 container mx-auto items-center justify-center flex">
-          <NavigationMenuDemo />
-        </div>
+        <NavigationMenuDemo />
       </div> */}
 
       <div className="container mx-auto px-4 ">
