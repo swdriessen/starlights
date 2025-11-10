@@ -41,7 +41,7 @@ function MainNavigation() {
   return (
     <>
       <nav className="flex items-center justify-between h-16">
-        <div className="flex items-center justify-start gap-2">
+        <div className="flex items-center justify-start gap-2 ">
           <Link to="/" className=" flex items-center font-heading">
             <SwordsIcon className="h-6 w-6 mr-3  " />
             <span className="hidden lg:inline">Project Starlights</span>
@@ -116,7 +116,7 @@ function App() {
   return (
     <>
       <div className="sticky top-0 bg-background/80 backdrop-blur-md z-20 border-b border-b-slate-200/50 dark:border-b-slate-700/50">
-        <header className="px-4">
+        <header className=" container mx-auto px-4 ">
           <MainNavigation />
         </header>
       </div>

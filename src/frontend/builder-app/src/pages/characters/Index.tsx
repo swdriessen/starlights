@@ -3,18 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  AnvilIcon,
-  FileSpreadsheetIcon,
-  FolderHeartIcon,
-  HamburgerIcon,
-  MenuIcon,
-  MoreHorizontalIcon,
-  MoreVertical,
-  MoreVerticalIcon,
-  PlusIcon,
-  Trash2Icon,
-} from "lucide-react";
+import { AnvilIcon, FileSpreadsheetIcon, FolderHeartIcon, MenuIcon, MoreHorizontalIcon, MoreVertical, PlusIcon, Trash2Icon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +22,8 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 
 function CharacterCardCollectionSquares() {
   const { data: characterCards } = useCharacterCards();
@@ -282,6 +273,21 @@ function CharacterCardCollectionSquares2() {
   return (
     <div>
       <CharactersSectionHeader title="My Character Collection" />
+
+      {characterCards === undefined && (
+        <div>
+          <Empty className="border border-dashed">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Spinner />
+              </EmptyMedia>
+              <EmptyTitle>Gathering Adventurers</EmptyTitle>
+              <EmptyDescription>We are currently gathering your adventurers. Please wait in the tavern.</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        </div>
+      )}
+
       {characterCards && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
           {characterCards.characters.map((card) => (

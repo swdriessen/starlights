@@ -1,7 +1,7 @@
 import { useCharacterCreationOptions, useCharacterPortraitOptions, useCreateCharacter } from "@/lib/api/characters/queries";
 import { CharacterCreationOptionsSelect } from "./character-creation-options-select";
 import { useMemo } from "react";
-import { Check, CheckCheckIcon, CheckCircleIcon, CheckIcon } from "lucide-react";
+import { Check, CheckCheckIcon, CheckCircleIcon, CheckIcon, OctagonAlertIcon, RefreshCcwIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,35 @@ import ProseSection from "@/components/prose-section";
 import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet } from "@/components/ui/field";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Spinner } from "@/components/ui/spinner";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { cn } from "@/lib/utils";
 
+function PortraitsLoading() {
+  return (
+    <Empty className="size-full">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Spinner />
+        </EmptyMedia>
+        <EmptyDescription>The portraits are loading.</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  );
+}
+
+function PortraitsError({ errorMessage }: { errorMessage: string }) {
+  return (
+    <Empty className="">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <OctagonAlertIcon className="text-destructive" />
+        </EmptyMedia>
+        <EmptyDescription>{errorMessage}</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  );
+}
 const schema = z.object({
   CharacterCreationOptionId: z.string().min(1, "Please select an option"),
   Name: z.string().trim().min(1, "Please enter a name"),
@@ -68,8 +96,12 @@ function CharacterCreation() {
               </FieldDescription>
             </FieldContent>
             <div className="md:min-w-80">
-              {optionsLoading && <p>Loading Options...</p>}
-              {optionsIsError && <p>Error: {optionsError.message}</p>}
+              {optionsLoading && <Spinner className="m-2" />}
+              {optionsIsError && (
+                <p className="text-sm flex items-center gap-2">
+                  <OctagonAlertIcon className="text-destructive" /> Failed to load character options: {optionsError.message}
+                </p>
+              )}
               {options && (
                 <>
                   <CharacterCreationOptionsSelect
@@ -100,20 +132,22 @@ function CharacterCreation() {
           </FieldContent>
           <ScrollArea className="h-60 rounded-md border border-dashed whitespace-nowrap">
             <div className="p-2">
-              {portraitsLoading && <p>Loading Portraits...</p>}
-              {portraitsIsError && <p>Error: {portraitsError.message}</p>}
-              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-12 gap-2">
+              {portraitsLoading && <PortraitsLoading />}
+              {portraitsIsError && <PortraitsError errorMessage={portraitsError.message} />}
+              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-12 gap-2">
                 {portraits &&
                   portraits.portraits.map((portrait, index) => (
                     <div
-                      className="overflow-hidden rounded relative cursor-pointer"
+                      className={cn("overflow-hidden rounded relative hover:ring-2 hover:ring-tertiary transition-all", {
+                        "ring-2 ring-tertiary": selectedPortrait === portrait.url,
+                      })}
                       key={index}
                       onClick={() => setValue("PortraitUrl", portrait.url, { shouldValidate: true })}
                     >
                       <img className="size-full aspect-square object-cover" src={portrait.url} alt={portrait.description} title={portrait.description} />
                       {selectedPortrait === portrait.url && (
                         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                          <CheckIcon className="text-white" />
+                          <CheckIcon className="text-tertiary-200" size={36} />
                         </div>
                       )}
                     </div>
@@ -123,6 +157,7 @@ function CharacterCreation() {
             </div>
           </ScrollArea>
         </Field>
+        <FieldSeparator />
       </FieldSet>
 
       <div className="flex items-center justify-end gap-3">

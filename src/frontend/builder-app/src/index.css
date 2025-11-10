@@ -43,18 +43,18 @@
   --secondary-950: oklch(0.2887 0.0198 254.2);
   --secondary-1000: oklch(0.2251 0.0134 255.72);
 
-  --tertiary-50: oklch(0.9878 0.0142 99.65);
-  --tertiary-100: oklch(0.9735 0.0387 97.7);
-  --tertiary-200: oklch(0.9453 0.0704 97.1);
-  --tertiary-300: oklch(0.905 0.0995 94.77);
-  --tertiary-400: oklch(0.8271 0.109 92.68);
-  --tertiary-500: oklch(0.7947 0.1009 89.89);
-  --tertiary-600: oklch(0.6806 0.0888 88.72);
-  --tertiary-700: oklch(0.5539 0.0739 87.35);
-  --tertiary-800: oklch(0.4759 0.0623 85.83);
-  --tertiary-900: oklch(0.4211 0.0519 82.7);
-  --tertiary-950: oklch(0.2861 0.0361 81.85);
-  --tertiary-1000: oklch(0.1981 0.0257 80.36);
+  --tertiary-50: oklch(0.9886 0.0144 84.24);
+  --tertiary-100: oklch(0.9655 0.0427 83.3);
+  --tertiary-200: oklch(0.9293 0.0868 82.47);
+  --tertiary-300: oklch(0.885 0.1252 79.48);
+  --tertiary-400: oklch(0.8333 0.1393 77.3);
+  --tertiary-500: oklch(0.7374 0.1365 74.05);
+  --tertiary-600: oklch(0.6693 0.1279 72.4);
+  --tertiary-700: oklch(0.5552 0.1146 71.07);
+  --tertiary-800: oklch(0.4741 0.0964 68.53);
+  --tertiary-900: oklch(0.416 0.079 66.84);
+  --tertiary-950: oklch(0.2809 0.0545 65.65);
+  --tertiary-1000: oklch(0.1929 0.0383 64.4);
 
   --background: var(--base-50);
   --foreground: var(--base-800);
@@ -66,7 +66,7 @@
   --primary-foreground: var(--color-white);
   --secondary: var(--secondary-600);
   --secondary-foreground: var(--color-white);
-  --tertiary: var(--tertiary-600);
+  --tertiary: var(--tertiary-500);
   --tertiary-foreground: var(--color-white);
   --muted: var(--base-100);
   --muted-foreground: var(--base-600);
