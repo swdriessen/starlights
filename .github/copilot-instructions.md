@@ -4,9 +4,9 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 
 ## Project Overview
 
-- **Backend**: .NET 9 Web API (C#) using FastEndpoints in a modular monolith architecture
+- **Backend**: .NET 10 Web API (C#) using FastEndpoints in a modular monolith architecture
 - **Frontend**: React 19 (TypeScript) with Vite, TanStack Query, React Router, Tailwind CSS, and Shadcn UI
-- **Data**: Entity Framework Core 9 with SQL Server
+- **Data**: Entity Framework Core 10 with SQL Server
 - **Orchestration**: .NET Aspire 9.5 for local development and Azure deployment
 - **Testing**: MSTest for unit tests; FluentAssertions for assertions; Moq for mocking
 - **Observability**: Serilog for logging, OpenTelemetry for distributed tracing and metrics
