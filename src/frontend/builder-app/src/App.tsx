@@ -14,22 +14,22 @@ import { Badge } from "./components/ui/badge";
 function SizeIndicatorBadge({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={className} {...props}>
-      <Badge variant={"secondary"} className="uppercase block sm:hidden">
+      <Badge variant={"default"} className="uppercase block sm:hidden">
         xs
       </Badge>
-      <Badge variant={"secondary"} className="uppercase hidden sm:block md:hidden">
+      <Badge variant={"default"} className="uppercase hidden sm:block md:hidden">
         sm
       </Badge>
-      <Badge variant={"secondary"} className="uppercase hidden md:block lg:hidden">
+      <Badge variant={"default"} className="uppercase hidden md:block lg:hidden">
         md
       </Badge>
-      <Badge variant={"secondary"} className="uppercase hidden lg:block xl:hidden">
+      <Badge variant={"default"} className="uppercase hidden lg:block xl:hidden">
         lg
       </Badge>
-      <Badge variant={"secondary"} className="uppercase hidden xl:block 2xl:hidden">
+      <Badge variant={"default"} className="uppercase hidden xl:block 2xl:hidden">
         xl
       </Badge>
-      <Badge variant={"secondary"} className="uppercase hidden 2xl:block">
+      <Badge variant={"default"} className="uppercase hidden 2xl:block">
         2xl
       </Badge>
     </div>
