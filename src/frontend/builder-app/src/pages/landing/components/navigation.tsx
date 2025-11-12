@@ -52,12 +52,22 @@ export function NavigationMenuDemo() {
   const isMobile = useIsMobile();
 
   return (
-    <NavigationMenu viewport={isMobile} className="z-10">
-      <NavigationMenuList className="flex-wrap">
+    <NavigationMenu viewport={true} className="z-10 h-16 max-w-screen ">
+      <NavigationMenuList className="flex justify-between flex-wrap w-screen items-center px-4">
+        <span className="flex-1  flex">
+          <CircleIcon className="mr-2 h-4 w-4" />
+        </span>
+        <span className="flex-grow "></span>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Collections</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <Link to="/docs">Docs</Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className=" ">
+          <NavigationMenuTrigger className="">Collections</NavigationMenuTrigger>
+          <NavigationMenuContent className="max-w-[100vw]">
+            <ul className="grid gap-2 w-screen lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <a
@@ -89,8 +99,8 @@ export function NavigationMenuDemo() {
 
         <NavigationMenuItem>
           <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-2 sm:w-[400px] md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+          <NavigationMenuContent className="max-w-[100vw]">
+            <ul className="grid gap-2  w-screen md:grid-cols-2 ">
               {components.map((component) => (
                 <ListItem key={component.title} title={component.title} href={component.href}>
                   {component.description}
@@ -99,7 +109,7 @@ export function NavigationMenuDemo() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-
+        {/* 
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
             <Link to="/docs">Docs</Link>
@@ -179,7 +189,12 @@ export function NavigationMenuDemo() {
               </li>
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
+
+        <span className="flex-grow "></span>
+        <span className="flex-1  flex justify-end">
+          <CircleIcon className="mr-2 h-4 w-4" />
+        </span>
       </NavigationMenuList>
     </NavigationMenu>
   );

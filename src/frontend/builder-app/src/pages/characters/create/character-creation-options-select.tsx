@@ -1,6 +1,6 @@
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { CharacterCreationOptions } from "@/lib/api/characters/queries";
+import { useEffect } from "react";
 
 export function CharacterCreationOptionsSelect({
   characterCreationOptions,
@@ -9,14 +9,18 @@ export function CharacterCreationOptionsSelect({
   characterCreationOptions: CharacterCreationOptions | undefined;
   onValueChange?: (value: string) => void;
 }) {
+  const defaultValue = characterCreationOptions?.options[0]?.id;
+
+  useEffect(() => {
+    if (defaultValue && onValueChange) {
+      onValueChange(defaultValue);
+    }
+  }, [defaultValue, onValueChange]);
   return (
     <>
-      <Label htmlFor="charactername" className="">
-        Creation Option
-      </Label>
-      <Select onValueChange={onValueChange}>
+      <Select onValueChange={onValueChange} defaultValue={defaultValue}>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select a character creation option" />
+          <SelectValue placeholder="Select your creation option" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
