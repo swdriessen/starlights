@@ -17,8 +17,8 @@ _This is a screenshot from the experimental Development UI in this project._
 ### Backend
 
 - **Modular Monolith Architecture**: Domain modules (Elements module for game data, Characters module for character building) built on a shared platform layer
-- **Entity Framework Core 9 + SQL Server**: Data persistence with explicit configurations and migrations
-- **.NET 9 Web API**: Using FastEndpoints for REPR pattern endpoints
+- **Entity Framework Core 10 + SQL Server**: Data persistence with explicit configurations and migrations
+- **.NET 10 Web API**: Using FastEndpoints for REPR pattern endpoints
 - **.NET Aspire 9.5**: Local orchestration and Azure deployment ready
 - **Observability**: Serilog for logging, OpenTelemetry for distributed tracing and metrics
 
@@ -42,7 +42,7 @@ _This is a screenshot from the experimental Development UI in this project._
 ## Prerequisites
 
 - Windows, macOS, or Linux with Docker (required for local SQL Server container via Aspire)
-- .NET SDK 9
+- .NET SDK 10
 - Node.js 20+
 - Docker Desktop (or compatible container runtime)
 

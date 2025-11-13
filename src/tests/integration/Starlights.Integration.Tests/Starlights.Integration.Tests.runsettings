@@ -2,7 +2,7 @@
   <RunConfiguration>
     <ResultsDirectory>TestResults</ResultsDirectory>
     <TargetPlatform>x64</TargetPlatform>
-    <TargetFrameworkVersion>net9.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>net10.0</TargetFrameworkVersion>
     <TestSessionTimeout>300000</TestSessionTimeout>
     <CollectSourcesInformation>false</CollectSourcesInformation>
   </RunConfiguration>

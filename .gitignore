@@ -423,3 +423,7 @@ FodyWeavers.xsd
 /.github/prompts/local/
 /.github/instructions/local/
 /.vscode/tasks.json
+
+# temp folder content
+/src/frontend/builder-app/public/temp
+/tools/converter
