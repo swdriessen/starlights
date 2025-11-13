@@ -31,7 +31,7 @@ if (builder.ExecutionContext.IsRunMode)
 
 if (builder.ExecutionContext.IsRunMode)
 {
-    builder.AddNpmApp("react-builder-app", "../../frontend/builder-app", "dev")
+    builder.AddJavaScriptApp("react-builder-app", "../../frontend/builder-app", "dev")
         .WithEnvironment("BROWSER", "none")
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()
@@ -49,7 +49,7 @@ if (builder.ExecutionContext.IsRunMode)
         .WithAnonymousAccess()
         .WithExplicitStart();
 
-    var app = builder.AddNpmApp("dev-tunnel-react-builder-app", "../../frontend/builder-app", "dev")
+    var app = builder.AddJavaScriptApp("dev-tunnel-react-builder-app", "../../frontend/builder-app", "dev")
         .WithIconName("Cloud", IconVariant.Regular)
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()
