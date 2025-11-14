@@ -13,7 +13,7 @@ public static class TestContextExtensions
     public static CancellationToken GetTestCancellationToken(this IIntegrationHost host)
     {
         var context = host.GetTestContext();
-        return context.CancellationTokenSource.Token;
+        return context.CancellationToken;
     }
 
     /// <summary>

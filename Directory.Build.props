@@ -6,8 +6,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup Label="Test Projects" Condition="$(MSBuildProjectName.EndsWith('Tests'))">
-		<LangVersion>latest</LangVersion>
 		<TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+		<MSTestAnalysisMode>Recommended</MSTestAnalysisMode>
 	</PropertyGroup>
 
 	<ItemGroup Label="Test Projects" Condition="$(MSBuildProjectName.EndsWith('Tests'))">

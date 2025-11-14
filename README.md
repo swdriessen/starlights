@@ -19,7 +19,7 @@ _This is a screenshot from the experimental Development UI in this project._
 - **Modular Monolith Architecture**: Domain modules (Elements module for game data, Characters module for character building) built on a shared platform layer
 - **Entity Framework Core 10 + SQL Server**: Data persistence with explicit configurations and migrations
 - **.NET 10 Web API**: Using FastEndpoints for REPR pattern endpoints
-- **.NET Aspire 9.5**: Local orchestration and Azure deployment ready
+- **.NET Aspire 13**: Local orchestration and Azure deployment ready
 - **Observability**: Serilog for logging, OpenTelemetry for distributed tracing and metrics
 
 ### Frontend (Experimental)
