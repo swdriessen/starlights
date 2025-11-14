@@ -54,7 +54,7 @@ public class StatisticValuesGroup
         }
 
         ref var existing = ref CollectionsMarshal.GetValueRefOrAddDefault(_statisticValues, statisticValue.Source, out var exists);
-        if (exists)
+        if (exists && existing is not null)
         {
             existing = existing with { Value = existing.Value + statisticValue.Value };
         }
