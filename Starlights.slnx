@@ -1,0 +1,84 @@
+<Solution>
+  <Folder Name="/solution files/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path=".runsettings" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/apps/">
+    <Project Path="src/apps/Starlights.Application/Starlights.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/aspire/">
+    <Project Path="src/aspire/Starlights.AppHost/Starlights.AppHost.csproj" />
+    <Project Path="src/aspire/Starlights.ServiceDefaults/Starlights.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/frontend/" />
+  <Folder Name="/src/frontend/builder-app/">
+    <Project Path="src/frontend/builder-app/Starlights.Builder.React.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/src/modules/" />
+  <Folder Name="/src/modules/characters/">
+    <Project Path="src/modules/characters/Modules.Characters.Data.EntityFramework/Modules.Characters.Data.EntityFramework.csproj" />
+    <Project Path="src/modules/characters/Modules.Characters.Data/Modules.Characters.Data.csproj" />
+    <Project Path="src/modules/characters/Modules.Characters.Domain/Modules.Characters.Domain.csproj" />
+    <Project Path="src/modules/characters/Modules.Characters.Endpoints/Modules.Characters.Endpoints.csproj" />
+    <Project Path="src/modules/characters/Modules.Characters/Modules.Characters.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/characters/infrastructure/">
+    <Project Path="src/modules/characters/Modules.Characters.Data.EntityFramework.EventProcessing/Modules.Characters.Data.EntityFramework.EventProcessing.csproj" />
+    <Project Path="src/modules/characters/Modules.Characters.Data.EntityFramework.MigrationService/Modules.Characters.Data.EntityFramework.MigrationService.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/characters/tests/">
+    <Project Path="src/modules/characters/Modules.Characters.Tests/Modules.Characters.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/elements/">
+    <Project Path="src/modules/elements/Modules.Elements.Data.EntityFramework/Modules.Elements.Data.EntityFramework.csproj" />
+    <Project Path="src/modules/elements/Modules.Elements.Data/Modules.Elements.Data.csproj" />
+    <Project Path="src/modules/elements/Modules.Elements.Domain/Modules.Elements.Domain.csproj" />
+    <Project Path="src/modules/elements/Modules.Elements.Endpoints/Modules.Elements.Endpoints.csproj" />
+    <Project Path="src/modules/elements/Modules.Elements/Modules.Elements.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/elements/infrastructure/">
+    <Project Path="src/modules/elements/Modules.Elements.Data.EntityFramework.MigrationService/Modules.Elements.Data.EntityFramework.MigrationService.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/elements/integration/">
+    <Project Path="src/modules/elements/Modules.Elements.Integration.Abstractions/Modules.Elements.Integration.Abstractions.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/elements/tests/">
+    <Project Path="src/modules/elements/Modules.Elements.Tests/Modules.Elements.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/platform/">
+    <Project Path="src/platform/Starlights.Platform.Data/Starlights.Platform.Data.csproj" />
+    <Project Path="src/platform/Starlights.Platform.Hosting.Abstractions/Starlights.Platform.Hosting.Abstractions.csproj" />
+    <Project Path="src/platform/Starlights.Platform.Hosting/Starlights.Platform.Hosting.csproj" />
+    <Project Path="src/platform/Starlights.Platform/Starlights.Platform.csproj" />
+  </Folder>
+  <Folder Name="/src/platform/components/">
+    <Project Path="src/platform/components/Starlights.Platform.Components.Data.EntityFramework.Tests/Starlights.Platform.Components.Data.EntityFramework.Tests.csproj" />
+    <Project Path="src/platform/components/Starlights.Platform.Components.Data.EntityFramework/Starlights.Platform.Components.Data.EntityFramework.csproj" />
+    <Project Path="src/platform/components/Starlights.Platform.Components.FastEndpoints/Starlights.Platform.Components.FastEndpoints.csproj" />
+    <Project Path="src/platform/components/Starlights.Platform.Components.Serilog/Starlights.Platform.Components.Serilog.csproj" />
+    <Project Path="src/platform/components/Starlights.Platform.Eventing.EventPublisher/Starlights.Platform.Eventing.EventPublisher.csproj" />
+  </Folder>
+  <Folder Name="/src/platform/tests/">
+    <Project Path="src/platform/Starlights.Platform.Tests/Starlights.Platform.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/source-generators/">
+    <Project Path="src/source-generators/Starlights.Platform.SourceGenerators.Entities.Attributes/Starlights.Platform.SourceGenerators.Entities.Attributes.csproj" />
+    <Project Path="src/source-generators/Starlights.Platform.SourceGenerators.Tests/Starlights.Platform.SourceGenerators.Tests.csproj" />
+    <Project Path="src/source-generators/Starlights.Platform.SourceGenerators/Starlights.Platform.SourceGenerators.csproj" />
+  </Folder>
+  <Folder Name="/src/systems/" />
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/integration/">
+    <Project Path="src/tests/integration/Starlights.Integration.Tests/Starlights.Integration.Tests.csproj" />
+  </Folder>
+</Solution>
