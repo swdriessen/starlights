@@ -1,9 +1,8 @@
 // "use client";
 
 import * as React from "react";
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
+import { CircleIcon } from "lucide-react";
 
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -49,8 +48,6 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export function NavigationMenuDemo() {
-  const isMobile = useIsMobile();
-
   return (
     <NavigationMenu viewport={true} className="z-10 h-16 max-w-screen ">
       <NavigationMenuList className="flex justify-between flex-wrap w-screen items-center px-4">

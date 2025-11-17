@@ -1,21 +1,20 @@
 import { useCharacterCreationOptions, useCharacterPortraitOptions, useCreateCharacter } from "@/lib/api/characters/queries";
 import { CharacterCreationOptionsSelect } from "./character-creation-options-select";
 import { useMemo } from "react";
-import { Check, CheckCheckIcon, CheckCircleIcon, CheckIcon, OctagonAlertIcon, RefreshCcwIcon } from "lucide-react";
+import { CheckIcon, OctagonAlertIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Label } from "@/components/ui/label";
 import ProseSection from "@/components/prose-section";
 import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet } from "@/components/ui/field";
-import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia } from "@/components/ui/empty";
 import { cn } from "@/lib/utils";
+import { PageContent } from "@/pages/layouts/page-content";
 
 function PortraitsLoading() {
   return (
@@ -108,7 +107,7 @@ function CharacterCreation() {
                     characterCreationOptions={options}
                     onValueChange={(v) => setValue("CharacterCreationOptionId", v, { shouldValidate: false })}
                   />
-                  {errors.CharacterCreationOptionId && <p className="text-sm text-red-600 mt-1">{errors.CharacterCreationOptionId.message}</p>}
+                  {errors.CharacterCreationOptionId && <p className="text-sm text-destructive-600 mt-1">{errors.CharacterCreationOptionId.message}</p>}
                 </>
               )}
             </div>
@@ -164,15 +163,29 @@ function CharacterCreation() {
         <Button type="submit" variant="default" disabled={!canSubmit} className="w-full sm:w-auto">
           {createMutation.isPending || isSubmitting ? "Creating..." : "Create Character"}
         </Button>
-        {createMutation.isError && <p className="text-sm text-red-600">{createMutation.error?.message}</p>}
+        {createMutation.isError && <p className="text-sm text-destructive-600">{createMutation.error?.message}</p>}
       </div>
     </form>
   );
 }
+
 export default function CharactersCreatePage() {
   return (
     <>
-      <div className="flex-row md:flex gap-2">
+      <PageContent>
+        <div className="flex-row md:flex gap-2">
+          <ProseSection className="flex-grow">
+            <h1 className="mb-0">Create New Character</h1>
+            <p className="mt-0">Use the form below to create a new character for your adventures.</p>
+          </ProseSection>
+        </div>
+      </PageContent>
+
+      <PageContent>
+        <CharacterCreation />
+      </PageContent>
+
+      {/* <div className="flex-row md:flex gap-2">
         <ProseSection className="flex-grow">
           <h1 className="mb-0">Create New Character</h1>
           <p className="mt-0">Use the form below to create a new character for your adventures.</p>
@@ -185,7 +198,7 @@ export default function CharactersCreatePage() {
         <CardContent>
           <CharacterCreation />
         </CardContent>
-      </Card>
+      </Card> */}
     </>
   );
 }

@@ -10,7 +10,7 @@ export function ModeToggle() {
       <Toggle
         size="sm"
         variant="default"
-        className="group data-[state=on]:hover:bg-muted  data-[state=on]:bg-transparent"
+        className="group hover:bg-accent/50 data-[state=on]:hover:bg-accent data-[state=on]:bg-transparent"
         onPressedChange={() => {
           setTheme(theme === "dark" ? "light" : "dark");
         }}

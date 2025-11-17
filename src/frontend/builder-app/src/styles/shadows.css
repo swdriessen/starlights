@@ -1,0 +1,32 @@
+:root {
+  --shadow-2xs: 0 1px 3px 0px oklch(0 0 0 / 0.03);
+  --shadow-xs: 0 1px 3px 0px oklch(0 0 0 / 0.03);
+  --shadow-sm: 0 1px 3px 0px oklch(0 0 0 / 0.05), 0 1px 2px -1px oklch(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0px oklch(0 0 0 / 0.05), 0 1px 2px -1px oklch(0 0 0 / 0.05);
+  --shadow-md: 0 1px 3px 0px oklch(0 0 0 / 0.05), 0 2px 4px -1px oklch(0 0 0 / 0.05);
+  --shadow-lg: 0 1px 3px 0px oklch(0 0 0 / 0.05), 0 4px 6px -1px oklch(0 0 0 / 0.05);
+  --shadow-xl: 0 1px 3px 0px oklch(0 0 0 / 0.05), 0 8px 10px -1px oklch(0 0 0 / 0.05);
+  --shadow-2xl: 0 1px 3px 0px oklch(0 0 0 / 0.13);
+}
+
+.dark {
+  --shadow-2xs: 0 1px 3px 0px oklch(0.12 0.015 260 / 0.14);
+  --shadow-xs: 0 1px 3px 0px oklch(0.12 0.015 260 / 0.14);
+  --shadow-sm: 0 1px 3px 0px oklch(0.12 0.02 260 / 0.16), 0 1px 2px -1px oklch(0.12 0.02 260 / 0.12);
+  --shadow: 0 1px 3px 0px oklch(0.12 0.02 260 / 0.18), 0 1px 2px -1px oklch(0.12 0.02 260 / 0.12);
+  --shadow-md: 0 1px 3px 0px oklch(0.12 0.02 260 / 0.2), 0 2px 4px -1px oklch(0.12 0.02 260 / 0.12);
+  --shadow-lg: 0 1px 3px 0px oklch(0.12 0.02 260 / 0.22), 0 4px 6px -1px oklch(0.12 0.02 260 / 0.14);
+  --shadow-xl: 0 1px 3px 0px oklch(0.12 0.02 260 / 0.24), 0 8px 10px -1px oklch(0.12 0.02 260 / 0.16);
+  --shadow-2xl: 0 1px 3px 0px oklch(0.12 0.03 260 / 0.28);
+}
+
+@theme inline {
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}

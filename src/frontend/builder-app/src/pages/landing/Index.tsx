@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { ClockAlert, StarIcon, TagIcon } from "lucide-react";
 import ProseSection from "@/components/prose-section";
 
 function LandingTile({
@@ -25,7 +23,7 @@ function LandingTile({
 
   return (
     <>
-      <Link to={url} className="block h-full relative overflow-hidden rounded-lg group border-4 border-double ">
+      <Link to={url} className="block h-full relative overflow-hidden rounded-xl group border-4 border-double shadow-lg">
         <img
           src={image || "https://www.dndbeyond.com/attachments/12/424/flash-sale.jpg"}
           alt={title}
@@ -72,6 +70,7 @@ const tiles = [
     url: "/characters",
     image: "/images/group.jpg",
     tag: "In Development",
+    enabled: true,
   },
   {
     title: "Campaign Ledger",
@@ -130,17 +129,13 @@ export function LandingPage2() {
         </div>
       </div>
 
-      <Separator className="my-12" />
-
-      <ProseSection>
+      <ProseSection className="my-12">
         <h1>About</h1>
         <p>
           Project Starlights aims to be a comprehensive platform for managing and enhancing your tabletop role-playing game experience. With a focus on
           user-friendly design and powerful features, it aims to streamline character creation, campaign management, and collaborative storytelling.
         </p>
       </ProseSection>
-
-      <Separator className="my-12" />
     </>
   );
 }

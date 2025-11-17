@@ -20,6 +20,7 @@ import {
   useUpdateAdditionalAbilityScore,
   useUpdateBaseAbilityScore,
 } from "@/lib/api/characters/queries";
+import { PageContent } from "@/pages/layouts/page-content";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { JSX } from "react";
 import { useParams } from "react-router-dom";
@@ -290,7 +291,7 @@ function SelectionRulesSectionComponent({
       {selectionRulesData && (
         <div className="overflow-x-auto  text-sm w-full">
           <h4>{type} Selection Rules</h4>
-          {selectionRulesData.rules.map((rule, index) => (
+          {selectionRulesData.rules.map((rule) => (
             // 1 component per rule with its options and registration button
 
             <div key={rule.registrationSelectionRuleId}>
@@ -319,7 +320,6 @@ function SelectionRulesSectionComponent({
 
 function CharacterClassesComponent({ characterId }: { characterId: string }) {
   const { data: characterClassesData, isLoading, error } = useCharacterClasses(characterId);
-  const updateClassLevelMutation = useUpdateClassLevelMutation(characterId, "");
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -374,10 +374,12 @@ export default function CharactersDetailsPage() {
 
   return (
     <>
-      <div>
-        <h2>Character Details</h2>
-        <p>This is a test page is for viewing and editing character details through the API. This is by no means representative of the final UI.</p>
-      </div>
+      <PageContent variant="noPadding">
+        <div>
+          <h2>Character Details</h2>
+          <p>This is a test page is for viewing and editing character details through the API. This is by no means representative of the final UI.</p>
+        </div>
+      </PageContent>
 
       <div className="border border-dashed rounded p-4 my-4">
         <div className="flex flex-between gap-4">
