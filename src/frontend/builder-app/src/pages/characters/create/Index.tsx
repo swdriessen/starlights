@@ -8,13 +8,14 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import ProseSection from "@/components/prose-section";
+
 import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet } from "@/components/ui/field";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia } from "@/components/ui/empty";
 import { cn } from "@/lib/utils";
 import { PageContent } from "@/pages/layouts/page-content";
+import { Card, CardContent } from "@/components/ui/card";
 
 function PortraitsLoading() {
   return (
@@ -172,18 +173,31 @@ function CharacterCreation() {
 export default function CharactersCreatePage() {
   return (
     <>
-      <PageContent>
+      <PageContent variant="borderless">
+        <Card className="">
+          {/* <CardHeader>
+            <CardTitle>Create a New Character</CardTitle>
+            <CardDescription>Fill in your character information. You can change all these fields later.</CardDescription>
+          </CardHeader> */}
+          {/* <Separator /> */}
+          <CardContent>
+            <CharacterCreation />
+          </CardContent>
+        </Card>
+      </PageContent>
+
+      {/* <PageContent>
         <div className="flex-row md:flex gap-2">
           <ProseSection className="flex-grow">
             <h1 className="mb-0">Create New Character</h1>
             <p className="mt-0">Use the form below to create a new character for your adventures.</p>
           </ProseSection>
         </div>
-      </PageContent>
+      </PageContent> */}
 
-      <PageContent>
+      {/* <PageContent>
         <CharacterCreation />
-      </PageContent>
+      </PageContent> */}
 
       {/* <div className="flex-row md:flex gap-2">
         <ProseSection className="flex-grow">

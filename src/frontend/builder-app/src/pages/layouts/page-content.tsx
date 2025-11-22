@@ -20,7 +20,7 @@ const pageContentContainerVariants = cva("", {
   variants: {
     variant: {
       default: "container mx-auto bg-background sm:rounded-xl sm:border border shadow-lg sm:mt-12 p-8",
-      borderless: "container mx-auto sm:mt-12",
+      borderless: "container mx-auto sm:mt-12 px-0 sm:px-4",
       wide: " ",
       noPadding: "container mx-auto  sm:rounded-xl shadow-lg sm:mt-12",
     },

@@ -14,7 +14,6 @@ import CharactersDetailsPage from "./pages/characters/details/Index.tsx";
 import "./index.css";
 import "./styles/typography.css";
 import { DevelopmentPage } from "./pages/development/Index.tsx";
-import { DevelopmentPage2 } from "./pages/development/Index2.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,7 +33,6 @@ const router = createBrowserRouter([
       { index: true, element: <LandingPage2 /> },
       { path: "about", element: <AboutPage /> },
       { path: "development", element: <DevelopmentPage /> },
-      { path: "development2", element: <DevelopmentPage2 /> },
     ],
   },
   {

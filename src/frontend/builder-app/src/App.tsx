@@ -42,7 +42,7 @@ function MainNavigation() {
       <nav className="flex items-center justify-between h-16">
         <div className="flex items-center justify-start gap-2 ">
           <Link to="/" className=" flex items-center font-heading">
-            <SwordsIcon className="h-6 w-6 mr-3  stroke-starlights-accent-600" />
+            <SwordsIcon className="h-6 w-6 mr-3  stroke-starlights-cyan-600" />
             <span className="hidden lg:inline">Project Starlights</span>
             <span className="lg:hidden">Starlights</span>
           </Link>

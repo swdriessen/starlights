@@ -2,8 +2,8 @@ import { useCharacterCards, useDeleteCharacter, type CharacterCard } from "@/lib
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { AnvilIcon, FileSpreadsheetIcon, MenuIcon, MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AnvilIcon, FileSpreadsheetIcon, MenuIcon, MoreHorizontalIcon, PlusIcon, SwordsIcon, Trash2Icon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,13 +17,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import ProseSection from "@/components/prose-section";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { Spinner } from "@/components/ui/spinner";
 import { PageContent } from "../layouts/page-content";
 
 function CharactersSectionHeader({ title = "Untitled" }: { title?: string }) {
@@ -211,10 +209,13 @@ function CharactersCollection() {
           <Empty className="border border-dashed">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <Spinner />
+                {/* <Spinner /> */}
+                <SwordsIcon className="animate-pulse stroke-secondary" />
+                {/* <SwordsIcon className="animate-ping " /> */}
+                {/* <SparkleIcon className="animate-pulse" /> */}
               </EmptyMedia>
               <EmptyTitle>Gathering Adventurers</EmptyTitle>
-              <EmptyDescription>We are currently gathering your adventurers. Please wait in the tavern.</EmptyDescription>
+              <EmptyDescription>We are currently gathering your adventurers...</EmptyDescription>
             </EmptyHeader>
           </Empty>
         </div>
@@ -285,7 +286,7 @@ function CharactersCollection() {
 export default function CharactersPage() {
   return (
     <>
-      <PageContent>
+      {/* <PageContent>
         <div className="flex-row md:flex gap-2 mb-10">
           <ProseSection className="flex-grow">
             <h1 className="mb-0">Characters</h1>
@@ -320,6 +321,52 @@ export default function CharactersPage() {
           </div>
         </div>
         <CharactersCollection />
+      </PageContent> */}
+      <PageContent variant="borderless">
+        <Card className="">
+          <CardHeader>
+            <div className="flex-row md:flex gap-2">
+              {/* <ProseSection className="flex-grow">
+                <h1 className="mb-0">Characters</h1>
+                <p className="mt-0">Organize your band of heroes — manage their appearance, progress, and epic deeds.</p>
+              </ProseSection> */}
+              <div className="flex-grow">
+                <CardTitle className="mb-3">Characters</CardTitle>
+                <CardDescription>Organize your band of heroes — manage their appearance, progress, and epic deeds.</CardDescription>
+              </div>
+
+              <div className="flex justify-end items-start gap-4 mt-4 md:mt-0">
+                <ButtonGroup>
+                  <Button variant="default" size="sm">
+                    <Link to="/characters/create" className="flex items-center gap-2">
+                      <PlusIcon size={16} />
+                      New Character
+                    </Link>
+                  </Button>
+                  <Separator orientation="vertical" />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="default" size="icon-sm" aria-label="More Options" disabled>
+                        <MoreHorizontalIcon />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                          <PlusIcon />
+                          New Group
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </ButtonGroup>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="">
+            <CharactersCollection />
+          </CardContent>
+        </Card>
       </PageContent>
     </>
   );
