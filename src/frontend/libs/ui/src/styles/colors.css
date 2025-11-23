@@ -1,0 +1,120 @@
+:root {
+  --base-50: oklch(0.9843 0.0035 287.12);
+  --base-100: oklch(0.9665 0.007 286.66);
+  --base-200: oklch(0.9197 0.014 286.6);
+  --base-300: oklch(0.8708 0.021 286.57);
+  --base-400: oklch(0.7244 0.0315 286.35);
+  --base-500: oklch(0.5519 0.042 286.22);
+  --base-600: oklch(0.4418 0.0385 286.07);
+  --base-700: oklch(0.3698 0.0315 286.09);
+  --base-800: oklch(0.2738 0.021 286.32);
+  --base-900: oklch(0.2098 0.014 286.17);
+  --base-950: oklch(0.1408 0.0105 286.11);
+  --base-1000: oklch(0.0959 0.007 286.07);
+
+  --base-50: oklch(0.9916 0 0);
+  --base-100: oklch(0.9758 0 0);
+  --base-200: oklch(0.9268 0 0);
+  --base-300: oklch(0.8739 0 0);
+  --base-400: oklch(0.7106 0 0);
+  --base-500: oklch(0.5576 0 0);
+  --base-600: oklch(0.44 0 0);
+  --base-700: oklch(0.3716 0 0);
+  --base-800: oklch(0.2692 0 0);
+  --base-900: oklch(0.1822 0 0);
+  --base-950: oklch(0.1451 0 0);
+  --base-1000: oklch(0.1062 0 0);
+
+  --starlights-purple-50: oklch(0.98 0.003 280);
+  --starlights-purple-100: oklch(0.95 0.008 280);
+  --starlights-purple-200: oklch(0.9 0.018 281);
+  --starlights-purple-300: oklch(0.82 0.035 282.5);
+  --starlights-purple-400: oklch(0.72 0.06 283.5);
+  --starlights-purple-500: oklch(0.62 0.09 284);
+  --starlights-purple-600: oklch(0.52 0.11 284.5);
+  --starlights-purple-700: oklch(0.43 0.105 285);
+  --starlights-purple-800: oklch(0.35 0.085 286);
+  --starlights-purple-900: oklch(0.28 0.06 287);
+  --starlights-purple-950: oklch(0.2 0.035 288);
+  --starlights-purple-1000: oklch(0.15 0.018 289);
+
+  --starlights-red-50: oklch(0.98 0.003 380);
+  --starlights-red-100: oklch(0.95 0.008 380);
+  --starlights-red-200: oklch(0.9 0.018 380);
+  --starlights-red-300: oklch(0.82 0.035 380);
+  --starlights-red-400: oklch(0.72 0.06 380);
+  --starlights-red-500: oklch(0.62 0.09 380);
+  --starlights-red-600: oklch(0.52 0.11 380);
+  --starlights-red-700: oklch(0.43 0.105 380);
+  --starlights-red-800: oklch(0.35 0.085 380);
+  --starlights-red-900: oklch(0.28 0.06 380);
+  --starlights-red-950: oklch(0.2 0.035 380);
+  --starlights-red-1000: oklch(0.15 0.018 380);
+
+  --starlights-pink-50: oklch(0.98 0.003 322);
+  --starlights-pink-100: oklch(0.95 0.008 322);
+  --starlights-pink-200: oklch(0.9 0.018 323);
+  --starlights-pink-300: oklch(0.82 0.035 324.5);
+  --starlights-pink-400: oklch(0.72 0.06 325.5);
+  --starlights-pink-500: oklch(0.62 0.09 326);
+  --starlights-pink-600: oklch(0.52 0.11 326.5);
+  --starlights-pink-700: oklch(0.43 0.105 327);
+  --starlights-pink-800: oklch(0.35 0.085 328);
+  --starlights-pink-900: oklch(0.28 0.06 329);
+  --starlights-pink-950: oklch(0.2 0.035 330);
+  --starlights-pink-1000: oklch(0.15 0.018 331);
+
+  --starlights-cyan-50: oklch(0.98 0.003 180);
+  --starlights-cyan-100: oklch(0.95 0.008 180);
+  --starlights-cyan-200: oklch(0.9 0.018 181);
+  --starlights-cyan-300: oklch(0.82 0.035 182.5);
+  --starlights-cyan-400: oklch(0.72 0.06 183.5);
+  --starlights-cyan-500: oklch(0.62 0.09 184);
+  --starlights-cyan-600: oklch(0.52 0.11 184.5);
+  --starlights-cyan-700: oklch(0.43 0.105 185);
+  --starlights-cyan-800: oklch(0.35 0.085 186);
+  --starlights-cyan-900: oklch(0.28 0.06 187);
+  --starlights-cyan-950: oklch(0.2 0.035 188);
+  --starlights-cyan-1000: oklch(0.15 0.018 189);
+
+  --starlights-indigo-50: oklch(0.98 0.003 260);
+  --starlights-indigo-100: oklch(0.95 0.008 260);
+  --starlights-indigo-200: oklch(0.9 0.018 261);
+  --starlights-indigo-300: oklch(0.82 0.035 262.5);
+  --starlights-indigo-400: oklch(0.72 0.06 263.5);
+  --starlights-indigo-500: oklch(0.62 0.09 264);
+  --starlights-indigo-600: oklch(0.52 0.11 264.5);
+  --starlights-indigo-700: oklch(0.43 0.105 265);
+  --starlights-indigo-800: oklch(0.35 0.085 266);
+  --starlights-indigo-900: oklch(0.28 0.06 267);
+  --starlights-indigo-950: oklch(0.2 0.035 268);
+  --starlights-indigo-1000: oklch(0.15 0.018 269);
+
+  --starlights-green-50: oklch(0.98 0.003 150);
+  --starlights-green-100: oklch(0.95 0.008 151);
+  --starlights-green-200: oklch(0.9 0.018 152);
+  --starlights-green-300: oklch(0.82 0.035 153.5);
+  --starlights-green-400: oklch(0.72 0.06 154.5);
+  --starlights-green-500: oklch(0.62 0.09 155);
+  --starlights-green-600: oklch(0.52 0.11 155.5);
+  --starlights-green-700: oklch(0.43 0.105 156);
+  --starlights-green-800: oklch(0.35 0.085 157);
+  --starlights-green-900: oklch(0.28 0.06 158);
+  --starlights-green-950: oklch(0.2 0.035 158.5);
+  --starlights-green-1000: oklch(0.15 0.018 159);
+
+  --starlights-yellow-50: oklch(0.985 0.003 64);
+  --starlights-yellow-100: oklch(0.966 0.008 64);
+  --starlights-yellow-200: oklch(0.922 0.018 64);
+  --starlights-yellow-300: oklch(0.872 0.035 64.5);
+  --starlights-yellow-400: oklch(0.78 0.06 64.5);
+  --starlights-yellow-500: oklch(0.68 0.12 64.5);
+  --starlights-yellow-600: oklch(0.785 0.162 64);
+  --starlights-yellow-700: oklch(0.48 0.14 64);
+  --starlights-yellow-800: oklch(0.36 0.11 64);
+  --starlights-yellow-900: oklch(0.24 0.08 64);
+  --starlights-yellow-950: oklch(0.14 0.045 64);
+  --starlights-yellow-1000: oklch(0.09 0.02 64);
+
+  --starlights-debug: oklch(0.36 0.185 380);
+}

@@ -2,7 +2,6 @@ import { Link, Outlet } from "react-router-dom";
 import { SwordsIcon } from "lucide-react";
 import { ModeToggle } from "./components/mode-toggle";
 import { GitHubIconButton } from "./components/navigation/github-icon-button";
-import "./App.css";
 import { Separator } from "./components/ui/separator";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "./components/ui/navigation-menu";
 import { useIsMobile } from "./hooks/use-mobile";

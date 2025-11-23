@@ -11,7 +11,7 @@ import CharactersPage from "./pages/characters/Index.tsx";
 import CharactersCreatePage from "./pages/characters/create/Index.tsx";
 import CharactersDetailsPage from "./pages/characters/details/Index.tsx";
 import "./index.css";
-import "./styles/typography.css";
+// import "./styles/typography.css";
 import { DevelopmentPage } from "./pages/development/Index.tsx";
 import { LibraryDevelopmentPage } from "./pages/development/library-page.tsx";
 

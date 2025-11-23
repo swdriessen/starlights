@@ -27,18 +27,9 @@
     // shadcn addition
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@starlights/ui": [
-        "../libs/ui/src/index.ts"
-      ],
-      "@starlights/ui/*": [
-        "../libs/ui/src/*"
-      ],
-      "@starlights/ui/styles.css": [
-        "../libs/ui/src/index.css"
-      ]
+      "@/*": ["./src/*"],
+      "@starlights/ui": ["../libs/ui/src/index.ts"],
+      "@starlights/ui/*": ["../libs/ui/src/*"]
     }
   },
   "include": ["src"]
