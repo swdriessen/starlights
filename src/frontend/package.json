@@ -1,0 +1,22 @@
+{
+  "name": "starlights",
+  "private": true,
+  "workspaces": [
+    "builder-app",
+    "libs/ui"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w builder-app",
+    "build": "npm run build -w builder-app",
+    "lint": "npm run lint -w builder-app",
+    "preview": "npm run preview -w builder-app"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.17",
+    "tailwindcss": "^4.1.17"
+  },
+  "devDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.53.3",
+    "@types/node": "^24.10.1"
+  }
+}

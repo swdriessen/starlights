@@ -10,10 +10,10 @@ import AboutPage from "./pages/about/Index.tsx";
 import CharactersPage from "./pages/characters/Index.tsx";
 import CharactersCreatePage from "./pages/characters/create/Index.tsx";
 import CharactersDetailsPage from "./pages/characters/details/Index.tsx";
-
 import "./index.css";
 import "./styles/typography.css";
 import { DevelopmentPage } from "./pages/development/Index.tsx";
+import { LibraryDevelopmentPage } from "./pages/development/library-page.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +33,7 @@ const router = createBrowserRouter([
       { index: true, element: <LandingPage2 /> },
       { path: "about", element: <AboutPage /> },
       { path: "development", element: <DevelopmentPage /> },
+      { path: "lib", element: <LibraryDevelopmentPage /> },
     ],
   },
   {

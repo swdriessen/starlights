@@ -1,3 +1,5 @@
+@custom-variant dark (&:is(.dark *));
+
 :root {
   --starlights-purple-50: oklch(0.98 0.003 280);
   --starlights-purple-100: oklch(0.95 0.008 280);
@@ -76,8 +78,6 @@
   --starlights-green-900: oklch(0.28 0.06 158);
   --starlights-green-950: oklch(0.2 0.035 158.5);
   --starlights-green-1000: oklch(0.15 0.018 159);
-
-  /* #ffa032 */
 
   --starlights-yellow-50: oklch(0.985 0.003 64);
   --starlights-yellow-100: oklch(0.966 0.008 64);
@@ -187,7 +187,6 @@
   --color-starlights-yellow-950: var(--starlights-yellow-950);
   --color-starlights-yellow-1000: var(--starlights-yellow-1000);
 
-  /* --color-starlights-gold-600: var(--starlights-yellow-600); */
   --color-starlights-development: var(--starlights-purple-700);
   --color-starlights-debug: var(--starlights-debug);
 }

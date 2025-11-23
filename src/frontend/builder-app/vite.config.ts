@@ -25,6 +25,8 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        "@starlights/ui": path.resolve(__dirname, "../libs/ui/src"),
+        "@starlights/ui/styles.css": path.resolve(__dirname, "../libs/ui/src/index.css"),
       },
     },
     server: {

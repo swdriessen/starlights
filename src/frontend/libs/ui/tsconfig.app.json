@@ -5,6 +5,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
+    "types": ["vite/client"],
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -22,22 +23,11 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "forceConsistentCasingInFileNames": true,
 
-    // shadcn addition
     "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "@starlights/ui": [
-        "../libs/ui/src/index.ts"
-      ],
-      "@starlights/ui/*": [
-        "../libs/ui/src/*"
-      ],
-      "@starlights/ui/styles.css": [
-        "../libs/ui/src/index.css"
       ]
     }
   },

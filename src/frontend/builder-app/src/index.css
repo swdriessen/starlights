@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
-@import "./styles/colors.css";
+@import "@starlights/ui/styles.css";
 @import "./styles/shadows.css";
 @import "./styles/debug.css";
 

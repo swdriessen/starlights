@@ -52,13 +52,20 @@ function MainNavigation() {
             <NavigationMenu viewport={isMobile} className="z-10 ">
               <NavigationMenuList className="hidden md:flex">
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className="hover:bg-transparent hover:text-primary focus:bg-transparent focus:text-primary">
+                  <NavigationMenuLink asChild className="hover:bg-transparent hover:text-primary focus:bg-transparent ">
                     <Link to="/characters">Character Builder</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
+
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className="hover:bg-transparent hover:text-primary focus:bg-transparent focus:text-primary">
+                  <NavigationMenuLink asChild className="hover:bg-transparent hover:text-primary focus:bg-transparent ">
                     <Link to="/development">Development</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className="hover:bg-transparent hover:text-primary focus:bg-transparent ">
+                    <Link to="/lib">UI Library</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 {/* <NavigationMenuItem className="hidden md:block">

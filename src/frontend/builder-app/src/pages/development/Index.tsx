@@ -331,7 +331,7 @@ export function DevelopmentPage() {
                 <tr>
                   <th className="text-left p-2 text-sm font-semibold border-b">Color</th>
                   {shades.map((shade) => (
-                    <th key={shade} className="p-1 text-xs font-mono border-b text-center min-w-[40px]">
+                    <th key={shade} className="p-1 text-xs font-mono border-b text-center min-w-10">
                       {shade}
                     </th>
                   ))}
@@ -412,7 +412,7 @@ export function DevelopmentPage() {
                 <tr>
                   <th className="text-left p-2 text-sm font-semibold border-b">Color</th>
                   {tailwindShades.map((shade) => (
-                    <th key={shade} className="p-1 text-xs font-mono border-b text-center min-w-[40px]">
+                    <th key={shade} className="p-1 text-xs font-mono border-b text-center min-w-10">
                       {shade}
                     </th>
                   ))}

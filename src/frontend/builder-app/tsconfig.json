@@ -6,8 +6,13 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@starlights/ui": ["../libs/ui/src/index.ts"],
+      "@starlights/ui/*": ["../libs/ui/src/*"],
+      "@starlights/ui/styles.css": ["../libs/ui/src/index.css"]
     }
   }
 }
