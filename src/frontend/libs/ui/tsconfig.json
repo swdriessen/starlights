@@ -10,7 +10,8 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/components/ui/*": ["./src/components/ui/*"]
     }
   }
 }

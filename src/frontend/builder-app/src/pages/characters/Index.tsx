@@ -2,8 +2,8 @@ import { useCharacterCards, useDeleteCharacter, type CharacterCard } from "@/lib
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AnvilIcon, FileSpreadsheetIcon, MenuIcon, MoreHorizontalIcon, PlusIcon, SwordsIcon, Trash2Icon } from "lucide-react";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AnvilIcon, FileSpreadsheetIcon, MenuIcon, PlusIcon, SwordsIcon, Trash2Icon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,21 +18,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { PageContent } from "../layouts/page-content";
 
-function CharactersSectionHeader({ title = "Untitled" }: { title?: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 mb-4">
-      <Separator className="flex-1 min-w-4" />
-      <h4 className="flex-none ">{title}</h4>
-      <Separator className="flex-1 md:flex-auto" />
-    </div>
-  );
-}
+import { CardWrapper } from "./components/card-wrapper";
 
 function CharacterItem({
   title,
@@ -55,8 +45,8 @@ function CharacterItem({
 
   return (
     <>
-      <div className="relative ">
-        <Link to={url} className="block relative aspect-square overflow-hidden rounded-lg group border-4 border-double shadow-md">
+      <div className="relative rounded-xl hover:shadow">
+        <Link to={url} className="block relative aspect-square overflow-hidden rounded-xl group border-4 border-double ">
           <img
             src={image || "https://www.dndbeyond.com/attachments/12/424/flash-sale.jpg"}
             alt={title}
@@ -64,7 +54,7 @@ function CharacterItem({
               enabled ? "" : "grayscale-100 group-hover:grayscale-0 "
             }`}
           />
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/80 group-hover:from-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-tr from-black/80 group-hover:from-black/50 to-transparent" />
           <div
             className={`prose prose-neutral dark:prose-invert absolute text-white ${
               isLarge ? "left-4 right-4 bottom-4 sm:left-8 sm:right-8 sm:bottom-8" : "left-2 right-2 bottom-2"
@@ -202,7 +192,7 @@ function CharactersCollection() {
 
   return (
     <div>
-      <CharactersSectionHeader title="My Character Collection" />
+      {/* <CharactersSectionHeader title="My Character Collection" /> */}
 
       {characterCards === undefined && (
         <div>
@@ -286,64 +276,21 @@ function CharactersCollection() {
 export default function CharactersPage() {
   return (
     <>
-      {/* <PageContent>
-        <div className="flex-row md:flex gap-2 mb-10">
-          <ProseSection className="flex-grow">
-            <h1 className="mb-0">Characters</h1>
-            <p className="mt-0">Organize your band of heroes — manage their appearance, progress, and epic deeds.</p>
-          </ProseSection>
-
-          <div className="flex justify-end items-start gap-4 mt-4 md:mt-0">
-            <ButtonGroup>
-              <Button variant="default" size="sm">
-                <Link to="/characters/create" className="flex items-center gap-2">
-                  <PlusIcon size={16} />
-                  New Character
-                </Link>
-              </Button>
-              <Separator orientation="vertical" />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="default" size="icon-sm" aria-label="More Options" disabled>
-                    <MoreHorizontalIcon />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <PlusIcon />
-                      New Group
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </ButtonGroup>
-          </div>
-        </div>
-        <CharactersCollection />
-      </PageContent> */}
-      <PageContent variant="borderless">
-        <Card className="">
-          <CardHeader>
-            <div className="flex-row md:flex gap-2">
-              {/* <ProseSection className="flex-grow">
-                <h1 className="mb-0">Characters</h1>
-                <p className="mt-0">Organize your band of heroes — manage their appearance, progress, and epic deeds.</p>
-              </ProseSection> */}
-              <div className="flex-grow">
-                <CardTitle className="mb-3">Characters</CardTitle>
-                <CardDescription>Organize your band of heroes — manage their appearance, progress, and epic deeds.</CardDescription>
-              </div>
-
-              <div className="flex justify-end items-start gap-4 mt-4 md:mt-0">
+      <div className="container mx-auto px-4 mt-12">
+        <CardWrapper>
+          <Card className="rounded-lg shadow-none">
+            <CardHeader className="border-b">
+              <CardTitle className="mb-3">Character Collection</CardTitle>
+              <CardDescription>Organize your band of heroes — manage their appearance, progress, and epic deeds.</CardDescription>
+              <CardAction>
                 <ButtonGroup>
-                  <Button variant="default" size="sm">
+                  <Button variant="outline">
                     <Link to="/characters/create" className="flex items-center gap-2">
                       <PlusIcon size={16} />
                       New Character
                     </Link>
                   </Button>
-                  <Separator orientation="vertical" />
+                  {/* <Separator orientation="vertical" />
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="default" size="icon-sm" aria-label="More Options" disabled>
@@ -358,16 +305,16 @@ export default function CharactersPage() {
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
-                  </DropdownMenu>
+                  </DropdownMenu> */}
                 </ButtonGroup>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="">
-            <CharactersCollection />
-          </CardContent>
-        </Card>
-      </PageContent>
+              </CardAction>
+            </CardHeader>
+            <CardContent>
+              <CharactersCollection />
+            </CardContent>
+          </Card>
+        </CardWrapper>
+      </div>
     </>
   );
 }

@@ -20,10 +20,11 @@ import {
   useUpdateAdditionalAbilityScore,
   useUpdateBaseAbilityScore,
 } from "@/lib/api/characters/queries";
-import { PageContent } from "@/pages/layouts/page-content";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { JSX } from "react";
 import { useParams } from "react-router-dom";
+import { CardWrapper } from "../components/card-wrapper";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 function AbilitiesComponent({ id: characterId }: { id: string }) {
   const { data: abilityScores } = useAbilityScores(characterId);
@@ -374,173 +375,180 @@ export default function CharactersDetailsPage() {
 
   return (
     <>
-      <PageContent variant="noPadding">
-        <div>
-          <h2>Character Details</h2>
-          <p>This is a test page is for viewing and editing character details through the API. This is by no means representative of the final UI.</p>
-        </div>
-      </PageContent>
-
-      <div className="border border-dashed rounded p-4 my-4">
-        <div className="flex flex-between gap-4">
-          <dl className="grid grid-cols-2 gap-1 flex-grow-1">
-            <dt>Id:</dt>
-            <dd>{id}</dd>
-            <dt>Name:</dt>
-            <dd>{characterDetails?.character.name ?? <span className="text-yellow-700">Loading...</span>}</dd>
-            <dt>Level:</dt>
-            <dd>{characterDetails?.character.level ?? <span className="text-yellow-700">Loading...</span>}</dd>
-            <dt>Build:</dt>
-            <dd>{characterDetails?.character.build ?? <span className="text-yellow-700">Loading...</span>}</dd>
-            <dt>Portrait URL:</dt>
-            <dd>{characterDetails?.character.portraitUrl ?? <span className="text-yellow-700">Loading...</span>}</dd>
-          </dl>
-          <div className="flex-shrink-0">
-            <img src={characterDetails?.character.portraitUrl} alt="Character Portrait" className="h-32 w-32 object-cover mt-2 rounded" />
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-12 gap-2">
-        <div className="col-span-12">
-          <h5>Character Sheet Data</h5>
-        </div>
-        <Tabs defaultValue="tab-sheet-abilities" className="col-span-12">
-          <TabsList className="w-full">
-            <TabsTrigger value="tab-sheet-abilities">Abilities / Skills</TabsTrigger>
-            {/* <TabsTrigger value="tab-sheet-2">Saving Throws</TabsTrigger> */}
-            {/* <TabsTrigger value="tab-sheet-3">Skills</TabsTrigger> */}
-            <TabsTrigger value="tab-sheet-4">Class Features</TabsTrigger>
-            <TabsTrigger value="tab-statistics">Statistics</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tab-sheet-abilities" className="flex flex-row items-start gap-4 ">
-            <AbilitiesComponent id={id} />
-            <SavingThrowsComponent characterId={id} />
-            <SkillsComponent characterId={id} />
-          </TabsContent>
-          <TabsContent value="tab-sheet-2">
-            <SavingThrowsComponent characterId={id} />
-          </TabsContent>
-          <TabsContent value="tab-sheet-3">
-            <SkillsComponent characterId={id} />
-          </TabsContent>
-          <TabsContent value="tab-sheet-4">
-            <>
-              {registrationModels ? (
-                <div className="border border-dashed rounded p-4 overflow-x-auto text-sm">
-                  {(() => {
-                    const renderNode = (reg: any, level = 0): JSX.Element => (
-                      <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
-                        <div className="font-bold">
-                          {reg.name} <span className="text-muted-foreground">({reg.type})</span>
-                        </div>
-                        {/* <div className="text-xxs text-muted-foreground">ID: {reg.registrationId}</div> */}
-                        {reg.children && reg.children.length > 0 && <div>{reg.children.map((child: any) => renderNode(child, level + 1))}</div>}
-                      </div>
-                    );
-
-                    return <div>{registrationModels.registrations.map((r: any) => renderNode(r, 0))}</div>;
-                  })()}
+      <div className="container mx-auto px-4 mt-12 mb-12">
+        <CardWrapper>
+          <Card className="rounded-lg">
+            <CardHeader className="border-b">
+              <CardTitle>Character Details</CardTitle>
+              <CardDescription>
+                This is a test page is for viewing and editing character details through the API. This is by no means representative of the final UI.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-between gap-4">
+                <dl className="grid grid-cols-2 gap-1 flex-1">
+                  <dt>Id:</dt>
+                  <dd>{id}</dd>
+                  <dt>Name:</dt>
+                  <dd>{characterDetails?.character.name ?? <span className="text-yellow-700">Loading...</span>}</dd>
+                  <dt>Level:</dt>
+                  <dd>{characterDetails?.character.level ?? <span className="text-yellow-700">Loading...</span>}</dd>
+                  <dt>Build:</dt>
+                  <dd>{characterDetails?.character.build ?? <span className="text-yellow-700">Loading...</span>}</dd>
+                  <dt>Portrait URL:</dt>
+                  <dd>{characterDetails?.character.portraitUrl ?? <span className="text-yellow-700">Loading...</span>}</dd>
+                </dl>
+                <div className="shrink-0">
+                  <img src={characterDetails?.character.portraitUrl} alt="Character Portrait" className="h-32 w-32 object-cover mt-2 rounded" />
                 </div>
-              ) : (
-                <span className="text-yellow-700">Loading...</span>
-              )}
-            </>
-          </TabsContent>
-          <TabsContent value="tab-statistics">
-            <>
-              {statisticsData ? (
-                <div className="border border-dashed rounded p-4 overflow-x-auto text-sm">
-                  <table className="min-w-full text-center">
-                    <thead className="text-xs uppercase font-semibold">
-                      <tr>
-                        <th className="px-2 py-2 border-b text-left">Statistic Group</th>
-                        <th className="px-2 py-2 border-b">Total Value</th>
-                        <th className="px-2 py-2 border-b">Finalized</th>
-                        <th className="px-2 py-2 border-b text-left">Details</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {statisticsData.statistics.map((group) => (
-                        <tr key={group.groupName}>
-                          <td className="px-2 py-1 border-b text-left font-semibold">{group.groupName}</td>
-                          <td className="px-2 py-1 border-b">{group.totalValue}</td>
-                          <td className="px-2 py-1 border-b">{group.isFinalized ? "Yes" : "No"}</td>
-                          <td className="px-2 py-1 border-b text-left">
-                            <div className="space-y-1">
-                              {group.values.map((value, index) => (
-                                <div key={`${value.source}-${index}`} className="text-xs">
-                                  <span className="text-muted-foreground">{value.displayName || value.source}:</span>{" "}
-                                  <span className="font-medium">{value.value}</span>
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="grid grid-cols-12 gap-2">
+                <div className="col-span-12">
+                  <h5>Character Sheet Data</h5>
+                </div>
+                <Tabs defaultValue="tab-sheet-abilities" className="col-span-12">
+                  <TabsList className="">
+                    <TabsTrigger value="tab-sheet-abilities">Abilities / Skills</TabsTrigger>
+                    {/* <TabsTrigger value="tab-sheet-2">Saving Throws</TabsTrigger> */}
+                    {/* <TabsTrigger value="tab-sheet-3">Skills</TabsTrigger> */}
+                    <TabsTrigger value="tab-sheet-4">Class Features</TabsTrigger>
+                    <TabsTrigger value="tab-statistics">Statistics</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="tab-sheet-abilities" className="flex flex-row items-start gap-4 ">
+                    <AbilitiesComponent id={id} />
+                    <SavingThrowsComponent characterId={id} />
+                    <SkillsComponent characterId={id} />
+                  </TabsContent>
+                  <TabsContent value="tab-sheet-2">
+                    <SavingThrowsComponent characterId={id} />
+                  </TabsContent>
+                  <TabsContent value="tab-sheet-3">
+                    <SkillsComponent characterId={id} />
+                  </TabsContent>
+                  <TabsContent value="tab-sheet-4">
+                    <>
+                      {registrationModels ? (
+                        <div className="border border-dashed rounded p-4 overflow-x-auto text-sm">
+                          {(() => {
+                            const renderNode = (reg: any, level = 0): JSX.Element => (
+                              <div key={reg.registrationId} style={{ marginLeft: level * 16 }} className="mb-2">
+                                <div className="font-bold">
+                                  {reg.name} <span className="text-muted-foreground">({reg.type})</span>
                                 </div>
+                                {/* <div className="text-xxs text-muted-foreground">ID: {reg.registrationId}</div> */}
+                                {reg.children && reg.children.length > 0 && <div>{reg.children.map((child: any) => renderNode(child, level + 1))}</div>}
+                              </div>
+                            );
+
+                            return <div>{registrationModels.registrations.map((r: any) => renderNode(r, 0))}</div>;
+                          })()}
+                        </div>
+                      ) : (
+                        <span className="text-yellow-700">Loading...</span>
+                      )}
+                    </>
+                  </TabsContent>
+                  <TabsContent value="tab-statistics">
+                    <>
+                      {statisticsData ? (
+                        <div className="border border-dashed rounded p-4 overflow-x-auto text-sm">
+                          <table className="min-w-full text-center">
+                            <thead className="text-xs uppercase font-semibold">
+                              <tr>
+                                <th className="px-2 py-2 border-b text-left">Statistic Group</th>
+                                <th className="px-2 py-2 border-b">Total Value</th>
+                                <th className="px-2 py-2 border-b">Finalized</th>
+                                <th className="px-2 py-2 border-b text-left">Details</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {statisticsData.statistics.map((group) => (
+                                <tr key={group.groupName}>
+                                  <td className="px-2 py-1 border-b text-left font-semibold">{group.groupName}</td>
+                                  <td className="px-2 py-1 border-b">{group.totalValue}</td>
+                                  <td className="px-2 py-1 border-b">{group.isFinalized ? "Yes" : "No"}</td>
+                                  <td className="px-2 py-1 border-b text-left">
+                                    <div className="space-y-1">
+                                      {group.values.map((value, index) => (
+                                        <div key={`${value.source}-${index}`} className="text-xs">
+                                          <span className="text-muted-foreground">{value.displayName || value.source}:</span>{" "}
+                                          <span className="font-medium">{value.value}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </td>
+                                </tr>
                               ))}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <span className="text-yellow-700">Loading...</span>
+                      )}
+                    </>
+                  </TabsContent>
+                </Tabs>
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="grid grid-cols-12 gap-2">
+                <div className="col-span-12">
+                  <h5>Actions | Commands</h5>
                 </div>
-              ) : (
-                <span className="text-yellow-700">Loading...</span>
-              )}
-            </>
-          </TabsContent>
-        </Tabs>
-      </div>
+                <Tabs defaultValue="tab-actions-1" className="col-span-12">
+                  <TabsList className="">
+                    <TabsTrigger value="tab-actions-1">Class Details</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="tab-actions-1">
+                    <div className="border border-dashed rounded p-4 my-2">
+                      <CharacterClassesComponent characterId={id} />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+              <Separator className="my-4" />
 
-      <Separator className="my-4" />
-
-      <div className="grid grid-cols-12 gap-2">
-        <div className="col-span-12">
-          <h5>Actions | Commands</h5>
-        </div>
-        <Tabs defaultValue="tab-actions-1" className="col-span-12">
-          <TabsList className="w-full">
-            <TabsTrigger value="tab-actions-1">Class Details</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tab-actions-1">
-            <div className="border border-dashed rounded p-4 my-2">
-              <CharacterClassesComponent characterId={id} />
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-      <Separator className="my-4" />
-
-      <div className="grid grid-cols-12 gap-2">
-        <div className="col-span-12">
-          <h5>Build | Selection Rules</h5>
-        </div>
-        <Tabs defaultValue="tab-selection-rules-class" className="col-span-12">
-          <TabsList className="w-full">
-            <TabsTrigger value="tab-selection-rules-class">Character Class</TabsTrigger>
-            <TabsTrigger value="tab-selection-rules-race">Character Origin</TabsTrigger>
-            {/* <TabsTrigger value="tab-selection-rules-background">Background</TabsTrigger> */}
-            <TabsTrigger value="tab-selection-rules-proficiency">Proficiency</TabsTrigger>
-            <TabsTrigger value="tab-selection-rules-language">Language</TabsTrigger>
-            <TabsTrigger value="tab-selection-rules-alignment">Alignment</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tab-selection-rules-class">
-            <SelectionRulesSectionComponent characterId={id} type="Class" />
-            <SelectionRulesSectionComponent characterId={id} type="SubClass" />
-            {/* <SelectionRulesSectionComponent characterId={id} type="Proficiency" /> */}
-          </TabsContent>
-          <TabsContent value="tab-selection-rules-race">
-            <SelectionRulesSectionComponent characterId={id} type="Species" />
-            <SelectionRulesSectionComponent characterId={id} type="Background" />
-          </TabsContent>
-          {/* <TabsContent value="tab-selection-rules-background"></TabsContent> */}
-          <TabsContent value="tab-selection-rules-proficiency">
-            <SelectionRulesSectionComponent characterId={id} type="Proficiency" />
-          </TabsContent>
-          <TabsContent value="tab-selection-rules-language">
-            <SelectionRulesSectionComponent characterId={id} type="Language" />
-          </TabsContent>
-          <TabsContent value="tab-selection-rules-alignment">
-            <SelectionRulesSectionComponent characterId={id} type="Alignment" />
-          </TabsContent>
-        </Tabs>
+              <div className="grid grid-cols-12 gap-2">
+                <div className="col-span-12">
+                  <h5>Build | Selection Rules</h5>
+                </div>
+                <Tabs defaultValue="tab-selection-rules-class" className="col-span-12">
+                  <TabsList className="">
+                    <TabsTrigger value="tab-selection-rules-class">Character Class</TabsTrigger>
+                    <TabsTrigger value="tab-selection-rules-race">Character Origin</TabsTrigger>
+                    {/* <TabsTrigger value="tab-selection-rules-background">Background</TabsTrigger> */}
+                    <TabsTrigger value="tab-selection-rules-proficiency">Proficiency</TabsTrigger>
+                    <TabsTrigger value="tab-selection-rules-language">Language</TabsTrigger>
+                    <TabsTrigger value="tab-selection-rules-alignment">Alignment</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="tab-selection-rules-class">
+                    <SelectionRulesSectionComponent characterId={id} type="Class" />
+                    <SelectionRulesSectionComponent characterId={id} type="SubClass" />
+                    {/* <SelectionRulesSectionComponent characterId={id} type="Proficiency" /> */}
+                  </TabsContent>
+                  <TabsContent value="tab-selection-rules-race">
+                    <SelectionRulesSectionComponent characterId={id} type="Species" />
+                    <SelectionRulesSectionComponent characterId={id} type="Background" />
+                  </TabsContent>
+                  {/* <TabsContent value="tab-selection-rules-background"></TabsContent> */}
+                  <TabsContent value="tab-selection-rules-proficiency">
+                    <SelectionRulesSectionComponent characterId={id} type="Proficiency" />
+                  </TabsContent>
+                  <TabsContent value="tab-selection-rules-language">
+                    <SelectionRulesSectionComponent characterId={id} type="Language" />
+                  </TabsContent>
+                  <TabsContent value="tab-selection-rules-alignment">
+                    <SelectionRulesSectionComponent characterId={id} type="Alignment" />
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </CardContent>
+          </Card>
+        </CardWrapper>
       </div>
     </>
   );

@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App, { BuilderLayout } from "./App.tsx";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "./components/theme-provider.tsx";
@@ -14,6 +13,13 @@ import "./index.css";
 // import "./styles/typography.css";
 import { DevelopmentPage } from "./pages/development/Index.tsx";
 import { LibraryDevelopmentPage } from "./pages/development/library-page.tsx";
+import BuilderPage, { CharacterDetailsPage } from "./pages/characters/builder/index.tsx";
+import App, { AppWide } from "./App.tsx";
+import BuilderLayout from "./pages/layouts/builder-layout.tsx";
+import CharactersLayout from "./pages/layouts/builder-layout.tsx";
+import { AppSidebar } from "@starlights/ui/components/app-sidebar.tsx";
+import BuilderAppLayout from "./pages/layouts/builder-app-layout.tsx";
+import BuilderAppLayout2 from "./pages/layouts/builder-app-layout-2.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +33,16 @@ const queryClient = new QueryClient({
 
 const router = createBrowserRouter([
   {
+    path: "/app",
+    element: <BuilderAppLayout />,
+    index: true,
+  },
+  {
+    path: "/app2",
+    element: <BuilderAppLayout2 />,
+    index: true,
+  },
+  {
     path: "/",
     element: <App />,
     children: [
@@ -38,12 +54,17 @@ const router = createBrowserRouter([
   },
   {
     path: "/characters",
-    element: <BuilderLayout />,
+    element: <AppWide />,
     children: [
       { index: true, element: <CharactersPage /> },
       { path: ":id", element: <CharactersDetailsPage /> },
       { path: "create", element: <CharactersCreatePage /> },
     ],
+  },
+  {
+    path: "/characters/:id/builder",
+    element: <CharactersLayout />,
+    children: [{ index: true, element: <CharacterDetailsPage /> }],
   },
 ]);
 
