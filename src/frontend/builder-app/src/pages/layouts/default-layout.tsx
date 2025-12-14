@@ -157,23 +157,13 @@ export function MainNavigation() {
         <div className="flex items-center justify-start gap-2 ">
           <Link to="/" className=" flex items-center font-heading relative">
             <OrbitIcon className="size-6 mr-3 stroke-starlights-purple-600" />
-            {/* <CrownIcon className="size-6 mr-3 stroke-starlights-purple-600 " /> */}
-            {/* <Icon iconNode={cauldron} size={16} className=" size-6 mr-3  stroke-starlights-purple-600"></Icon> */}
-            <span className="hidden lg:inline tracking-widest mt-0.5">Aurora Realms</span>
-            <span className="lg:hidden tracking-widest mt-0.5">Aurora Realms</span>
+            <span className="hidden lg:inline tracking-widest mt-0.5">Project Starlights</span>
+            <span className="lg:hidden tracking-widest mt-0.5">Starlights</span>
           </Link>
 
           <div className="hidden md:flex items-center justify-start gap-2 ms-4">
-            {/* <Separator orientation="vertical" className="ms-4 me-0 min-h-5 hidden md:block" /> */}
             <NavigationMenu viewport={isMobile} className="z-10 ">
               <NavigationMenuList className="hidden md:flex">
-                {/*  */}
-                {/* <NavigationMenuItem className="hidden lg:block ">
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>
-                    <Link to="/characters">Characters</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem> */}
-
                 <NavigationMenuItem className="hidden md:block ">
                   <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>Collections</NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -309,14 +299,9 @@ export function MainNavigation() {
                     </ul>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
-                {/* <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>
-                    <Link to="/app2">Compendium</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem> */}
 
                 <NavigationMenuItem className="hidden lg:block ">
-                  <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>Developer Nexus</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>Developer</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[300px] gap-1">
                       <li>
@@ -325,7 +310,7 @@ export function MainNavigation() {
                             <Link to="/development" className="flex flex-row items-center gap-3 font-overpass leading-snug">
                               <CodeIcon size={16} className=" size-9 rounded-sm p-2 stroke-starlights-purple-600" />
                               <div>
-                                <div className="font-medium mt-0.5">Development Nexus</div>
+                                <div className="font-medium mt-0.5">Development</div>
                                 <div className="text-muted-foreground text-xs">Lorem ipsum dolor sit amet consectetur.</div>
                               </div>
                             </Link>
@@ -370,41 +355,16 @@ export function MainNavigation() {
         </div>
 
         <div className="flex items-center justify-end gap-2">
-          {/* <Separator orientation="vertical" className="min-h-5 mx-4 hidden lg:block" /> */}
-
           <div className="flex items-center justify-end gap-2">
             <ModeToggle />
             <GitHubIconButton />
           </div>
-
-          {/* <Separator orientation="vertical" className="min-h-5 mx-4 hidden lg:block" />
-
-          <div className="flex items-center gap-2">
-            <ButtonGroup className="hidden lg:block">
-              <Button variant="default" size="icon-sm">
-                <Link to="/characters/create" className="flex items-center gap-2">
-                  <Plus size={16} />
-                </Link>
-              </Button>
-            </ButtonGroup>
-          </div> */}
 
           <Separator orientation="vertical" className="min-h-5" />
           <SizeIndicatorBadge className="ms-2" />
 
           {/* <div className="flex items-center justify-end gap-2">
             <AppMenuComponent />
-          </div> */}
-
-          {/* <Separator orientation="vertical" className="min-h-5 ms-2" />
-          <Button size="sm" className="ms-2 bg-starlights-purple-600 hover:bg-starlights-purple-700 focus:ring-starlights-purple-600">
-            <OrbitIcon className="me-2 " size={16} /> Get Started
-          </Button> */}
-
-          {/* debug indicator */}
-          {/* <div className="flex items-center justify-end gap-2 ms-2 debug">
-            <Separator orientation="vertical" className="min-h-5  hidden lg:block" />
-            <SizeIndicatorBadge className="ms-2" />
           </div> */}
         </div>
       </nav>

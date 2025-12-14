@@ -20,6 +20,7 @@
 						<Sources>
 							<Exclude>
 								<Source>.*\\Migrations\\.*</Source>
+								<Source>.generated.cs</Source>
 							</Exclude>
 						</Sources>
 					</CodeCoverage>
