@@ -16,7 +16,9 @@
     "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
-    "@rollup/rollup-win32-x64-msvc": "^4.53.3",
     "@types/node": "^24.10.1"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.53.3"
   }
 }
