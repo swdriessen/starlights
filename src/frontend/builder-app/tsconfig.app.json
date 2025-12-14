@@ -22,13 +22,16 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "forceConsistentCasingInFileNames": true,
 
     // shadcn addition
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@starlights/ui": ["../libs/ui/src/index.ts"],
+      "@starlights/ui/*": ["../libs/ui/src/*"],
+      "@components/*": ["../libs/ui/src/components/*"],
+      "@components/ui/*": ["../libs/ui/src/components/ui*"]
     }
   },
   "include": ["src"]

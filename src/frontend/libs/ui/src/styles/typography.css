@@ -1,0 +1,22 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  letter-spacing: var(--tracking-wide);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+  letter-spacing: var(--tracking-wide);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.font-overpass {
+  font-family: var(--font-overpass);
+}

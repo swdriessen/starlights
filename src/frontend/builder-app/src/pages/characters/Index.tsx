@@ -2,8 +2,8 @@ import { useCharacterCards, useDeleteCharacter, type CharacterCard } from "@/lib
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { AnvilIcon, FileSpreadsheetIcon, FolderHeartIcon, MenuIcon, MoreHorizontalIcon, MoreVertical, PlusIcon, Trash2Icon } from "lucide-react";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AnvilIcon, FileSpreadsheetIcon, MenuIcon, PlusIcon, SwordsIcon, Trash2Icon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,92 +17,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import ProseSection from "@/components/prose-section";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { Spinner } from "@/components/ui/spinner";
 
-function CharacterCardCollectionSquares() {
-  const { data: characterCards } = useCharacterCards();
-  const deleteCharacter = useDeleteCharacter();
-
-  return (
-    <div>
-      {characterCards && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
-          {characterCards.characters.map((card) => (
-            <div key={card.characterId}>
-              <Card key={card.characterId} className="p-0 group ">
-                <CardContent className="relative overflow-hidden p-1.5">
-                  <Link to={`/characters/${card.characterId}`}>
-                    <img
-                      src={card.portraitUrl}
-                      alt="Banner"
-                      className="size-full aspect-square rounded-md object-cover transition-transform duration-300 group-hover:scale-100"
-                    />
-                    <div className="m-1.5 absolute top-0 left-0 right-0 bottom-0 rounded-md flex flex-col justify-end p-1.5 px-2 bg-gradient-to-tr from-black/80 group-hover:from-black/50 to-transparent group-hover:to-black/10 gap-0.5">
-                      <span className="text-sm xl:text-base font-semibold uppercase text-white leading-none">{card.name}</span>
-                      <p className="text-xxs xl:text-xs uppercase text-white/50">
-                        Level {card.level} {card.build}
-                      </p>
-                    </div>
-                  </Link>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        disabled={deleteCharacter.isPending}
-                        className="bg-white/50 hover:bg-white/100 absolute end-3 top-3 rounded-sm hidden group-hover:flex w-8"
-                      >
-                        {/* <Trash2 className="stroke-black/80 stroke-1" /> */}
-                        <MoreVertical className="stroke-black/80 stroke-1" />
-                        <span className="sr-only">Delete</span>
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete character?</AlertDialogTitle>
-                        <AlertDialogDescription>This action cannot be undone. This will permanently delete the character "{card.name}".</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className={buttonVariants({ variant: "destructive" })}
-                          disabled={deleteCharacter.isPending}
-                          onClick={() =>
-                            deleteCharacter.mutate(card.characterId, {
-                              onSuccess: () => toast.success("Character deleted"),
-                              onError: (err) => toast.error("Failed to delete character", { description: err.message }),
-                            })
-                          }
-                        >
-                          Confirm delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-
-                  {/* <Button
-                    size="icon"
-                    onClick={() => (card.isFavorite = !card.isFavorite)}
-                    className="bg-primary/10 hover:bg-primary/20 absolute end-4 top-4 rounded-full "
-                  >
-                    <HeartIcon className={cn("size-4", card.isFavorite ? "fill-destructive stroke-destructive" : "stroke-white")} />
-                    <span className="sr-only">Like</span>
-                  </Button> */}
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+import { CardWrapper } from "./components/card-wrapper";
 
 function CharacterItem({
   title,
@@ -125,8 +45,8 @@ function CharacterItem({
 
   return (
     <>
-      <div className="relative">
-        <Link to={url} className="block relative aspect-square overflow-hidden rounded-lg group border-4 border-double shadow-md">
+      <div className="relative rounded-xl hover:shadow">
+        <Link to={url} className="block relative aspect-square overflow-hidden rounded-xl group border-4 border-double ">
           <img
             src={image || "https://www.dndbeyond.com/attachments/12/424/flash-sale.jpg"}
             alt={title}
@@ -134,7 +54,7 @@ function CharacterItem({
               enabled ? "" : "grayscale-100 group-hover:grayscale-0 "
             }`}
           />
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/80 group-hover:from-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-tr from-black/80 group-hover:from-black/50 to-transparent" />
           <div
             className={`prose prose-neutral dark:prose-invert absolute text-white ${
               isLarge ? "left-4 right-4 bottom-4 sm:left-8 sm:right-8 sm:bottom-8" : "left-2 right-2 bottom-2"
@@ -265,24 +185,27 @@ function CharacterDetailsDrawer({ card }: { card: CharacterCard }) {
   );
 }
 
-function CharacterCardCollectionSquares2() {
+function CharactersCollection() {
   const { data: characterCards } = useCharacterCards();
   const deleteCharacter = useDeleteCharacter();
   const isMobile = useIsMobile();
 
   return (
     <div>
-      <CharactersSectionHeader title="My Character Collection" />
+      {/* <CharactersSectionHeader title="My Character Collection" /> */}
 
       {characterCards === undefined && (
         <div>
           <Empty className="border border-dashed">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <Spinner />
+                {/* <Spinner /> */}
+                <SwordsIcon className="animate-pulse stroke-secondary" />
+                {/* <SwordsIcon className="animate-ping " /> */}
+                {/* <SparkleIcon className="animate-pulse" /> */}
               </EmptyMedia>
               <EmptyTitle>Gathering Adventurers</EmptyTitle>
-              <EmptyDescription>We are currently gathering your adventurers. Please wait in the tavern.</EmptyDescription>
+              <EmptyDescription>We are currently gathering your adventurers...</EmptyDescription>
             </EmptyHeader>
           </Empty>
         </div>
@@ -350,63 +273,48 @@ function CharacterCardCollectionSquares2() {
   );
 }
 
-function CharactersSectionHeader({ title = "Untitled" }: { title?: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 my-6">
-      <Separator className="flex-1 min-w-4" />
-      <h4 className="flex-none ">{title}</h4>
-      <Separator className="flex-1 md:flex-auto" />
-    </div>
-  );
-}
-
 export default function CharactersPage() {
-  const isMobile = useIsMobile();
-
   return (
     <>
-      <div className="flex-row md:flex gap-2">
-        <ProseSection className="flex-grow">
-          <h1 className="mb-0">Characters</h1>
-          <p className="mt-0">Organize your band of heroes — manage their appearance, progress, and epic deeds.</p>
-        </ProseSection>
-
-        <div className="flex justify-end items-end gap-4 mt-4 md:mt-0">
-          <ButtonGroup className="">
-            <Button variant="outline" size="sm" className="">
-              <Link to="/characters/create" className="flex items-center gap-2">
-                <PlusIcon size={16} />
-                Character
-              </Link>
-            </Button>
-          </ButtonGroup>
-          <ButtonGroup className="hidden">
-            <Button variant="outline" size="sm" className="" disabled>
-              <Link to="/characters/create" className="flex items-center gap-2">
-                <PlusIcon size={16} />
-                Group
-              </Link>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon-sm" aria-label="More Options" disabled>
-                  <MoreHorizontalIcon />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <FolderHeartIcon />
-                    Manage Groups
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </ButtonGroup>
-        </div>
+      <div className="container mx-auto px-4 mt-12">
+        <CardWrapper>
+          <Card className="rounded-lg shadow-none">
+            <CardHeader className="border-b">
+              <CardTitle className="mb-3">Character Collection</CardTitle>
+              <CardDescription>Organize your band of heroes — manage their appearance, progress, and epic deeds.</CardDescription>
+              <CardAction>
+                <ButtonGroup>
+                  <Button variant="outline">
+                    <Link to="/characters/create" className="flex items-center gap-2">
+                      <PlusIcon size={16} />
+                      New Character
+                    </Link>
+                  </Button>
+                  {/* <Separator orientation="vertical" />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="default" size="icon-sm" aria-label="More Options" disabled>
+                        <MoreHorizontalIcon />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                          <PlusIcon />
+                          New Group
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu> */}
+                </ButtonGroup>
+              </CardAction>
+            </CardHeader>
+            <CardContent>
+              <CharactersCollection />
+            </CardContent>
+          </Card>
+        </CardWrapper>
       </div>
-
-      <CharacterCardCollectionSquares2 />
     </>
   );
 }
