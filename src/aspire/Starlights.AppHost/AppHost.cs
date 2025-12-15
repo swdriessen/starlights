@@ -6,6 +6,7 @@ var database = builder.AddSqlServer("sql-server", port: 61070) // static port fo
     .AddDatabase("starlights-db", "starlights-db-env");
 
 var application = builder.AddProject<Projects.Starlights_Application>("backend")
+    .WithUrls(context => context.Urls.ForEach(url => url.DisplayLocation = UrlDisplayLocation.DetailsOnly))
     .WithScalarCommand()
     .WithScalarUrl()
     .WithInitializeDatabaseCommand()
