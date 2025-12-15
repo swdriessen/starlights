@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Starlights.Integration.Core;
 using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows;
 

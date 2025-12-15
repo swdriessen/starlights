@@ -1,5 +1,5 @@
 ﻿
-using FluentAssertions;
+using AwesomeAssertions;
 using Starlights.Platform.Domain;
 using Starlights.Platform.Eventing;
 

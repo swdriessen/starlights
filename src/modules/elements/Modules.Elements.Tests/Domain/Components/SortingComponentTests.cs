@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 

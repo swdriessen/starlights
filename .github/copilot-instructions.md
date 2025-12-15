@@ -8,7 +8,7 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 - **Frontend**: React 19 (TypeScript) with Vite, TanStack Query, React Router, Tailwind CSS, and Shadcn UI
 - **Data**: Entity Framework Core 10 with SQL Server
 - **Orchestration**: .NET Aspire 9.5 for local development and Azure deployment
-- **Testing**: MSTest for unit tests; FluentAssertions for assertions; Moq for mocking
+- **Testing**: MSTest for unit tests; AwesomeAssertions for assertions; Moq for mocking
 - **Observability**: Serilog for logging, OpenTelemetry for distributed tracing and metrics
 
 ## C# Practices
@@ -119,7 +119,7 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 - **TypeScript**: Strict mode enabled; proper typing for all components and functions.
 - **Environment**: Use `VITE_API_BASE` for API base URL (injected by Aspire in development).
 
-## Unit Testing (MSTest + FluentAssertions + Moq)
+## Unit Testing (MSTest + AwesomeAssertions + Moq)
 
 - **Structure**:
   - Clear test names: `Class_Method_Scenario` or `Method_WhenCondition_ExpectedBehavior`
@@ -127,7 +127,7 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
   - Use `[DataRow]` for parameterized tests
 - **Style**:
   - Follow AAA pattern (Arrange, Act, Assert)
-  - Use FluentAssertions exclusively for assertions
+  - Use AwesomeAssertions exclusively for assertions
   - Use Moq with strong typing and strict behavior where critical
 - **Coverage Requirements** for any new component (class/record/struct):
   - Construction and defaults

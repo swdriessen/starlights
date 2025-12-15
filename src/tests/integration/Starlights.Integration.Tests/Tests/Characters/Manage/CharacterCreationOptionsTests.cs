@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Starlights.Integration.Core;
 using Starlights.Integration.Core.Extensions;
 using Starlights.Integration.Drivers.CharacterCreation;

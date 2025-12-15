@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using Starlights.Integration.Core;
 
 namespace Starlights.Integration.Drivers.Elements;

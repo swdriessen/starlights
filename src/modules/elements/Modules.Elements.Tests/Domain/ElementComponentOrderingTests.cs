@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;

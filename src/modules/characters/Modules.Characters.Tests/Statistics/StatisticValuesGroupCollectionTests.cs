@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using Starlights.Modules.Characters.Services.Statistics;
 
 namespace Starlights.Modules.Characters.Tests.Statistics;

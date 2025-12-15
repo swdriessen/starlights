@@ -22,7 +22,7 @@
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.1.0" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Javascript" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.DevTunnels" Version="$(AspireVersion)-preview.1.25560.3" />
+    <PackageVersion Include="Aspire.Hosting.DevTunnels" Version="13.0.2-preview.1.25603.5" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryVersion)" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryVersion)" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryVersion)" />
@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup Label="Test Projects">
     <PackageVersion Include="Moq" Version="4.20.72" />
-    <PackageVersion Include="FluentAssertions" Version="7.2.0" />
+    <PackageVersion Include="AwesomeAssertions" Version="9.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MicrosoftExtensionsVersion)" />
   </ItemGroup>
   <ItemGroup Label="Source Generator Projects" Condition="$(MSBuildProjectName.EndsWith('SourceGenerators'))">
