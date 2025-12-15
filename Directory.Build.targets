@@ -1,9 +1,6 @@
 <Project>
 	<Target Name="EnforceSpecificVersions" BeforeTargets="Build">
-		<!-- FluentAssertions version 7.2.0 -->
-		<ItemGroup>
-			<FluentAssertionsPackage Include="@(PackageVersion)" Condition="'%(Identity)' == 'FluentAssertions'" />
-		</ItemGroup>
-		<Error Condition="$([System.Version]::Parse('%(FluentAssertionsPackage.Version)')) > $([System.Version]::Parse('7.2.0'))" Text="The last free version of Fluent Assertions is version 7.x. Version 8.0 and later versions require a paid license for commercial use, while remaining free for open-source and non-commercial projects. You currently include version: '%(FluentAssertionsPackage.Version)'" />
+
+		<!-- look at the git history how to enforce a package on a specific version -->
 	</Target>
 </Project>
