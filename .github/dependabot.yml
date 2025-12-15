@@ -25,15 +25,6 @@ updates:
     labels:
       - "dependencies"
       - "nuget"
-    ignore:
-      # Explicitly exclude FluentAssertions from automatic updates
-      - dependency-name: "FluentAssertions"
-        update-types:
-          [
-            "version-update:semver-major",
-            "version-update:semver-minor",
-            "version-update:semver-patch",
-          ]
     groups:
       microsoft-packages:
         patterns:

@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using Starlights.Integration.Core;
 using Starlights.Integration.Core.Extensions;
 using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows.GetSavingThrows;

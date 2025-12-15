@@ -12,6 +12,6 @@
 
 	<ItemGroup Label="Test Projects" Condition="$(MSBuildProjectName.EndsWith('Tests'))">
 		<PackageReference Include="Moq" />
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="AwesomeAssertions" />
 	</ItemGroup>
 </Project>

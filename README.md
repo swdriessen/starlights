@@ -35,7 +35,7 @@ _This is a screenshot from the experimental Development UI in this project._
 ### Testing
 
 - **MSTest**: Test framework
-- **FluentAssertions**: Expressive assertion library
+- **AwesomeAssertions**: Expressive assertion library
 - **Moq**: Mocking framework for unit tests
 - Integration tests using WebApplicationFactory pattern
 

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using Starlights.Integration.Core;
 using Starlights.Modules.Elements.Endpoints.Entities.Abilities.GetAbilities;
 

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Starlights.Modules.Characters.Domain.Characters;
 
 namespace Starlights.Modules.Characters.Tests.Characters;
