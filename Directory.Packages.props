@@ -15,7 +15,7 @@
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.4.13" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.11.6" />
   </ItemGroup>
   <ItemGroup Label="Aspire">
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.1.0" />
