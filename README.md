@@ -12,136 +12,78 @@ _This is a screenshot from the experimental Development UI in this project._
 
 ![Demo UI](./assets/images/development-ui.png)
 
-## Tech Stack
+## Running Locally
 
-### Backend
+This project uses .NET Aspire for local orchestration. You can run it using the command line or Visual Studio.
 
-- **Modular Monolith Architecture**: Domain modules (Elements module for game data, Characters module for character building) built on a shared platform layer
-- **Entity Framework Core 10 + SQL Server**: Data persistence with explicit configurations and migrations
-- **.NET 10 Web API**: Using FastEndpoints for REPR pattern endpoints
-- **.NET Aspire 13**: Local orchestration and Azure deployment ready
-- **Observability**: Serilog for logging, OpenTelemetry for distributed tracing and metrics
+### Prerequisites
 
-### Frontend (Experimental)
-
-- **React 19** (TypeScript)
-- **Vite 7**: Fast build tooling
-- **Tailwind CSS 4**: Utility-first styling
-- **Shadcn UI**: Composable UI components
-- **TanStack Query 5.87**: Server state management
-- **React Router 7**: Client-side routing
-- **React Hook Form + Zod**: Form validation
-
-### Testing
-
-- **MSTest**: Test framework
-- **AwesomeAssertions**: Expressive assertion library
-- **Moq**: Mocking framework for unit tests
-- Integration tests using WebApplicationFactory pattern
-
-## Prerequisites
-
-- Windows, macOS, or Linux with Docker (required for local SQL Server container via Aspire)
-- .NET SDK 10
+- .NET 10 SDK
 - Node.js 20+
 - Docker Desktop (or compatible container runtime)
+- Visual Studio Code or Visual Studio 2026
 
-## Getting Started (local)
+### Using Aspire CLI (Recommended)
 
-The recommended way to run locally is via the .NET Aspire AppHost, which:
+To run the application using the new Aspire CLI (get it at [aspire.dev](https://aspire.dev)), execute the following command in the root directory:
 
-- Creates a persistent SQL Server container with fixed port `61070` for development
-- Runs EF Core migration workers for Characters and Elements modules
-- Starts the backend API with service discovery and telemetry wiring
-- Launches the React Builder App (Vite dev server) with external URL
-- Provides Aspire dashboard for monitoring resources, logs, and metrics
-
-### Start the Application
-
-Run the AppHost project:
-
-```powershell
-dotnet run --project src/aspire/Starlights.AppHost
+```bash
+aspire run
 ```
 
-Once running:
+This will start the AppHost, which orchestrates:
 
-1. Open the Aspire dashboard (URL shown in console output)
-2. Initialize the database by running the "Initialize Database" command on the `backend` resource, or manually hitting `/api/elements/initialize`
-3. Access the frontend at the external URL shown in the dashboard (typically `http://localhost:5173`)
+- **SQL Server**: A persistent container (port `61070`)
+- **Migrations**: Automatically applies EF Core migrations
+- **Backend API**: The .NET Web API
+- **Frontend**: The React/Vite application
+- **Dashboard**: The Aspire dashboard for logs and metrics
 
-## Tests
+### Using Visual Studio 2026
 
-- **Unit tests**: Located in `*.Tests` projects (Platform, Characters, Elements modules)
-- **Integration tests**: Under [`src/tests/integration/Starlights.Integration.Tests`](src/tests/integration/Starlights.Integration.Tests)
+1. Open `Starlights.slnx` in Visual Studio 2026.
+2. Ensure `Starlights.AppHost` is set as the startup project.
+3. Press **F5** to start debugging.
 
-Run all tests:
+Once running, the Aspire Dashboard will launch automatically. From there, you can access the frontend application, backend API, and Scalar API documentation.
 
-```powershell
+## Running Tests
+
+You can run the automated test suite using the command line or Visual Studio.
+
+### Using CLI
+
+To run all tests, execute the following command in the root directory:
+
+```bash
 dotnet test
 ```
 
-Run tests with coverage (configured in [`.runsettings`](.runsettings)):
+To run tests with code coverage:
 
-```powershell
+```bash
 dotnet test --settings .runsettings
 ```
 
+### Using Visual Studio 2026
+
+1. Open the **Test Explorer** window (**Test** > **Test Explorer**).
+2. Click the **Run All Tests** button (or press **Ctrl+R, A**).
+
 ## Architecture
 
-### Modular Monolith
+The project follows a **Modular Monolith** architecture, organized by business capability:
 
-- Organized by business capability with strict module boundaries
-- **Elements Module** ([`src/modules/elements`](src/modules/elements)): Game data elements (classes, abilities, features, etc.)
-- **Characters Module** ([`src/modules/characters`](src/modules/characters)): Character creation and management
-- **Platform Layer** ([`src/platform`](src/platform)): Shared hosting, logging, data infrastructure, and eventing
+- **Elements Module**: Manages game data (classes, abilities, features, rules).
+- **Characters Module**: Handles character creation and management.
+- **Platform Layer**: Provides shared infrastructure (hosting, logging, data, eventing).
 
-Each module follows internal layering:
-
-- `Domain`: Entities, value objects, aggregates, and domain logic
-- `Data`: Repositories and abstractions
-- `Data.EntityFramework`: EF Core configurations, DbContext, and migrations
-- `Endpoints`: FastEndpoints for API exposure
-- `Integration`: Public contracts for inter-module communication
-
-### Key Patterns
-
-- **REPR (Request-Endpoint-Response)**: Each endpoint is self-contained with typed request/response
-- **Domain Events**: Pub/sub pattern for module communication
-- **DI-first**: All dependencies injected via constructor, leveraging nullable reference types for safety
-- **EF Core Configurations**: Explicit `IEntityTypeConfiguration<T>` for all entities (see repository-specific rules in [`copilot-instructions.md`](.github/copilot-instructions.md))
-
-## Database
-
-- **Local Development**: SQL Server container via Aspire AppHost
-- **Connection**: Surfaced via Aspire service discovery (`ConnectionStrings__charactersdb`, `ConnectionStrings__elementsdb`)
-- **Static Port**: `61070` (configurable in [`src/aspire/Starlights.AppHost/AppHost.cs`](src/aspire/Starlights.AppHost/AppHost.cs))
-- **Migrations**: Automatic via migration workers at startup; EF Core migrations in respective `*.Data.EntityFramework` projects
-
-## API Documentation
-
-In Development, the backend exposes:
-
-- **OpenAPI spec**: `/openapi/v1.json`
-- **Scalar API Reference UI**: `/scalar` (interactive documentation)
-- **API prefix**: All endpoints under `/api`
-
-FastEndpoints are grouped by module and version (e.g., [`CharactersGroup`](src/modules/characters/Modules.Characters.Endpoints/CharactersGroup.cs)).
-
-## Troubleshooting
-
-| Issue                             | Solution                                                                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| **Docker not running**            | Start Docker Desktop (or your container runtime) before launching AppHost                                                |
-| **Port `61070` in use**           | Change the port in [`AppHost.cs`](src/aspire/Starlights.AppHost/AppHost.cs) and re-run AppHost                           |
-| **Database not initialized**      | Ensure AppHost is started and migration workers complete; manually trigger via `/api/elements/initialize`                |
-| **Frontend can't connect to API** | Check Aspire dashboard for backend resource status; verify `VITE_API_BASE` environment variable                          |
-| **EF Core migration errors**      | Ensure SQL Server container is running and connection string is correct; check migration worker logs in Aspire dashboard |
-
-## License
-
-This project is being developed in the open under the [MIT License](./LICENSE).
+Each module is self-contained with its own domain logic, data persistence, and API endpoints.
 
 ## Acknowledgements
 
 This project builds on experience developing [Aurora](https://www.aurorabuilder.com).
+
+## License
+
+This project is being developed in the open under the [MIT License](./LICENSE).
