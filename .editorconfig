@@ -181,3 +181,7 @@ indent_size = 2
 
 [*.json]
 indent_size = 2
+
+[*.{cs,vb}]
+# avoid analyzer complaining about every log message
+dotnet_diagnostic.CA1873.severity = none
