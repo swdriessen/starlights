@@ -3,6 +3,7 @@ using AwesomeAssertions;
 using Starlights.Integration.Core;
 using Starlights.Integration.Core.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
 
 namespace Starlights.Integration.Drivers.Elements;
 
@@ -55,5 +56,21 @@ internal class ElementsEndpointDriver : IDriver
         responseContent.Should().NotBeNull();
 
         return responseContent.Id;
+    }
+
+    public async Task<GetSpellByIdResponse?> GetSpellByIdAsync(Guid id)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.GetAsync($"/api/elements/spells/{id}", _integration.CancellationToken);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<GetSpellByIdResponse>(_integration.CancellationToken);
     }
 }
