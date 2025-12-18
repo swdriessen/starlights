@@ -14,12 +14,12 @@ public abstract class ElementComponentBase : EntityBase<ElementComponentId>
     }
 
     /// <summary>
-    /// Gets the unique identifier of the element (parent) that this component belongs to.
+    /// Gets the unique identifier of the parent element that this component belongs to.
     /// </summary>
     public ElementId OwningElement { get; protected set; }
 
     /// <summary>
-    /// Gets the explicit order sequence of this component within its owning element.
+    /// Gets the explicit order sequence of this component within its parent element.
     /// Used to ensure deterministic ordering and support manual reordering.
     /// </summary>
     public int OrderSequence { get; internal set; }

@@ -58,8 +58,8 @@ public static class DataModelMappingExtensions
     {
         ArgumentNullException.ThrowIfNull(element, nameof(element));
 
-        var abbreviationComponent = element.GetComponent<AbbreviationComponent>();
-        var sortingComponent = element.GetComponent<SortingComponent>();
+        var abbreviationComponent = element.GetRequiredComponent<AbbreviationComponent>();
+        var sortingComponent = element.GetRequiredComponent<SortingComponent>();
 
         return new AbilityDataModel(element.Id, element.Name, abbreviationComponent.Abbreviation)
         {
@@ -71,9 +71,9 @@ public static class DataModelMappingExtensions
     {
         ArgumentNullException.ThrowIfNull(element, nameof(element));
 
-        var sortingComponent = element.GetComponent<SortingComponent>();
+        var sortingComponent = element.GetRequiredComponent<SortingComponent>();
 
-        return new SkillDataModel(element.Id, element.Name, element.GetComponent<PrimaryAbilityComponent>().PrimaryAbility)
+        return new SkillDataModel(element.Id, element.Name, element.GetRequiredComponent<PrimaryAbilityComponent>().PrimaryAbility)
         {
             SortingOrder = sortingComponent.SortingOrder
         };
@@ -83,9 +83,9 @@ public static class DataModelMappingExtensions
     {
         ArgumentNullException.ThrowIfNull(element, nameof(element));
 
-        var sortingComponent = element.GetComponent<SortingComponent>();
+        var sortingComponent = element.GetRequiredComponent<SortingComponent>();
 
-        return new SavingThrowDataModel(element.Id, element.Name, element.GetComponent<PrimaryAbilityComponent>().PrimaryAbility)
+        return new SavingThrowDataModel(element.Id, element.Name, element.GetRequiredComponent<PrimaryAbilityComponent>().PrimaryAbility)
         {
             SortingOrder = sortingComponent.SortingOrder
         };

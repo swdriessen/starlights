@@ -65,8 +65,7 @@ public class ElementBuilder
 
         foreach (var factory in _componentFactories)
         {
-            var component = factory(element.Id);
-            element.AddComponent(component);
+            element.AddComponent(factory);
         }
 
         return element;
@@ -75,5 +74,8 @@ public class ElementBuilder
     /// <summary>
     /// Creates a new ElementBuilder instance for the given element type.
     /// </summary>
-    public static ElementBuilder Create(string type, string? name = null, string? system = "DND5E") => new(type, name, system);
+    public static ElementBuilder Create(string type, string? name = null, string? system = "DND5E")
+    {
+        return new(type, name, system);
+    }
 }

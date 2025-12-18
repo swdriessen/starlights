@@ -56,12 +56,36 @@ public sealed class Element : AggregateRoot<ElementId>
     /// <summary>
     /// Adds a component to the element.
     /// </summary>
+    [Obsolete("Use AddComponent with factory function instead to ensure correct ownership.")]
     public T AddComponent<T>(T component) where T : ElementComponentBase
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
         component.OrderSequence = _components.Count; // append
         _components.Add(component);
         return component;
+    }
+
+    /// <summary>
+    /// Adds a component to the element using a factory function.
+    /// </summary>
+    public T AddComponent<T>(Func<ElementId, T> componentFactory) where T : ElementComponentBase
+    {
+        ArgumentNullException.ThrowIfNull(componentFactory, nameof(componentFactory));
+        var component = componentFactory(Id);
+        component.OrderSequence = _components.Count; // append
+        _components.Add(component);
+        return component;
+    }
+
+    /// <summary>
+    /// Updates a component of the specified type using the provided action.
+    /// </summary>
+    public Element UpdateComponent<T>(Action<T> updateAction) where T : ElementComponentBase
+    {
+        ArgumentNullException.ThrowIfNull(updateAction, nameof(updateAction));
+        var component = GetRequiredComponent<T>();
+        updateAction(component);
+        return this;
     }
 
     /// <summary>
@@ -94,9 +118,17 @@ public sealed class Element : AggregateRoot<ElementId>
     /// <summary>
     /// Retrieves a single component of the specified type.
     /// </summary>
-    public T GetComponent<T>()
+    public T GetRequiredComponent<T>()
     {
         return _components.OfType<T>().Single();
+    }
+
+    /// <summary>
+    /// Retrieves a single component of the specified type, or null if not found.
+    /// </summary>
+    public T? GetComponent<T>()
+    {
+        return _components.OfType<T>().SingleOrDefault();
     }
 
     /// <summary>

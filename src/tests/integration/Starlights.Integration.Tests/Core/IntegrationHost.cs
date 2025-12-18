@@ -14,9 +14,10 @@ namespace Starlights.Integration.Core;
 /// <summary>
 /// Integration host for running integration tests against the Starlights application.
 /// </summary>
-public class IntegrationHost : IIntegrationHost
+public class IntegrationHost : IIntegrationHost, IDisposable
 {
     private readonly WebApplicationFactory<Program> _factory;
+    private bool _disposedValue;
 
     public IntegrationHost(Action<Dictionary<string, object>>? configureProperties = null, Action<IntegrationHostOptions>? configure = null)
     {
@@ -78,5 +79,24 @@ public class IntegrationHost : IIntegrationHost
     public static IntegrationHostBuilder CreateBuilder()
     {
         return new();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            if (disposing)
+            {
+                _factory.Dispose();
+            }
+
+            _disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

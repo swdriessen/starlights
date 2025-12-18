@@ -90,7 +90,7 @@ public class ElementConstructionTests
 
         // Assert
         element.Should().NotBeNull();
-        var includeRule = element.GetComponent<IncludeRuleComponent>();
+        var includeRule = element.GetRequiredComponent<IncludeRuleComponent>();
         includeRule.IncludeElement.Should().Be(freeElement.Id);
         includeRule.LevelRequirement.Should().Be(0);
     }

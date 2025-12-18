@@ -23,7 +23,7 @@ public sealed class EventObserverCollection
     {
         _logger = logger;
         _integration = integration;
-        _cancellationToken = _integration.GetTestCancellationToken();
+        _cancellationToken = _integration.CancellationToken;
 
         CharacterCreated = new(_cancellationToken);
         AbilityScoreCreated = new(_cancellationToken);

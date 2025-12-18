@@ -29,7 +29,7 @@ public class CreateAbilityEndpoint : Endpoint<CreateAbilityRequest, CreateAbilit
         _logger.LogInformation("Creating a new ability with name: {Name} and abbreviation: {Abbreviation}", req.Name, req.Abbreviation);
 
         var element = Element.Create(req.Name, ElementTypeConstants.Ability);
-        element.AddComponent(new AbbreviationComponent(element.Id, req.Abbreviation));
+        element.AddComponent(id => new AbbreviationComponent(id, req.Abbreviation));
 
         var repository = _persistence.GetRepository<IElementsRepository>();
 
