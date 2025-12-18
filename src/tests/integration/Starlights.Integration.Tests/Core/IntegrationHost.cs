@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using OpenTelemetry.Trace;
 using Starlights.Application;
 using Starlights.Integration.Core.Eventing;
@@ -39,6 +40,11 @@ public class IntegrationHost : IIntegrationHost, IDisposable
                 // configure additional services for integration tests
                 builder.ConfigureTestServices(services =>
                 {
+                    services.Configure<HostOptions>(hostOptions =>
+                    {
+                        hostOptions.ShutdownTimeout = TimeSpan.FromMilliseconds(250);
+                    });
+
                     // able to listen and wait for domain events
                     services.AddSingleton<EventObserverCollection>();
                     services.AddDomainEventHandlersFrom(typeof(IntegrationHost).Assembly);
