@@ -69,12 +69,13 @@ public sealed class Program
             app.MapScalarApiReference(options =>
             {
                 options.Servers = [];
+
                 options.WithTitle("Starlights API")
-                    .WithClientButton(false)
-                    .WithLayout(ScalarLayout.Classic)
+                    .HideClientButton()
+                    .WithClassicLayout()
                     .WithTheme(ScalarTheme.Alternate)
-                    .WithDarkMode(true)
-                    .WithModels(false)
+                    .EnableDarkMode()
+                    .HideModels()
                     .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Fetch);
             });
         }
