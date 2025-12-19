@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Events;
 using Starlights.Platform.Hosting;
 
 namespace Starlights.Platform.Components.Serilog;
@@ -15,40 +14,20 @@ public class SerilogComponent : IPlatformServiceComponent
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
+        // enable additional providers in integration tests
+        // not all console logging (e.g. HTTP requests) is captured in the test details window just yet
+        var writeToProviders = builder.Environment.IsIntegration();
+
         builder.Services.AddSerilog(configuration =>
         {
-            if (builder.Environment.IsProduction())
-            {
-                // production logging
-                configuration.MinimumLevel.Information();
-            }
-            else
-            {
-                if (builder.Environment.IsDevelopment())
-                {
-                    // development logging, but not in integration tests for now
-                    configuration.MinimumLevel.Debug();
-                }
+            // load configuration from appsettings
+            configuration.ReadFrom.Configuration(builder.Configuration);
 
-                configuration.Filter.ByExcluding(e =>
-                {
-                    // filter out debug logs from EF / MS
-                    if (e.Level == LogEventLevel.Debug || e.Level == LogEventLevel.Information)
-                    {
-                        if (e.Properties.TryGetValue("SourceContext", out var sourceContext))
-                        {
-                            return sourceContext.ToString().Contains("Microsoft.EntityFrameworkCore", StringComparison.OrdinalIgnoreCase) ||
-                            sourceContext.ToString().Contains("Microsoft.AspNetCore", StringComparison.OrdinalIgnoreCase) ||
-                            sourceContext.ToString().Contains("Microsoft.Extensions", StringComparison.OrdinalIgnoreCase);
-                        }
-                    }
-
-                    return false;
-                });
-            }
-
-            configuration.WriteTo.OpenTelemetry();
+            configuration.Enrich.FromLogContext();
             configuration.WriteTo.Console(outputTemplate: ConsoleOutputTemplate);
-        });
+
+            // allow aspire dashboard to capture logs
+            configuration.WriteTo.OpenTelemetry();
+        }, writeToProviders: writeToProviders);
     }
 }
