@@ -4,6 +4,7 @@ using Starlights.Integration.Core;
 using Starlights.Integration.Core.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 
@@ -72,5 +73,18 @@ internal class ElementsEndpointDriver : IDriver
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<GetSpellByIdResponse>(_integration.CancellationToken);
+    }
+
+    public async Task<UpdateSpellResponse> UpdateSpellAsync(UpdateSpellRequest request)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.PutAsJsonAsync($"/api/elements/spells/{request.Id}", request, _integration.CancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        var responseContent = await response.Content.ReadFromJsonAsync<UpdateSpellResponse>(_integration.CancellationToken);
+        responseContent.Should().NotBeNull();
+
+        return responseContent!;
     }
 }
