@@ -1,6 +1,8 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
+namespace Starlights.Modules.Elements.Endpoints.Content.Spells.GetList;
 
-public sealed record GetSpellByIdResponse
+public sealed record GetSpellsResponse(IReadOnlyList<GetSpellsResponseItem> Items);
+
+public sealed record GetSpellsResponseItem
 {
     public required Guid Id { get; init; }
     public required string Name { get; init; }
@@ -15,5 +17,4 @@ public sealed record GetSpellByIdResponse
     public required bool HasVerbal { get; init; }
     public required bool HasMaterial { get; init; }
     public string? MaterialComponent { get; init; }
-    public required string Description { get; init; }
 }

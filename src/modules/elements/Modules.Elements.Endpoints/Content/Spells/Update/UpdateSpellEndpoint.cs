@@ -27,7 +27,7 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
 
     public override async Task HandleAsync(UpdateSpellRequest request, CancellationToken ct)
     {
-        _logger.LogInformation("Updating spell [id='{Id}']", request.Id);
+        _logger.LogInformation("updating spell [id='{Id}']", request.Id);
 
         var repository = _persistence.GetRepository<IElementsRepository>();
         var element = await repository.GetElementAsync(request.Id);
@@ -37,6 +37,11 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
             await Send.NotFoundAsync(ct);
             return;
         }
+
+        element.UpdateComponent<DescriptionComponent>(component =>
+        {
+            component.UpdateContent(request.Description ?? string.Empty);
+        });
 
         element.UpdateComponent<SpellAttributesComponent>(component =>
         {
@@ -52,19 +57,6 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
             component.UpdateMaterialComponent(request.HasMaterial, request.MaterialComponent);
         });
 
-        if (!string.IsNullOrWhiteSpace(request.Description))
-        {
-            var description = element.GetComponent<DescriptionComponent>();
-            if (description is null)
-            {
-                element.AddComponent(id => new DescriptionComponent(id, request.Description));
-            }
-            else
-            {
-                description.UpdateContent(request.Description);
-            }
-        }
-
         var rows = await _persistence.SaveChangesAsync();
         if (rows == 0)
         {
@@ -73,11 +65,6 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
             return;
         }
 
-        var response = new UpdateSpellResponse
-        {
-            Id = element.Id
-        };
-
-        await Send.OkAsync(response, cancellation: ct);
+        await Send.OkAsync(new UpdateSpellResponse(element.Id), cancellation: ct);
     }
 }

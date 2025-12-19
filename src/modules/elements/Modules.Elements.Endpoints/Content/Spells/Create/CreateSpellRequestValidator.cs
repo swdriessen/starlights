@@ -12,5 +12,6 @@ public class CreateSpellRequestValidator : Validator<CreateSpellRequest>
         RuleFor(x => x.CastingTime).NotEmpty().WithMessage("Casting time is required.");
         RuleFor(x => x.Range).NotEmpty().WithMessage("Range is required.");
         RuleFor(x => x.Duration).NotEmpty().WithMessage("Duration is required.");
+        RuleFor(x => x.Description).NotEmpty().WithMessage("Description is required.");
     }
 }

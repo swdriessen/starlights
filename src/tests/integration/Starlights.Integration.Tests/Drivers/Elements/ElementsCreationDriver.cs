@@ -1,5 +1,6 @@
 ﻿using Starlights.Integration.Core;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Spells.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
@@ -30,6 +31,11 @@ internal class ElementsCreationDriver : IDriver
     public Task<UpdateSpellResponse> UpdateSpellAsync(UpdateSpellRequest request)
     {
         return _api.UpdateSpellAsync(request);
+    }
+
+    public Task<GetSpellsResponse> GetSpellsAsync()
+    {
+        return _api.GetSpellsAsync();
     }
 }
 

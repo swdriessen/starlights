@@ -27,7 +27,7 @@ public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, GetSpel
 
     public override async Task HandleAsync(GetSpellByIdRequest request, CancellationToken ct)
     {
-        _logger.LogInformation("Retrieving spell [id='{Id}']", request.Id);
+        _logger.LogInformation("retrieving spell [id='{Id}']", request.Id);
 
         var repository = _persistence.GetRepository<IElementsRepository>();
         var element = await repository.GetElementAsync(request.Id);
@@ -39,7 +39,7 @@ public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, GetSpel
         }
 
         var attributes = element.GetRequiredComponent<SpellAttributesComponent>();
-        var description = element.GetComponent<DescriptionComponent>();
+        var description = element.GetRequiredComponent<DescriptionComponent>();
 
         var response = new GetSpellByIdResponse
         {
@@ -56,7 +56,7 @@ public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, GetSpel
             HasVerbal = attributes.HasVerbalComponent,
             HasMaterial = attributes.HasMaterialComponent,
             MaterialComponent = attributes.MaterialComponent,
-            Description = description?.Content
+            Description = description.Content
         };
 
         await Send.OkAsync(response, cancellation: ct);

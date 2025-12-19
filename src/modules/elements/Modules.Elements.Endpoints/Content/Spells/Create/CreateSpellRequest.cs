@@ -14,5 +14,5 @@ public record CreateSpellRequest
     public bool HasVerbal { get; set; }
     public bool HasMaterial { get; set; }
     public string? MaterialComponent { get; set; }
-    public string? Description { get; set; }
+    public required string Description { get; set; }
 }

@@ -1,6 +1,3 @@
 ﻿namespace Starlights.Modules.Elements.Endpoints.Content.Spells.Create;
 
-public record CreateSpellResponse
-{
-    public Guid Id { get; init; }
-}
+public record CreateSpellResponse(Guid Id);

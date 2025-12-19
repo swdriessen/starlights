@@ -25,30 +25,24 @@ public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellRespo
         Group<ElementsGroup>();
     }
 
-    public override async Task HandleAsync(CreateSpellRequest request, CancellationToken ct)
+    public override async Task HandleAsync(CreateSpellRequest req, CancellationToken ct)
     {
-        _logger.LogInformation("Creating a new spell [name='{Name}']", request.Name);
+        _logger.LogInformation("creating a new spell [name='{Name}']", req.Name);
 
-        var element = Element.Create(request.Name, ElementTypeConstants.Spell);
+        var element = Element.Create(req.Name, ElementTypeConstants.Spell);
 
-        element.AddComponent(id =>
-        {
-            return new SpellAttributesComponent(id, request.Level, request.MagicSchool, request.CastingTime, request.Range, request.Duration);
-        });
+        element.AddComponent(id => new DescriptionComponent(id, req.Description));
+
+        element.AddComponent(id => new SpellAttributesComponent(id, req.Level, req.MagicSchool, req.CastingTime, req.Range, req.Duration));
 
         element.UpdateComponent<SpellAttributesComponent>(component =>
         {
-            component.UpdateIsConcentrationRequired(request.IsConcentration);
-            component.UpdateIsRitual(request.IsRitual);
-            component.UpdateHasSomaticComponent(request.HasSomatic);
-            component.UpdateHasVerbalComponent(request.HasVerbal);
-            component.UpdateMaterialComponent(request.HasMaterial, request.MaterialComponent);
+            component.UpdateIsConcentrationRequired(req.IsConcentration);
+            component.UpdateIsRitual(req.IsRitual);
+            component.UpdateHasSomaticComponent(req.HasSomatic);
+            component.UpdateHasVerbalComponent(req.HasVerbal);
+            component.UpdateMaterialComponent(req.HasMaterial, req.MaterialComponent);
         });
-
-        if (!string.IsNullOrWhiteSpace(request.Description))
-        {
-            element.AddComponent(id => new DescriptionComponent(id, request.Description));
-        }
 
         var repository = _persistence.GetRepository<IElementsRepository>();
 
@@ -57,17 +51,14 @@ public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellRespo
         var rows = await _persistence.SaveChangesAsync();
         if (rows == 0)
         {
-            _logger.LogError("Failed to create spell. No rows affected.");
+            _logger.LogError("failed to create spell. No rows affected.");
             await Send.ErrorsAsync(statusCode: 500, cancellation: ct);
             return;
         }
 
-        _logger.LogInformation("Successfully created spell with ID: {Id}", element.Id);
+        _logger.LogInformation("successfully created spell with ID: {Id}", element.Id);
 
-        var response = new CreateSpellResponse
-        {
-            Id = element.Id
-        };
+        var response = new CreateSpellResponse(element.Id);
 
         await Send.CreatedAtAsync("/api/elements/spells/{id}", new { id = response.Id }, response, cancellation: ct);
     }
