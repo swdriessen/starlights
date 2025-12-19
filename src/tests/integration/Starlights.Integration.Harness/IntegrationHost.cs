@@ -6,11 +6,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Trace;
 using Starlights.Application;
-using Starlights.Integration.Core.Eventing;
-using Starlights.Integration.Core.Extensions;
+using Starlights.Integration.Eventing;
+using Starlights.Integration.Extensions;
 using Starlights.Platform.Eventing.EventPublisher;
 
-namespace Starlights.Integration.Core;
+namespace Starlights.Integration;
 
 /// <summary>
 /// Integration host for running integration tests against the Starlights application.
@@ -20,10 +20,10 @@ public class IntegrationHost : IIntegrationHost, IDisposable
     private readonly WebApplicationFactory<Program> _factory;
     private bool _disposedValue;
 
-    public IntegrationHost(Action<Dictionary<string, object>>? configureProperties = null, Action<IntegrationHostOptions>? configure = null)
+    public IntegrationHost(Action<Dictionary<string, object>>? configureProperties = null, Action<IntegrationHostOptions>? configureOptions = null)
     {
         var options = new IntegrationHostOptions();
-        configure?.Invoke(options);
+        configureOptions?.Invoke(options);
 
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
@@ -79,14 +79,6 @@ public class IntegrationHost : IIntegrationHost, IDisposable
         return _factory.CreateClient();
     }
 
-    /// <summary>
-    /// Creates a new instance of the <see cref="IntegrationHostBuilder"/>.
-    /// </summary>
-    public static IntegrationHostBuilder CreateBuilder()
-    {
-        return new();
-    }
-
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -104,5 +96,13 @@ public class IntegrationHost : IIntegrationHost, IDisposable
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="IntegrationHostBuilder"/>.
+    /// </summary>
+    public static IntegrationHostBuilder CreateBuilder()
+    {
+        return new();
     }
 }

@@ -1,8 +1,7 @@
 ﻿using AwesomeAssertions;
-using Starlights.Integration.Core;
-using Starlights.Integration.Core.Extensions;
 using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Drivers.Elements.Extensions;
+using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
 
 namespace Starlights.Integration.Tests.Elements;
@@ -16,8 +15,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
     [TestInitialize]
     public async Task Initialize()
     {
-        _integration = IntegrationHost.CreateBuilder()
-            .WithTestContext(TestContext)
+        _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
 
         _driver = _integration.GetDriver<ElementsCreationDriver>();

@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
-using Starlights.Integration.Core;
 using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacterDetails;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;

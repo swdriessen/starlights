@@ -1,7 +1,6 @@
 using AwesomeAssertions;
-using Starlights.Integration.Core;
-using Starlights.Integration.Core.Extensions;
 using Starlights.Integration.Drivers.CharacterCreation;
+using Starlights.Integration.Extensions;
 
 namespace Starlights.Integration.Tests.Characters.Registration;
 
@@ -14,8 +13,7 @@ public sealed class GetRegistrationsEndpointTests : IntegrationTestBase
     [TestInitialize]
     public async Task Initialize()
     {
-        _integration = IntegrationHost.CreateBuilder()
-            .WithTestContext(TestContext)
+        _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
 
         _driver = _integration.GetDriver<RegistrationDriver>();

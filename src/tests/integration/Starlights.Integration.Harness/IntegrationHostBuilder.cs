@@ -1,11 +1,11 @@
-﻿namespace Starlights.Integration.Core;
+﻿namespace Starlights.Integration;
 
 /// <summary>
 /// Builder for creating an integration host.
 /// </summary>
 public class IntegrationHostBuilder
 {
-    private readonly List<Action<IntegrationHostOptions>> _configureActions = [];
+    private readonly List<Action<IntegrationHostOptions>> _configureOptionsCollection = [];
 
     /// <summary>
     /// Gets a collection of custom properties associated with the current instance.
@@ -17,7 +17,7 @@ public class IntegrationHostBuilder
     /// </summary>
     public IntegrationHostBuilder ConfigureOptions(Action<IntegrationHostOptions> options)
     {
-        _configureActions.Add(options);
+        _configureOptionsCollection.Add(options);
         return this;
     }
 
@@ -39,9 +39,9 @@ public class IntegrationHostBuilder
             },
             options =>
             {
-                foreach (var configureAction in _configureActions)
+                foreach (var configureOptions in _configureOptionsCollection)
                 {
-                    configureAction(options);
+                    configureOptions(options);
                 }
             }
 

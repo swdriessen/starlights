@@ -1,8 +1,7 @@
 using AwesomeAssertions;
-using Starlights.Integration.Core;
-using Starlights.Integration.Core.Eventing;
-using Starlights.Integration.Core.Extensions;
 using Starlights.Integration.Drivers.CharacterCreation;
+using Starlights.Integration.Eventing;
+using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 
 namespace Starlights.Integration.Tests.Characters.Statistics;
@@ -18,8 +17,7 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
     [TestInitialize]
     public async Task Initialize()
     {
-        _integration = IntegrationHost.CreateBuilder()
-            .WithTestContext(TestContext)
+        _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
 
         _events = _integration.GetEventObserverCollection();

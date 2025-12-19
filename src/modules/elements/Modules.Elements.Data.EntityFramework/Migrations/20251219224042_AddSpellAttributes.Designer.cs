@@ -12,8 +12,8 @@ using Starlights.Modules.Elements.Data.EntityFramework;
 namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
 {
     [DbContext(typeof(ElementsContext))]
-    [Migration("20251218232501_add-spell-attributes")]
-    partial class addspellattributes
+    [Migration("20251219224042_AddSpellAttributes")]
+    partial class AddSpellAttributes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

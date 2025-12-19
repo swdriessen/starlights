@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Json;
 using AwesomeAssertions;
-using Starlights.Integration.Core;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacterClasses;
 using Starlights.Modules.Characters.Endpoints.Characters.LevelUp;
 using Starlights.Modules.Characters.Endpoints.CharacterSheet.GetFeatures;

@@ -1,5 +1,4 @@
 ﻿using AwesomeAssertions;
-using Starlights.Integration.Core;
 using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;

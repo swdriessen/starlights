@@ -1,7 +1,6 @@
 using AwesomeAssertions;
-using Starlights.Integration.Core;
-using Starlights.Integration.Core.Extensions;
 using Starlights.Integration.Drivers.CharacterCreation;
+using Starlights.Integration.Extensions;
 
 namespace Starlights.Integration.Tests.Characters.Manage;
 
@@ -13,8 +12,7 @@ public sealed class CharacterPortraitOptionsTests : IntegrationTestBase
     [TestInitialize]
     public void Initialize()
     {
-        _integration = IntegrationHost.CreateBuilder()
-            .WithTestContext(TestContext)
+        _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
     }
 

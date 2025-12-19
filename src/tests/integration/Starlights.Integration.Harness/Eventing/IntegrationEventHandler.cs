@@ -7,7 +7,7 @@ using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
 using Starlights.Modules.Characters.Domain.Skills.Eventing;
 using Starlights.Platform.Eventing;
 
-namespace Starlights.Integration.Core.Eventing;
+namespace Starlights.Integration.Eventing;
 
 internal sealed class IntegrationEventHandler :
     IDomainEventHandler<CharacterCreatedEvent>,

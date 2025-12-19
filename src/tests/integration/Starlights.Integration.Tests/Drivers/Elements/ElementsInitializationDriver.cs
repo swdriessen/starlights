@@ -1,6 +1,4 @@
-﻿using Starlights.Integration.Core;
-
-namespace Starlights.Integration.Drivers.Elements;
+﻿namespace Starlights.Integration.Drivers.Elements;
 
 internal class ElementsInitializationDriver : IDriver
 {

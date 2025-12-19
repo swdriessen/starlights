@@ -1,4 +1,4 @@
-﻿namespace Starlights.Integration.Core.Extensions;
+﻿namespace Starlights.Integration.Extensions;
 
 /// <summary>
 /// Provides extension methods for managing character-related context properties within an IntegrationHost instance.

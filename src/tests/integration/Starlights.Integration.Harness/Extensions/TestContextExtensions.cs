@@ -1,4 +1,4 @@
-﻿namespace Starlights.Integration.Core.Extensions;
+﻿namespace Starlights.Integration.Extensions;
 
 public static class TestContextExtensions
 {

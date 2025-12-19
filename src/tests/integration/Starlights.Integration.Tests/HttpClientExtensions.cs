@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
 
-namespace Starlights.Integration.Core;
+namespace Starlights.Integration;
 
 /// <summary>
 /// Reusable helpers for concise HttpClient usage in integration tests.

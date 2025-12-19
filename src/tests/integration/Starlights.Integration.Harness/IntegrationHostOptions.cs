@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Starlights.Integration.Core;
+namespace Starlights.Integration;
 
 public class IntegrationHostOptions
 {

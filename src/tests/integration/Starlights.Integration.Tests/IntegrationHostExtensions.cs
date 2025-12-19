@@ -1,6 +1,7 @@
 ﻿using Starlights.Integration.Drivers.Elements;
+using Starlights.Integration.Extensions;
 
-namespace Starlights.Integration.Core.Extensions;
+namespace Starlights.Integration;
 
 public static class IntegrationHostExtensions
 {

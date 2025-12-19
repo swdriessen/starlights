@@ -1,19 +1,20 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
-using Starlights.Integration.Core;
+using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Entities.Abilities.GetAbilities;
 
 namespace Starlights.Integration.Tests.Elements;
 
 [TestClass]
-public sealed class AbilitiesEndpointTests
+public sealed class AbilitiesEndpointTests : IntegrationTestBase
 {
-    private readonly IntegrationHost _integration;
+    private IntegrationHost _integration = default!;
 
-    public AbilitiesEndpointTests()
+    [TestInitialize]
+    public void Initialize()
     {
-        _integration = IntegrationHost.CreateBuilder()
+        _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
     }
 
@@ -29,11 +30,11 @@ public sealed class AbilitiesEndpointTests
         };
 
         // Act
-        var response = await client.PostAsJsonAsync("/api/elements/abilities/create", request, CancellationToken.None);
+        var response = await client.PostAsJsonAsync("/api/elements/abilities/create", request, _integration.CancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        var json = await response.Content.ReadFromJsonAsync<object>(cancellationToken: CancellationToken.None);
+        var json = await response.Content.ReadFromJsonAsync<object>(_integration.CancellationToken);
         json.Should().NotBeNull();
     }
 
@@ -44,11 +45,11 @@ public sealed class AbilitiesEndpointTests
         var client = _integration.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/elements/abilities", CancellationToken.None);
+        var response = await client.GetAsync("/api/elements/abilities", _integration.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var json = await response.Content.ReadFromJsonAsync<GetAbilitiesResponse>(cancellationToken: CancellationToken.None);
+        var json = await response.Content.ReadFromJsonAsync<GetAbilitiesResponse>(_integration.CancellationToken);
         json?.Abilities.Should().NotBeNull();
     }
 }

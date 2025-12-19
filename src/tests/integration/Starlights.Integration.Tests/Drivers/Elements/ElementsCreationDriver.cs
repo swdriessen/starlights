@@ -1,5 +1,4 @@
-﻿using Starlights.Integration.Core;
-using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
+﻿using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
 

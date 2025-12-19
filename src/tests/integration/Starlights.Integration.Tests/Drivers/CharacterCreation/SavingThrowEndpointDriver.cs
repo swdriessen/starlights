@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
 using AwesomeAssertions;
-using Starlights.Integration.Core;
-using Starlights.Integration.Core.Extensions;
+using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows.GetSavingThrows;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;
