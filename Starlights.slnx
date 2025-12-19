@@ -79,6 +79,7 @@
   <Folder Name="/src/systems/" />
   <Folder Name="/tests/" />
   <Folder Name="/tests/integration/">
+    <Project Path="src/tests/integration/Starlights.Integration.Harness/Starlights.Integration.Harness.csproj" />
     <Project Path="src/tests/integration/Starlights.Integration.Tests/Starlights.Integration.Tests.csproj" />
   </Folder>
 </Solution>

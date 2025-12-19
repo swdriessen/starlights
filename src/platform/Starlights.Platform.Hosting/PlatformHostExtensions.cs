@@ -17,7 +17,7 @@ internal static class PlatformHostExtensions
             assemblies.AddRange(GetCandidateAssemblies());
             assemblies.AddRange(platform.Options.AdditionalAssemblies);
 
-            var discoveredTypes = assemblies.SelectMany(a => a.GetTypes())
+            var discoveredTypes = assemblies.SelectMany(GetTypesSafely)
                 .Where(t => typeof(T).IsAssignableFrom(t) && !t.IsAbstract && t.IsClass)
                 .Distinct();
 
@@ -92,7 +92,11 @@ internal static class PlatformHostExtensions
                 return false;
             }
 
-            return true;
+            if (name.StartsWith("Microsoft.VisualStudio.TestPlatform", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            return !name.StartsWith("MSTest", StringComparison.OrdinalIgnoreCase);
         }
     }
 

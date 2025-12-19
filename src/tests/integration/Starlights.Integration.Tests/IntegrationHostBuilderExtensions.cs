@@ -1,4 +1,6 @@
-﻿namespace Starlights.Integration.Core.Extensions;
+﻿using Starlights.Integration.Core;
+
+namespace Starlights.Integration;
 
 internal static class IntegrationHostBuilderExtensions
 {
@@ -12,6 +14,8 @@ internal static class IntegrationHostBuilderExtensions
     public static IntegrationHostBuilder WithTestContext(this IntegrationHostBuilder builder, TestContext testContext)
     {
         builder.Properties["TestContext"] = testContext;
+
+        builder.ConfigureOptions(o => o.DriverAssemblies = [typeof(IntegrationHostBuilderExtensions).Assembly]);
 
         return builder;
     }

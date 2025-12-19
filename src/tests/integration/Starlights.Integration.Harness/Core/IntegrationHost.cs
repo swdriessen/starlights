@@ -49,8 +49,8 @@ public class IntegrationHost : IIntegrationHost, IDisposable
                     services.AddSingleton<EventObserverCollection>();
                     services.AddDomainEventHandlersFrom(typeof(IntegrationHost).Assembly);
 
-                    // auto register all IDriver implementations in this assembly
-                    services.RegisterDrivers();
+                    // auto register all IDriver implementations
+                    services.RegisterDrivers(options.DriverAssemblies ?? [typeof(IntegrationHost).Assembly]);
 
                     // drivers need the instance of this host
                     services.AddSingleton<IIntegrationHost>(this);

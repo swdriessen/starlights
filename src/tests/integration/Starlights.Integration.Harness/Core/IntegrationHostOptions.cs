@@ -1,4 +1,6 @@
-﻿namespace Starlights.Integration.Core;
+﻿using System.Reflection;
+
+namespace Starlights.Integration.Core;
 
 public class IntegrationHostOptions
 {
@@ -11,4 +13,9 @@ public class IntegrationHostOptions
     /// Gets or sets a unique identifier for the integration environment to be used for uniqueness of individual tests.
     /// </summary>
     public string UniqueIntegrationIdentifier { get; set; } = Guid.NewGuid().ToString("N")[..12];
+
+    /// <summary>
+    /// Gets or sets the assemblies to scan for <see cref="IDriver"/> implementations.
+    /// </summary>
+    public Assembly[]? DriverAssemblies { get; set; }
 }

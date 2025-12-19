@@ -73,7 +73,7 @@ public sealed class EventObserverCollection
     /// <summary>
     /// Ensures that a specified number of domain events of type T matching the given predicate are observed. Otherwise the test fails with a timeout.
     /// </summary>
-    internal async Task EnsureObservation<T>(Predicate<T>? predicate = null, int count = 1) where T : IDomainEvent
+    public async Task EnsureObservation<T>(Predicate<T>? predicate = null, int count = 1) where T : IDomainEvent
     {
         _logger.LogInformation("⏳ Waiting for {EventType} event{Count}...", typeof(T).Name, count > 1 ? $" x{count}" : string.Empty);
 
@@ -99,11 +99,7 @@ public sealed class EventObserverCollection
     /// <summary>
     /// Clears all recorded invocations and events for the specified domain event type.
     /// </summary>
-    /// <remarks>Use this method to reset the invocation and event history for a particular domain event type,
-    /// typically in test scenarios where event handling needs to be verified or reset between tests.</remarks>
-    /// <typeparam name="T">The type of domain event whose invocations and events will be cleared. Must implement <see
-    /// cref="IDomainEvent"/>.</typeparam>
-    internal void ClearInvocations<T>() where T : IDomainEvent
+    public void ClearInvocations<T>() where T : IDomainEvent
     {
         var e = Event<T>();
         e.Mock.Invocations.Clear();
@@ -113,11 +109,7 @@ public sealed class EventObserverCollection
     /// <summary>
     /// Clears all recorded invocations for character-related events within the current context.
     /// </summary>
-    /// <remarks>This method removes invocation records for multiple event types, including character
-    /// creation, ability score creation, skill creation, saving throw creation, class changes, registration events, and
-    /// level changes. Use this method to reset the invocation state before running new tests or processing new event
-    /// sequences.</remarks>
-    internal void ClearInvocations()
+    public void ClearInvocations()
     {
         ClearInvocations<CharacterCreatedEvent>();
         ClearInvocations<AbilityScoreCreatedEvent>();
