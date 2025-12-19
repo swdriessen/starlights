@@ -32,22 +32,25 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
     public async Task CreateSpell()
     {
         // Arrange
-        const string name = "Fireball";
-        const int level = 3;
-        const string school = "Evocation";
-        const string time = "1 action";
-        const string range = "150 feet";
-        const string duration = "Instantaneous";
-        const bool isConcentration = false;
-        const bool isRitual = false;
-        const bool hasSomatic = true;
-        const bool hasVerbal = true;
-        const bool hasMaterial = true;
-        const string materialComponent = "a piece of bat guano";
-        string description = "A bright streak flashes from your pointing finger to a point you choose within range.";
+        var properties = new CreateSpellProperties()
+        {
+            Name = "Fireball",
+            Level = 3,
+            School = "Evocation",
+            Time = "1 action",
+            Range = "150 feet",
+            Duration = "Instantaneous",
+            IsConcentration = false,
+            IsRitual = false,
+            HasSomatic = true,
+            HasVerbal = true,
+            HasMaterial = true,
+            MaterialComponent = "a piece of bat guano",
+            Description = "A bright streak flashes from your pointing finger to a point you choose within range."
+        };
 
         // Act
-        var id = await _driver.CreateSpellAsync(name, level, school, time, range, duration, isConcentration, isRitual, hasSomatic, hasVerbal, hasMaterial, materialComponent, description);
+        var id = await _driver.CreateSpellAsync(properties);
 
         // Assert
         id.Should().NotBeEmpty();
@@ -72,11 +75,11 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         spell.CastingTime.Should().Be("1 action");
         spell.Range.Should().Be("150 feet");
         spell.Duration.Should().Be("Instantaneous");
-        spell.IsConcentration.Should().Be(false);
-        spell.IsRitual.Should().Be(false);
-        spell.HasSomatic.Should().Be(true);
-        spell.HasVerbal.Should().Be(true);
-        spell.HasMaterial.Should().Be(true);
+        spell.IsConcentration.Should().BeFalse();
+        spell.IsRitual.Should().BeFalse();
+        spell.HasSomatic.Should().BeTrue();
+        spell.HasVerbal.Should().BeTrue();
+        spell.HasMaterial.Should().BeTrue();
         spell.MaterialComponent.Should().Be("A tiny ball of bat guano and sulfur");
         spell.Description.Should().Be("A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame.");
     }
@@ -120,11 +123,10 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         var updateResponse = await _driver.UpdateSpellAsync(updateRequest);
 
         // Assert
-        var updated = await _driver.GetSpellByIdAsync(fireballId);
         updateResponse.Id.Should().Be(fireballId);
 
+        var updated = await _driver.GetSpellByIdAsync(fireballId);
         updated.Should().NotBeNull();
-
         updated.Id.Should().Be(fireballId);
         updated.Name.Should().Be("Fireball", "spell name is immutable (until UpdateName on element is added)");
         updated.Level.Should().Be(updateRequest.Level);
@@ -132,11 +134,11 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         updated.CastingTime.Should().Be(updateRequest.CastingTime);
         updated.Range.Should().Be(updateRequest.Range);
         updated.Duration.Should().Be(updateRequest.Duration);
-        updated.IsConcentration.Should().Be(updateRequest.IsConcentration);
-        updated.IsRitual.Should().Be(updateRequest.IsRitual);
-        updated.HasSomatic.Should().Be(updateRequest.HasSomatic);
-        updated.HasVerbal.Should().Be(updateRequest.HasVerbal);
-        updated.HasMaterial.Should().Be(updateRequest.HasMaterial);
+        updated.IsConcentration.Should().BeTrue();
+        updated.IsRitual.Should().BeTrue();
+        updated.HasSomatic.Should().BeFalse();
+        updated.HasVerbal.Should().BeTrue();
+        updated.HasMaterial.Should().BeFalse();
         updated.MaterialComponent.Should().BeNull();
         updated.Description.Should().Be(updateRequest.Description);
     }

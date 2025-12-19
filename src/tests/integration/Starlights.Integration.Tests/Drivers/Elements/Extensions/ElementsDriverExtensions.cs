@@ -7,77 +7,90 @@ internal enum TestSpells
     MageArmor
 }
 
+internal static class SpellDefinitions
+{
+    public static CreateSpellProperties Light { get; } = new()
+    {
+        Name = "Light",
+        Level = 0,
+        School = "Evocation",
+        Time = "1 action",
+        Range = "Touch",
+        Duration = "1 hour",
+        IsConcentration = false,
+        IsRitual = false,
+        HasSomatic = true,
+        HasVerbal = true,
+        HasMaterial = true,
+        MaterialComponent = "A firefly or phosphorescent moss",
+        Description = "You touch one object that is no larger than 10 feet in any dimension. Until the spell ends, the object glows with bright light in a 20-foot radius and dim light for an additional 20 feet."
+    };
+
+    public static CreateSpellProperties Fireball { get; } = new()
+    {
+        Name = "Fireball",
+        Level = 3,
+        School = "Evocation",
+        Time = "1 action",
+        Range = "150 feet",
+        Duration = "Instantaneous",
+        IsConcentration = false,
+        IsRitual = false,
+        HasSomatic = true,
+        HasVerbal = true,
+        HasMaterial = true,
+        MaterialComponent = "A tiny ball of bat guano and sulfur",
+        Description = "A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame."
+    };
+
+    public static CreateSpellProperties MageArmor { get; } = new()
+    {
+        Name = "Mage Armor",
+        Level = 1,
+        School = "Abjuration",
+        Time = "1 action",
+        Range = "Touch",
+        Duration = "8 hours",
+        IsConcentration = false,
+        IsRitual = false,
+        HasSomatic = true,
+        HasVerbal = true,
+        HasMaterial = true,
+        MaterialComponent = "A piece of cured leather",
+        Description = "You touch a willing creature who isn't wearing armor, and a protective magical force surrounds it until the spell ends."
+    };
+}
+
 internal static class ElementsDriverExtensions
 {
     extension(ElementsCreationDriver driver)
     {
-        public Task<Guid> CreateSpell(TestSpells spells)
+        internal Task<Guid> CreateSpell(TestSpells spells)
         {
-            return spells switch
+            var definition = spells switch
             {
-                TestSpells.Light => driver.CreateLightCantrip(),
-                TestSpells.Fireball => driver.CreateFireballSpell(),
-                TestSpells.MageArmor => driver.CreateMageArmorSpell(),
+                TestSpells.Light => SpellDefinitions.Light,
+                TestSpells.Fireball => SpellDefinitions.Fireball,
+                TestSpells.MageArmor => SpellDefinitions.MageArmor,
                 _ => throw new ArgumentOutOfRangeException(nameof(spells), spells, null)
             };
+
+            return driver.CreateSpellAsync(definition);
         }
 
-        public Task<Guid> CreateLightCantrip()
+        internal Task<Guid> CreateLightCantrip()
         {
-            return driver.CreateSpellAsync(
-                 name: "Light",
-                 level: 0,
-                 school: "Evocation",
-                 time: "1 action",
-                 range: "Touch",
-                 duration: "1 hour",
-                 isConcentration: false,
-                 isRitual: false,
-                 hasSomatic: true,
-                 hasVerbal: true,
-                 hasMaterial: true,
-                 materialComponent: "A firefly or phosphorescent moss",
-                 description: "You touch one object that is no larger than 10 feet in any dimension. Until the spell ends, the object glows with bright light in a 20-foot radius and dim light for an additional 20 feet."
-             );
+            return driver.CreateSpellAsync(SpellDefinitions.Light);
         }
 
-        public Task<Guid> CreateFireballSpell()
+        internal Task<Guid> CreateFireballSpell()
         {
-            return driver.CreateSpellAsync(
-                name: "Fireball",
-                level: 3,
-                school: "Evocation",
-                time: "1 action",
-                range: "150 feet",
-                duration: "Instantaneous",
-                isConcentration: false,
-                isRitual: false,
-                hasSomatic: true,
-                hasVerbal: true,
-                hasMaterial: true,
-                materialComponent: "A tiny ball of bat guano and sulfur",
-                description: "A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame."
-            );
+            return driver.CreateSpellAsync(SpellDefinitions.Fireball);
         }
 
-        public Task<Guid> CreateMageArmorSpell()
+        internal Task<Guid> CreateMageArmorSpell()
         {
-            return driver.CreateSpellAsync(
-                name: "Mage Armor",
-                level: 1,
-                school: "Abjuration",
-                time: "1 action",
-                range: "Touch",
-                duration: "8 hours",
-                isConcentration: false,
-                isRitual: false,
-                hasSomatic: true,
-                hasVerbal: true,
-                hasMaterial: true,
-                materialComponent: "A piece of cured leather",
-                description: "You touch a willing creature who isn't wearing armor, and a protective magical force surrounds it until the spell ends."
-            );
+            return driver.CreateSpellAsync(SpellDefinitions.MageArmor);
         }
     }
-
 }

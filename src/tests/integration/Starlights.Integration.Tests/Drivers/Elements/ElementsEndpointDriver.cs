@@ -30,7 +30,7 @@ internal class ElementsEndpointDriver : IDriver
     }
 
     public async Task<Guid> CreateSpellAsync(string name, int level, string school, string time, string range, string duration,
-        bool isConcentration, bool isRitual, bool hasSomatic, bool hasVerbal, bool hasMaterial, string? materialComponent = null, string? description = null)
+        bool isConcentration, bool isRitual, bool hasSomatic, bool hasVerbal, bool hasMaterial, string? materialComponent, string description)
     {
         using var client = _integration.CreateClient();
 

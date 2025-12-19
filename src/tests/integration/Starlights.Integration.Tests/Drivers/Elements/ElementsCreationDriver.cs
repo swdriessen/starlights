@@ -16,11 +16,22 @@ internal class ElementsCreationDriver : IDriver
         _api = endpointDriver;
     }
 
-    public Task<Guid> CreateSpellAsync(string name, int level, string school, string time, string range, string duration, bool isConcentration,
-        bool isRitual, bool hasSomatic, bool hasVerbal, bool hasMaterial, string? materialComponent = null, string? description = null)
+    public Task<Guid> CreateSpellAsync(CreateSpellProperties properties)
     {
-        return _api.CreateSpellAsync(name, level, school, time, range, duration, isConcentration,
-            isRitual, hasSomatic, hasVerbal, hasMaterial, materialComponent, description);
+        return _api.CreateSpellAsync(
+            properties.Name,
+            properties.Level,
+            properties.School,
+            properties.Time,
+            properties.Range,
+            properties.Duration,
+            properties.IsConcentration,
+            properties.IsRitual,
+            properties.HasSomatic,
+            properties.HasVerbal,
+            properties.HasMaterial,
+            properties.MaterialComponent,
+            properties.Description);
     }
 
     public Task<GetSpellByIdResponse?> GetSpellByIdAsync(Guid id)
@@ -36,17 +47,5 @@ internal class ElementsCreationDriver : IDriver
     public Task<GetSpellsResponse> GetSpellsAsync()
     {
         return _api.GetSpellsAsync();
-    }
-}
-
-internal class ElementsManagementDriver : IDriver
-{
-    private readonly IIntegrationHost _integration;
-    private readonly ElementsEndpointDriver _api;
-
-    public ElementsManagementDriver(IIntegrationHost integration, ElementsEndpointDriver endpointDriver)
-    {
-        _integration = integration;
-        _api = endpointDriver;
     }
 }
