@@ -30,7 +30,7 @@ namespace Starlights.Integration.Acceptance.Tests.Features.Content
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Content", "Content creation and management for spells", "As a content creator\r\nI want to create, update, delete and list spells\r\nSo that p" +
                 "layers can use those spells during character creation", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
-#line 1 "spells.feature"
+#line 1 "manage-spells.feature"
 #line hidden
         
         public virtual Microsoft.VisualStudio.TestTools.UnitTesting.TestContext TestContext
@@ -127,7 +127,7 @@ namespace Starlights.Integration.Acceptance.Tests.Features.Content
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Content/spells.feature.ndjson", 17);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Content/manage-spells.feature.ndjson", 17);
         }
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with the minimum required fields")]
