@@ -1,0 +1,12 @@
+﻿<Project Sdk="MSTest.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Reqnroll.MsTest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Drivers\" />
+    <Folder Include="Support\" />
+  </ItemGroup>
+
+</Project>
