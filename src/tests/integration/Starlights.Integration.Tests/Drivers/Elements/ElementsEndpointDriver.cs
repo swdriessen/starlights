@@ -8,7 +8,7 @@ using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 
-internal class ElementsEndpointDriver : IDriver
+public class ElementsEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
 
@@ -51,6 +51,7 @@ internal class ElementsEndpointDriver : IDriver
         };
 
         var response = await client.PostAsJsonAsync("/api/elements/spells/create", request, _integration.CancellationToken);
+
         response.EnsureSuccessStatusCode();
 
         var responseContent = await response.Content.ReadFromJsonAsync<CreateSpellResponse>(_integration.CancellationToken);
@@ -88,7 +89,7 @@ internal class ElementsEndpointDriver : IDriver
         return responseContent!;
     }
 
-    public async Task<GetSpellsResponse> GetSpellsAsync()
+    public async Task<List<GetSpellsResponseItem>> GetSpellsAsync()
     {
         using var client = _integration.CreateClient();
 
@@ -97,7 +98,8 @@ internal class ElementsEndpointDriver : IDriver
 
         var payload = await response.Content.ReadFromJsonAsync<GetSpellsResponse>(_integration.CancellationToken);
         payload.Should().NotBeNull();
+        payload.Items.Should().NotBeNull("expected Items to be not null");
 
-        return payload!;
+        return [.. payload.Items];
     }
 }

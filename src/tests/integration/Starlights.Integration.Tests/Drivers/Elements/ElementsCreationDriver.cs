@@ -1,10 +1,11 @@
-﻿using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
+﻿using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 
-internal class ElementsCreationDriver : IDriver
+public class ElementsCreationDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsEndpointDriver _api;
@@ -20,8 +21,8 @@ internal class ElementsCreationDriver : IDriver
         return _api.CreateSpellAsync(
             properties.Name,
             properties.Level,
-            properties.School,
-            properties.Time,
+            properties.MagicSchool,
+            properties.CastingTime,
             properties.Range,
             properties.Duration,
             properties.IsConcentration,
@@ -43,8 +44,10 @@ internal class ElementsCreationDriver : IDriver
         return _api.UpdateSpellAsync(request);
     }
 
-    public Task<GetSpellsResponse> GetSpellsAsync()
+    public async Task<List<GetSpellsResponseItem>> GetSpellsAsync()
     {
-        return _api.GetSpellsAsync();
+        var spells = await _api.GetSpellsAsync();
+        _integration.WriteLine($"retrieved {spells.Count} spells.");
+        return spells;
     }
 }

@@ -34,8 +34,8 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         {
             Name = "Fireball",
             Level = 3,
-            School = "Evocation",
-            Time = "1 action",
+            MagicSchool = "Evocation",
+            CastingTime = "1 action",
             Range = "150 feet",
             Duration = "Instantaneous",
             IsConcentration = false,
@@ -146,10 +146,10 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
     public async Task GetSpells_WhenNoneExist_ReturnsEmptyList()
     {
         // Act
-        var payload = await _driver.GetSpellsAsync();
+        var spells = await _driver.GetSpellsAsync();
 
         // Assert
-        payload.Items.Should().BeEmpty();
+        spells.Should().BeEmpty();
     }
 
     [TestMethod]
@@ -161,12 +161,12 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         var fireballId = await _driver.CreateSpell(TestSpells.Fireball);
 
         // Act
-        var payload = await _driver.GetSpellsAsync();
+        var spells = await _driver.GetSpellsAsync();
 
         // Assert
-        payload.Items.Should().HaveCount(2);
-        payload.Items.Select(x => x.Id).Should().BeEquivalentTo([lightId, fireballId]);
-        payload.Items.Select(x => x.Name).Should().BeEquivalentTo(["Light", "Fireball"]);
-        payload.Items.Select(x => x.Level).Should().BeEquivalentTo([0, 3]);
+        spells.Should().HaveCount(2);
+        spells.Select(x => x.Id).Should().BeEquivalentTo([lightId, fireballId]);
+        spells.Select(x => x.Name).Should().BeEquivalentTo(["Light", "Fireball"]);
+        spells.Select(x => x.Level).Should().BeEquivalentTo([0, 3]);
     }
 }

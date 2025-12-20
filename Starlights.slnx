@@ -78,11 +78,11 @@
   </Folder>
   <Folder Name="/src/systems/" />
   <Folder Name="/tests/" />
+  <Folder Name="/tests/acceptance/">
+    <Project Path="src/tests/acceptance/Starlights.Integration.Acceptance.Tests/Starlights.Integration.Acceptance.Tests.csproj" Id="cd05f807-0896-429b-b647-4596724bf67a" />
+  </Folder>
   <Folder Name="/tests/integration/">
     <Project Path="src/tests/integration/Starlights.Integration.Harness/Starlights.Integration.Harness.csproj" />
     <Project Path="src/tests/integration/Starlights.Integration.Tests/Starlights.Integration.Tests.csproj" />
-  </Folder>
-  <Folder Name="/tests/integration/acceptance/">
-    <Project Path="src/tests/acceptance/Starlights.Integration.Acceptance.Tests/Starlights.Integration.Acceptance.Tests.csproj" Id="cd05f807-0896-429b-b647-4596724bf67a" />
   </Folder>
 </Solution>

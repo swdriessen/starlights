@@ -1,11 +1,11 @@
 namespace Starlights.Integration.Drivers.Elements;
 
-internal sealed record CreateSpellProperties
+public sealed record CreateSpellProperties
 {
     public required string Name { get; set; }
     public required int Level { get; set; }
-    public required string School { get; set; }
-    public required string Time { get; set; }
+    public required string MagicSchool { get; set; }
+    public required string CastingTime { get; set; }
     public required string Range { get; set; }
     public required string Duration { get; set; }
     public bool IsConcentration { get; set; }

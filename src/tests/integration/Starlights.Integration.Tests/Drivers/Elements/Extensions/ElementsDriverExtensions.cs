@@ -1,20 +1,20 @@
 ﻿namespace Starlights.Integration.Drivers.Elements.Extensions;
 
-internal enum TestSpells
+public enum TestSpells
 {
     Light,
     Fireball,
     MageArmor
 }
 
-internal static class SpellDefinitions
+public static class SpellDefinitions
 {
     public static CreateSpellProperties Light { get; } = new()
     {
         Name = "Light",
         Level = 0,
-        School = "Evocation",
-        Time = "1 action",
+        MagicSchool = "Evocation",
+        CastingTime = "1 action",
         Range = "Touch",
         Duration = "1 hour",
         IsConcentration = false,
@@ -30,8 +30,8 @@ internal static class SpellDefinitions
     {
         Name = "Fireball",
         Level = 3,
-        School = "Evocation",
-        Time = "1 action",
+        MagicSchool = "Evocation",
+        CastingTime = "1 action",
         Range = "150 feet",
         Duration = "Instantaneous",
         IsConcentration = false,
@@ -47,8 +47,8 @@ internal static class SpellDefinitions
     {
         Name = "Mage Armor",
         Level = 1,
-        School = "Abjuration",
-        Time = "1 action",
+        MagicSchool = "Abjuration",
+        CastingTime = "1 action",
         Range = "Touch",
         Duration = "8 hours",
         IsConcentration = false,
@@ -61,11 +61,11 @@ internal static class SpellDefinitions
     };
 }
 
-internal static class ElementsDriverExtensions
+public static class ElementsDriverExtensions
 {
     extension(ElementsCreationDriver driver)
     {
-        internal Task<Guid> CreateSpell(TestSpells spells)
+        public Task<Guid> CreateSpell(TestSpells spells)
         {
             var definition = spells switch
             {
@@ -78,17 +78,17 @@ internal static class ElementsDriverExtensions
             return driver.CreateSpellAsync(definition);
         }
 
-        internal Task<Guid> CreateLightCantrip()
+        public Task<Guid> CreateLightCantrip()
         {
             return driver.CreateSpellAsync(SpellDefinitions.Light);
         }
 
-        internal Task<Guid> CreateFireballSpell()
+        public Task<Guid> CreateFireballSpell()
         {
             return driver.CreateSpellAsync(SpellDefinitions.Fireball);
         }
 
-        internal Task<Guid> CreateMageArmorSpell()
+        public Task<Guid> CreateMageArmorSpell()
         {
             return driver.CreateSpellAsync(SpellDefinitions.MageArmor);
         }
