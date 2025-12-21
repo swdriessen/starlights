@@ -42,7 +42,9 @@ public class ContentManagementForSpellsStepDefinitions
     [When("the content creator creates a spell with the following properties")]
     public async Task WhenTheContentCreatorCreatesASpellWithTheFollowingProperties(DataTable dataTable)
     {
-        var row = dataTable.CreateInstance<CreateSpellTableRow>();
+        var row = dataTable.CreateInstance<CreateSpellTableRow>()
+            .WithMarkdownDescription(_scenarioContext);
+
         _scenarioContext.Set(row, CURRENT_SPELL_PROPERTIES);
 
         var properties = new CreateProperties
@@ -212,7 +214,16 @@ public class ContentManagementForSpellsStepDefinitions
     {
         var spell = await _driver.GetLastCreatedSpell();
 
-        var updatedSpell = ApplyPropertyUpdate(propertyName, propertyValue, spell);
+        var updatedSpell = propertyName switch
+        {
+            "name" => spell with { Name = propertyValue },
+            "magic school" => spell with { MagicSchool = propertyValue },
+            "casting time" => spell with { CastingTime = propertyValue },
+            "range" => spell with { Range = propertyValue },
+            "duration" => spell with { Duration = propertyValue },
+            "concentration" => spell with { IsConcentration = bool.Parse(propertyValue) },
+            _ => throw new NotImplementedException($"updating property '{propertyName}' is not implemented")
+        };
 
         await _driver.UpdateSpell(updatedSpell);
     }
@@ -240,7 +251,8 @@ public class ContentManagementForSpellsStepDefinitions
     {
         var existingSpell = await _driver.GetLastCreatedSpell();
 
-        var updates = dataTable.CreateInstance<UpdateSpellTableRow>();
+        var updates = dataTable.CreateInstance<UpdateSpellTableRow>()
+            .WithMarkdownDescription(_scenarioContext);
 
         var updatedSpell = existingSpell with
         {
@@ -266,7 +278,8 @@ public class ContentManagementForSpellsStepDefinitions
     public async Task ThenTheSpellInTheSpellListShouldHaveTheFollowingProperties(DataTable dataTable)
     {
         var existingSpell = await _driver.GetLastCreatedSpell();
-        var expected = dataTable.CreateInstance<UpdateSpellTableRow>();
+        var expected = dataTable.CreateInstance<UpdateSpellTableRow>()
+            .WithMarkdownDescription(_scenarioContext);
 
         var provided = dataTable.Header
             .Select(h => h.Trim().ToLowerInvariant())
@@ -302,17 +315,9 @@ public class ContentManagementForSpellsStepDefinitions
         }
     }
 
-    private static SpellDataModel ApplyPropertyUpdate(string propertyName, string propertyValue, SpellDataModel spell)
+    [Given("the content creator prepared the following markdown description")]
+    public void GivenTheFollowingMarkdownDescription(string multilineText)
     {
-        return propertyName switch
-        {
-            "name" => spell with { Name = propertyValue },
-            "magic school" => spell with { MagicSchool = propertyValue },
-            "casting time" => spell with { CastingTime = propertyValue },
-            "range" => spell with { Range = propertyValue },
-            "duration" => spell with { Duration = propertyValue },
-            "concentration" => spell with { IsConcentration = bool.Parse(propertyValue) },
-            _ => throw new NotImplementedException($"updating property '{propertyName}' is not implemented")
-        };
+        _scenarioContext.SetMarkdownDescription(multilineText);
     }
 }

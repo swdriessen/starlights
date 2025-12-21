@@ -62,6 +62,9 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
         var rows = await _persistence.SaveChangesAsync();
         if (rows == 0)
         {
+            // NOTE: it is possible that an update request is made without any actual changes
+            // this results in 0 rows affected
+
             _logger.LogError("Failed to update spell. No rows affected. [id='{Id}']", request.Id);
             await Send.ErrorsAsync(statusCode: 500, cancellation: ct);
             return;

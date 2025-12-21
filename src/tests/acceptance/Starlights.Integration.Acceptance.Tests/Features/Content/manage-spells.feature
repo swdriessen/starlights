@@ -6,7 +6,6 @@ So that players can use those spells during character creation
 
 Background:
     Given I am authenticated as a content creator
-    And there are no existing spells
 
 # Create scenarios
 
@@ -75,6 +74,22 @@ Scenario: create a spell with a description
         | name        | level | magic school | casting time | range  | duration | description                                   |
         | Magic Spell |     5 | Evocation    | 1 action     | 100 ft | 1 hour   | A powerful evocation spell that deals damage. |
     Then the spell appears in the spell list with the provided description
+
+Scenario: create a spell with a markdown description
+    Given the content creator prepared the following markdown description
+        """
+        You create an acidic bubble at a point within range,
+        where it explodes in a 5-foot-radius Sphere. Each
+        creature in that Sphere must succeed on a Dexterity
+        saving throw or take 1d6 Acid damage.
+        __Cantrip Upgrade.__ The damage increases by 1d6
+        when you reach levels 5 (2d6), 11 (3d6), and 17
+        (4d6).
+        """
+    When the content creator creates a spell with the following properties
+        | name     | level | magic school | casting time | range  | duration      | description            |
+        | Fireball |     3 | Evocation    | 1 action     | 150 ft | Instantaneous | <markdown description> |
+    Then the spell appears in the spell list with the provided description
         
 # Update scenarios
 
@@ -134,3 +149,22 @@ Scenario: update the description of an existing spell
     Then the spell in the spell list should have the following properties
         | name              | description                     |
         | Descriptive Spell | You cast a very detailed spell. |
+
+Scenario: update the markdown description of an existing spell
+    Given the content creator prepared the following markdown description
+        """
+        You create a very details markdown spell description
+        that spans multiple lines.
+        __Description Upgrade.__ The description increase by 1d6
+        when you reach levels 5 (2d6), 11 (3d6), and 17
+        (4d6).
+        """
+    And a spell exists that includes the following properties
+        | name         | description                |
+        | Simple Spell | You create a simple spell. |
+    When the content creator updates the spell with the following properties
+        | name           | description               |
+        | Markdown Spell | <markdown description> |
+    Then the spell in the spell list should have the following properties
+        | name           | description               |
+        | Markdown Spell | <markdown description> |
