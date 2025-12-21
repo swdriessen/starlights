@@ -50,8 +50,8 @@ public class SpellAttributesComponentTypeConfiguration : IEntityTypeConfiguratio
             .HasColumnName("has_material_component")
             .HasDefaultValue(false);
 
-        builder.Property(x => x.MaterialComponent)
-            .HasColumnName("material_component")
+        builder.Property(x => x.MaterialComponentsDescription)
+            .HasColumnName("material_components_description")
             .IsRequired(false);
 
     }

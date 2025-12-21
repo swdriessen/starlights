@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Endpoints.Content.Spells.GetList;
@@ -37,7 +38,7 @@ public sealed class GetSpellsEndpoint : EndpointWithoutRequest<GetSpellsResponse
             {
                 var attributes = element.GetRequiredComponent<SpellAttributesComponent>();
 
-                return new GetSpellsResponseItem
+                return new SpellDataModel()
                 {
                     Id = element.Id,
                     Name = element.Name,
@@ -51,12 +52,13 @@ public sealed class GetSpellsEndpoint : EndpointWithoutRequest<GetSpellsResponse
                     HasSomatic = attributes.HasSomaticComponent,
                     HasVerbal = attributes.HasVerbalComponent,
                     HasMaterial = attributes.HasMaterialComponent,
-                    MaterialComponent = attributes.MaterialComponent
+                    MaterialComponent = attributes.MaterialComponentsDescription,
+                    Description = "" // Description is omitted in the list view
                 };
             })
             .OrderBy(x => x.Level)
             .ThenBy(x => x.Name)
-            .ToArray();
+            .ToList();
 
         await Send.OkAsync(new GetSpellsResponse(items), cancellation: ct);
     }

@@ -1,6 +1,9 @@
 namespace Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
 
-public sealed record GetSpellByIdResponse
+/// <summary>
+/// The DTO for a spell.
+/// </summary>
+public sealed record SpellDataModel
 {
     public required Guid Id { get; init; }
     public required string Name { get; init; }

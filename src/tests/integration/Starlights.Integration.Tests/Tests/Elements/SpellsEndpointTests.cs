@@ -2,7 +2,8 @@
 using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Drivers.Elements.Extensions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
+using static Starlights.Integration.Drivers.Elements.ManageSpellsDriver;
 
 namespace Starlights.Integration.Tests.Elements;
 
@@ -10,7 +11,7 @@ namespace Starlights.Integration.Tests.Elements;
 public sealed class SpellsEndpointTests : IntegrationTestBase
 {
     private IntegrationHost _integration = default!;
-    private ElementsCreationDriver _driver = default!;
+    private ManageSpellsDriver _driver = default!;
 
     [TestInitialize]
     public async Task Initialize()
@@ -18,7 +19,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
 
-        _driver = _integration.GetDriver<ElementsCreationDriver>();
+        _driver = _integration.GetDriver<ManageSpellsDriver>();
     }
 
     // get casting time list
@@ -30,7 +31,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
     public async Task CreateSpell()
     {
         // Arrange
-        var properties = new CreateSpellProperties()
+        var properties = new CreateProperties()
         {
             Name = "Fireball",
             Level = 3,
@@ -48,7 +49,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         };
 
         // Act
-        var id = await _driver.CreateSpellAsync(properties);
+        var id = await _driver.CreateSpell(properties);
 
         // Assert
         id.Should().NotBeEmpty();
@@ -62,7 +63,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         var fireballId = await _driver.CreateSpell(TestSpells.Fireball);
 
         // Act
-        var spell = await _driver.GetSpellByIdAsync(fireballId);
+        var spell = await _driver.GetSpell(fireballId);
 
         // Assert
         spell.Should().NotBeNull();
@@ -87,7 +88,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
     public async Task GetSpellById_WhenMissing_ReturnsNull()
     {
         // Act
-        var spell = await _driver.GetSpellByIdAsync(Guid.NewGuid());
+        var spell = await _driver.GetSpell(Guid.NewGuid());
 
         // Assert
         spell.Should().BeNull();
@@ -100,9 +101,10 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         // Arrange
         var fireballId = await _driver.CreateSpell(TestSpells.Fireball);
 
-        var updateRequest = new UpdateSpellRequest
+        var updateRequest = new SpellDataModel
         {
             Id = fireballId,
+            Name = "Fireball",
             Level = 1,
             MagicSchool = "Transmutation",
             CastingTime = "1 bonus action",
@@ -118,12 +120,10 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         };
 
         // Act
-        var updateResponse = await _driver.UpdateSpellAsync(updateRequest);
+        await _driver.UpdateSpell(updateRequest);
 
         // Assert
-        updateResponse.Id.Should().Be(fireballId);
-
-        var updated = await _driver.GetSpellByIdAsync(fireballId);
+        var updated = await _driver.GetSpell(fireballId);
         updated.Should().NotBeNull();
         updated.Id.Should().Be(fireballId);
         updated.Name.Should().Be("Fireball", "spell name is immutable (until UpdateName on element is added)");
@@ -146,7 +146,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
     public async Task GetSpells_WhenNoneExist_ReturnsEmptyList()
     {
         // Act
-        var spells = await _driver.GetSpellsAsync();
+        var spells = await _driver.GetSpells();
 
         // Assert
         spells.Should().BeEmpty();
@@ -161,7 +161,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         var fireballId = await _driver.CreateSpell(TestSpells.Fireball);
 
         // Act
-        var spells = await _driver.GetSpellsAsync();
+        var spells = await _driver.GetSpells();
 
         // Assert
         spells.Should().HaveCount(2);

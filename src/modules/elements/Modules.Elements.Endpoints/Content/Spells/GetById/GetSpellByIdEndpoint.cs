@@ -7,7 +7,7 @@ using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
 
-public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, GetSpellByIdResponse>
+public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, SpellDataModel>
 {
     private readonly ILogger<GetSpellByIdEndpoint> _logger;
     private readonly IPersistence _persistence;
@@ -41,7 +41,7 @@ public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, GetSpel
         var attributes = element.GetRequiredComponent<SpellAttributesComponent>();
         var description = element.GetRequiredComponent<DescriptionComponent>();
 
-        var response = new GetSpellByIdResponse
+        var response = new SpellDataModel
         {
             Id = element.Id,
             Name = element.Name,
@@ -55,7 +55,7 @@ public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, GetSpel
             HasSomatic = attributes.HasSomaticComponent,
             HasVerbal = attributes.HasVerbalComponent,
             HasMaterial = attributes.HasMaterialComponent,
-            MaterialComponent = attributes.MaterialComponent,
+            MaterialComponent = attributes.MaterialComponentsDescription,
             Description = description.Content
         };
 

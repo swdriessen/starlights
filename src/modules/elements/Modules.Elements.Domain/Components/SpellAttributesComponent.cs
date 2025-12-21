@@ -74,9 +74,9 @@ public sealed class SpellAttributesComponent : ElementComponentBase
     public bool HasMaterialComponent { get; private set; }
 
     /// <summary>
-    /// Gets the spell's material component, if any.
+    /// Gets the spell's material components description, if any.
     /// </summary>
-    public string? MaterialComponent { get; private set; }
+    public string? MaterialComponentsDescription { get; private set; }
 
     /// <summary>
     /// Updates the spell level.
@@ -177,7 +177,7 @@ public sealed class SpellAttributesComponent : ElementComponentBase
     }
 
     /// <summary>
-    /// Updates the material component flags and text.
+    /// Updates the material component flag and description.
     /// </summary>
     /// <param name="hasMaterialComponent">Whether the spell requires a material component.</param>
     /// <param name="materialComponent">The required material component text, if any.</param>
@@ -187,10 +187,10 @@ public sealed class SpellAttributesComponent : ElementComponentBase
 
         if (!hasMaterialComponent)
         {
-            MaterialComponent = null;
+            MaterialComponentsDescription = null;
             return;
         }
 
-        MaterialComponent = string.IsNullOrWhiteSpace(materialComponent) ? null : materialComponent.Trim();
+        MaterialComponentsDescription = string.IsNullOrWhiteSpace(materialComponent) ? null : materialComponent.Trim();
     }
 }

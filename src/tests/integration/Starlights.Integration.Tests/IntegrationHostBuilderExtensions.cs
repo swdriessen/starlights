@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
+using Starlights.Integration.Drivers.Elements;
 
 namespace Starlights.Integration;
 
-public static class IntegrationHostBuilderExtensions2
+public static class IntegrationHostBuilderExtensions
 {
     extension(IntegrationHost host)
     {
@@ -15,7 +16,7 @@ public static class IntegrationHostBuilderExtensions2
         public static IntegrationHostBuilder CreateDefaultBuilder(IntegrationTestBase testBase)
         {
             return new IntegrationHostBuilder()
-                .WithDriverAssemblies(Assembly.GetExecutingAssembly())
+                .WithDriverAssemblies(Assembly.GetExecutingAssembly(), typeof(ManageSpellsDriver).Assembly)
                 .WithTestContext(testBase.TestContext)
                 ;
         }

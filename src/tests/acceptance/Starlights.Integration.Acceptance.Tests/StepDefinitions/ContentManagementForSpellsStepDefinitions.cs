@@ -2,24 +2,25 @@ using AwesomeAssertions;
 using Starlights.Integration.Acceptance.Tests.Extensions;
 using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Extensions;
+using static Starlights.Integration.Drivers.Elements.ManageSpellsDriver;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
 
 [Binding]
-public class ContentCreationAndManagementForSpellsStepDefinitions
+public class ContentManagementForSpellsStepDefinitions
 {
     public const string CURRENT_SPELL_ID = "CURRENT-SPELL-ID";
     public const string CURRENT_SPELL_PROPERTIES = "CURRENT-SPELL-PROPERTIES";
 
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
-    private readonly ElementsCreationDriver _elements;
+    private readonly ManageSpellsDriver _driver;
 
-    public ContentCreationAndManagementForSpellsStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public ContentManagementForSpellsStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;
-        _elements = _host.GetDriver<ElementsCreationDriver>();
+        _driver = _host.GetDriver<ManageSpellsDriver>();
     }
 
     [Given("I am authenticated as a content creator")]
@@ -31,7 +32,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
     [Given("there are no existing spells")]
     public async Task GivenThereAreNoExistingSpells()
     {
-        var spells = await _elements.GetSpellsAsync();
+        var spells = await _driver.GetSpells();
         spells.Should().BeEmpty("expected no existing spells before test execution");
     }
 
@@ -41,7 +42,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
         var row = dataTable.CreateInstance<CreateSpellTableRow>();
         _scenarioContext.Set(row, CURRENT_SPELL_PROPERTIES);
 
-        var properties = new CreateSpellProperties
+        var properties = new CreateProperties
         {
             Name = row.Name!,
             Level = row.Level,
@@ -58,7 +59,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
             Description = row.Description
         };
 
-        var id = await _elements.CreateSpellAsync(properties);
+        var id = await _driver.CreateSpell(properties);
         id.Should().NotBeEmpty();
 
         _scenarioContext.Set(id, CURRENT_SPELL_ID);
@@ -69,7 +70,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
     public async Task ThenTheSpellAppearsInTheSpellListWithAllProvidedProperties()
     {
         var id = _scenarioContext.Get<Guid>(CURRENT_SPELL_ID);
-        var spell = await _elements.GetSpellByIdAsync(id);
+        var spell = await _driver.GetSpell(id);
         spell.Should().NotBeNull();
 
         var expected = _scenarioContext.Get<CreateSpellTableRow>(CURRENT_SPELL_PROPERTIES);
@@ -92,7 +93,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
     public async Task ThenTheSpellAppearsInTheSpellListAsAConcentrationSpell()
     {
         var id = _scenarioContext.Get<Guid>(CURRENT_SPELL_ID);
-        var spell = await _elements.GetSpellByIdAsync(id);
+        var spell = await _driver.GetSpell(id);
         spell.Should().NotBeNull();
         spell.IsConcentration.Should().BeTrue("expected the spell to be a concentration spell");
     }
@@ -101,7 +102,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
     public async Task ThenTheSpellAppearsInTheSpellListAsARitualSpell()
     {
         var id = _scenarioContext.Get<Guid>(CURRENT_SPELL_ID);
-        var spell = await _elements.GetSpellByIdAsync(id);
+        var spell = await _driver.GetSpell(id);
         spell.Should().NotBeNull();
         spell.IsRitual.Should().BeTrue("expected the spell to be a ritual spell");
     }
@@ -110,7 +111,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
     public async Task ThenTheSpellAppearsInTheSpellListAsHavingASomaticComponent()
     {
         var id = _scenarioContext.Get<Guid>(CURRENT_SPELL_ID);
-        var spell = await _elements.GetSpellByIdAsync(id);
+        var spell = await _driver.GetSpell(id);
         spell.Should().NotBeNull();
         spell.HasSomatic.Should().BeTrue("expected the spell to have a somatic component");
     }
@@ -119,7 +120,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
     public async Task ThenTheSpellAppearsInTheSpellListAsHavingAVerbalComponent()
     {
         var id = _scenarioContext.Get<Guid>(CURRENT_SPELL_ID);
-        var spell = await _elements.GetSpellByIdAsync(id);
+        var spell = await _driver.GetSpell(id);
         spell.Should().NotBeNull();
         spell.HasVerbal.Should().BeTrue("expected the spell to have a verbal component");
     }
@@ -130,7 +131,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
         var id = _scenarioContext.Get<Guid>(CURRENT_SPELL_ID);
         var expected = _scenarioContext.Get<CreateSpellTableRow>(CURRENT_SPELL_PROPERTIES);
 
-        var spell = await _elements.GetSpellByIdAsync(id);
+        var spell = await _driver.GetSpell(id);
         spell.Should().NotBeNull();
         spell.HasMaterial.Should().BeTrue("expected the spell to have a material component");
         spell.MaterialComponent.Should().Be(expected.MaterialComponents);
@@ -142,7 +143,7 @@ public class ContentCreationAndManagementForSpellsStepDefinitions
         var id = _scenarioContext.Get<Guid>(CURRENT_SPELL_ID);
         var expected = _scenarioContext.Get<CreateSpellTableRow>(CURRENT_SPELL_PROPERTIES);
 
-        var spell = await _elements.GetSpellByIdAsync(id);
+        var spell = await _driver.GetSpell(id);
         spell.Should().NotBeNull();
         spell.Description.Should().Be(expected.Description);
     }

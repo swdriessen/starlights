@@ -9,7 +9,7 @@
 
   <MSTest>
     <Parallelize>
-      <Workers>1</Workers>
+      <Workers>0</Workers>
       <Scope>MethodLevel</Scope>
     </Parallelize>
     <MapInconclusiveToFailed>true</MapInconclusiveToFailed>

@@ -60,7 +60,7 @@ public class ElementsEndpointDriver : IDriver
         return responseContent.Id;
     }
 
-    public async Task<GetSpellByIdResponse?> GetSpellByIdAsync(Guid id)
+    public async Task<SpellDataModel?> GetSpellByIdAsync(Guid id)
     {
         using var client = _integration.CreateClient();
 
@@ -73,7 +73,7 @@ public class ElementsEndpointDriver : IDriver
 
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonAsync<GetSpellByIdResponse>(_integration.CancellationToken);
+        return await response.Content.ReadFromJsonAsync<SpellDataModel>(_integration.CancellationToken);
     }
 
     public async Task<UpdateSpellResponse> UpdateSpellAsync(UpdateSpellRequest request)
@@ -89,7 +89,7 @@ public class ElementsEndpointDriver : IDriver
         return responseContent!;
     }
 
-    public async Task<List<GetSpellsResponseItem>> GetSpellsAsync()
+    public async Task<List<SpellDataModel>> GetSpellsAsync()
     {
         using var client = _integration.CreateClient();
 

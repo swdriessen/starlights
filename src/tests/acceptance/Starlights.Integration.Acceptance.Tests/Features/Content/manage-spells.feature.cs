@@ -18,7 +18,7 @@ namespace Starlights.Integration.Acceptance.Tests.Features.Content
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute()]
-    public partial class ContentCreationAndManagementForSpellsFeature
+    public partial class ContentManagementForSpellsFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
@@ -27,7 +27,7 @@ namespace Starlights.Integration.Acceptance.Tests.Features.Content
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Content", "Content creation and management for spells", "As a content creator\r\nI want to create, update, delete and list spells\r\nSo that p" +
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Content", "Content management for spells", "As a content creator\r\nI want to create, update, delete and list spells\r\nSo that p" +
                 "layers can use those spells during character creation", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
 #line 1 "manage-spells.feature"
@@ -132,7 +132,7 @@ namespace Starlights.Integration.Acceptance.Tests.Features.Content
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with the minimum required fields")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with the minimum required fields")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("Firebolt", "0", "Evocation", "1 action", "120 ft", "Instantaneous", "0", null, DisplayName="create a spell with the minimum required fields(Firebolt,0,Evocation,1 action,120" +
             " ft,Instantaneous,0)")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("Tenser\'s Floating Disk", "1", "Conjuration", "1 action", "30 ft", "1 hour", "1", null, DisplayName="create a spell with the minimum required fields(Tenser\'s Floating Disk,1,Conjurat" +
@@ -196,7 +196,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a concentration spell")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a concentration spell")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         public async global::System.Threading.Tasks.Task CreateAConcentrationSpell()
         {
             string[] tagsOfScenario = ((string[])(null));
@@ -246,7 +246,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a ritual spell")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a ritual spell")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         public async global::System.Threading.Tasks.Task CreateARitualSpell()
         {
             string[] tagsOfScenario = ((string[])(null));
@@ -296,7 +296,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a somatic component")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a somatic component")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         public async global::System.Threading.Tasks.Task CreateASpellWithASomaticComponent()
         {
             string[] tagsOfScenario = ((string[])(null));
@@ -346,7 +346,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a verbal component")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a verbal component")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         public async global::System.Threading.Tasks.Task CreateASpellWithAVerbalComponent()
         {
             string[] tagsOfScenario = ((string[])(null));
@@ -396,7 +396,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a material component")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a material component")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         public async global::System.Threading.Tasks.Task CreateASpellWithAMaterialComponent()
         {
             string[] tagsOfScenario = ((string[])(null));
@@ -449,7 +449,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a description")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a description")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         public async global::System.Threading.Tasks.Task CreateASpellWithADescription()
         {
             string[] tagsOfScenario = ((string[])(null));
@@ -499,7 +499,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with all optional properties")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with all optional properties")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         public async global::System.Threading.Tasks.Task CreateASpellWithAllOptionalProperties()
         {
             string[] tagsOfScenario = ((string[])(null));
@@ -562,7 +562,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update an existing spell\'s description")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update an existing spell\'s description")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute()]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
         public async global::System.Threading.Tasks.Task UpdateAnExistingSpellsDescription()
@@ -621,7 +621,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="delete an existing spell")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("delete an existing spell")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute()]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
         public async global::System.Threading.Tasks.Task DeleteAnExistingSpell()
@@ -676,7 +676,7 @@ await this.FeatureBackgroundAsync();
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="list all existing spells")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("list all existing spells")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content creation and management for spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute()]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
         public async global::System.Threading.Tasks.Task ListAllExistingSpells()

@@ -1,4 +1,6 @@
-﻿namespace Starlights.Integration.Drivers.Elements.Extensions;
+﻿using static Starlights.Integration.Drivers.Elements.ManageSpellsDriver;
+
+namespace Starlights.Integration.Drivers.Elements.Extensions;
 
 public enum TestSpells
 {
@@ -9,7 +11,7 @@ public enum TestSpells
 
 public static class SpellDefinitions
 {
-    public static CreateSpellProperties Light { get; } = new()
+    public static CreateProperties Light { get; } = new()
     {
         Name = "Light",
         Level = 0,
@@ -26,7 +28,7 @@ public static class SpellDefinitions
         Description = "You touch one object that is no larger than 10 feet in any dimension. Until the spell ends, the object glows with bright light in a 20-foot radius and dim light for an additional 20 feet."
     };
 
-    public static CreateSpellProperties Fireball { get; } = new()
+    public static CreateProperties Fireball { get; } = new()
     {
         Name = "Fireball",
         Level = 3,
@@ -43,7 +45,7 @@ public static class SpellDefinitions
         Description = "A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame."
     };
 
-    public static CreateSpellProperties MageArmor { get; } = new()
+    public static CreateProperties MageArmor { get; } = new()
     {
         Name = "Mage Armor",
         Level = 1,
@@ -63,7 +65,7 @@ public static class SpellDefinitions
 
 public static class ElementsDriverExtensions
 {
-    extension(ElementsCreationDriver driver)
+    extension(ManageSpellsDriver driver)
     {
         public Task<Guid> CreateSpell(TestSpells spells)
         {
@@ -75,22 +77,22 @@ public static class ElementsDriverExtensions
                 _ => throw new ArgumentOutOfRangeException(nameof(spells), spells, null)
             };
 
-            return driver.CreateSpellAsync(definition);
+            return driver.CreateSpell(definition);
         }
 
         public Task<Guid> CreateLightCantrip()
         {
-            return driver.CreateSpellAsync(SpellDefinitions.Light);
+            return driver.CreateSpell(SpellDefinitions.Light);
         }
 
         public Task<Guid> CreateFireballSpell()
         {
-            return driver.CreateSpellAsync(SpellDefinitions.Fireball);
+            return driver.CreateSpell(SpellDefinitions.Fireball);
         }
 
         public Task<Guid> CreateMageArmorSpell()
         {
-            return driver.CreateSpellAsync(SpellDefinitions.MageArmor);
+            return driver.CreateSpell(SpellDefinitions.MageArmor);
         }
     }
 }

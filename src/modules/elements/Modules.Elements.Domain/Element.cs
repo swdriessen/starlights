@@ -56,10 +56,13 @@ public sealed class Element : AggregateRoot<ElementId>
     /// <summary>
     /// Adds a component to the element.
     /// </summary>
-    [Obsolete("Use AddComponent with factory function instead to ensure correct ownership.")]
     public T AddComponent<T>(T component) where T : ElementComponentBase
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
+        if (component.OwningElement != Id)
+        {
+            throw new InvalidOperationException("Component's owning element does not match.");
+        }
         component.OrderSequence = _components.Count; // append
         _components.Add(component);
         return component;

@@ -1,4 +1,4 @@
-Feature: Content creation and management for spells
+Feature: Content management for spells
 
 As a content creator
 I want to create, update, delete and list spells

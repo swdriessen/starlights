@@ -13,7 +13,7 @@ public class IntegrationHostBuilderHooks
         _scenarioContext = scenarioContext;
 
         _builder = IntegrationHost.CreateBuilder()
-            .WithDriverAssemblies(typeof(ElementsCreationDriver).Assembly)
+            .WithDriverAssemblies(typeof(ManageSpellsDriver).Assembly)
             .WithTestContext(testContext);
     }
 

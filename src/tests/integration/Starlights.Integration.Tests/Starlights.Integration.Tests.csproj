@@ -5,6 +5,7 @@
 	</PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Starlights.Integration.Harness.Drivers\Starlights.Integration.Harness.Drivers.csproj" />
     <ProjectReference Include="..\Starlights.Integration.Harness\Starlights.Integration.Harness.csproj" />
   </ItemGroup>
 

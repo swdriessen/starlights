@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+		<RootNamespace>Starlights.Integration.Drivers</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+		<PackageReference Include="AwesomeAssertions" />
+    <ProjectReference Include="..\Starlights.Integration.Harness\Starlights.Integration.Harness.csproj" />
+  </ItemGroup>
+
+</Project>
