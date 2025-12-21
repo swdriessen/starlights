@@ -2,6 +2,8 @@
 
   <PropertyGroup>
 		<RootNamespace>Starlights.Integration.Drivers</RootNamespace>
+		<!-- there are no tests in this library -->
+		<NoWarn>$(NoWarn);MSTEST0001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

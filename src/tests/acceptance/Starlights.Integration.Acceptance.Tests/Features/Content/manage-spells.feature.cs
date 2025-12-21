@@ -123,6 +123,9 @@ namespace Starlights.Integration.Acceptance.Tests.Features.Content
 #line 8
     await testRunner.GivenAsync("I am authenticated as a content creator", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
+#line 9
+    await testRunner.AndAsync("there are no existing spells", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
         }
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
@@ -133,31 +136,15 @@ namespace Starlights.Integration.Acceptance.Tests.Features.Content
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with the minimum required fields")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with the minimum required fields")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("Firebolt", "0", "Evocation", "1 action", "120 ft", "Instantaneous", "0", null, DisplayName="create a spell with the minimum required fields(Firebolt,0,Evocation,1 action,120" +
-            " ft,Instantaneous,0)")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("Tenser\'s Floating Disk", "1", "Conjuration", "1 action", "30 ft", "1 hour", "1", null, DisplayName="create a spell with the minimum required fields(Tenser\'s Floating Disk,1,Conjurat" +
-            "ion,1 action,30 ft,1 hour,1)")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("Shield of Faith", "1", "Abjuration", "1 bonus action", "60 ft", "Concentration, up to 10 minutes", "2", null, DisplayName="create a spell with the minimum required fields(Shield of Faith,1,Abjuration,1 bo" +
-            "nus action,60 ft,Concentration, up to 10 minutes,2)")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("Enlarge/Reduce", "2", "Transmutation", "1 action", "30 ft", "Concentration, up to 1 minute", "3", null, DisplayName="create a spell with the minimum required fields(Enlarge/Reduce,2,Transmutation,1 " +
-            "action,30 ft,Concentration, up to 1 minute,3)")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("Wish", "9", "Conjuration", "1 action", "120 ft", "Instantaneous", "4", null, DisplayName="create a spell with the minimum required fields(Wish,9,Conjuration,1 action,120 f" +
-            "t,Instantaneous,4)")]
-        public async global::System.Threading.Tasks.Task CreateASpellWithTheMinimumRequiredFields(string name, string level, string magicSchool, string castingTime, string range, string duration, string @__pickleIndex, string[] exampleTags)
+        public async global::System.Threading.Tasks.Task CreateASpellWithTheMinimumRequiredFields()
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("name", name);
-            argumentsOfScenario.Add("level", level);
-            argumentsOfScenario.Add("magic school", magicSchool);
-            argumentsOfScenario.Add("casting time", castingTime);
-            argumentsOfScenario.Add("range", range);
-            argumentsOfScenario.Add("duration", duration);
-            string pickleIndex = @__pickleIndex;
+            string pickleIndex = "0";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with the minimum required fields", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 12
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create spells with the minimum required fields", null, tagsOfRule);
+#line 15
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -178,34 +165,46 @@ await this.FeatureBackgroundAsync();
                             "range",
                             "duration"});
                 table1.AddRow(new string[] {
-                            string.Format("{0}", name),
-                            string.Format("{0}", level),
-                            string.Format("{0}", magicSchool),
-                            string.Format("{0}", castingTime),
-                            string.Format("{0}", range),
-                            string.Format("{0}", duration)});
-#line 13
+                            "Magic Spell",
+                            "0",
+                            "Evocation",
+                            "1 action",
+                            "100 ft",
+                            "Instantaneous"});
+#line 16
     await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table1, "When ");
 #line hidden
-#line 16
+#line 19
     await testRunner.ThenAsync("the spell appears in the spell list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a concentration spell")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a concentration spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a specific level")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a specific level")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        public async global::System.Threading.Tasks.Task CreateAConcentrationSpell()
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("Evocation cantrip", "0", "Evocation", "1 bonus action", "10 ft", "Instantaneous", "1", null, DisplayName="create a spell with a specific level(Evocation cantrip,0,Evocation,1 bonus action" +
+            ",10 ft,Instantaneous,1)")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("1st-level necromancy spell", "1", "Necromancy", "1 action", "Touch", "1 minute", "2", null, DisplayName="create a spell with a specific level(1st-level necromancy spell,1,Necromancy,1 ac" +
+            "tion,Touch,1 minute,2)")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DataRowAttribute("9th-level abjuration spell", "9", "Abjuration", "1 action", "30 ft", "Concentration, up to 1 minute", "3", null, DisplayName="create a spell with a specific level(9th-level abjuration spell,9,Abjuration,1 ac" +
+            "tion,30 ft,Concentration, up to 1 minute,3)")]
+        public async global::System.Threading.Tasks.Task CreateASpellWithASpecificLevel(string name, string level, string magicSchool, string castingTime, string range, string duration, string @__pickleIndex, string[] exampleTags)
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = exampleTags;
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "5";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a concentration spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            argumentsOfScenario.Add("name", name);
+            argumentsOfScenario.Add("level", level);
+            argumentsOfScenario.Add("magic school", magicSchool);
+            argumentsOfScenario.Add("casting time", castingTime);
+            argumentsOfScenario.Add("range", range);
+            argumentsOfScenario.Add("duration", duration);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a specific level", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 27
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create spells up to level 9", null, tagsOfRule);
+#line 23
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -224,38 +223,36 @@ await this.FeatureBackgroundAsync();
                             "magic school",
                             "casting time",
                             "range",
-                            "duration",
-                            "concentration"});
+                            "duration"});
                 table2.AddRow(new string[] {
-                            "Magic Spell",
-                            "5",
-                            "Evocation",
-                            "1 action",
-                            "100 ft",
-                            "Concentration, up to 10 minutes",
-                            "true"});
-#line 28
+                            string.Format("{0}", name),
+                            string.Format("{0}", level),
+                            string.Format("{0}", magicSchool),
+                            string.Format("{0}", castingTime),
+                            string.Format("{0}", range),
+                            string.Format("{0}", duration)});
+#line 24
     await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table2, "When ");
 #line hidden
-#line 31
-    await testRunner.ThenAsync("the spell appears in the spell list as a concentration spell", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 27
+    await testRunner.ThenAsync("the spell appears in the spell list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a ritual spell")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a ritual spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a concentration spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a concentration spell")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        public async global::System.Threading.Tasks.Task CreateARitualSpell()
+        public async global::System.Threading.Tasks.Task CreateAConcentrationSpell()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "6";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a ritual spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "4";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a concentration spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 33
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create spells that require concentration", null, tagsOfRule);
+#line 37
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -275,37 +272,37 @@ await this.FeatureBackgroundAsync();
                             "casting time",
                             "range",
                             "duration",
-                            "ritual"});
+                            "concentration"});
                 table3.AddRow(new string[] {
                             "Magic Spell",
                             "5",
                             "Evocation",
                             "1 action",
                             "100 ft",
-                            "1 hour",
+                            "Concentration, up to 10 minutes",
                             "true"});
-#line 34
+#line 38
     await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table3, "When ");
 #line hidden
-#line 37
-    await testRunner.ThenAsync("the spell appears in the spell list as a ritual spell", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 41
+    await testRunner.ThenAsync("the spell appears in the spell list as a concentration spell", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a somatic component")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a somatic component")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a ritual spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a ritual spell")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        public async global::System.Threading.Tasks.Task CreateASpellWithASomaticComponent()
+        public async global::System.Threading.Tasks.Task CreateARitualSpell()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "7";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a somatic component", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "5";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a ritual spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 39
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create spells that can be cast as rituals", null, tagsOfRule);
+#line 45
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -325,7 +322,7 @@ await this.FeatureBackgroundAsync();
                             "casting time",
                             "range",
                             "duration",
-                            "somatic"});
+                            "ritual"});
                 table4.AddRow(new string[] {
                             "Magic Spell",
                             "5",
@@ -334,28 +331,29 @@ await this.FeatureBackgroundAsync();
                             "100 ft",
                             "1 hour",
                             "true"});
-#line 40
+#line 46
     await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table4, "When ");
 #line hidden
-#line 43
-    await testRunner.ThenAsync("the spell appears in the spell list as having a somatic component", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 49
+    await testRunner.ThenAsync("the spell appears in the spell list as a ritual spell", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a verbal component")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a verbal component")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a somatic component")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a somatic component")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        public async global::System.Threading.Tasks.Task CreateASpellWithAVerbalComponent()
+        public async global::System.Threading.Tasks.Task CreateASpellWithASomaticComponent()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "8";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a verbal component", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "6";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a somatic component", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 45
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create spells that require a combination of somatic, verbal" +
+                    ", and material components", null, tagsOfRule);
+#line 53
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -375,7 +373,7 @@ await this.FeatureBackgroundAsync();
                             "casting time",
                             "range",
                             "duration",
-                            "verbal"});
+                            "somatic"});
                 table5.AddRow(new string[] {
                             "Magic Spell",
                             "5",
@@ -384,28 +382,29 @@ await this.FeatureBackgroundAsync();
                             "100 ft",
                             "1 hour",
                             "true"});
-#line 46
+#line 54
     await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table5, "When ");
 #line hidden
-#line 49
-    await testRunner.ThenAsync("the spell appears in the spell list as having a verbal component", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 57
+    await testRunner.ThenAsync("the spell appears in the spell list as having a somatic component", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a material component")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a material component")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a verbal component")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a verbal component")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        public async global::System.Threading.Tasks.Task CreateASpellWithAMaterialComponent()
+        public async global::System.Threading.Tasks.Task CreateASpellWithAVerbalComponent()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "9";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a material component", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "7";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a verbal component", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 51
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create spells that require a combination of somatic, verbal" +
+                    ", and material components", null, tagsOfRule);
+#line 59
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -425,8 +424,7 @@ await this.FeatureBackgroundAsync();
                             "casting time",
                             "range",
                             "duration",
-                            "material",
-                            "material components"});
+                            "verbal"});
                 table6.AddRow(new string[] {
                             "Magic Spell",
                             "5",
@@ -434,31 +432,30 @@ await this.FeatureBackgroundAsync();
                             "1 action",
                             "100 ft",
                             "1 hour",
-                            "true",
-                            "a small crystal rod"});
-#line 52
+                            "true"});
+#line 60
     await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table6, "When ");
 #line hidden
-#line 55
-    await testRunner.ThenAsync("the spell appears in the spell list as having a material component with the provi" +
-                        "ded material components description", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 63
+    await testRunner.ThenAsync("the spell appears in the spell list as having a verbal component", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a description")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a description")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a material component")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a material component")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        public async global::System.Threading.Tasks.Task CreateASpellWithADescription()
+        public async global::System.Threading.Tasks.Task CreateASpellWithAMaterialComponent()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "10";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a description", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "8";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a material component", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 57
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create spells that require a combination of somatic, verbal" +
+                    ", and material components", null, tagsOfRule);
+#line 65
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -478,7 +475,8 @@ await this.FeatureBackgroundAsync();
                             "casting time",
                             "range",
                             "duration",
-                            "description"});
+                            "material",
+                            "material components"});
                 table7.AddRow(new string[] {
                             "Magic Spell",
                             "5",
@@ -486,29 +484,31 @@ await this.FeatureBackgroundAsync();
                             "1 action",
                             "100 ft",
                             "1 hour",
-                            "A powerful evocation spell that deals damage."});
-#line 58
+                            "true",
+                            "a small crystal rod"});
+#line 66
     await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table7, "When ");
 #line hidden
-#line 61
-    await testRunner.ThenAsync("the spell appears in the spell list with the provided description", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 69
+    await testRunner.ThenAsync("the spell appears in the spell list as having a material component with the provi" +
+                        "ded material components description", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with all optional properties")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with all optional properties")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a spell with a description")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("create a spell with a description")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        public async global::System.Threading.Tasks.Task CreateASpellWithAllOptionalProperties()
+        public async global::System.Threading.Tasks.Task CreateASpellWithADescription()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "11";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with all optional properties", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "9";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a spell with a description", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 63
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create spells with detailed descriptions", null, tagsOfRule);
+#line 73
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -528,54 +528,37 @@ await this.FeatureBackgroundAsync();
                             "casting time",
                             "range",
                             "duration",
-                            "concentration",
-                            "ritual",
-                            "somatic",
-                            "verbal",
-                            "material",
-                            "material components",
                             "description"});
                 table8.AddRow(new string[] {
-                            "Haste",
-                            "1",
+                            "Magic Spell",
+                            "5",
                             "Evocation",
                             "1 action",
-                            "120 ft",
-                            "Instantaneous",
-                            "true",
-                            "false",
-                            "true",
-                            "true",
-                            "true",
-                            "a piece of flint",
-                            "A bright streak flashes from your pointing finger to a target that you can see wi" +
-                                "thin range."});
-#line 64
+                            "100 ft",
+                            "1 hour",
+                            "A powerful evocation spell that deals damage."});
+#line 74
     await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table8, "When ");
 #line hidden
-#line 67
-    await testRunner.ThenAsync("the spell appears in the spell list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 77
+    await testRunner.ThenAsync("the spell appears in the spell list with the provided description", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update an existing spell\'s description")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update an existing spell\'s description")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update the required fields of an existing spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update the required fields of an existing spell")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute()]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
-        public async global::System.Threading.Tasks.Task UpdateAnExistingSpellsDescription()
+        public async global::System.Threading.Tasks.Task UpdateTheRequiredFieldsOfAnExistingSpell()
         {
-            string[] tagsOfScenario = new string[] {
-                    "ignore",
-                    "wip"};
+            string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "12";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update an existing spell\'s description", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "10";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update the required fields of an existing spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 72
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update existing spells", null, tagsOfRule);
+#line 83
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -596,56 +579,31 @@ await this.FeatureBackgroundAsync();
                             "range",
                             "duration"});
                 table9.AddRow(new string[] {
-                            "Firebolt",
-                            "0",
+                            "Level 3 Spell",
+                            "3",
                             "Evocation",
                             "1 action",
-                            "120 ft",
-                            "Instantaneous"});
-#line 73
-    await testRunner.GivenAsync("a spell exists with the following properties", ((string)(null)), table9, "Given ");
+                            "100 ft",
+                            "1 minute"});
+#line 84
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table9, "Given ");
 #line hidden
                 global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
-                            "description"});
+                            "name",
+                            "level",
+                            "magic school",
+                            "casting time",
+                            "range",
+                            "duration"});
                 table10.AddRow(new string[] {
-                            "A searing bolt of fire that deals fire damage to a single target."});
-#line 76
-    await testRunner.WhenAsync("the content creator updates the spell\'s description to", ((string)(null)), table10, "When ");
-#line hidden
-#line 79
-    await testRunner.ThenAsync("the spell in the spell list shows the updated description for \"Firebolt\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="delete an existing spell")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("delete an existing spell")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute()]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
-        public async global::System.Threading.Tasks.Task DeleteAnExistingSpell()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "ignore",
-                    "wip"};
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "13";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("delete an existing spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 82
-this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 7
-await this.FeatureBackgroundAsync();
+                            "Level 6 Spell",
+                            "6",
+                            "Conjuration",
+                            "1 bonus action",
+                            "200 ft",
+                            "2 minutes"});
+#line 87
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table10, "When ");
 #line hidden
                 global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
                             "name",
@@ -655,41 +613,31 @@ await this.FeatureBackgroundAsync();
                             "range",
                             "duration"});
                 table11.AddRow(new string[] {
-                            "Firebolt",
-                            "0",
-                            "Evocation",
-                            "1 action",
-                            "120 ft",
-                            "Instantaneous"});
-#line 83
-    await testRunner.GivenAsync("a spell exists with the following properties", ((string)(null)), table11, "Given ");
-#line hidden
-#line 86
-    await testRunner.WhenAsync("the content creator deletes the spell named \"Firebolt\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 87
-    await testRunner.ThenAsync("the spell named \"Firebolt\" no longer appears in the spell list", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+                            "Level 6 Spell",
+                            "6",
+                            "Conjuration",
+                            "1 bonus action",
+                            "200 ft",
+                            "2 minutes"});
+#line 90
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table11, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="list all existing spells")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("list all existing spells")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update a non concentration spell to a concentration spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update a non concentration spell to a concentration spell")]
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute()]
-        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
-        public async global::System.Threading.Tasks.Task ListAllExistingSpells()
+        public async global::System.Threading.Tasks.Task UpdateANonConcentrationSpellToAConcentrationSpell()
         {
-            string[] tagsOfScenario = new string[] {
-                    "ignore",
-                    "wip"};
+            string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "14";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("list all existing spells", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "11";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update a non concentration spell to a concentration spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 90
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update existing spells", null, tagsOfRule);
+#line 94
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -704,55 +652,217 @@ await this.FeatureBackgroundAsync();
 #line hidden
                 global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
                             "name",
-                            "level",
-                            "magic school",
-                            "casting time",
-                            "range",
-                            "duration"});
+                            "duration",
+                            "concentration"});
                 table12.AddRow(new string[] {
-                            "Firebolt",
-                            "0",
-                            "Evocation",
-                            "1 action",
-                            "120 ft",
-                            "Instantaneous"});
-                table12.AddRow(new string[] {
-                            "Magic Missile",
-                            "1",
-                            "Evocation",
-                            "1 action",
-                            "120 ft",
-                            "Instantaneous"});
-#line 91
-    await testRunner.GivenAsync("the following spells exist", ((string)(null)), table12, "Given ");
-#line hidden
+                            "Instant Spell",
+                            "Instantaneous",
+                            "false"});
 #line 95
-    await testRunner.WhenAsync("the content creator requests the list of spells", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table12, "Given ");
 #line hidden
                 global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
                             "name",
-                            "level",
-                            "magic school",
-                            "casting time",
-                            "range",
-                            "duration"});
+                            "duration",
+                            "concentration"});
                 table13.AddRow(new string[] {
-                            "Firebolt",
-                            "0",
-                            "Evocation",
-                            "1 action",
-                            "120 ft",
-                            "Instantaneous"});
-                table13.AddRow(new string[] {
-                            "Magic Missile",
-                            "1",
-                            "Evocation",
-                            "1 action",
-                            "120 ft",
-                            "Instantaneous"});
-#line 96
-    await testRunner.ThenAsync("the returned list contains at least the following spells with their specified pro" +
-                        "perties", ((string)(null)), table13, "Then ");
+                            "Concentrating Spell",
+                            "Concentration, up to 1 minute",
+                            "true"});
+#line 98
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table13, "When ");
+#line hidden
+                global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "duration",
+                            "concentration"});
+                table14.AddRow(new string[] {
+                            "Concentrating Spell",
+                            "Concentration, up to 1 minute",
+                            "true"});
+#line 101
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table14, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update a non ritual spell to a ritual spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update a non ritual spell to a ritual spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
+        public async global::System.Threading.Tasks.Task UpdateANonRitualSpellToARitualSpell()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "12";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update a non ritual spell to a ritual spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update existing spells", null, tagsOfRule);
+#line 105
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "ritual"});
+                table15.AddRow(new string[] {
+                            "Quick Spell",
+                            "false"});
+#line 106
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table15, "Given ");
+#line hidden
+                global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "ritual"});
+                table16.AddRow(new string[] {
+                            "Ritual Spell",
+                            "true"});
+#line 109
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table16, "When ");
+#line hidden
+                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "ritual"});
+                table17.AddRow(new string[] {
+                            "Ritual Spell",
+                            "true"});
+#line 112
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table17, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update a components of an existing spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update a components of an existing spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
+        public async global::System.Threading.Tasks.Task UpdateAComponentsOfAnExistingSpell()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "13";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update a components of an existing spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update existing spells", null, tagsOfRule);
+#line 116
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "verbal",
+                            "somatic",
+                            "material"});
+                table18.AddRow(new string[] {
+                            "Free Spell",
+                            "false",
+                            "false",
+                            "false"});
+#line 117
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table18, "Given ");
+#line hidden
+                global::Reqnroll.Table table19 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "verbal",
+                            "somatic",
+                            "material",
+                            "material components"});
+                table19.AddRow(new string[] {
+                            "Component Spell",
+                            "true",
+                            "true",
+                            "true",
+                            "a black feather"});
+#line 120
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table19, "When ");
+#line hidden
+                global::Reqnroll.Table table20 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "verbal",
+                            "somatic",
+                            "material",
+                            "material components"});
+                table20.AddRow(new string[] {
+                            "Component Spell",
+                            "true",
+                            "true",
+                            "true",
+                            "a black feather"});
+#line 123
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table20, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update the description of an existing spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update the description of an existing spell")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Content management for spells")]
+        public async global::System.Threading.Tasks.Task UpdateTheDescriptionOfAnExistingSpell()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "14";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update the description of an existing spell", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update existing spells", null, tagsOfRule);
+#line 127
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table21 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "description"});
+                table21.AddRow(new string[] {
+                            "Cryptic Spell",
+                            "You cast a spell."});
+#line 128
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table21, "Given ");
+#line hidden
+                global::Reqnroll.Table table22 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "description"});
+                table22.AddRow(new string[] {
+                            "Descriptive Spell",
+                            "You cast a very detailed spell."});
+#line 131
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table22, "When ");
+#line hidden
+                global::Reqnroll.Table table23 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "description"});
+                table23.AddRow(new string[] {
+                            "Descriptive Spell",
+                            "You cast a very detailed spell."});
+#line 134
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table23, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

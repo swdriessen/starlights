@@ -6,36 +6,50 @@ So that players can use those spells during character creation
 
 Background:
     Given I am authenticated as a content creator
+    And there are no existing spells
 
 # Create scenarios
 
-Scenario Outline: create a spell with the minimum required fields
+Rule: A content creator can create spells with the minimum required fields
+
+Scenario: create a spell with the minimum required fields
+    When the content creator creates a spell with the following properties
+        | name        | level | magic school | casting time | range  | duration      |
+        | Magic Spell |     0 | Evocation    | 1 action     | 100 ft | Instantaneous |
+    Then the spell appears in the spell list with all provided properties
+
+Rule: A content creator can create spells up to level 9
+
+Scenario Outline: create a spell with a specific level
     When the content creator creates a spell with the following properties
         | name   | level   | magic school   | casting time   | range   | duration   |
         | <name> | <level> | <magic school> | <casting time> | <range> | <duration> |
     Then the spell appears in the spell list with all provided properties
 
 Examples:
-    | name                   | level | magic school  | casting time   | range  | duration                        |
-    | Firebolt               |     0 | Evocation     | 1 action       | 120 ft | Instantaneous                   |
-    | Tenser's Floating Disk |     1 | Conjuration   | 1 action       | 30 ft  | 1 hour                          |
-    | Shield of Faith        |     1 | Abjuration    | 1 bonus action | 60 ft  | Concentration, up to 10 minutes |
-    | Enlarge/Reduce         |     2 | Transmutation | 1 action       | 30 ft  | Concentration, up to 1 minute   |
-    | Wish                   |     9 | Conjuration   | 1 action       | 120 ft | Instantaneous                   |
+    | name                       | level | magic school | casting time   | range | duration                      |
+    | Evocation cantrip          |     0 | Evocation    | 1 bonus action | 10 ft | Instantaneous                 |
+    | 1st-level necromancy spell |     1 | Necromancy   | 1 action       | Touch | 1 minute                      |
+    | 9th-level abjuration spell |     9 | Abjuration   | 1 action       | 30 ft | Concentration, up to 1 minute |
 
+Rule: A content creator can create spells that require concentration
 
 Scenario: create a concentration spell
     When the content creator creates a spell with the following properties
         | name        | level | magic school | casting time | range  | duration                        | concentration |
         | Magic Spell |     5 | Evocation    | 1 action     | 100 ft | Concentration, up to 10 minutes | true          |
     Then the spell appears in the spell list as a concentration spell
-    
+
+Rule: A content creator can create spells that can be cast as rituals
+
 Scenario: create a ritual spell
     When the content creator creates a spell with the following properties
         | name        | level | magic school | casting time | range  | duration | ritual |
         | Magic Spell |     5 | Evocation    | 1 action     | 100 ft | 1 hour   | true   |
     Then the spell appears in the spell list as a ritual spell
-    
+
+Rule: A content creator can create spells that require a combination of somatic, verbal, and material components
+
 Scenario: create a spell with a somatic component
     When the content creator creates a spell with the following properties
         | name        | level | magic school | casting time | range  | duration | somatic |
@@ -54,46 +68,69 @@ Scenario: create a spell with a material component
         | Magic Spell |     5 | Evocation    | 1 action     | 100 ft | 1 hour   | true     | a small crystal rod |
     Then the spell appears in the spell list as having a material component with the provided material components description
 
+Rule: A content creator can create spells with detailed descriptions
+
 Scenario: create a spell with a description
     When the content creator creates a spell with the following properties
         | name        | level | magic school | casting time | range  | duration | description                                   |
         | Magic Spell |     5 | Evocation    | 1 action     | 100 ft | 1 hour   | A powerful evocation spell that deals damage. |
     Then the spell appears in the spell list with the provided description
+        
+# Update scenarios
 
-Scenario: create a spell with all optional properties
-    When the content creator creates a spell with the following properties
-        | name  | level | magic school | casting time | range  | duration      | concentration | ritual | somatic | verbal | material | material components | description                                                                                  |
-        | Haste |     1 | Evocation    | 1 action     | 120 ft | Instantaneous | true          | false  | true    | true   | true     | a piece of flint    | A bright streak flashes from your pointing finger to a target that you can see within range. |
-    Then the spell appears in the spell list with all provided properties
+Rule: A content creator can update existing spells
 
-# Update, delete and list scenarios
+Scenario: update the required fields of an existing spell
+    Given a spell exists that includes the following properties
+        | name          | level | magic school | casting time | range  | duration |
+        | Level 3 Spell |     3 | Evocation    | 1 action     | 100 ft | 1 minute |
+    When the content creator updates the spell with the following properties
+        | name          | level | magic school | casting time   | range  | duration  |
+        | Level 6 Spell |     6 | Conjuration  | 1 bonus action | 200 ft | 2 minutes |
+    Then the spell in the spell list should have the following properties
+        | name          | level | magic school | casting time   | range  | duration  |
+        | Level 6 Spell |     6 | Conjuration  | 1 bonus action | 200 ft | 2 minutes |
 
-@ignore @wip
-Scenario: update an existing spell's description
-    Given a spell exists with the following properties
-        | name     | level | magic school | casting time | range  | duration      |
-        | Firebolt |     0 | Evocation    | 1 action     | 120 ft | Instantaneous |
-    When the content creator updates the spell's description to
-        | description                                                       |
-        | A searing bolt of fire that deals fire damage to a single target. |
-    Then the spell in the spell list shows the updated description for "Firebolt"
+Scenario: update a non concentration spell to a concentration spell
+    Given a spell exists that includes the following properties
+        | name          | duration      | concentration |
+        | Instant Spell | Instantaneous | false         |
+    When the content creator updates the spell with the following properties
+        | name                | duration                      | concentration |
+        | Concentrating Spell | Concentration, up to 1 minute | true          |
+    Then the spell in the spell list should have the following properties
+        | name                | duration                      | concentration |
+        | Concentrating Spell | Concentration, up to 1 minute | true          |
 
-@ignore @wip
-Scenario: delete an existing spell
-    Given a spell exists with the following properties
-        | name     | level | magic school | casting time | range  | duration      |
-        | Firebolt |     0 | Evocation    | 1 action     | 120 ft | Instantaneous |
-    When the content creator deletes the spell named "Firebolt"
-    Then the spell named "Firebolt" no longer appears in the spell list
+Scenario: update a non ritual spell to a ritual spell
+    Given a spell exists that includes the following properties
+        | name        | ritual |
+        | Quick Spell | false  |
+    When the content creator updates the spell with the following properties
+        | name         | ritual |
+        | Ritual Spell | true   |
+    Then the spell in the spell list should have the following properties
+        | name         | ritual |
+        | Ritual Spell | true   |
+        
+Scenario: update a components of an existing spell
+    Given a spell exists that includes the following properties
+        | name       | verbal | somatic | material |
+        | Free Spell | false  | false   | false    |
+    When the content creator updates the spell with the following properties
+        | name            | verbal | somatic | material | material components |
+        | Component Spell | true   | true    | true     | a black feather     |
+    Then the spell in the spell list should have the following properties
+        | name            | verbal | somatic | material | material components |
+        | Component Spell | true   | true    | true     | a black feather     |
 
-@ignore @wip
-Scenario: list all existing spells
-    Given the following spells exist
-        | name          | level | magic school | casting time | range  | duration      |
-        | Firebolt      |     0 | Evocation    | 1 action     | 120 ft | Instantaneous |
-        | Magic Missile |     1 | Evocation    | 1 action     | 120 ft | Instantaneous |
-    When the content creator requests the list of spells
-    Then the returned list contains at least the following spells with their specified properties
-        | name          | level | magic school | casting time | range  | duration      |
-        | Firebolt      |     0 | Evocation    | 1 action     | 120 ft | Instantaneous |
-        | Magic Missile |     1 | Evocation    | 1 action     | 120 ft | Instantaneous |
+Scenario: update the description of an existing spell
+    Given a spell exists that includes the following properties
+        | name          | description       |
+        | Cryptic Spell | You cast a spell. |
+    When the content creator updates the spell with the following properties
+        | name              | description                     |
+        | Descriptive Spell | You cast a very detailed spell. |
+    Then the spell in the spell list should have the following properties
+        | name              | description                     |
+        | Descriptive Spell | You cast a very detailed spell. |

@@ -1,8 +1,8 @@
 ﻿using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Endpoints.Content.Spells;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
 

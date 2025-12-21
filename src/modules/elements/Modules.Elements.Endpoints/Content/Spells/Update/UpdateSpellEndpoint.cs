@@ -38,9 +38,11 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
             return;
         }
 
+        element.UpdateName(request.Name);
+
         element.UpdateComponent<DescriptionComponent>(component =>
         {
-            component.UpdateContent(request.Description ?? string.Empty);
+            component.UpdateContent(request.Description);
         });
 
         element.UpdateComponent<SpellAttributesComponent>(component =>

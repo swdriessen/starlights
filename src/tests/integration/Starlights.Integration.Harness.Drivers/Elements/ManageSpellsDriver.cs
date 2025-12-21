@@ -1,29 +1,13 @@
-﻿using Starlights.Integration.Extensions;
+﻿using AwesomeAssertions;
+using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Endpoints.Content.Spells;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 
 public class ManageSpellsDriver : IDriver
 {
-    public class CreateProperties
-    {
-        public required string Name { get; set; }
-        public required int Level { get; set; }
-        public required string MagicSchool { get; set; }
-        public required string CastingTime { get; set; }
-        public required string Range { get; set; }
-        public required string Duration { get; set; }
-        public bool IsConcentration { get; set; }
-        public bool IsRitual { get; set; }
-        public bool HasSomatic { get; set; }
-        public bool HasVerbal { get; set; }
-        public bool HasMaterial { get; set; }
-        public string? MaterialComponent { get; set; }
-        public string Description { get; set; } = string.Empty;
-    }
-
     private readonly IIntegrationHost _integration;
     private readonly ManageSpellsEndpointDriver _api;
 
@@ -76,10 +60,12 @@ public class ManageSpellsDriver : IDriver
         return spell;
     }
 
-    public Task<SpellDataModel?> GetLastCreatedSpell()
+    public async Task<SpellDataModel> GetLastCreatedSpell()
     {
         var id = (Guid)_integration.Properties["last-created-spell-id"]!;
-        return GetSpell(id);
+        var spell = await GetSpell(id);
+        spell.Should().NotBeNull();
+        return spell;
     }
 
     public Task<bool> UpdateSpell(SpellDataModel updatedModel)
@@ -89,6 +75,7 @@ public class ManageSpellsDriver : IDriver
         var request = new UpdateSpellRequest()
         {
             Id = updatedModel.Id,
+            Name = updatedModel.Name,
             Level = updatedModel.Level,
             MagicSchool = updatedModel.MagicSchool,
             CastingTime = updatedModel.CastingTime,
@@ -120,5 +107,42 @@ public class ManageSpellsDriver : IDriver
         }
 
         return spells;
+    }
+
+    public class CreateProperties
+    {
+        public required string Name { get; set; }
+        public required int Level { get; set; }
+        public required string MagicSchool { get; set; }
+        public required string CastingTime { get; set; }
+        public required string Range { get; set; }
+        public required string Duration { get; set; }
+        public bool IsConcentration { get; set; }
+        public bool IsRitual { get; set; }
+        public bool HasSomatic { get; set; }
+        public bool HasVerbal { get; set; }
+        public bool HasMaterial { get; set; }
+        public string? MaterialComponent { get; set; }
+        public string Description { get; set; } = string.Empty;
+
+        public static CreateProperties Empty()
+        {
+            return new CreateProperties
+            {
+                Name = string.Empty,
+                Level = 0,
+                MagicSchool = string.Empty,
+                CastingTime = string.Empty,
+                Range = string.Empty,
+                Duration = string.Empty,
+                IsConcentration = false,
+                IsRitual = false,
+                HasSomatic = false,
+                HasVerbal = false,
+                HasMaterial = false,
+                MaterialComponent = null,
+                Description = string.Empty
+            };
+        }
     }
 }

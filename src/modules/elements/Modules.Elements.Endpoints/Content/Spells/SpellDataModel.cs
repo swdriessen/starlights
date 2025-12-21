@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Spells.GetById;
+namespace Starlights.Modules.Elements.Endpoints.Content.Spells;
 
 /// <summary>
 /// The DTO for a spell.

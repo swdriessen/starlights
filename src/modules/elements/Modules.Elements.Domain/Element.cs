@@ -25,7 +25,7 @@ public sealed class Element : AggregateRoot<ElementId>
     /// <summary>
     /// Gets the name of the element.
     /// </summary>
-    public string Name { get; }
+    public string Name { get; private set; }
 
     /// <summary>
     /// Gets the type of the element.
@@ -36,6 +36,22 @@ public sealed class Element : AggregateRoot<ElementId>
     /// Gets the identifier of the game system this element belongs to.
     /// </summary>
     public string SystemIdentifier { get; }
+
+    /// <summary>
+    /// Updates the name of the element.
+    /// </summary>
+    /// <param name="newName"></param>
+    public void UpdateName(string newName)
+    {
+        newName = newName.Trim();
+
+        if (Name == newName)
+        {
+            return;
+        }
+
+        Name = newName;
+    }
 
     /// <summary>
     /// Sets the ID of the element. This may be used when importing data instead of creating new elements.
