@@ -5,8 +5,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\integration\Starlights.Integration.Harness.Drivers\Starlights.Integration.Harness.Drivers.csproj" />
     <ProjectReference Include="..\..\integration\Starlights.Integration.Harness\Starlights.Integration.Harness.csproj" />
-    <ProjectReference Include="..\..\integration\Starlights.Integration.Tests\Starlights.Integration.Tests.csproj" />
   </ItemGroup>
 	
 </Project>
