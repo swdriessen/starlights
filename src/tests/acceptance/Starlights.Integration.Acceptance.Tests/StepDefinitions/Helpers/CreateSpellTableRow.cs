@@ -1,6 +1,6 @@
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.Helpers;
 
-internal record CreateSpellTableRow
+internal record CreateSpellTableRow : IMarkdownDescriptionTableRow
 {
     public string Name { get; set; } = string.Empty;
     public int Level { get; set; }
@@ -14,5 +14,5 @@ internal record CreateSpellTableRow
     public bool Verbal { get; set; }
     public bool Material { get; set; }
     public string? MaterialComponents { get; set; }
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; } = string.Empty;
 }

@@ -1,6 +1,6 @@
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.Helpers;
 
-internal record UpdateSpellTableRow
+internal record UpdateSpellTableRow : IMarkdownDescriptionTableRow
 {
     public string? Name { get; set; }
     public int? Level { get; set; }

@@ -42,8 +42,7 @@ public class ContentManagementForSpellsStepDefinitions
     [When("the content creator creates a spell with the following properties")]
     public async Task WhenTheContentCreatorCreatesASpellWithTheFollowingProperties(DataTable dataTable)
     {
-        var row = dataTable.CreateInstance<CreateSpellTableRow>()
-            .WithMarkdownDescription(_scenarioContext);
+        var row = dataTable.CreateInstance<CreateSpellTableRow>(_scenarioContext);
 
         _scenarioContext.Set(row, CURRENT_SPELL_PROPERTIES);
 
@@ -73,9 +72,7 @@ public class ContentManagementForSpellsStepDefinitions
     [Then("the spell appears in the spell list with all provided properties")]
     public async Task ThenTheSpellAppearsInTheSpellListWithAllProvidedProperties()
     {
-        var id = _scenarioContext.Get<Guid>(CURRENT_SPELL_ID);
-        var spell = await _driver.GetSpell(id);
-        spell.Should().NotBeNull();
+        var spell = await _driver.GetLastCreatedSpell();
 
         var expected = _scenarioContext.Get<CreateSpellTableRow>(CURRENT_SPELL_PROPERTIES);
 
@@ -144,7 +141,7 @@ public class ContentManagementForSpellsStepDefinitions
     [Given("a spell exists that includes the following properties")]
     public async Task GivenASpellExistsWithTheFollowingProperties(DataTable dataTable)
     {
-        var input = dataTable.CreateInstance<CreateSpellTableRow>();
+        var input = dataTable.CreateInstance<CreateSpellTableRow>(_scenarioContext);
         _scenarioContext.Set(input, CURRENT_SPELL_PROPERTIES);
 
         var row = new CreateSpellTableRow()
@@ -251,8 +248,7 @@ public class ContentManagementForSpellsStepDefinitions
     {
         var existingSpell = await _driver.GetLastCreatedSpell();
 
-        var updates = dataTable.CreateInstance<UpdateSpellTableRow>()
-            .WithMarkdownDescription(_scenarioContext);
+        var updates = dataTable.CreateInstance<UpdateSpellTableRow>(_scenarioContext);
 
         var updatedSpell = existingSpell with
         {
@@ -278,8 +274,7 @@ public class ContentManagementForSpellsStepDefinitions
     public async Task ThenTheSpellInTheSpellListShouldHaveTheFollowingProperties(DataTable dataTable)
     {
         var existingSpell = await _driver.GetLastCreatedSpell();
-        var expected = dataTable.CreateInstance<UpdateSpellTableRow>()
-            .WithMarkdownDescription(_scenarioContext);
+        var expected = dataTable.CreateInstance<UpdateSpellTableRow>(_scenarioContext);
 
         var provided = dataTable.Header
             .Select(h => h.Trim().ToLowerInvariant())

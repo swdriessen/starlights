@@ -31,7 +31,7 @@ public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellRespo
 
         var element = Element.Create(req.Name, ElementTypeConstants.Spell);
 
-        element.AddComponent(id => new DescriptionComponent(id, req.Description));
+        element.AddComponent(id => new DescriptionComponent(id, req.Description ?? string.Empty));
 
         element.AddComponent(id => new SpellAttributesComponent(id, req.Level, req.MagicSchool, req.CastingTime, req.Range, req.Duration));
 

@@ -123,7 +123,7 @@ public class ManageSpellsDriver : IDriver
         public bool HasVerbal { get; set; }
         public bool HasMaterial { get; set; }
         public string? MaterialComponent { get; set; }
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
 
         public static CreateProperties Empty()
         {

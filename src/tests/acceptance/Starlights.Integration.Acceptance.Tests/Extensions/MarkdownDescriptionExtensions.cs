@@ -2,42 +2,59 @@
 
 namespace Starlights.Integration.Acceptance.Tests.Extensions;
 
-internal static class MarkdownDescriptionExtensions
+internal static class DataTableExtensions
 {
     extension(ScenarioContext context)
     {
         internal static string MarkdownDescriptionKey => "<markdown description>";
 
-        internal void SetMarkdownDescription(string description)
+        /// <summary>
+        /// Sets the markdown description in the scenario context.
+        /// </summary>
+        /// <param name="description">The markdown description.</param>
+        /// <param name="key">The key under which to store the description. When omitted, a default key is used.</param>
+        internal void SetMarkdownDescription(string description, string? key = null)
         {
-            context[ScenarioContext.MarkdownDescriptionKey] = description;
+            context[key ?? ScenarioContext.MarkdownDescriptionKey] = description;
         }
 
-        internal string GetMarkdownDescription()
+        /// <summary>
+        /// Gets the markdown description from the scenario context.
+        /// </summary>
+        /// <param name="key">The key under which the description is stored. When omitted, a default key is used.</param>
+        /// <returns>The markdown description.</returns>
+        internal string GetMarkdownDescription(string? key = null)
         {
-            return context.Get<string>(ScenarioContext.MarkdownDescriptionKey);
+            return context.Get<string>(key ?? ScenarioContext.MarkdownDescriptionKey);
         }
     }
 
-    extension(CreateSpellTableRow row)
+    extension<T>(DataTable table) where T : class, ITableRow
     {
-        internal CreateSpellTableRow WithMarkdownDescription(ScenarioContext context)
+        /// <summary>
+        /// Creates an instance of T from the DataTable, replacing the markdown description if applicable.
+        /// </summary>
+        internal T CreateInstance(ScenarioContext context)
         {
-            return row with { Description = row.Description.ReplaceWithMarkdownDescription(context) };
+            var instance = table.CreateInstance<T>();
 
-        }
-    }
+            if (instance is IMarkdownDescriptionTableRow row && row.Description is not null)
+            {
+                row.Description = row.Description.ReplaceWithMarkdownDescription(context);
+            }
 
-    extension(UpdateSpellTableRow row)
-    {
-        internal UpdateSpellTableRow WithMarkdownDescription(ScenarioContext context)
-        {
-            return row.Description is null ? row : (row with { Description = row.Description.ReplaceWithMarkdownDescription(context) });
+            // store the instance in the scenario context for later use
+            context.Set(instance, instance.GetType().FullName);
+
+            return instance;
         }
     }
 
     extension(string value)
     {
+        /// <summary>
+        /// Replaces the placeholder with the actual markdown description from the scenario context.
+        /// </summary>
         internal string ReplaceWithMarkdownDescription(ScenarioContext context)
         {
             if (value == ScenarioContext.MarkdownDescriptionKey)
