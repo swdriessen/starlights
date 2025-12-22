@@ -22,4 +22,6 @@ public static class ElementTypeConstants
     public static readonly string LanguageFeature = "Language Feature";
     public static readonly string Proficiency = "Proficiency";
     public static readonly string Spell = "Spell";
+
+    public static readonly string FeatCategory = "Feat Category";
 }
