@@ -19,6 +19,11 @@ Reformulate the provided Gherkin rule or scenario to improve its clarity, struct
   - **Content Creator**: Can create and manage content files
   - **Player**: Can play the game and use content during character creation
   - **Dungeon Master**: Can manage game sessions and oversee player activities
+- **Game Terminology**:
+  - **Rule Set**: The collection of rules governing gameplay and character creation for a specific game system
+  - **Content Files**: Files that define game content such as items, abilities, and character options
+  - **System**: The underlying game engine and mechanics
+  - **Character Builder**: The tool used by players to create and customize their game characters
 - **Purpose**: Feature files define acceptance criteria and drive automated testing
 
 # Guidelines
