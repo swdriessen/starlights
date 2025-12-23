@@ -1,6 +1,5 @@
 using AwesomeAssertions;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Acceptance.Tests.StepDefinitions.Helpers;
 using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Languages;
@@ -123,4 +122,26 @@ public class ContentManagementForLanguagesStepDefinitions
             }
         }
     }
+
+
+
+    #region Table Bindings
+
+    private sealed record CreateLanguageTableRow : IMarkdownDescriptionTableRow
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Kind { get; set; } = string.Empty;
+        public string? Origin { get; set; }
+        public string? Description { get; set; } = string.Empty;
+    }
+
+    private sealed record UpdateLanguageTableRow : IMarkdownDescriptionTableRow
+    {
+        public string? Name { get; set; }
+        public string? Kind { get; set; }
+        public string? Origin { get; set; }
+        public string? Description { get; set; }
+    }
+
+    #endregion
 }

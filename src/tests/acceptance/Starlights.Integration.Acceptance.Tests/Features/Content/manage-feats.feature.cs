@@ -38,16 +38,7 @@ Feats can enhance a character’s abilities, grant new skills, or provide specia
 
 - A feat is a member of a category
 - A feat can have a prerequisite (optional)
-- A feat can be repeatable (optional)
-
-Feat Category
-
-A feat can have one of the following categories (in the future, more categories may be added):
-
-- Origin
-- General
-- Fighting Style
-- Epic Boon", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+- A feat can be repeatable (optional)", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
 #line 1 "manage-feats.feature"
 #line hidden
@@ -137,9 +128,9 @@ A feat can have one of the following categories (in the future, more categories 
         
         public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
         {
-#line 25
+#line 16
 #line hidden
-#line 26
+#line 17
     await testRunner.GivenAsync("I am authenticated as a content creator", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
             global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
@@ -152,7 +143,7 @@ A feat can have one of the following categories (in the future, more categories 
                         "Fighting Style"});
             table1.AddRow(new string[] {
                         "Epic Boon"});
-#line 27
+#line 18
     await testRunner.AndAsync("the following feat categories exist", ((string)(null)), table1, "And ");
 #line hidden
         }
@@ -173,7 +164,7 @@ A feat can have one of the following categories (in the future, more categories 
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a new feat category", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create a new feat category", null, tagsOfRule);
-#line 38
+#line 29
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -183,13 +174,13 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 16
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 39
+#line 30
     await testRunner.WhenAsync("the content creator creates a feat category with the name \"Martial Arts\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 40
+#line 31
     await testRunner.ThenAsync("the feat category should exist in feat category list with the name \"Martial Arts\"" +
                         "", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
@@ -208,7 +199,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update the name of a feat category", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update a feat category", null, tagsOfRule);
-#line 44
+#line 35
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -218,17 +209,17 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 16
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 45
+#line 36
     await testRunner.GivenAsync("a feat category exists with the name \"Stealth Techniques\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 46
+#line 37
     await testRunner.WhenAsync("the content creator updates the feat category to have the name \"Advanced Stealth " +
                         "Techniques\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 47
+#line 38
     await testRunner.ThenAsync("the feat category should exist in feat category list with the name \"Advanced Stea" +
                         "lth Techniques\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
@@ -247,7 +238,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a feat", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create a feat with default properties", null, tagsOfRule);
-#line 53
+#line 44
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -257,7 +248,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 16
 await this.FeatureBackgroundAsync();
 #line hidden
                 global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
@@ -266,10 +257,10 @@ await this.FeatureBackgroundAsync();
                 table2.AddRow(new string[] {
                             "Alert",
                             "General"});
-#line 54
+#line 45
     await testRunner.WhenAsync("the content creator creates a feat with the following properties", ((string)(null)), table2, "When ");
 #line hidden
-#line 57
+#line 48
     await testRunner.ThenAsync("the feat should exist in the feat list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -287,7 +278,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a feat with a prerequisite", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create a feat with a prerequisite", null, tagsOfRule);
-#line 61
+#line 52
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -297,10 +288,10 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 16
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 62
+#line 53
     await testRunner.GivenAsync("a feat exists with the name \"Power Attack\" and category \"Fighting Style\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
                 global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
@@ -311,7 +302,7 @@ await this.FeatureBackgroundAsync();
                             "Greater Power",
                             "Fighting Style",
                             "Power Attack"});
-#line 63
+#line 54
     await testRunner.WhenAsync("the content creator creates a feat with the following properties", ((string)(null)), table3, "When ");
 #line hidden
                 global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
@@ -320,7 +311,7 @@ await this.FeatureBackgroundAsync();
                 table4.AddRow(new string[] {
                             "Greater Power",
                             "Power Attack"});
-#line 66
+#line 57
     await testRunner.ThenAsync("the feat should have at least the following properties", ((string)(null)), table4, "Then ");
 #line hidden
             }
@@ -338,7 +329,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a repeatable feat", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create a repeatable feat", null, tagsOfRule);
-#line 72
+#line 63
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -348,7 +339,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 16
 await this.FeatureBackgroundAsync();
 #line hidden
                 global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
@@ -359,14 +350,14 @@ await this.FeatureBackgroundAsync();
                             "Skilled",
                             "Origin",
                             "true"});
-#line 73
+#line 64
     await testRunner.WhenAsync("the content creator creates a feat with the following properties", ((string)(null)), table5, "When ");
 #line hidden
                 global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "repeatable"});
                 table6.AddRow(new string[] {
                             "true"});
-#line 76
+#line 67
     await testRunner.ThenAsync("the feat should have at least the following properties", ((string)(null)), table6, "Then ");
 #line hidden
             }

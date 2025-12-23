@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Starlights.Integration.Acceptance.Tests.StepDefinitions.Helpers;
+using Starlights.Integration.Acceptance.Tests.Extensions;
 
 namespace Starlights.Integration.Acceptance.Tests.Extensions;
 

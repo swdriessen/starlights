@@ -20,19 +20,6 @@ public static class TestContextExtensions
         /// <exception cref="InvalidOperationException">Thrown if the integration host does not contain a test context in its properties.</exception>
         public CancellationToken CancellationToken => host.TestContext.CancellationToken;
 
-
-
-
-
-        ///// <summary>
-        ///// Retrieves the current test context associated with the specified integration host.
-        ///// </summary>
-        ///// <exception cref="InvalidOperationException">Thrown if the integration host does not contain a test context in its properties.</exception>
-        //public TestContext GetTestContext()
-        //{
-        //    return host.Properties["TestContext"] as TestContext ?? throw new InvalidOperationException("TestContext not found in properties.");
-        //}
-
         /// <summary>
         /// Writes the specified message to the test output associated with the integration host.
         /// </summary>

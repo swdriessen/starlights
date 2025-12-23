@@ -40,10 +40,7 @@ public class IntegrationHost : IIntegrationHost, IDisposable
                 // configure additional services for integration tests
                 builder.ConfigureTestServices(services =>
                 {
-                    services.Configure<HostOptions>(hostOptions =>
-                    {
-                        hostOptions.ShutdownTimeout = TimeSpan.FromMilliseconds(250);
-                    });
+                    services.Configure<HostOptions>(options => options.ShutdownTimeout = TimeSpan.FromMilliseconds(250));
 
                     // able to listen and wait for domain events
                     services.AddSingleton<EventObserverCollection>();
@@ -55,7 +52,7 @@ public class IntegrationHost : IIntegrationHost, IDisposable
                     // drivers need the instance of this host
                     services.AddSingleton<IIntegrationHost>(this);
 
-                    if (options.UseConsoleActivityProcessor) // show instrumentation in the console
+                    if (options.UseConsoleActivityProcessor) // show instrumentation in the console logging
                     {
                         services.AddOpenTelemetry()
                             .WithTracing(tracing => tracing.AddProcessor<CustomConsoleActivityProcessor>());

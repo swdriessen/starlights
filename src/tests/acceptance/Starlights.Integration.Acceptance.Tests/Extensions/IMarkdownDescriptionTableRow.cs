@@ -1,4 +1,4 @@
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.Helpers;
+namespace Starlights.Integration.Acceptance.Tests.Extensions;
 
 /// <summary>
 /// A marker interface for a class that represents a table row

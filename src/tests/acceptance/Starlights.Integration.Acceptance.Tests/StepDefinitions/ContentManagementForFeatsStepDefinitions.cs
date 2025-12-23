@@ -1,7 +1,6 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Acceptance.Tests.StepDefinitions.Helpers;
 using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Feats;
@@ -133,11 +132,6 @@ public class ContentManagementForFeatsStepDefinitions
         }
     }
 
-
-
-
-
-
     [Then(@"the feat should have at least the following properties")]
     public async Task ThenThisFeatShouldHaveTheFollowingPropertiesAsync(DataTable dataTable)
     {
@@ -156,16 +150,6 @@ public class ContentManagementForFeatsStepDefinitions
 
         dataTable.AssertProvidedProperties(expected, feat, assertions);
     }
-
-
-
-
-
-
-
-
-
-
 
     #region Table Bindings
 

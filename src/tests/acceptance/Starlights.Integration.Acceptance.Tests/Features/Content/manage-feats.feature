@@ -13,15 +13,6 @@ Feats can enhance a character’s abilities, grant new skills, or provide specia
 - A feat can have a prerequisite (optional)
 - A feat can be repeatable (optional)
 
-Feat Category
-
-A feat can have one of the following categories (in the future, more categories may be added):
-
-- Origin
-- General
-- Fighting Style
-- Epic Boon
-
 Background:
     Given I am authenticated as a content creator
     And the following feat categories exist
