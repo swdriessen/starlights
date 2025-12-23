@@ -27,9 +27,18 @@ public static class TestContextExtensions
         /// Writes the specified message to the test output associated with the integration host.
         /// </summary>
         /// <param name="message">The message to write to the test output.</param>
-        public void WriteLine(string? message)
+        public void WriteLine(string message)
         {
             host.GetTestContext().WriteLine(message);
+        }
+
+        /// <summary>
+        /// Writes the specified message with an indentation to the test output associated with the integration host.
+        /// </summary>
+        /// <param name="message">The message to write to the test output.</param>
+        public void WriteIndentedLine(string message, string? indentation = "    ")
+        {
+            host.WriteLine($"{indentation}{message}");
         }
     }
 }

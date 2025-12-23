@@ -15,7 +15,7 @@ Reformulate the provided Gherkin rule or scenario to improve its clarity, struct
 # Context
 
 - **Project Type**: Software project using Gherkin for BDD specifications
-- **User Roles**:
+- **Actors**:
   - **Content Creator**: Can create and manage content files
   - **Player**: Can play the game and use content during character creation
   - **Dungeon Master**: Can manage game sessions and oversee player activities

@@ -1,7 +1,7 @@
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.Create;
+using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
@@ -17,7 +17,7 @@ public sealed class ManageFeatCategoriesDriver : IDriver
         _api = endpointDriver;
     }
 
-    public async Task<Guid> CreateFeatCategory(string name, string? description)
+    public async Task<Guid> CreateFeatCategory(string name, string? description = null)
     {
         _integration.WriteLine($"creating feat category {name}");
 
@@ -49,14 +49,6 @@ public sealed class ManageFeatCategoriesDriver : IDriver
         return featCategory;
     }
 
-    public async Task<FeatCategoryDataModel> GetLastCreatedFeatCategory()
-    {
-        var id = (Guid)_integration.Properties["last-created-feat-category-id"]!;
-        var featCategory = await GetFeatCategory(id);
-        featCategory.Should().NotBeNull();
-        return featCategory!;
-    }
-
     public Task<bool> UpdateFeatCategory(FeatCategoryDataModel updatedModel)
     {
         _integration.WriteLine($"updating feat category {updatedModel.Name} ({updatedModel.Id})");
@@ -86,4 +78,48 @@ public sealed class ManageFeatCategoriesDriver : IDriver
 
         return featCategories;
     }
+
+    public async Task<FeatCategoryDataModel> GetLastCreatedFeatCategory()
+    {
+        var id = (Guid)_integration.Properties["last-created-feat-category-id"]!;
+        var featCategory = await GetFeatCategory(id);
+        featCategory.Should().NotBeNull();
+        return featCategory;
+    }
+
+    public async Task<FeatCategoryDataModel> GetFeatCategoryByName(string name)
+    {
+        _integration.WriteLine($"retrieving feat category by name {name}");
+        var categories = await GetFeatCategories();
+        var category = categories.SingleOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+        category.Should().NotBeNull($"expected feat category '{name}' to exist");
+        return category;
+    }
+
+
+
+
+
+
+    public async Task CreateFeatCategoriesWhenNotExisting(IEnumerable<string> names)
+    {
+        var existing = await GetFeatCategories();
+
+        var nonExistingNames = names
+            .Where(name => !existing.Any(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        foreach (var name in nonExistingNames)
+        {
+            await CreateFeatCategory(name);
+        }
+    }
+
+    public async Task<bool> ExistsFeatCategory(string name)
+    {
+        var categories = await GetFeatCategories();
+        return categories.Any(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    }
+
 }

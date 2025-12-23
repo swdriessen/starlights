@@ -276,10 +276,6 @@ public class ContentManagementForSpellsStepDefinitions
         var existingSpell = await _driver.GetLastCreatedSpell();
         var expected = dataTable.CreateInstance<UpdateSpellTableRow>(_scenarioContext);
 
-        var provided = dataTable.Header
-            .Select(h => h.Trim().ToLowerInvariant())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
         var assertions = new Dictionary<string, Action<UpdateSpellTableRow, SpellDataModel>>(StringComparer.OrdinalIgnoreCase)
         {
             ["name"] = (e, s) => s.Name.Should().Be(e.Name),
@@ -297,17 +293,7 @@ public class ContentManagementForSpellsStepDefinitions
             ["description"] = (e, s) => s.Description.Should().Be(e.Description)
         };
 
-        foreach (var header in provided)
-        {
-            if (assertions.TryGetValue(header, out var assert))
-            {
-                assert(expected, existingSpell);
-            }
-            else
-            {
-                throw new NotImplementedException($"checking property '{header}' is not implemented");
-            }
-        }
+        dataTable.AssertProvidedProperties(expected, existingSpell, assertions);
     }
 
     [Given("the content creator prepared the following markdown description")]

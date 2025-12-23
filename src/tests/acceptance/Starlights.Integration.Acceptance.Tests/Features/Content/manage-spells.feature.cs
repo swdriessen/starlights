@@ -154,14 +154,14 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
                             "casting time",
                             "range",
                             "duration"});
-                table17.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "Magic Spell",
                             "0",
                             "Evocation",
@@ -169,7 +169,7 @@ await this.FeatureBackgroundAsync();
                             "100 ft",
                             "Instantaneous"});
 #line 15
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table17, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table7, "When ");
 #line hidden
 #line 18
     await testRunner.ThenAsync("the spell appears in the spell list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -214,14 +214,14 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
                             "casting time",
                             "range",
                             "duration"});
-                table18.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             string.Format("{0}", name),
                             string.Format("{0}", level),
                             string.Format("{0}", magicSchool),
@@ -229,7 +229,7 @@ await this.FeatureBackgroundAsync();
                             string.Format("{0}", range),
                             string.Format("{0}", duration)});
 #line 23
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table18, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table8, "When ");
 #line hidden
 #line 26
     await testRunner.ThenAsync("the spell appears in the spell list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -262,7 +262,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table19 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
@@ -270,7 +270,7 @@ await this.FeatureBackgroundAsync();
                             "range",
                             "duration",
                             "concentration"});
-                table19.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Magic Spell",
                             "5",
                             "Evocation",
@@ -279,7 +279,7 @@ await this.FeatureBackgroundAsync();
                             "Concentration, up to 10 minutes",
                             "true"});
 #line 37
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table19, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table9, "When ");
 #line hidden
 #line 40
     await testRunner.ThenAsync("the spell appears in the spell list as a concentration spell", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -312,7 +312,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table20 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
@@ -320,7 +320,7 @@ await this.FeatureBackgroundAsync();
                             "range",
                             "duration",
                             "ritual"});
-                table20.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Magic Spell",
                             "5",
                             "Evocation",
@@ -329,7 +329,7 @@ await this.FeatureBackgroundAsync();
                             "1 hour",
                             "true"});
 #line 45
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table20, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table10, "When ");
 #line hidden
 #line 48
     await testRunner.ThenAsync("the spell appears in the spell list as a ritual spell", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -363,7 +363,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table21 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
@@ -371,7 +371,7 @@ await this.FeatureBackgroundAsync();
                             "range",
                             "duration",
                             "somatic"});
-                table21.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "Magic Spell",
                             "5",
                             "Evocation",
@@ -380,7 +380,7 @@ await this.FeatureBackgroundAsync();
                             "1 hour",
                             "true"});
 #line 53
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table21, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table11, "When ");
 #line hidden
 #line 56
     await testRunner.ThenAsync("the spell appears in the spell list as having a somatic component", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -414,7 +414,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table22 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
@@ -422,7 +422,7 @@ await this.FeatureBackgroundAsync();
                             "range",
                             "duration",
                             "verbal"});
-                table22.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "Magic Spell",
                             "5",
                             "Evocation",
@@ -431,7 +431,7 @@ await this.FeatureBackgroundAsync();
                             "1 hour",
                             "true"});
 #line 59
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table22, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table12, "When ");
 #line hidden
 #line 62
     await testRunner.ThenAsync("the spell appears in the spell list as having a verbal component", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -465,7 +465,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table23 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
@@ -474,7 +474,7 @@ await this.FeatureBackgroundAsync();
                             "duration",
                             "material",
                             "material components"});
-                table23.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "Magic Spell",
                             "5",
                             "Evocation",
@@ -484,7 +484,7 @@ await this.FeatureBackgroundAsync();
                             "true",
                             "a small crystal rod"});
 #line 65
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table23, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table13, "When ");
 #line hidden
 #line 68
     await testRunner.ThenAsync("the spell appears in the spell list as having a material component with the provi" +
@@ -518,7 +518,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table24 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
@@ -526,7 +526,7 @@ await this.FeatureBackgroundAsync();
                             "range",
                             "duration",
                             "description"});
-                table24.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "Magic Spell",
                             "5",
                             "Evocation",
@@ -535,7 +535,7 @@ await this.FeatureBackgroundAsync();
                             "1 hour",
                             "A powerful evocation spell that deals damage."});
 #line 73
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table24, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table14, "When ");
 #line hidden
 #line 76
     await testRunner.ThenAsync("the spell appears in the spell list with the provided description", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -577,7 +577,7 @@ __Cantrip Upgrade.__ The damage increases by 1d6
 when you reach levels 5 (2d6), 11 (3d6), and 17
 (4d6).", ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-                global::Reqnroll.Table table25 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
@@ -585,7 +585,7 @@ when you reach levels 5 (2d6), 11 (3d6), and 17
                             "range",
                             "duration",
                             "description"});
-                table25.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "Fireball",
                             "3",
                             "Evocation",
@@ -594,7 +594,7 @@ when you reach levels 5 (2d6), 11 (3d6), and 17
                             "Instantaneous",
                             "<markdown description>"});
 #line 89
-    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table25, "When ");
+    await testRunner.WhenAsync("the content creator creates a spell with the following properties", ((string)(null)), table15, "When ");
 #line hidden
 #line 92
     await testRunner.ThenAsync("the spell appears in the spell list with the provided description", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -627,14 +627,14 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table26 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
                             "casting time",
                             "range",
                             "duration"});
-                table26.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "Level 3 Spell",
                             "3",
                             "Evocation",
@@ -642,16 +642,16 @@ await this.FeatureBackgroundAsync();
                             "100 ft",
                             "1 minute"});
 #line 99
-    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table26, "Given ");
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table16, "Given ");
 #line hidden
-                global::Reqnroll.Table table27 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
                             "casting time",
                             "range",
                             "duration"});
-                table27.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "Level 6 Spell",
                             "6",
                             "Conjuration",
@@ -659,16 +659,16 @@ await this.FeatureBackgroundAsync();
                             "200 ft",
                             "2 minutes"});
 #line 102
-    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table27, "When ");
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table17, "When ");
 #line hidden
-                global::Reqnroll.Table table28 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "level",
                             "magic school",
                             "casting time",
                             "range",
                             "duration"});
-                table28.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "Level 6 Spell",
                             "6",
                             "Conjuration",
@@ -676,7 +676,7 @@ await this.FeatureBackgroundAsync();
                             "200 ft",
                             "2 minutes"});
 #line 105
-    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table28, "Then ");
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table18, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -706,38 +706,38 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table29 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table19 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "duration",
                             "concentration"});
-                table29.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "Instant Spell",
                             "Instantaneous",
                             "false"});
 #line 110
-    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table29, "Given ");
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table19, "Given ");
 #line hidden
-                global::Reqnroll.Table table30 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table20 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "duration",
                             "concentration"});
-                table30.AddRow(new string[] {
+                table20.AddRow(new string[] {
                             "Concentrating Spell",
                             "Concentration, up to 1 minute",
                             "true"});
 #line 113
-    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table30, "When ");
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table20, "When ");
 #line hidden
-                global::Reqnroll.Table table31 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table21 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "duration",
                             "concentration"});
-                table31.AddRow(new string[] {
+                table21.AddRow(new string[] {
                             "Concentrating Spell",
                             "Concentration, up to 1 minute",
                             "true"});
 #line 116
-    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table31, "Then ");
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table21, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -767,32 +767,32 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table32 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table22 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "ritual"});
-                table32.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "Quick Spell",
                             "false"});
 #line 121
-    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table32, "Given ");
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table22, "Given ");
 #line hidden
-                global::Reqnroll.Table table33 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table23 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "ritual"});
-                table33.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "Ritual Spell",
                             "true"});
 #line 124
-    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table33, "When ");
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table23, "When ");
 #line hidden
-                global::Reqnroll.Table table34 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table24 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "ritual"});
-                table34.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "Ritual Spell",
                             "true"});
 #line 127
-    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table34, "Then ");
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table24, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -822,48 +822,48 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table35 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table25 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "verbal",
                             "somatic",
                             "material"});
-                table35.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "Free Spell",
                             "false",
                             "false",
                             "false"});
 #line 132
-    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table35, "Given ");
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table25, "Given ");
 #line hidden
-                global::Reqnroll.Table table36 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table26 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "verbal",
                             "somatic",
                             "material",
                             "material components"});
-                table36.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "Component Spell",
                             "true",
                             "true",
                             "true",
                             "a black feather"});
 #line 135
-    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table36, "When ");
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table26, "When ");
 #line hidden
-                global::Reqnroll.Table table37 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table27 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "verbal",
                             "somatic",
                             "material",
                             "material components"});
-                table37.AddRow(new string[] {
+                table27.AddRow(new string[] {
                             "Component Spell",
                             "true",
                             "true",
                             "true",
                             "a black feather"});
 #line 138
-    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table37, "Then ");
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table27, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -893,32 +893,32 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table38 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table28 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table38.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "Cryptic Spell",
                             "You cast a spell."});
 #line 143
-    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table38, "Given ");
+    await testRunner.GivenAsync("a spell exists that includes the following properties", ((string)(null)), table28, "Given ");
 #line hidden
-                global::Reqnroll.Table table39 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table29 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table39.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "Descriptive Spell",
                             "You cast a very detailed spell."});
 #line 146
-    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table39, "When ");
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table29, "When ");
 #line hidden
-                global::Reqnroll.Table table40 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table30 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table40.AddRow(new string[] {
+                table30.AddRow(new string[] {
                             "Descriptive Spell",
                             "You cast a very detailed spell."});
 #line 149
-    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table40, "Then ");
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table30, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -953,32 +953,32 @@ await this.FeatureBackgroundAsync();
                         "\n__Description Upgrade.__ The description increase by 1d6\r\nwhen you reach levels" +
                         " 5 (2d6), 11 (3d6), and 17\r\n(4d6).", ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-                global::Reqnroll.Table table41 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table31 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table41.AddRow(new string[] {
+                table31.AddRow(new string[] {
                             "Simple Spell",
                             "You create a simple spell."});
 #line 162
-    await testRunner.AndAsync("a spell exists that includes the following properties", ((string)(null)), table41, "And ");
+    await testRunner.AndAsync("a spell exists that includes the following properties", ((string)(null)), table31, "And ");
 #line hidden
-                global::Reqnroll.Table table42 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table32 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table42.AddRow(new string[] {
+                table32.AddRow(new string[] {
                             "Markdown Spell",
                             "<markdown description>"});
 #line 165
-    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table42, "When ");
+    await testRunner.WhenAsync("the content creator updates the spell with the following properties", ((string)(null)), table32, "When ");
 #line hidden
-                global::Reqnroll.Table table43 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table33 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table43.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "Markdown Spell",
                             "<markdown description>"});
 #line 168
-    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table43, "Then ");
+    await testRunner.ThenAsync("the spell in the spell list should have the following properties", ((string)(null)), table33, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

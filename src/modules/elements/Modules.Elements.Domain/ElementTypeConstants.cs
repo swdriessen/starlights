@@ -23,5 +23,6 @@ public static class ElementTypeConstants
     public static readonly string Proficiency = "Proficiency";
     public static readonly string Spell = "Spell";
 
+    public static readonly string Feat = "Feat";
     public static readonly string FeatCategory = "Feat Category";
 }

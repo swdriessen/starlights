@@ -35,13 +35,13 @@ Background:
 
 Rule: A content creator can create a new feat category
         
-Scenario: create a feat category
+Scenario: create a new feat category
     When the content creator creates a feat category with the name "Martial Arts"
     Then the feat category should exist in feat category list with the name "Martial Arts"
 
 Rule: A content creator can update a feat category
 
-Scenario: update a feat category
+Scenario: update the name of a feat category
     Given a feat category exists with the name "Stealth Techniques"
     When the content creator updates the feat category to have the name "Advanced Stealth Techniques"
     Then the feat category should exist in feat category list with the name "Advanced Stealth Techniques"
@@ -63,13 +63,18 @@ Scenario: create a feat with a prerequisite
     When the content creator creates a feat with the following properties
         | name          | category       | prerequisite |
         | Greater Power | Fighting Style | Power Attack |
-    Then the feat should exist in the feat list with all provided properties
+    Then the feat should have at least the following properties
+        | name          | prerequisite |
+        | Greater Power | Power Attack |
 
 Rule: A content creator can create a repeatable feat
 
 Scenario: create a repeatable feat
     When the content creator creates a feat with the following properties
-        | name      | category | repeatable |
-        | Toughness | Origin   | true       |
-    Then the feat should exist in the feat list with all provided properties
+        | name    | category | repeatable |
+        | Skilled | Origin   | true       |
+    Then the feat should have at least the following properties
+        | repeatable |
+        | true       |
+
 

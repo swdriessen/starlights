@@ -1,4 +1,5 @@
-﻿using Starlights.Integration.Acceptance.Tests.StepDefinitions.Helpers;
+﻿using System.Globalization;
+using Starlights.Integration.Acceptance.Tests.StepDefinitions.Helpers;
 
 namespace Starlights.Integration.Acceptance.Tests.Extensions;
 
@@ -70,5 +71,32 @@ internal static class DataTableExtensions
 
             return value;
         }
+    }
+
+    internal static void AssertProvidedProperties<TExpected, TActual>(
+        this DataTable dataTable,
+        TExpected expected,
+        TActual actual,
+        IReadOnlyDictionary<string, Action<TExpected, TActual>> assertions)
+    {
+        var provided = dataTable.Header
+            .Select(h => NormalizeHeader(h))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var header in provided)
+        {
+            if (assertions.TryGetValue(header, out var assert))
+            {
+                assert(expected, actual);
+                continue;
+            }
+
+            throw new NotImplementedException($"checking property '{header}' is not implemented");
+        }
+    }
+
+    private static string NormalizeHeader(string header)
+    {
+        return header.Trim().ToLower(CultureInfo.InvariantCulture);
     }
 }
