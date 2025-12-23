@@ -11,11 +11,21 @@ public interface IElementsRepository : IRepository
     void Add(Element element);
 
     /// <summary>
+    /// Deletes an element by its identifier.
+    /// </summary>
+    Task<bool> DeleteElementAsync(Guid identifier);
+
+    /// <summary>
     /// Retrieves an element by its identifier.
     /// </summary>
     /// <param name="identifier">The unique identifier of the element.</param>
     /// <returns>The element if found; otherwise, null.</returns>
     Task<Element?> GetElementAsync(Guid identifier);
+
+    /// <summary>
+    /// Retrieves all elements.
+    /// </summary>
+    Task<List<Element>> GetElementsAsync();
 
     /// <summary>
     /// Retrieves all elements of a specific type.
