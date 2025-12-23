@@ -10,14 +10,14 @@ public class FeatAttributesComponent : ElementComponentBase
     }
 
     /// <summary>
-    /// Gets the category of the feat.
-    /// </summary>
-    public string Category { get; private set; }
-
-    /// <summary>
     /// Gets the category id.
     /// </summary>
     public ElementId CategoryId { get; private set; }
+
+    /// <summary>
+    /// Gets the category of the feat.
+    /// </summary>
+    public string Category { get; private set; }
 
     /// <summary>
     /// Updates the category of the feat.

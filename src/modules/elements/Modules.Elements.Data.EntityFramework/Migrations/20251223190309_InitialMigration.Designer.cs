@@ -12,8 +12,8 @@ using Starlights.Modules.Elements.Data.EntityFramework;
 namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
 {
     [DbContext(typeof(ElementsContext))]
-    [Migration("20250923181831_AddOrderSequence")]
-    partial class AddOrderSequence
+    [Migration("20251223190309_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("elements")
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -113,6 +113,22 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     b.ToTable("element_component_description", "elements");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.FeatAttributesComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("category");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("category_id");
+
+                    b.ToTable("element_component_feat_attributes", "elements");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.IncludeRuleComponent", b =>
                 {
                     b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
@@ -178,6 +194,17 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                         .HasColumnName("primary_ability_id");
 
                     b.ToTable("element_component_primary_ability", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.RepeatableComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<bool>("IsRepeatable")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_repeatable");
+
+                    b.ToTable("element_component_repeatable", "elements");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.SelectionRuleComponent", b =>
@@ -246,6 +273,71 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                         .HasColumnName("sorting_order");
 
                     b.ToTable("element_component_sorting", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.SpellAttributesComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("CastingTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("casting_time");
+
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("duration");
+
+                    b.Property<bool>("HasMaterialComponent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("has_material_component");
+
+                    b.Property<bool>("HasSomaticComponent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("has_somatic_component");
+
+                    b.Property<bool>("HasVerbalComponent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("has_verbal_component");
+
+                    b.Property<bool>("IsConcentrationRequired")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_concentration_required");
+
+                    b.Property<bool>("IsRitual")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_ritual");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int")
+                        .HasColumnName("level");
+
+                    b.Property<string>("MagicSchool")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("magic_school");
+
+                    b.Property<string>("MaterialComponentsDescription")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("material_components_description");
+
+                    b.Property<string>("Range")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("range");
+
+                    b.ToTable("element_component_spell_attributes", "elements");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.StatisticRuleComponent", b =>

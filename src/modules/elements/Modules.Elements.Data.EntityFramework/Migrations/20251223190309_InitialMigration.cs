@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSpellAttributes : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,6 +88,29 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     table.PrimaryKey("PK_element_component_description", x => x.id);
                     table.ForeignKey(
                         name: "FK_element_component_description_element_owning_element_id",
+                        column: x => x.owning_element_id,
+                        principalSchema: "elements",
+                        principalTable: "element",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "element_component_feat_attributes",
+                schema: "elements",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    owning_element_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    component_order_sequence = table.Column<int>(type: "int", nullable: false),
+                    category_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    category = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_element_component_feat_attributes", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_element_component_feat_attributes_element_owning_element_id",
                         column: x => x.owning_element_id,
                         principalSchema: "elements",
                         principalTable: "element",
@@ -188,6 +211,28 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "element_component_repeatable",
+                schema: "elements",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    owning_element_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    component_order_sequence = table.Column<int>(type: "int", nullable: false),
+                    is_repeatable = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_element_component_repeatable", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_element_component_repeatable_element_owning_element_id",
+                        column: x => x.owning_element_id,
+                        principalSchema: "elements",
+                        principalTable: "element",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "element_component_selection_rule",
                 schema: "elements",
                 columns: table => new
@@ -279,7 +324,7 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     has_somatic_component = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     has_verbal_component = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     has_material_component = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    material_component = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    material_components_description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -342,6 +387,13 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_element_component_feat_attributes_owning_element_id_component_order_sequence",
+                schema: "elements",
+                table: "element_component_feat_attributes",
+                columns: new[] { "owning_element_id", "component_order_sequence" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_element_component_include_rule_owning_element_id_component_order_sequence",
                 schema: "elements",
                 table: "element_component_include_rule",
@@ -366,6 +418,13 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                 name: "IX_element_component_primary_ability_owning_element_id_component_order_sequence",
                 schema: "elements",
                 table: "element_component_primary_ability",
+                columns: new[] { "owning_element_id", "component_order_sequence" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_element_component_repeatable_owning_element_id_component_order_sequence",
+                schema: "elements",
+                table: "element_component_repeatable",
                 columns: new[] { "owning_element_id", "component_order_sequence" },
                 unique: true);
 
@@ -421,6 +480,10 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                 schema: "elements");
 
             migrationBuilder.DropTable(
+                name: "element_component_feat_attributes",
+                schema: "elements");
+
+            migrationBuilder.DropTable(
                 name: "element_component_include_rule",
                 schema: "elements");
 
@@ -434,6 +497,10 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "element_component_primary_ability",
+                schema: "elements");
+
+            migrationBuilder.DropTable(
+                name: "element_component_repeatable",
                 schema: "elements");
 
             migrationBuilder.DropTable(

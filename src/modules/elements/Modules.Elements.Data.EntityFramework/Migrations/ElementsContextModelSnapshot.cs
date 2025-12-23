@@ -110,6 +110,22 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     b.ToTable("element_component_description", "elements");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.FeatAttributesComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("category");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("category_id");
+
+                    b.ToTable("element_component_feat_attributes", "elements");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.IncludeRuleComponent", b =>
                 {
                     b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
@@ -175,6 +191,17 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                         .HasColumnName("primary_ability_id");
 
                     b.ToTable("element_component_primary_ability", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.RepeatableComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<bool>("IsRepeatable")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_repeatable");
+
+                    b.ToTable("element_component_repeatable", "elements");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.SelectionRuleComponent", b =>
@@ -298,9 +325,9 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("magic_school");
 
-                    b.Property<string>("MaterialComponent")
+                    b.Property<string>("MaterialComponentsDescription")
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("material_component");
+                        .HasColumnName("material_components_description");
 
                     b.Property<string>("Range")
                         .IsRequired()

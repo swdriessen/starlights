@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework.TypeConfiguration;
@@ -12,6 +13,7 @@ public class FeatAttributesComponentTypeConfiguration : IEntityTypeConfiguration
 
         builder.Property(x => x.CategoryId)
             .HasColumnName("category_id")
+            .HasConversion(m => m.Value, v => new ElementId(v))
             .IsRequired();
 
         builder.Property(x => x.Category)
