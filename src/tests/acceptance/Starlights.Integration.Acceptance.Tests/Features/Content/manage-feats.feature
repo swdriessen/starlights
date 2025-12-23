@@ -44,11 +44,21 @@ Rule: A content creator can delete a feat category
 
 Rule: A content creator can create a feat with default properties
 
-Scenario: create a feat
+Scenario: create a feat with default properties
     When the content creator creates a feat with the following properties
         | name  | category |
         | Alert | General  |
-    Then the feat should exist in the feat list with all provided properties
+    Then the feat should have at least the following properties
+        | name  | category | description | prerequisite | repeatable |
+        | Alert | General  |             |              | false      |
+
+Scenario: create a feat with a description
+    When the content creator creates a feat with the following properties
+        | name  | category | description                        |
+        | Alert | General  | A sudden warning to react quickly. |
+    Then the feat should have at least the following properties
+        | name  | description                        |
+        | Alert | A sudden warning to react quickly. |
 
 Rule: A content creator can create a feat with a prerequisite
 
@@ -84,6 +94,19 @@ Scenario: update the category of a feat
         | name         | category |
         | Very Skilled | General  |
 
+Rule: A content creator can update the description of a feat
+
+Scenario: update the description of a feat
+    Given a feat exists that includes the following properties
+        | name  | category | description |
+        | Alert | General  |             |
+    When the content creator updates the feat with the following properties
+        | description                        |
+        | A sudden warning to react quickly. |
+    Then the feat should have at least the following properties
+        | name  | description                        |
+        | Alert | A sudden warning to react quickly. |
+
 Rule: A content creator can update the prerequisites of a feat
 
 Scenario: update the prerequisites of a feat
@@ -91,35 +114,35 @@ Scenario: update the prerequisites of a feat
         | name           | category       | prerequisite |
         | Greater Attack | Fighting Style |              |
     When the content creator updates the feat with the following properties
-        | name          | prerequisite |
-        | Greater Power | Power Attack |
+        | prerequisite           |
+        | Fighting Style Feature |
     Then the feat should have at least the following properties
-        | name          | prerequisite |
-        | Greater Power | Power Attack |
+        | name           | category       | prerequisite           |
+        | Greater Attack | Fighting Style | Fighting Style Feature |
 
 Rule: A content creator can update the repeatable property of a feat
 
 Scenario: make a feat repeatable
     Given a feat exists that includes the following properties
-        | name   | category | repeatable |
-        | Single | Origin   | false      |
+        | name    | category | repeatable |
+        | Skilled | Origin   | false      |
     When the content creator updates the feat with the following properties
-        | name    | repeatable |
-        | Skilled | true       |
+        | repeatable |
+        | true       |
     Then the feat should have at least the following properties
-        | name    | repeatable |
-        | Skilled | true       |
+        | name    | category | repeatable |
+        | Skilled | Origin   | true       |
 
 Scenario: make a feat non-repeatable
     Given a feat exists that includes the following properties
-        | name    | category | repeatable |
-        | Skilled | Origin   | true       |
+        | name              | category  | repeatable |
+        | Boon of Truesight | Epic Boon | true       |
     When the content creator updates the feat with the following properties
-        | name   | repeatable |
-        | Single | false      |
+        | repeatable |
+        | false      |
     Then the feat should have at least the following properties
-        | name   | repeatable |
-        | Single | false      |
+        | name              | category  | repeatable |
+        | Boon of Truesight | Epic Boon | false      |
 
 @wip
 Rule: A content creator can delete a feat
