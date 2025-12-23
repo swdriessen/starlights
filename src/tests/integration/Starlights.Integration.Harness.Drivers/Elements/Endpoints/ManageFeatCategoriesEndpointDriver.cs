@@ -6,7 +6,7 @@ using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.Update;
 
-namespace Starlights.Integration.Drivers.Elements;
+namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
 public sealed class ManageFeatCategoriesEndpointDriver : IDriver
 {

@@ -5,7 +5,7 @@ using Starlights.Modules.Elements.Endpoints.Content.Feats;
 using Starlights.Modules.Elements.Endpoints.Content.Feats.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Feats.GetList;
 
-namespace Starlights.Integration.Drivers.Elements;
+namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
 public class ManageFeatsEndpointDriver : IDriver
 {

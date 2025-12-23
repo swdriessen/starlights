@@ -1,4 +1,5 @@
 ﻿using AwesomeAssertions;
+using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Spells;
 using Starlights.Modules.Elements.Endpoints.Content.Spells.Create;
@@ -19,8 +20,6 @@ public class ManageSpellsDriver : IDriver
 
     public async Task<Guid> CreateSpell(CreateProperties properties)
     {
-        _integration.WriteLine($"creating spell {properties.Name}");
-
         var request = new CreateSpellRequest
         {
             Name = properties.Name,
@@ -40,38 +39,27 @@ public class ManageSpellsDriver : IDriver
 
         var id = await _api.CreateAsync(request);
 
-        _integration.Properties["last-created-spell-id"] = id;
-        _integration.Properties["last-created-spell-properties"] = properties;
+        _integration.Set(id, "last-created-spell-id");
+        _integration.Set(properties, "last-created-spell-properties");
 
         return id;
     }
 
     public async Task<SpellDataModel?> GetSpell(Guid id)
     {
-        _integration.WriteLine($"retrieving spell {id}");
-
-        var spell = await _api.GetAsync(id);
-
-        if (spell is not null)
-        {
-            _integration.Properties["last-retrieved-spell"] = spell;
-        }
-
-        return spell;
+        return await _api.GetAsync(id);
     }
 
     public async Task<SpellDataModel> GetLastCreatedSpell()
     {
-        var id = (Guid)_integration.Properties["last-created-spell-id"]!;
-        var spell = await GetSpell(id);
+        var id = _integration.Get<Guid>("last-created-spell-id");
+        var spell = await _api.GetAsync(id);
         spell.Should().NotBeNull();
         return spell;
     }
 
     public Task<bool> UpdateSpell(SpellDataModel updatedModel)
     {
-        _integration.WriteLine($"updating spell {updatedModel.Name} ({updatedModel.Id})");
-
         var request = new UpdateSpellRequest()
         {
             Id = updatedModel.Id,
@@ -95,18 +83,7 @@ public class ManageSpellsDriver : IDriver
 
     public async Task<List<SpellDataModel>> GetSpells()
     {
-        var spells = await _api.GetAsync();
-
-        _integration.Properties["last-retrieved-spells"] = spells;
-
-        _integration.WriteLine($"retrieved {spells.Count} spells.");
-
-        foreach (var spell in spells)
-        {
-            _integration.WriteLine($"- {spell.Name} (Level {spell.Level} {spell.MagicSchool})");
-        }
-
-        return spells;
+        return await _api.GetAsync();
     }
 
     public class CreateProperties
@@ -124,25 +101,5 @@ public class ManageSpellsDriver : IDriver
         public bool HasMaterial { get; set; }
         public string? MaterialComponent { get; set; }
         public string? Description { get; set; } = string.Empty;
-
-        public static CreateProperties Empty()
-        {
-            return new CreateProperties
-            {
-                Name = string.Empty,
-                Level = 0,
-                MagicSchool = string.Empty,
-                CastingTime = string.Empty,
-                Range = string.Empty,
-                Duration = string.Empty,
-                IsConcentration = false,
-                IsRitual = false,
-                HasSomatic = false,
-                HasVerbal = false,
-                HasMaterial = false,
-                MaterialComponent = null,
-                Description = string.Empty
-            };
-        }
     }
 }

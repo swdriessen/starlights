@@ -6,7 +6,7 @@ using Starlights.Modules.Elements.Endpoints.Content.Languages.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Languages.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Languages.Update;
 
-namespace Starlights.Integration.Drivers.Elements;
+namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
 public sealed class ManageLanguagesEndpointDriver : IDriver
 {

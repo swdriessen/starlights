@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Feats;
 
@@ -17,8 +18,6 @@ public class ManageFeatsDriver : IDriver
 
     public async Task<Guid> CreateFeat(CreateProperties properties)
     {
-        _integration.WriteIndentedLine($"creating feat {properties.Name}");
-
         var request = new Modules.Elements.Endpoints.Content.Feats.Create.CreateFeatRequest
         {
             Name = properties.Name,
@@ -32,8 +31,8 @@ public class ManageFeatsDriver : IDriver
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _integration.Properties["last-created-feat-id"] = id;
-        _integration.Properties["last-created-feat-properties"] = properties;
+        _integration.Set(id, "last-created-feat-id");
+        _integration.Set(properties, "last-created-feat-properties");
 
         return id;
     }
@@ -43,17 +42,16 @@ public class ManageFeatsDriver : IDriver
         return _api.GetByIdAsync(id);
     }
 
-    public async Task<List<FeatDataModel>> GetFeats()
-    {
-        var r = await _api.GetListAsync();
-
-        return r.Items.ToList();
-    }
-
     public Task<FeatDataModel> GetLastCreatedFeat()
     {
-        var id = (Guid)_integration.Properties["last-created-feat-id"];
+        var id = _integration.Get<Guid>("last-created-feat-id");
         return GetFeatById(id);
+    }
+
+    public async Task<List<FeatDataModel>> GetFeats()
+    {
+        var response = await _api.GetListAsync();
+        return [.. response.Items];
     }
 
     public class CreateProperties

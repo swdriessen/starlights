@@ -1,12 +1,15 @@
 using Starlights.Integration.Drivers.Elements;
 
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
+namespace Starlights.Integration.Acceptance.Tests.Hooks;
 
 [Binding]
 public class IntegrationHostBuilderHooks
 {
+    public const string ScenarioContextKey = "ScenarioContext";
+
     private readonly ScenarioContext _scenarioContext;
     private readonly IntegrationHostBuilder _builder;
+    private IntegrationHost? _host;
 
     public IntegrationHostBuilderHooks(TestContext testContext, ScenarioContext scenarioContext)
     {
@@ -20,14 +23,13 @@ public class IntegrationHostBuilderHooks
     [BeforeScenario]
     public void BuildHost()
     {
-        var host = _builder.Build();
-        _scenarioContext.ScenarioContainer.RegisterInstanceAs<IIntegrationHost>(host);
+        _host = _builder.Build();
+        _scenarioContext.ScenarioContainer.RegisterInstanceAs<IIntegrationHost>(_host);
     }
 
     [AfterScenario]
     public void DisposeHost()
     {
-        var host = _scenarioContext.ScenarioContainer.Resolve<IIntegrationHost>();
-        (host as IntegrationHost)?.Dispose();
+        _host?.Dispose();
     }
 }

@@ -12,8 +12,7 @@ internal static class StepDefinitionExtensions
         /// <param name="message">The message to write to the test output.</param>
         internal void WriteStepNotImplemented(string? message = null)
         {
-            var context = host.GetTestContext();
-            context.WriteLine($"-> warn: this step is skipped, because it is not implemented{(string.IsNullOrWhiteSpace(message) ? string.Empty : $": {message}")}");
+            host.TestContext.WriteLine($"-> warn: this step is skipped, because it is not implemented{(string.IsNullOrWhiteSpace(message) ? string.Empty : $": {message}")}");
         }
     }
 }

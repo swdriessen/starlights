@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.Create;
 using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.GetById;
@@ -19,8 +20,6 @@ public sealed class ManageFeatCategoriesDriver : IDriver
 
     public async Task<Guid> CreateFeatCategory(string name, string? description = null)
     {
-        _integration.WriteLine($"creating feat category {name}");
-
         var request = new CreateFeatCategoryRequest
         {
             Name = name,
@@ -30,29 +29,18 @@ public sealed class ManageFeatCategoriesDriver : IDriver
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _integration.Properties["last-created-feat-category-id"] = id;
+        _integration.Set(id, "last-created-feat-category-id");
 
         return id;
     }
 
     public async Task<FeatCategoryDataModel?> GetFeatCategory(Guid id)
     {
-        _integration.WriteLine($"retrieving feat category {id}");
-
-        var featCategory = await _api.GetAsync(id);
-
-        if (featCategory is not null)
-        {
-            _integration.Properties["last-retrieved-feat-category"] = featCategory;
-        }
-
-        return featCategory;
+        return await _api.GetAsync(id);
     }
 
     public Task<bool> UpdateFeatCategory(FeatCategoryDataModel updatedModel)
     {
-        _integration.WriteLine($"updating feat category {updatedModel.Name} ({updatedModel.Id})");
-
         var request = new UpdateFeatCategoryRequest
         {
             Id = updatedModel.Id,
@@ -65,23 +53,12 @@ public sealed class ManageFeatCategoriesDriver : IDriver
 
     public async Task<List<FeatCategoryDataModel>> GetFeatCategories()
     {
-        var featCategories = await _api.GetAsync();
-
-        _integration.Properties["last-retrieved-feat-categories"] = featCategories;
-
-        _integration.WriteLine($"retrieved {featCategories.Count} feat categories.");
-
-        foreach (var featCategory in featCategories)
-        {
-            _integration.WriteLine($"- {featCategory.Name}");
-        }
-
-        return featCategories;
+        return await _api.GetAsync();
     }
 
     public async Task<FeatCategoryDataModel> GetLastCreatedFeatCategory()
     {
-        var id = (Guid)_integration.Properties["last-created-feat-category-id"]!;
+        var id = _integration.Get<Guid>("last-created-feat-category-id");
         var featCategory = await GetFeatCategory(id);
         featCategory.Should().NotBeNull();
         return featCategory;
@@ -89,25 +66,17 @@ public sealed class ManageFeatCategoriesDriver : IDriver
 
     public async Task<FeatCategoryDataModel> GetFeatCategoryByName(string name)
     {
-        _integration.WriteLine($"retrieving feat category by name {name}");
-        var categories = await GetFeatCategories();
+        var categories = await _api.GetAsync();
         var category = categories.SingleOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
         category.Should().NotBeNull($"expected feat category '{name}' to exist");
         return category;
     }
 
-
-
-
-
-
     public async Task CreateFeatCategoriesWhenNotExisting(IEnumerable<string> names)
     {
-        var existing = await GetFeatCategories();
+        var categories = await _api.GetAsync();
 
-        var nonExistingNames = names
-            .Where(name => !existing.Any(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+        var nonExistingNames = names.Except(categories.Select(c => c.Name), StringComparer.OrdinalIgnoreCase).ToList();
 
         foreach (var name in nonExistingNames)
         {
@@ -117,9 +86,7 @@ public sealed class ManageFeatCategoriesDriver : IDriver
 
     public async Task<bool> ExistsFeatCategory(string name)
     {
-        var categories = await GetFeatCategories();
+        var categories = await _api.GetAsync();
         return categories.Any(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
-
     }
-
 }
