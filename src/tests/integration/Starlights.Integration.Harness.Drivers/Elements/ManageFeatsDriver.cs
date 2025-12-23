@@ -2,6 +2,7 @@ using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Feats;
+using Starlights.Modules.Elements.Endpoints.Content.Feats.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 
@@ -52,6 +53,22 @@ public class ManageFeatsDriver : IDriver
     {
         var response = await _api.GetListAsync();
         return [.. response.Items];
+    }
+
+    public async Task UpdateFeat(FeatDataModel updatedFeat)
+    {
+        var request = new UpdateFeatRequest
+        {
+            Id = updatedFeat.Id,
+            Name = updatedFeat.Name,
+            CategoryId = updatedFeat.CategoryId,
+            ShortDescription = updatedFeat.ShortDescription,
+            Description = updatedFeat.Description,
+            Prerequisite = updatedFeat.Prerequisites,
+            IsRepeatable = updatedFeat.IsRepeatable,
+        };
+
+        await _api.PutAsync(request);
     }
 
     public class CreateProperties

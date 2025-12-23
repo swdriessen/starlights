@@ -151,6 +151,56 @@ public class ContentManagementForFeatsStepDefinitions
         dataTable.AssertProvidedProperties(expected, feat, assertions);
     }
 
+    [Given(@"a feat exists that includes the following properties")]
+    public async Task GivenAFeatExistsThatIncludesTheFollowingPropertiesAsync(DataTable dataTable)
+    {
+        var row = dataTable.CreateInstance<FeatTableRow>(_scenarioContext);
+
+        if (row.Category is null)
+        {
+            throw new InvalidOperationException("Feat category must be provided");
+        }
+
+        var category = await _featCategoriesDriver.GetorCreateFeatCategoryByName(row.Category);
+
+        var properties = new ManageFeatsDriver.CreateProperties
+        {
+            Name = row.Name,
+            CategoryId = category.Id,
+            ShortDescription = row.ShortDescription,
+            Description = row.Description,
+            IsRepeatable = row.Repeatable,
+            Prerequisite = row.Prerequisite,
+        };
+
+        await _featsDriver.CreateFeat(properties);
+    }
+
+    [When(@"the content creator updates the feat with the following properties")]
+    public async Task WhenTheContentCreatorUpdatesTheFeatWithTheFollowingPropertiesAsync(DataTable dataTable)
+    {
+        var row = dataTable.CreateInstance<UpdateFeatTableRow>(_scenarioContext);
+
+        var existingFeat = await _featsDriver.GetLastCreatedFeat();
+
+        var updatedFeat = existingFeat with
+        {
+            Name = row.Name ?? existingFeat.Name,
+            ShortDescription = row.ShortDescription ?? existingFeat.ShortDescription,
+            Description = row.Description ?? existingFeat.Description,
+            IsRepeatable = row.Repeatable ?? existingFeat.IsRepeatable,
+            Prerequisites = row.Prerequisite ?? existingFeat.Prerequisites
+        };
+
+        if (row.Category is not null && row.Category != existingFeat.Category)
+        {
+            var category = await _featCategoriesDriver.GetorCreateFeatCategoryByName(row.Category);
+            updatedFeat = updatedFeat with { CategoryId = category.Id, Category = category.Name };
+        }
+
+        await _featsDriver.UpdateFeat(updatedFeat);
+    }
+
     #region Table Bindings
 
     private sealed class FeatCategoryTableRow : ITableRow
@@ -168,5 +218,14 @@ public class ContentManagementForFeatsStepDefinitions
         public bool Repeatable { get; set; }
     }
 
+    private sealed class UpdateFeatTableRow : IMarkdownDescriptionTableRow
+    {
+        public string? Name { get; set; }
+        public string? Category { get; set; }
+        public string? Description { get; set; }
+        public string? ShortDescription { get; set; }
+        public string? Prerequisite { get; set; }
+        public bool? Repeatable { get; set; }
+    }
     #endregion
 }

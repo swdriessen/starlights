@@ -158,14 +158,14 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table19 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "kind"});
-                table7.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             string.Format("{0}", language),
                             string.Format("{0}", kind)});
 #line 15
-    await testRunner.WhenAsync("the content creator creates a language with the following properties", ((string)(null)), table7, "When ");
+    await testRunner.WhenAsync("the content creator creates a language with the following properties", ((string)(null)), table19, "When ");
 #line hidden
 #line 18
     await testRunner.ThenAsync("the language appears in the language list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -198,16 +198,16 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table20 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "kind",
                             "origin"});
-                table8.AddRow(new string[] {
+                table20.AddRow(new string[] {
                             "Infernal",
                             "Rare",
                             "Devils of the Nine Hells"});
 #line 29
-    await testRunner.WhenAsync("the content creator creates a language with the following properties", ((string)(null)), table8, "When ");
+    await testRunner.WhenAsync("the content creator creates a language with the following properties", ((string)(null)), table20, "When ");
 #line hidden
 #line 32
     await testRunner.ThenAsync("the language appears in the language list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -245,18 +245,18 @@ await this.FeatureBackgroundAsync();
                         "_, _Ignan_, and _Terran_ dialects. \r\nCreatures that know one of these dialects c" +
                         "an communicate with those that know a different one.", ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table21 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "kind",
                             "origin",
                             "description"});
-                table9.AddRow(new string[] {
+                table21.AddRow(new string[] {
                             "Primordial",
                             "Rare",
                             "Elementals",
                             "<markdown description>"});
 #line 45
-    await testRunner.WhenAsync("the content creator creates a language with the following properties", ((string)(null)), table9, "When ");
+    await testRunner.WhenAsync("the content creator creates a language with the following properties", ((string)(null)), table21, "When ");
 #line hidden
 #line 48
     await testRunner.ThenAsync("the language appears in the language list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -289,32 +289,32 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table22 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "kind"});
-                table10.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "Elvish",
                             "Standard"});
 #line 55
-    await testRunner.GivenAsync("a language exists that includes the following properties", ((string)(null)), table10, "Given ");
+    await testRunner.GivenAsync("a language exists that includes the following properties", ((string)(null)), table22, "Given ");
 #line hidden
-                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table23 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "kind"});
-                table11.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "Druidic",
                             "Rare"});
 #line 58
-    await testRunner.WhenAsync("the content creator updates the language to have the following properties", ((string)(null)), table11, "When ");
+    await testRunner.WhenAsync("the content creator updates the language to have the following properties", ((string)(null)), table23, "When ");
 #line hidden
-                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table24 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "kind"});
-                table12.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "Druidic",
                             "Rare"});
 #line 61
-    await testRunner.ThenAsync("the language in the language list should have the following properties", ((string)(null)), table12, "Then ");
+    await testRunner.ThenAsync("the language in the language list should have the following properties", ((string)(null)), table24, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -344,32 +344,32 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table25 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "origin"});
-                table13.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "Infernal",
                             "The Nine Hells"});
 #line 68
-    await testRunner.GivenAsync("a language exists that includes the following properties", ((string)(null)), table13, "Given ");
+    await testRunner.GivenAsync("a language exists that includes the following properties", ((string)(null)), table25, "Given ");
 #line hidden
-                global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table26 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "origin"});
-                table14.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "Infernal",
                             "Devils of the Nine Hells"});
 #line 71
-    await testRunner.WhenAsync("the content creator updates the language to have the following properties", ((string)(null)), table14, "When ");
+    await testRunner.WhenAsync("the content creator updates the language to have the following properties", ((string)(null)), table26, "When ");
 #line hidden
-                global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table27 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "origin"});
-                table15.AddRow(new string[] {
+                table27.AddRow(new string[] {
                             "Infernal",
                             "Devils of the Nine Hells"});
 #line 74
-    await testRunner.ThenAsync("the language in the language list should have the following properties", ((string)(null)), table15, "Then ");
+    await testRunner.ThenAsync("the language in the language list should have the following properties", ((string)(null)), table27, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -399,32 +399,32 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table28 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table16.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "Sign Language",
                             ""});
 #line 81
-    await testRunner.GivenAsync("a language exists that includes the following properties", ((string)(null)), table16, "Given ");
+    await testRunner.GivenAsync("a language exists that includes the following properties", ((string)(null)), table28, "Given ");
 #line hidden
-                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table29 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table17.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "Common Sign Language",
                             "This language originated in Sigil."});
 #line 84
-    await testRunner.WhenAsync("the content creator updates the language to have the following properties", ((string)(null)), table17, "When ");
+    await testRunner.WhenAsync("the content creator updates the language to have the following properties", ((string)(null)), table29, "When ");
 #line hidden
-                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table30 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "description"});
-                table18.AddRow(new string[] {
+                table30.AddRow(new string[] {
                             "Common Sign Language",
                             "This language originated in Sigil."});
 #line 87
-    await testRunner.ThenAsync("the language in the language list should have the following properties", ((string)(null)), table18, "Then ");
+    await testRunner.ThenAsync("the language in the language list should have the following properties", ((string)(null)), table30, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

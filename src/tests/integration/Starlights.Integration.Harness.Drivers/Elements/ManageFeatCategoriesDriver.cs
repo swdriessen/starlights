@@ -72,11 +72,24 @@ public sealed class ManageFeatCategoriesDriver : IDriver
         return category;
     }
 
+    public async Task<FeatCategoryDataModel> GetorCreateFeatCategoryByName(string name)
+    {
+        var categories = await _api.GetAsync();
+        var category = categories.SingleOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+
+        if (category is null)
+        {
+            await CreateFeatCategory(name);
+        }
+
+        return await GetFeatCategoryByName(name);
+    }
+
     public async Task CreateFeatCategoriesWhenNotExisting(IEnumerable<string> names)
     {
         var categories = await _api.GetAsync();
 
-        var nonExistingNames = names.Except(categories.Select(c => c.Name), StringComparer.OrdinalIgnoreCase).ToList();
+        var nonExistingNames = names.Except(categories.Select(c => c.Name), StringComparer.OrdinalIgnoreCase);
 
         foreach (var name in nonExistingNames)
         {

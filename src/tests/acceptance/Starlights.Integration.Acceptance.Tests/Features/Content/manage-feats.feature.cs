@@ -150,7 +150,7 @@ Feats can enhance a character’s abilities, grant new skills, or provide specia
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Content/manage-feats.feature.ndjson", 7);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Content/manage-feats.feature.ndjson", 11);
         }
         
         [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="create a new feat category")]
@@ -238,7 +238,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a feat", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create a feat with default properties", null, tagsOfRule);
-#line 44
+#line 47
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -257,10 +257,10 @@ await this.FeatureBackgroundAsync();
                 table2.AddRow(new string[] {
                             "Alert",
                             "General"});
-#line 45
+#line 48
     await testRunner.WhenAsync("the content creator creates a feat with the following properties", ((string)(null)), table2, "When ");
 #line hidden
-#line 48
+#line 51
     await testRunner.ThenAsync("the feat should exist in the feat list with all provided properties", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -278,7 +278,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a feat with a prerequisite", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create a feat with a prerequisite", null, tagsOfRule);
-#line 52
+#line 55
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -291,7 +291,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 16
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 53
+#line 56
     await testRunner.GivenAsync("a feat exists with the name \"Power Attack\" and category \"Fighting Style\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
                 global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
@@ -302,7 +302,7 @@ await this.FeatureBackgroundAsync();
                             "Greater Power",
                             "Fighting Style",
                             "Power Attack"});
-#line 54
+#line 57
     await testRunner.WhenAsync("the content creator creates a feat with the following properties", ((string)(null)), table3, "When ");
 #line hidden
                 global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
@@ -311,7 +311,7 @@ await this.FeatureBackgroundAsync();
                 table4.AddRow(new string[] {
                             "Greater Power",
                             "Power Attack"});
-#line 57
+#line 60
     await testRunner.ThenAsync("the feat should have at least the following properties", ((string)(null)), table4, "Then ");
 #line hidden
             }
@@ -329,7 +329,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("create a repeatable feat", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can create a repeatable feat", null, tagsOfRule);
-#line 63
+#line 66
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -350,15 +350,241 @@ await this.FeatureBackgroundAsync();
                             "Skilled",
                             "Origin",
                             "true"});
-#line 64
+#line 67
     await testRunner.WhenAsync("the content creator creates a feat with the following properties", ((string)(null)), table5, "When ");
 #line hidden
                 global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "repeatable"});
                 table6.AddRow(new string[] {
                             "true"});
-#line 67
+#line 70
     await testRunner.ThenAsync("the feat should have at least the following properties", ((string)(null)), table6, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update the category of a feat")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update the category of a feat")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "content management for feats")]
+        public async global::System.Threading.Tasks.Task UpdateTheCategoryOfAFeat()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "5";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update the category of a feat", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update the category of a feat", null, tagsOfRule);
+#line 76
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 16
+await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "category"});
+                table7.AddRow(new string[] {
+                            "Skilled",
+                            "Origin"});
+#line 77
+    await testRunner.GivenAsync("a feat exists that includes the following properties", ((string)(null)), table7, "Given ");
+#line hidden
+                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "category"});
+                table8.AddRow(new string[] {
+                            "Very Skilled",
+                            "General"});
+#line 80
+    await testRunner.WhenAsync("the content creator updates the feat with the following properties", ((string)(null)), table8, "When ");
+#line hidden
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "category"});
+                table9.AddRow(new string[] {
+                            "Very Skilled",
+                            "General"});
+#line 83
+    await testRunner.ThenAsync("the feat should have at least the following properties", ((string)(null)), table9, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="update the prerequisites of a feat")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("update the prerequisites of a feat")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "content management for feats")]
+        public async global::System.Threading.Tasks.Task UpdateThePrerequisitesOfAFeat()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "6";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("update the prerequisites of a feat", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update the prerequisites of a feat", null, tagsOfRule);
+#line 89
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 16
+await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "category",
+                            "prerequisite"});
+                table10.AddRow(new string[] {
+                            "Greater Attack",
+                            "Fighting Style",
+                            ""});
+#line 90
+    await testRunner.GivenAsync("a feat exists that includes the following properties", ((string)(null)), table10, "Given ");
+#line hidden
+                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "prerequisite"});
+                table11.AddRow(new string[] {
+                            "Greater Power",
+                            "Power Attack"});
+#line 93
+    await testRunner.WhenAsync("the content creator updates the feat with the following properties", ((string)(null)), table11, "When ");
+#line hidden
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "prerequisite"});
+                table12.AddRow(new string[] {
+                            "Greater Power",
+                            "Power Attack"});
+#line 96
+    await testRunner.ThenAsync("the feat should have at least the following properties", ((string)(null)), table12, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="make a feat repeatable")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("make a feat repeatable")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "content management for feats")]
+        public async global::System.Threading.Tasks.Task MakeAFeatRepeatable()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "7";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("make a feat repeatable", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update the repeatable property of a feat", null, tagsOfRule);
+#line 102
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 16
+await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "category",
+                            "repeatable"});
+                table13.AddRow(new string[] {
+                            "Single",
+                            "Origin",
+                            "false"});
+#line 103
+    await testRunner.GivenAsync("a feat exists that includes the following properties", ((string)(null)), table13, "Given ");
+#line hidden
+                global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "repeatable"});
+                table14.AddRow(new string[] {
+                            "Skilled",
+                            "true"});
+#line 106
+    await testRunner.WhenAsync("the content creator updates the feat with the following properties", ((string)(null)), table14, "When ");
+#line hidden
+                global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "repeatable"});
+                table15.AddRow(new string[] {
+                            "Skilled",
+                            "true"});
+#line 109
+    await testRunner.ThenAsync("the feat should have at least the following properties", ((string)(null)), table15, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute(DisplayName="make a feat non-repeatable")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("make a feat non-repeatable")]
+        [global::Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "content management for feats")]
+        public async global::System.Threading.Tasks.Task MakeAFeatNon_Repeatable()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "8";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("make a feat non-repeatable", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A content creator can update the repeatable property of a feat", null, tagsOfRule);
+#line 113
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 16
+await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "category",
+                            "repeatable"});
+                table16.AddRow(new string[] {
+                            "Skilled",
+                            "Origin",
+                            "true"});
+#line 114
+    await testRunner.GivenAsync("a feat exists that includes the following properties", ((string)(null)), table16, "Given ");
+#line hidden
+                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "repeatable"});
+                table17.AddRow(new string[] {
+                            "Single",
+                            "false"});
+#line 117
+    await testRunner.WhenAsync("the content creator updates the feat with the following properties", ((string)(null)), table17, "When ");
+#line hidden
+                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
+                            "name",
+                            "repeatable"});
+                table18.AddRow(new string[] {
+                            "Single",
+                            "false"});
+#line 120
+    await testRunner.ThenAsync("the feat should have at least the following properties", ((string)(null)), table18, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

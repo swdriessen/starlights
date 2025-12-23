@@ -37,6 +37,9 @@ Scenario: update the name of a feat category
     When the content creator updates the feat category to have the name "Advanced Stealth Techniques"
     Then the feat category should exist in feat category list with the name "Advanced Stealth Techniques"
 
+@wip
+Rule: A content creator can delete a feat category
+
 # Feat scenarios
 
 Rule: A content creator can create a feat with default properties
@@ -68,4 +71,55 @@ Scenario: create a repeatable feat
         | repeatable |
         | true       |
 
+Rule: A content creator can update the category of a feat
 
+Scenario: update the category of a feat
+    Given a feat exists that includes the following properties
+        | name    | category |
+        | Skilled | Origin   |
+    When the content creator updates the feat with the following properties
+        | name         | category |
+        | Very Skilled | General  |
+    Then the feat should have at least the following properties
+        | name         | category |
+        | Very Skilled | General  |
+
+Rule: A content creator can update the prerequisites of a feat
+
+Scenario: update the prerequisites of a feat
+    Given a feat exists that includes the following properties
+        | name           | category       | prerequisite |
+        | Greater Attack | Fighting Style |              |
+    When the content creator updates the feat with the following properties
+        | name          | prerequisite |
+        | Greater Power | Power Attack |
+    Then the feat should have at least the following properties
+        | name          | prerequisite |
+        | Greater Power | Power Attack |
+
+Rule: A content creator can update the repeatable property of a feat
+
+Scenario: make a feat repeatable
+    Given a feat exists that includes the following properties
+        | name   | category | repeatable |
+        | Single | Origin   | false      |
+    When the content creator updates the feat with the following properties
+        | name    | repeatable |
+        | Skilled | true       |
+    Then the feat should have at least the following properties
+        | name    | repeatable |
+        | Skilled | true       |
+
+Scenario: make a feat non-repeatable
+    Given a feat exists that includes the following properties
+        | name    | category | repeatable |
+        | Skilled | Origin   | true       |
+    When the content creator updates the feat with the following properties
+        | name   | repeatable |
+        | Single | false      |
+    Then the feat should have at least the following properties
+        | name   | repeatable |
+        | Single | false      |
+
+@wip
+Rule: A content creator can delete a feat

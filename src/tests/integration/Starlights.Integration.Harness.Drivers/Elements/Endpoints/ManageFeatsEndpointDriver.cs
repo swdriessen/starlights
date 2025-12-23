@@ -4,6 +4,7 @@ using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Feats;
 using Starlights.Modules.Elements.Endpoints.Content.Feats.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Feats.GetList;
+using Starlights.Modules.Elements.Endpoints.Content.Feats.Update;
 
 namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
@@ -62,5 +63,20 @@ public class ManageFeatsEndpointDriver : IDriver
         responseContent.Should().NotBeNull();
 
         return responseContent;
+    }
+
+    /// <summary>
+    /// Update a feat via the API <code>/api/elements/feats/{id}</code>
+    /// </summary>
+    public async Task<bool> PutAsync(UpdateFeatRequest request)
+    {
+        using var client = _integration.CreateClient();
+        var response = await client.PutAsJsonAsync($"/api/elements/feats/{request.Id}", request, _integration.CancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        var responseContent = await response.Content.ReadFromJsonAsync<UpdateFeatResponse>(_integration.CancellationToken);
+        responseContent.Should().NotBeNull();
+
+        return true;
     }
 }
