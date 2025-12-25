@@ -1,4 +1,4 @@
-using System.Globalization;
+using Starlights.Modules.Elements.Domain.Values;
 
 namespace Starlights.Modules.Elements.Domain.Components;
 
@@ -12,27 +12,22 @@ public sealed class AbbreviationComponent : ElementComponentBase
     /// </summary>
     /// <param name="owningElement">The element this component belongs to.</param>
     /// <param name="abbreviation">The abbreviation value.</param>
-    public AbbreviationComponent(ElementId owningElement, string abbreviation)
+    public AbbreviationComponent(ElementId owningElement, Abbreviation abbreviation)
         : base(owningElement)
     {
-        UpdateAbbreviation(abbreviation);
+        Abbreviation = abbreviation;
     }
 
     /// <summary>
     /// Gets the abbreviation value, always trimmed and uppercase.
     /// </summary>
-    public string Abbreviation { get; private set; } = string.Empty;
+    public Abbreviation Abbreviation { get; private set; }
 
     /// <summary>
-    /// Updates the abbreviation value, enforcing trim and uppercase.
+    /// Updates the abbreviation value.
     /// </summary>
-    /// <param name="abbreviation">The new abbreviation value.</param>
-    public void UpdateAbbreviation(string abbreviation)
+    public void UpdateAbbreviation(Abbreviation abbreviation)
     {
-        if (string.IsNullOrWhiteSpace(abbreviation))
-        {
-            throw new ArgumentException("Abbreviation cannot be null or whitespace.", nameof(abbreviation));
-        }
-        Abbreviation = abbreviation.Trim().ToUpper(CultureInfo.InvariantCulture);
+        Abbreviation = abbreviation;
     }
 }

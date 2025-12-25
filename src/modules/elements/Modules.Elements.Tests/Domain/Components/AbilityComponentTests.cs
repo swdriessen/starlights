@@ -17,7 +17,7 @@ public class AbilityComponentTests
         var component = new AbilityComponent(ElementId.New(), abbreviation);
 
         // Assert
-        component.Abbreviation.Should().Be("STR");
+        component.Abbreviation.Value.Should().Be("STR");
     }
 
     [TestMethod]
@@ -30,7 +30,7 @@ public class AbilityComponentTests
         var component = new AbilityComponent(ElementId.New(), abbreviation);
 
         // Assert
-        component.Abbreviation.Should().Be("DEX");
+        component.Abbreviation.Value.Should().Be("DEX");
     }
 
     [TestMethod]
@@ -43,7 +43,7 @@ public class AbilityComponentTests
         var component = new AbilityComponent(ElementId.New(), abbreviation);
 
         // Assert
-        component.Abbreviation.Should().Be("INT");
+        component.Abbreviation.Value.Should().Be("INT");
     }
 
     [TestMethod]
@@ -56,7 +56,7 @@ public class AbilityComponentTests
         component.UpdateAbbreviation(" Int ");
 
         // Assert
-        component.Abbreviation.Should().Be("INT");
+        component.Abbreviation.Value.Should().Be("INT");
     }
 
     [TestMethod]
@@ -69,7 +69,7 @@ public class AbilityComponentTests
         component.UpdateAbbreviation("str");
 
         // Assert
-        component.Abbreviation.Should().Be("STR");
+        component.Abbreviation.Value.Should().Be("STR");
     }
 
     [TestMethod]
@@ -82,7 +82,7 @@ public class AbilityComponentTests
         component.UpdateAbbreviation("wIs");
 
         // Assert
-        component.Abbreviation.Should().Be("WIS");
+        component.Abbreviation.Value.Should().Be("WIS");
     }
 
     [TestMethod]
@@ -95,7 +95,7 @@ public class AbilityComponentTests
         component.UpdateAbbreviation("  cHa  ");
 
         // Assert
-        component.Abbreviation.Should().Be("CHA");
+        component.Abbreviation.Value.Should().Be("CHA");
     }
 
     [TestMethod]

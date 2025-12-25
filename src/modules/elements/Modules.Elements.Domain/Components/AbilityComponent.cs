@@ -1,34 +1,25 @@
-﻿
-using System.Globalization;
+﻿using Starlights.Modules.Elements.Domain.Values;
 
 namespace Starlights.Modules.Elements.Domain.Components;
 
-/// <summary>
-/// Initializes a new instance of the <see cref="AbilityComponent"/> class.
-/// </summary>
 public sealed class AbilityComponent : ElementComponentBase
 {
-    public AbilityComponent(ElementId owningElement, string abbreviation)
+    public AbilityComponent(ElementId owningElement, Abbreviation abbreviation)
         : base(owningElement)
     {
-        UpdateAbbreviation(abbreviation);
+        Abbreviation = abbreviation;
     }
 
     /// <summary>
-    /// Gets the abbreviation of the ability component.
+    /// Gets the abbreviation of the ability name.
     /// </summary>
-    public string Abbreviation { get; private set; } = string.Empty;
+    public Abbreviation Abbreviation { get; private set; }
 
     /// <summary>
     /// Updates the abbreviation of the ability component.
     /// </summary>
-    public void UpdateAbbreviation(string abbreviation)
+    public void UpdateAbbreviation(Abbreviation abbreviation)
     {
-        if (string.IsNullOrWhiteSpace(abbreviation))
-        {
-            throw new ArgumentException("Abbreviation cannot be null or whitespace.", nameof(abbreviation));
-        }
-
-        Abbreviation = abbreviation.Trim().ToUpper(CultureInfo.InvariantCulture);
+        Abbreviation = abbreviation;
     }
 }

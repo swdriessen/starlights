@@ -17,7 +17,7 @@ public class AbbreviationComponentTests
         var component = new AbbreviationComponent(ElementId.New(), abbreviation);
 
         // Assert
-        component.Abbreviation.Should().Be("XYZ");
+        component.Abbreviation.Value.Should().Be("XYZ");
     }
 
     [TestMethod]
@@ -30,7 +30,7 @@ public class AbbreviationComponentTests
         var component = new AbbreviationComponent(ElementId.New(), abbreviation);
 
         // Assert
-        component.Abbreviation.Should().Be("ABC");
+        component.Abbreviation.Value.Should().Be("ABC");
     }
 
     [TestMethod]
@@ -43,7 +43,7 @@ public class AbbreviationComponentTests
         var component = new AbbreviationComponent(ElementId.New(), abbreviation);
 
         // Assert
-        component.Abbreviation.Should().Be("ABC");
+        component.Abbreviation.Value.Should().Be("ABC");
     }
 
     [TestMethod]
@@ -56,7 +56,7 @@ public class AbbreviationComponentTests
         component.UpdateAbbreviation("  ghi  ");
 
         // Assert
-        component.Abbreviation.Should().Be("GHI");
+        component.Abbreviation.Value.Should().Be("GHI");
     }
 
     [TestMethod]

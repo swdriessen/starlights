@@ -1,9 +1,9 @@
 ﻿using System.Numerics;
 using System.Text.RegularExpressions;
 
-namespace Starlights.Modules.Elements.Domain.Extensions;
+namespace Starlights.Modules.Elements.Domain;
 
-public static partial class NormalizeExtensions
+public static partial class StringExtensions
 {
     extension(string value)
     {

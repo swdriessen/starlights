@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Starlights.Modules.Elements.Domain.Extensions;
 
 namespace Starlights.Modules.Elements.Domain.Components;
 
