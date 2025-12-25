@@ -5,6 +5,7 @@ using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
+using Starlights.Modules.Elements.Data.EntityFramework.EventProcessing;
 using Starlights.Modules.Elements.Endpoints.Installation;
 using Starlights.Platform.Components.FastEndpoints;
 using Starlights.Platform.Components.Serilog;
@@ -52,6 +53,7 @@ public sealed class Program
             options.AdditionalAssemblies.Add(typeof(ElementsModule).Assembly);
             options.AdditionalAssemblies.Add(typeof(ElementsContext).Assembly);
             options.AdditionalAssemblies.Add(typeof(InitializationEndpoint).Assembly);
+            options.AddElementsEventProcessingComponent();
 
             // platform components
             options.AddFastEndpointsComponent();

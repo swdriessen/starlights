@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Starlights.Platform.Components.Data.EntityFramework;
 using Starlights.Platform.Eventing;
 
-namespace Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
+namespace Starlights.Modules.Elements.Data.EntityFramework.EventProcessing;
 
 /// <summary>
 /// A simple background service that processes domain events from the database. 
@@ -29,7 +29,7 @@ public sealed class DomainEventProcessingService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("[Characters] starting EventProcessing service... [batch='{BatchSize}', max-interval='{MaximumInterval}ms']",
+        _logger.LogInformation("[Elements] starting EventProcessing service... [batch='{BatchSize}', max-interval='{MaximumInterval}ms']",
             BatchSize, MaximumInterval);
 
         var interval = TimeSpan.FromMilliseconds(InitialInterval);
@@ -39,7 +39,7 @@ public sealed class DomainEventProcessingService : BackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 using var scope = _factory.CreateScope();
-                var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<CharactersContext>>();
+                var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ElementsContext>>();
 
                 await using var context = await contextFactory.CreateDbContextAsync(stoppingToken);
 
@@ -56,7 +56,7 @@ public sealed class DomainEventProcessingService : BackgroundService
 
                 if (newEvents.Count > 0)
                 {
-                    //using var _ = CharactersInstrumentation.StartActivity($"Process Event Messages ({newEvents.Count})", a => a.AddTag("newEvents", newEvents.Count));
+                    //using var _ = ElementsInstrumentation.StartActivity($"Process Event Messages ({newEvents.Count})", a => a.AddTag("newEvents", newEvents.Count));
 
                     _logger.LogDebug("processing {Count} new domain events", newEvents.Count);
 
@@ -102,7 +102,7 @@ public sealed class DomainEventProcessingService : BackgroundService
                     _ => TimeSpan.FromMilliseconds(Math.Min(interval.TotalMilliseconds * 2, MaximumInterval)),
                 };
 
-                _logger.LogDebug("service waiting... [interval='{Interval}ms', IsCancellationRequested={IsCancellationRequested}]",
+                _logger.LogDebug("[Elements] service waiting... [interval='{Interval}ms', IsCancellationRequested={IsCancellationRequested}]",
                     interval.TotalMilliseconds, stoppingToken.IsCancellationRequested);
 
                 await Task.Delay(interval, stoppingToken);

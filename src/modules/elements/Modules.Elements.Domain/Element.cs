@@ -164,7 +164,7 @@ public sealed class Element : AggregateRoot<ElementId>
     public static Element Create(string name, string type, string systemIdentifier = "DND5E") // hardcoded until experimenting with multiple systems
     {
         var element = new Element(name, type, systemIdentifier);
-        // raise an 'ElementCreated' domain event here if needed
+        element.AddDomainEvent(new ElementCreatedEvent(element.Id, name, type));
         return element;
     }
 }

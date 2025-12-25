@@ -47,6 +47,7 @@
     <Project Path="src/modules/elements/Modules.Elements/Modules.Elements.csproj" />
   </Folder>
   <Folder Name="/src/modules/elements/infrastructure/">
+    <Project Path="src/modules/elements/Modules.Elements.Data.EntityFramework.EventProcessing/Modules.Elements.Data.EntityFramework.EventProcessing.csproj" />
     <Project Path="src/modules/elements/Modules.Elements.Data.EntityFramework.MigrationService/Modules.Elements.Data.EntityFramework.MigrationService.csproj" />
   </Folder>
   <Folder Name="/src/modules/elements/integration/">

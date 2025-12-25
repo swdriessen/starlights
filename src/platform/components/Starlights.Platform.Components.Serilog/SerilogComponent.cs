@@ -14,10 +14,6 @@ public class SerilogComponent : IPlatformServiceComponent
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
-        // enable additional providers in integration tests
-        // not all console logging (e.g. HTTP requests) is captured in the test details window just yet
-        var writeToProviders = builder.Environment.IsIntegration();
-
         builder.Services.AddSerilog(configuration =>
         {
             // load configuration from appsettings
@@ -28,6 +24,6 @@ public class SerilogComponent : IPlatformServiceComponent
 
             // allow aspire dashboard to capture logs
             configuration.WriteTo.OpenTelemetry();
-        }, writeToProviders: writeToProviders);
+        });
     }
 }
