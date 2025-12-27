@@ -79,7 +79,6 @@ Rule: A content creator can specify a stacking bonus on a statistic rule
             | name         | stacking bonus |
             | intelligence | item           |
 
-
 Rule: A content creator can specify a display name on a statistic rule
     
     @ignore @wip
@@ -157,28 +156,6 @@ Rule: A content creator can add a new selection rule to an element
 
 # generic rules
 
-@ignore @wip
-Rule: A content creator can re-arrange the order of the rules of an element
-
-    Scenario: re-arrange statistic rules
-        Given an element exists with the name "Mixed Boosts Element"
-        And the element has the following statistic rules
-            | name      | value |
-            | strength  |     2 |
-            | dexterity |     3 |
-            | health    |     5 |
-        When the content creator re-arranges the statistic rules to the following order
-            | name      |
-            | health    |
-            | strength  |
-            | dexterity |
-        Then the element should have the statistic rules in the following order
-            | name      |
-            | health    |
-            | strength  |
-            | dexterity |
-
-
 Rule: A content creator can delete rules from an element
 
     Scenario: delete a statistic rule
@@ -199,3 +176,23 @@ Rule: A content creator can delete rules from an element
         
     @ignore @wip
     Scenario: delete a selection rule
+    
+Rule: A content creator can re-arrange the order of the rules of an element
+
+    Scenario: re-arrange statistic rules
+        Given an element exists with the name "Mixed Boosts Element"
+        And the element has the following statistic rules
+            | name      | value |
+            | strength  |     2 |
+            | dexterity |     3 |
+            | health    |     5 |
+        When the content creator re-arranges the statistic rules to the following order
+            | name      |
+            | health    |
+            | strength  |
+            | dexterity |
+        Then the element should have the following statistic rules
+            | name      |
+            | health    |
+            | strength  |
+            | dexterity |

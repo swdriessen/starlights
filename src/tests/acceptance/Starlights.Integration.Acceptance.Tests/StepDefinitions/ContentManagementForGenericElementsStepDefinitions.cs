@@ -61,7 +61,8 @@ public class ContentManagementForGenericElementsStepDefinitions
         var properties = new ManageElementsDriver.CreateProperties
         {
             Name = elementName,
-            Type = "Type"
+            Type = "Type",
+            Description = $"Description for {elementName}"
         };
 
         await _elementsDriver.CreateElement(properties);
@@ -196,6 +197,28 @@ public class ContentManagementForGenericElementsStepDefinitions
             dataTable.AssertProvidedProperties(expected, rule, assertions);
         }
     }
+
+    [When(@"the content creator re-arranges the statistic rules to the following order")]
+    public async Task WhenTheContentCreatorRe_ArrangesTheStatisticRulesToTheFollowingOrderAsync(DataTable dataTable)
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var rules = await _elementsDriver.GetStatisticRules(elementId);
+
+
+
+        var orderedRuleIds = new List<Guid>();
+        foreach (var row in dataTable.CreateSet<StatisticRuleTableRow>(_scenarioContext))
+        {
+            var rule = rules.SingleOrDefault(r => r.Name.Equals(row.Name, StringComparison.OrdinalIgnoreCase));
+            rule.Should().NotBeNull("Expected to find a statistic rule with the name '{0}', but none was found.", row.Name);
+            orderedRuleIds.Add(rule.RuleId);
+        }
+
+
+
+        await _elementsDriver.ReorderRules(elementId, orderedRuleIds);
+    }
+
 
     #endregion
 

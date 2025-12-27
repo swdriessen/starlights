@@ -103,6 +103,11 @@ public sealed class ManageElementsDriver : IDriver
         return success;
     }
 
+    public async Task ReorderRules(Guid elementId, List<Guid> orderedRuleIds)
+    {
+        await _rulesApi.ReorderRulesAsync(elementId, orderedRuleIds);
+    }
+
     public sealed record CreateProperties
     {
         public required string Name { get; set; }

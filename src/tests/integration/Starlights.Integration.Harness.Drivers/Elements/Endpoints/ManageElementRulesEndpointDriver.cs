@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Reorder;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
@@ -71,5 +72,15 @@ public sealed class ManageElementRulesEndpointDriver : IDriver
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<GetStatisticRuleResponse>(_integration.CancellationToken);
+    }
+
+    public async Task<(bool IsSuccessStatusCode, HttpStatusCode StatusCode)> ReorderRulesAsync(Guid elementId, List<Guid> orderedRuleIds)
+    {
+        using var client = _integration.CreateClient();
+
+        var request = new ReorderElementRulesRequest { RuleIds = orderedRuleIds };
+
+        var response = await client.PutAsJsonAsync($"/api/elements/{elementId}/rules/order", request, _integration.CancellationToken);
+        return (response.IsSuccessStatusCode, response.StatusCode);
     }
 }
