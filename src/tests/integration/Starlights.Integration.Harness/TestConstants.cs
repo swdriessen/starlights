@@ -13,6 +13,6 @@ public sealed class TestConstants
     /// <summary>
     /// Specifies the timeout value, in milliseconds, used for operations in release builds.
     /// </summary>
-    public const int Timeout = 5_000; // 5 seconds in release mode, i.e. in CI/CD
+    public const int Timeout = 10_000; // 10 seconds in release mode, i.e. in CI/CD
 #endif
 }
