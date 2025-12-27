@@ -146,6 +146,14 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     }
 
     /// <summary>
+    /// Updates the requirements string for this statistic rule.
+    /// </summary>
+    public void UpdateRequirements(string? requirements)
+    {
+        Requirements = string.IsNullOrWhiteSpace(requirements) ? null : requirements.Trim();
+    }
+
+    /// <summary>
     /// Gets a value indicating whether this selection option has any requirements.
     /// </summary>
     public bool HasRequirements => LevelRequirement > 0 || !string.IsNullOrWhiteSpace(Requirements);

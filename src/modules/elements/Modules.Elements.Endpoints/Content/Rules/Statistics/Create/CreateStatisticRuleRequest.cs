@@ -41,4 +41,9 @@ public sealed record CreateStatisticRuleRequest
     /// Gets the maximum allowed value for this statistic rule, if any.
     /// </summary>
     public int? Maximum { get; init; }
+
+    /// <summary>
+    /// Gets the requirements expression for this statistic rule, if any.
+    /// </summary>
+    public string? RequirementsExpression { get; init; }
 }

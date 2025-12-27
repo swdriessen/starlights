@@ -101,11 +101,14 @@ Rule: A content creator can specify constraints in the form of requirements on a
             | level requirement |
             |                 5 |
 
-    @ignore @wip
-    Scenario: a statistic rule with an equipment requirement constraint
-
-    @ignore @wip
     Scenario: a statistic rule with a requirements expression constraint
+        Given an element exists with the name "Expressive Element"
+        When the content creator adds a new statistic rule to the element with the following properties
+            | name               | value | requirements                         |
+            | expressive agility |     3 | level:rogue >= 4 and has:light-armor |
+        Then the element should have a statistic rule with the following properties
+            | requirements                         |
+            | level:rogue >= 4 and has:light-armor |
 
 Rule: A content creator can specify constraints in the form of minimum and maximum values on a statistic rule
 

@@ -68,7 +68,8 @@ public sealed class ManageElementsDriver : IDriver
             LevelRequirement = properties.LevelRequirement,
             DisplayName = properties.DisplayName,
             Minimum = properties.Minimum,
-            Maximum = properties.Maximum
+            Maximum = properties.Maximum,
+            RequirementsExpression = properties.RequirementsExpression
         };
 
         var response = await _rulesApi.CreateStatisticRuleAsync(elementId, request);
@@ -127,5 +128,6 @@ public sealed class ManageElementsDriver : IDriver
         public string? DisplayName { get; set; }
         public int? Minimum { get; set; }
         public int? Maximum { get; set; }
+        public string? RequirementsExpression { get; set; }
     }
 }

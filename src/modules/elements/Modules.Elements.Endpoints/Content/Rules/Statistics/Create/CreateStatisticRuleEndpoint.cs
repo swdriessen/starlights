@@ -51,6 +51,7 @@ public sealed class CreateStatisticRuleEndpoint : Endpoint<CreateStatisticRuleRe
         component.UpdateDisplayName(req.DisplayName);
         component.UpdateMinimum(req.Minimum);
         component.UpdateMaximum(req.Maximum);
+        component.UpdateRequirements(req.RequirementsExpression);
 
         var rows = await _persistence.SaveChangesAsync();
         if (rows == 0)

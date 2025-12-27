@@ -100,7 +100,8 @@ public class ContentManagementForGenericElementsStepDefinitions
             LevelRequirement = row.LevelRequirement ?? 0,
             DisplayName = row.DisplayName,
             Minimum = row.Minimum,
-            Maximum = row.Maximum
+            Maximum = row.Maximum,
+            RequirementsExpression = row.RequirementsExpression
         };
 
         await _elementsDriver.CreateStatisticRule(elementId, properties);
@@ -123,6 +124,7 @@ public class ContentManagementForGenericElementsStepDefinitions
             ["stacking bonus"] = (e, a) => a.StackingBonus.Should().Be(e.StackingBonus?.Trim().ToLowerInvariant()),
             ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0),
             ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName),
+            ["requirements"] = (e, a) => a.Requirements.Should().Be(e.RequirementsExpression),
             ["minimum"] = (e, a) => a.Minimum.Should().Be(e.Minimum),
             ["maximum"] = (e, a) => a.Maximum.Should().Be(e.Maximum)
         };
@@ -246,5 +248,6 @@ public class ContentManagementForGenericElementsStepDefinitions
         public int? Maximum { get; set; }
         public string? Description { get; set; }
         public string? DisplayName { get; set; }
+        public string? RequirementsExpression { get; set; }
     }
 }
