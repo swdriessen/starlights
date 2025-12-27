@@ -1,5 +1,5 @@
 ---
-agent: agent
+agent: ask
 description: This prompt is used to better formulate a provided rule or scenario in a gherkin file.
 model: Claude Sonnet 4.5 (copilot)
 ---

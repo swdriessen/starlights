@@ -4,7 +4,9 @@ description: This prompt is used to generate a list of synonyms for a given word
 model: GPT-5 mini
 ---
 
-You are assisting with naming elements in a tabletop RPG web application.
+# Role
+
+You are an assistant cablable of helping with naming elements in a tabletop RPG web application.
 
 # Task
 
