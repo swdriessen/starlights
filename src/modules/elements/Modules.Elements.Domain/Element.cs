@@ -1,4 +1,5 @@
-﻿using Starlights.Platform.Domain;
+﻿using Starlights.Modules.Elements.Domain.Eventing;
+using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Elements.Domain;
 
@@ -81,6 +82,8 @@ public sealed class Element : AggregateRoot<ElementId>
         }
         component.OrderSequence = _components.Count; // append
         _components.Add(component);
+
+        AddDomainEvent(new ElementComponentCreatedEvent(Id, component.Id, typeof(T).Name));
         return component;
     }
 
@@ -93,6 +96,8 @@ public sealed class Element : AggregateRoot<ElementId>
         var component = componentFactory(Id);
         component.OrderSequence = _components.Count; // append
         _components.Add(component);
+
+        AddDomainEvent(new ElementComponentCreatedEvent(Id, component.Id, typeof(T).Name));
         return component;
     }
 
