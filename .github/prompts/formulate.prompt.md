@@ -34,6 +34,10 @@ Reformulate the provided Gherkin rule or scenario to improve its clarity, struct
 4. **Conciseness**: Remove redundant information while maintaining completeness
 5. **User Focus**: Frame scenarios from the user's perspective, not implementation details
 6. **Consistency**: Use consistent terminology aligned with the domain (e.g., "content creator," "player")
+7. **Tags**: Preserve existing Gherkin tags on rules/scenarios. In particular:
+
+- `@ignore`: Indicates the rule/scenario should be skipped/disabled (do not remove this tag during reformulation)
+- `@backlog`: Indicates the rule/scenario is tracked but not ready for execution yet (do not remove this tag during reformulation)
 
 # Output Format
 

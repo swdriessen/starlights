@@ -57,8 +57,9 @@ Rule: A content creator can add a new statistic rule to an element
         Then the element should have a statistic rule with the following properties
             | name      | value       |
             | alertness | proficiency |
-    
-    @ignore @wip
+
+    @ignore @backlog
+    # this scenario may change to having a 'negative' flag on a statistic rule instead of allowing named values to be negative
     Scenario: a statistic rule with a negative named value
         Given an element exists with the name "Negative Element"
         When the content creator adds a new statistic rule to the element with the following properties
@@ -80,7 +81,7 @@ Rule: A content creator can specify a stacking bonus on a statistic rule
             | intelligence | item           |
 
 Rule: A content creator can specify a display name on a statistic rule
-    
+
     Scenario: a statistic rule with a display name
         Given an element exists with the name "Barbarian Traits"
         When the content creator adds a new statistic rule to the element with the following properties
@@ -171,11 +172,65 @@ Rule: All provided statistic names and values are normalized
 
 # include rules
 
+@ignore
 Rule: A content creator can add a new include rule to an element
+
+    Scenario: an include rule applies defaults
+
+@ignore
+Rule: A content creator can specify a display name on an include rule
+
+    Scenario: an include rule with a display name
+
+@ignore
+Rule: A content creator can specify constraints in the form of requirements on an include rule
+
+    Scenario: an include rule with a level requirement constraint
+
+    Scenario: an include rule with a requirements expression constraint
 
 # selection rules
 
+@ignore
 Rule: A content creator can add a new selection rule to an element
+
+    Scenario: a selection rule applies defaults
+
+@ignore
+Rule: A content creator can specify a display name on a selection rule
+
+    Scenario: a selection rule with a display name
+
+@ignore
+Rule: A content creator can specify constraints in the form of requirements on a selection rule
+
+    Scenario: a selection rule with a level requirement constraint
+
+    Scenario: a selection rule with a requirements expression constraint
+
+@ignore
+Rule: A content creator can specify constraints on the selection options on a selection rule
+
+    Scenario: a selection rule with element options by type
+
+    Scenario: a selection rule with element options constraint by supports
+
+    Scenario: a selection rule with element options constraint by range
+
+@ignore
+Rule: A content creator can specify a selection quantity on a selection rule
+
+    Scenario: a selection rule with a specific selection quantity
+
+@ignore
+Rule: A content creator can specify a selection rule as optional
+
+    Scenario: a selection rule marked as optional
+
+@ignore
+Rule: A content creator can specify a selection rule as having a default selection
+
+    Scenario: a selection rule with a default selection
 
 # generic rules
 
@@ -196,10 +251,13 @@ Rule: A content creator can delete rules from an element
 
     @ignore @wip
     Scenario: delete an include rule
-        
+
     @ignore @wip
     Scenario: delete a selection rule
-    
+
+    @ignore @wip
+    Scenario: delete all rules from an element
+
 Rule: A content creator can re-arrange the order of the rules of an element
 
     Scenario: reorder statistic rules

@@ -119,10 +119,10 @@ public class ContentManagementForGenericElementsStepDefinitions
 
         var assertions = new Dictionary<string, Action<StatisticRuleTableRow, GetStatisticRuleResponse>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["name"] = (e, a) => a.Name.Should().Be(e.Name.Trim().ToLowerInvariant()),
-            ["value"] = (e, a) => a.Value.Should().Be(e.Value.Trim().ToLowerInvariant()),
-            ["stacking bonus"] = (e, a) => a.StackingBonus.Should().Be(e.StackingBonus?.Trim().ToLowerInvariant()),
-            ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0),
+            ["name"] = (e, a) => a.Name.Should().Be(e.Name),
+            ["value"] = (e, a) => a.Value.Should().Be(e.Value),
+            ["stacking bonus"] = (e, a) => a.StackingBonus.Should().Be(e.StackingBonus),
+            ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement),
             ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName),
             ["requirements"] = (e, a) => a.Requirements.Should().Be(e.RequirementsExpression),
             ["minimum"] = (e, a) => a.Minimum.Should().Be(e.Minimum),
