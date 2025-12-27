@@ -12,12 +12,10 @@ namespace Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById
 /// </summary>
 public sealed class GetStatisticRuleEndpoint : EndpointWithoutRequest<GetStatisticRuleResponse>
 {
-    private readonly ILogger<GetStatisticRuleEndpoint> _logger;
     private readonly IPersistence _persistence;
 
-    public GetStatisticRuleEndpoint(ILogger<GetStatisticRuleEndpoint> logger, IPersistence persistence)
+    public GetStatisticRuleEndpoint(IPersistence persistence)
     {
-        _logger = logger;
         _persistence = persistence;
     }
 
@@ -33,7 +31,7 @@ public sealed class GetStatisticRuleEndpoint : EndpointWithoutRequest<GetStatist
         var elementId = Route<Guid>("elementId");
         var ruleId = Route<Guid>("ruleId");
 
-        _logger.LogInformation("getting statistic rule [elementId='{ElementId}', ruleId='{RuleId}']", elementId, ruleId);
+        Logger.LogInformation("getting statistic rule [elementId='{ElementId}', ruleId='{RuleId}']", elementId, ruleId);
 
         var repository = _persistence.GetRepository<IElementsRepository>();
         var element = await repository.GetElementAsync(elementId);

@@ -11,12 +11,10 @@ namespace Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 /// </summary>
 public sealed class CreateStatisticRuleEndpoint : Endpoint<CreateStatisticRuleRequest, CreateStatisticRuleResponse>
 {
-    private readonly ILogger<CreateStatisticRuleEndpoint> _logger;
     private readonly IPersistence _persistence;
 
-    public CreateStatisticRuleEndpoint(ILogger<CreateStatisticRuleEndpoint> logger, IPersistence persistence)
+    public CreateStatisticRuleEndpoint(IPersistence persistence)
     {
-        _logger = logger;
         _persistence = persistence;
     }
 
@@ -32,7 +30,7 @@ public sealed class CreateStatisticRuleEndpoint : Endpoint<CreateStatisticRuleRe
         var elementId = Route<Guid>("elementId");
         req = req with { ElementId = elementId };
 
-        _logger.LogInformation("creating statistic rule on element [id='{Id}', name='{Name}', value='{Value}']", req.ElementId, req.Name, req.Value);
+        Logger.LogInformation("creating statistic rule on element [id='{Id}', name='{Name}', value='{Value}']", req.ElementId, req.Name, req.Value);
 
         var repository = _persistence.GetRepository<IElementsRepository>();
         var element = await repository.GetElementAsync(req.ElementId);
@@ -53,7 +51,7 @@ public sealed class CreateStatisticRuleEndpoint : Endpoint<CreateStatisticRuleRe
         var rows = await _persistence.SaveChangesAsync();
         if (rows == 0)
         {
-            _logger.LogError("failed to create statistic rule. No rows affected.");
+            Logger.LogError("failed to create statistic rule. No rows affected.");
             await Send.ErrorsAsync(statusCode: 500, cancellation: ct);
             return;
         }

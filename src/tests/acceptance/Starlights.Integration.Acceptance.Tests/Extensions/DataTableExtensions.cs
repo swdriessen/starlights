@@ -49,6 +49,27 @@ internal static class DataTableExtensions
 
             return instance;
         }
+
+        /// <summary>
+        /// Creates a set of instances of T from the DataTable, replacing the markdown description if applicable.
+        /// </summary>
+        internal IEnumerable<T> CreateSet(ScenarioContext context)
+        {
+            var instanceSet = table.CreateSet<T>();
+
+            foreach (var instance in instanceSet)
+            {
+                if (instance is IMarkdownDescriptionTableRow row && row.Description is not null)
+                {
+                    row.Description = row.Description.ReplaceWithMarkdownDescription(context);
+                }
+
+                // store the instance in the scenario context for later use
+                context.Set(instance, instance.GetType().FullName);
+            }
+
+            return instanceSet;
+        }
     }
 
     extension(string value)

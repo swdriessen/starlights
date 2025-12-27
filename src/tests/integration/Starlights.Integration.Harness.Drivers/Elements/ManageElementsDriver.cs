@@ -97,14 +97,20 @@ public sealed class ManageElementsDriver : IDriver
         return response;
     }
 
-    public sealed class CreateProperties
+    public async Task<bool> DeleteStatisticRule(Guid elementId, Guid ruleId)
+    {
+        var (success, _) = await _rulesApi.DeleteStatisticRuleAsync(elementId, ruleId);
+        return success;
+    }
+
+    public sealed record CreateProperties
     {
         public required string Name { get; set; }
         public required string Type { get; set; }
         public string? Description { get; set; }
     }
 
-    public sealed class CreateStatisticRuleProperties
+    public sealed record CreateStatisticRuleProperties
     {
         public required string Name { get; set; }
         public required string Value { get; set; }

@@ -132,11 +132,7 @@ public sealed class Element : AggregateRoot<ElementId>
         _components.RemoveAt(idx);
         _components.Insert(newIndex, item);
 
-        // Reassign order sequence
-        for (int i = 0; i < _components.Count; i++)
-        {
-            _components[i].OrderSequence = i;
-        }
+        UpdateOrderSequences();
     }
 
     /// <summary>
@@ -171,5 +167,32 @@ public sealed class Element : AggregateRoot<ElementId>
         var element = new Element(name, type, systemIdentifier);
         element.AddDomainEvent(new ElementCreatedEvent(element.Id, name, type));
         return element;
+    }
+
+    /// <summary>
+    /// Removes the first component of the specified type that matches the given component id.
+    /// </summary>
+    public bool RemoveComponent<T>(ElementComponentId componentId) where T : ElementComponentBase
+    {
+        var component = _components.Find(c => c is T && c.Id == componentId);
+
+        if (component is not null && _components.Remove(component))
+        {
+            UpdateOrderSequences();
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Updates the order sequences of all components to ensure they are sequential starting from 0. 
+    /// </summary>
+    private void UpdateOrderSequences()
+    {
+        for (int i = 0; i < _components.Count; i++)
+        {
+            _components[i].OrderSequence = i;
+        }
     }
 }

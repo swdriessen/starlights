@@ -6,6 +6,7 @@ using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
 
@@ -52,6 +53,18 @@ public class ContentManagementForGenericElementsStepDefinitions
         };
 
         dataTable.AssertProvidedProperties(expected, element, assertions);
+    }
+
+    [Given(@"an element exists with the name ""([^""]*)""")]
+    public async Task GivenAnElementExistsWithTheNameAsync(string elementName)
+    {
+        var properties = new ManageElementsDriver.CreateProperties
+        {
+            Name = elementName,
+            Type = "Type"
+        };
+
+        await _elementsDriver.CreateElement(properties);
     }
 
     [Given(@"an element exists with the following properties")]
@@ -125,17 +138,76 @@ public class ContentManagementForGenericElementsStepDefinitions
     //    throw new PendingStepException();
     //}
 
+    [Given(@"the element has the following statistic rules")]
+    public async Task GivenTheElementHasTheFollowingStatisticRulesAsync(DataTable dataTable)
+    {
+        var rows = dataTable.CreateSet<StatisticRuleTableRow>(_scenarioContext);
+
+        var elementId = _host.Get<Guid>("last-created-element-id");
+
+        foreach (var row in rows)
+        {
+            var properties = new ManageElementsDriver.CreateStatisticRuleProperties
+            {
+                Name = row.Name,
+                Value = row.Value,
+                StackingBonus = row.StackingBonus,
+                LevelRequirement = row.LevelRequirement ?? 0
+            };
+
+            await _elementsDriver.CreateStatisticRule(elementId, properties);
+        }
+    }
+
+    [When(@"the content creator deletes the statistic rule with the name ""([^""]*)""")]
+    public async Task WhenTheContentCreatorDeletesTheStatisticRuleWithTheNameAsync(string dexterity)
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var rules = await _elementsDriver.GetStatisticRules(elementId);
+        var rule = rules.SingleOrDefault(r => r.Name.Equals(dexterity, StringComparison.OrdinalIgnoreCase));
+
+        rule.Should().NotBeNull("Expected to find a statistic rule with the name '{0}', but none was found.", dexterity);
+
+        var result = await _elementsDriver.DeleteStatisticRule(elementId, rule.RuleId);
+        result.Should().BeTrue("Expected the deletion of the statistic rule '{0}' to succeed.", dexterity);
+    }
+
+    [Then(@"the element should have the following statistic rules")]
+    public async Task ThenTheElementShouldHaveTheFollowingStatisticRulesAsync(DataTable dataTable)
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var rules = await _elementsDriver.GetStatisticRules(elementId);
+
+        var expectedRows = dataTable.CreateSet<StatisticRuleTableRow>(_scenarioContext).ToList();
+
+        rules.Should().HaveCount(expectedRows.Count);
+
+        for (var i = 0; i < expectedRows.Count; i++)
+        {
+            var expected = expectedRows[i];
+            var rule = rules[i];
+
+            var assertions = new Dictionary<string, Action<StatisticRuleTableRow, GetStatisticRulesResponse.StatisticRuleItem>>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["name"] = (e, a) => a.Name.Should().Be(e.Name),
+                ["value"] = (e, a) => a.Value.Should().Be(e.Value),
+            };
+
+            dataTable.AssertProvidedProperties(expected, rule, assertions);
+        }
+    }
+
     #endregion
 
 
-    private sealed class ElementTableRow : IMarkdownDescriptionTableRow
+    private sealed record ElementTableRow : IMarkdownDescriptionTableRow
     {
         public required string Name { get; set; }
         public required string Type { get; set; }
         public string? Description { get; set; }
     }
 
-    private sealed class StatisticRuleTableRow : IMarkdownDescriptionTableRow
+    private sealed record StatisticRuleTableRow : IMarkdownDescriptionTableRow
     {
         public required string Name { get; set; }
         public required string Value { get; set; }

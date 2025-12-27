@@ -33,6 +33,14 @@ public sealed class ManageElementRulesEndpointDriver : IDriver
         return responseContent!;
     }
 
+    public async Task<(bool IsSuccessStatusCode, HttpStatusCode StatusCode)> DeleteStatisticRuleAsync(Guid elementId, Guid ruleId)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.DeleteAsync($"/api/elements/{elementId}/rules/statistics/{ruleId}", _integration.CancellationToken);
+        return (response.IsSuccessStatusCode, response.StatusCode);
+    }
+
     public async Task<GetStatisticRulesResponse?> GetStatisticRulesAsync(Guid elementId)
     {
         using var client = _integration.CreateClient();
