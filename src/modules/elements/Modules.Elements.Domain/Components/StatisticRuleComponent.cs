@@ -52,6 +52,14 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     }
 
     /// <summary>
+    /// Updates the display name of the statistic.
+    /// </summary>
+    public void UpdateDisplayName(string? displayName)
+    {
+        DisplayName = string.IsNullOrWhiteSpace(displayName) ? null : displayName.Trim();
+    }
+
+    /// <summary>
     /// Updates the value of the statistic. The value is normalized for statistic usage.
     /// </summary>
     [MemberNotNull(nameof(Value))]

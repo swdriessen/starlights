@@ -81,7 +81,6 @@ Rule: A content creator can specify a stacking bonus on a statistic rule
 
 Rule: A content creator can specify a display name on a statistic rule
     
-    @ignore @wip
     Scenario: a statistic rule with a display name
         Given an element exists with the name "Barbarian Traits"
         When the content creator adds a new statistic rule to the element with the following properties
@@ -179,7 +178,7 @@ Rule: A content creator can delete rules from an element
     
 Rule: A content creator can re-arrange the order of the rules of an element
 
-    Scenario: re-arrange statistic rules
+    Scenario: reorder statistic rules
         Given an element exists with the name "Mixed Boosts Element"
         And the element has the following statistic rules
             | name      | value |

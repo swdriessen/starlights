@@ -97,7 +97,8 @@ public class ContentManagementForGenericElementsStepDefinitions
             Name = row.Name,
             Value = row.Value,
             StackingBonus = row.StackingBonus,
-            LevelRequirement = row.LevelRequirement ?? 0
+            LevelRequirement = row.LevelRequirement ?? 0,
+            DisplayName = row.DisplayName
         };
 
         await _elementsDriver.CreateStatisticRule(elementId, properties);
@@ -118,7 +119,8 @@ public class ContentManagementForGenericElementsStepDefinitions
             ["name"] = (e, a) => a.Name.Should().Be(e.Name.Trim().ToLowerInvariant()),
             ["value"] = (e, a) => a.Value.Should().Be(e.Value.Trim().ToLowerInvariant()),
             ["stacking bonus"] = (e, a) => a.StackingBonus.Should().Be(e.StackingBonus?.Trim().ToLowerInvariant()),
-            ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0)
+            ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0),
+            ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName)
         };
 
         dataTable.AssertProvidedProperties(expected, rule, assertions);
@@ -237,5 +239,6 @@ public class ContentManagementForGenericElementsStepDefinitions
         public string? StackingBonus { get; set; }
         public int? LevelRequirement { get; set; }
         public string? Description { get; set; }
+        public string? DisplayName { get; set; }
     }
 }

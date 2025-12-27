@@ -26,4 +26,9 @@ public sealed record CreateStatisticRuleRequest
     /// Gets the level requirement.
     /// </summary>
     public int LevelRequirement { get; init; }
+
+    /// <summary>
+    /// Gets the display name of the statistic, if any.
+    /// </summary>
+    public string? DisplayName { get; init; }
 }

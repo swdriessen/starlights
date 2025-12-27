@@ -48,6 +48,8 @@ public sealed class CreateStatisticRuleEndpoint : Endpoint<CreateStatisticRuleRe
             component.UpdateStackingBonus(req.StackingBonus);
         }
 
+        component.UpdateDisplayName(req.DisplayName);
+
         var rows = await _persistence.SaveChangesAsync();
         if (rows == 0)
         {
