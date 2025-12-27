@@ -109,11 +109,32 @@ Rule: A content creator can specify constraints in the form of requirements on a
 
 Rule: A content creator can specify constraints in the form of minimum and maximum values on a statistic rule
 
-    @ignore @wip
     Scenario: a statistic rule with a minimum value constraint
+        Given an element exists with the name "Initiative Element"
+        When the content creator adds a new statistic rule to the element with the following properties
+            | name       | value       | minimum |
+            | initiative | proficiency |       1 |
+        Then the element should have a statistic rule with the following properties
+            | name       | minimum |
+            | initiative |       1 |
 
-    @ignore @wip
     Scenario: a statistic rule with a maximum value constraint
+        Given an element exists with the name "Speed Element"
+        When the content creator adds a new statistic rule to the element with the following properties
+            | name  | value       | maximum |
+            | speed | proficiency |       3 |
+        Then the element should have a statistic rule with the following properties
+            | name  | maximum |
+            | speed |       3 |
+
+    Scenario: a statistic rule with a minimum and a maximum value constraint
+        Given an element exists with the name "Speed Element"
+        When the content creator adds a new statistic rule to the element with the following properties
+            | name  | value       | minimum | maximum |
+            | speed | proficiency |       1 |       3 |
+        Then the element should have a statistic rule with the following properties
+            | name  | minimum | maximum |
+            | speed |       1 |       3 |
 
 Rule: All provided statistic names and values are normalized
         lowercase, spaces replaced by dashes, special characters removed

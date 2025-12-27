@@ -60,6 +60,8 @@ public sealed class GetStatisticRuleEndpoint : EndpointWithoutRequest<GetStatist
             StackingBonus: component.StackingBonus,
             LevelRequirement: component.LevelRequirement,
             Requirements: component.Requirements,
+            Minimum: component.Minimum,
+            Maximum: component.Maximum,
             OrderSequence: component.OrderSequence);
 
         await Send.OkAsync(response, ct);

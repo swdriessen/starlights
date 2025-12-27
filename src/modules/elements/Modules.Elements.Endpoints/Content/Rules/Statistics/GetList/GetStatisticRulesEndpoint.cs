@@ -50,6 +50,8 @@ public sealed class GetStatisticRulesEndpoint : EndpointWithoutRequest<GetStatis
                 StackingBonus: c.StackingBonus,
                 LevelRequirement: c.LevelRequirement,
                 Requirements: c.Requirements,
+                Minimum: c.Minimum,
+                Maximum: c.Maximum,
                 OrderSequence: c.OrderSequence))
             .OrderBy(x => x.OrderSequence)
             .ToList();

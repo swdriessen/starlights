@@ -66,7 +66,9 @@ public sealed class ManageElementsDriver : IDriver
             Value = properties.Value,
             StackingBonus = properties.StackingBonus,
             LevelRequirement = properties.LevelRequirement,
-            DisplayName = properties.DisplayName
+            DisplayName = properties.DisplayName,
+            Minimum = properties.Minimum,
+            Maximum = properties.Maximum
         };
 
         var response = await _rulesApi.CreateStatisticRuleAsync(elementId, request);
@@ -123,5 +125,7 @@ public sealed class ManageElementsDriver : IDriver
         public string? StackingBonus { get; set; }
         public int LevelRequirement { get; set; }
         public string? DisplayName { get; set; }
+        public int? Minimum { get; set; }
+        public int? Maximum { get; set; }
     }
 }

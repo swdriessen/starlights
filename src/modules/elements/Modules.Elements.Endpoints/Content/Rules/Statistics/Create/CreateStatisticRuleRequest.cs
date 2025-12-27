@@ -31,4 +31,14 @@ public sealed record CreateStatisticRuleRequest
     /// Gets the display name of the statistic, if any.
     /// </summary>
     public string? DisplayName { get; init; }
+
+    /// <summary>
+    /// Gets the minimum allowed value for this statistic rule, if any.
+    /// </summary>
+    public int? Minimum { get; init; }
+
+    /// <summary>
+    /// Gets the maximum allowed value for this statistic rule, if any.
+    /// </summary>
+    public int? Maximum { get; init; }
 }

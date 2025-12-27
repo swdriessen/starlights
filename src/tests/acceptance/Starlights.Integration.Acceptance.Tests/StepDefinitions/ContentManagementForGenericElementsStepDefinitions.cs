@@ -98,7 +98,9 @@ public class ContentManagementForGenericElementsStepDefinitions
             Value = row.Value,
             StackingBonus = row.StackingBonus,
             LevelRequirement = row.LevelRequirement ?? 0,
-            DisplayName = row.DisplayName
+            DisplayName = row.DisplayName,
+            Minimum = row.Minimum,
+            Maximum = row.Maximum
         };
 
         await _elementsDriver.CreateStatisticRule(elementId, properties);
@@ -120,7 +122,9 @@ public class ContentManagementForGenericElementsStepDefinitions
             ["value"] = (e, a) => a.Value.Should().Be(e.Value.Trim().ToLowerInvariant()),
             ["stacking bonus"] = (e, a) => a.StackingBonus.Should().Be(e.StackingBonus?.Trim().ToLowerInvariant()),
             ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0),
-            ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName)
+            ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName),
+            ["minimum"] = (e, a) => a.Minimum.Should().Be(e.Minimum),
+            ["maximum"] = (e, a) => a.Maximum.Should().Be(e.Maximum)
         };
 
         dataTable.AssertProvidedProperties(expected, rule, assertions);
@@ -238,6 +242,8 @@ public class ContentManagementForGenericElementsStepDefinitions
         public required string Value { get; set; }
         public string? StackingBonus { get; set; }
         public int? LevelRequirement { get; set; }
+        public int? Minimum { get; set; }
+        public int? Maximum { get; set; }
         public string? Description { get; set; }
         public string? DisplayName { get; set; }
     }

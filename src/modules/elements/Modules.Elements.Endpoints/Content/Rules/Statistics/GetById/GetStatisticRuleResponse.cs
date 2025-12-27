@@ -9,4 +9,6 @@ public sealed record GetStatisticRuleResponse(
     string? StackingBonus,
     int LevelRequirement,
     string? Requirements,
+    int? Minimum,
+    int? Maximum,
     int OrderSequence);

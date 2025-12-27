@@ -43,6 +43,16 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     public string? Requirements { get; private set; }
 
     /// <summary>
+    /// Gets the minimum allowed value for this statistic rule, if any.
+    /// </summary>
+    public int? Minimum { get; private set; }
+
+    /// <summary>
+    /// Gets the maximum allowed value for this statistic rule, if any.
+    /// </summary>
+    public int? Maximum { get; private set; }
+
+    /// <summary>
     /// Updates the name of the statistic. The value is normalized for statistic usage.
     /// </summary>
     [MemberNotNull(nameof(Name))]
@@ -107,6 +117,32 @@ public sealed class StatisticRuleComponent : ElementComponentBase
         }
 
         LevelRequirement = levelRequirement;
+    }
+
+    /// <summary>
+    /// Updates the minimum allowed value for this statistic rule.
+    /// </summary>
+    public void UpdateMinimum(int? minimum)
+    {
+        if (minimum is < 0)
+        {
+            throw new ArgumentException("Minimum cannot be negative.", nameof(minimum));
+        }
+
+        Minimum = minimum;
+    }
+
+    /// <summary>
+    /// Updates the maximum allowed value for this statistic rule.
+    /// </summary>
+    public void UpdateMaximum(int? maximum)
+    {
+        if (maximum is < 0)
+        {
+            throw new ArgumentException("Maximum cannot be negative.", nameof(maximum));
+        }
+
+        Maximum = maximum;
     }
 
     /// <summary>

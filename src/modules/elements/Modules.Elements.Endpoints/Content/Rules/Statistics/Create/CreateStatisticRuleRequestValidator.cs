@@ -18,5 +18,13 @@ public sealed class CreateStatisticRuleRequestValidator : Validator<CreateStatis
 
         RuleFor(x => x.LevelRequirement)
             .GreaterThanOrEqualTo(0);
+
+        RuleFor(x => x.Minimum)
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.Minimum.HasValue);
+
+        RuleFor(x => x.Maximum)
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.Maximum.HasValue);
     }
 }

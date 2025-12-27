@@ -10,5 +10,7 @@ public sealed record GetStatisticRulesResponse(Guid ElementId, IReadOnlyList<Get
         string? StackingBonus,
         int LevelRequirement,
         string? Requirements,
+        int? Minimum,
+        int? Maximum,
         int OrderSequence);
 }
