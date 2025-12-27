@@ -43,11 +43,7 @@ public sealed class CreateStatisticRuleEndpoint : Endpoint<CreateStatisticRuleRe
 
         var component = element.AddComponent(id => new StatisticRuleComponent(id, req.Name, req.Value, req.LevelRequirement));
 
-        if (!string.IsNullOrWhiteSpace(req.StackingBonus))
-        {
-            component.UpdateStackingBonus(req.StackingBonus);
-        }
-
+        component.UpdateStackingBonus(req.StackingBonus);
         component.UpdateDisplayName(req.DisplayName);
         component.UpdateMinimum(req.Minimum);
         component.UpdateMaximum(req.Maximum);

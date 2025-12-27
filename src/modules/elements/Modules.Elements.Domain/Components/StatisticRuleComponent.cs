@@ -81,9 +81,9 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     /// <summary>
     /// Updates the stacking bonus of the statistic. The value is normalized for statistic usage.
     /// </summary>
-    public void UpdateStackingBonus(string value)
+    public void UpdateStackingBonus(string? value)
     {
-        StackingBonus = value.NormalizeStatistic();
+        StackingBonus = string.IsNullOrWhiteSpace(value) ? null : value.NormalizeStatistic();
     }
 
     /// <summary>

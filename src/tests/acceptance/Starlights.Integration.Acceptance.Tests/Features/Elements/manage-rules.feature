@@ -170,6 +170,19 @@ Rule: All provided statistic names and values are normalized
             | multiple---dash     | multiple-dash     |
             | spec!@#$%^&*()+char | spec-char         |
 
+Rule: A content creator can update an existing statistic rule on an element
+    Scenario: update a statistic rule value
+        Given an element exists with the name "Element to Update Statistic Rule"
+        And the element has the following statistic rules
+            | name     | value |
+            | strength |     2 |
+        When the content creator updates the statistic rule with the name "strength" to have the following properties
+            | name      | value | level requirement | stacking bonus | minimum | maximum | requirements     | display name |
+            | dexterity |     3 |                 7 | None           |       1 |       5 | level:rogue >= 3 | Dexterity    |
+        Then the element should have a statistic rule with the following properties
+            | name      | value | level requirement | stacking bonus | minimum | maximum | requirements     | display name |
+            | dexterity |     3 |                 7 | none           |       1 |       5 | level:rogue >= 3 | Dexterity    |
+
 # include rules
 
 @ignore

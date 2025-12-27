@@ -6,6 +6,7 @@ using Starlights.Modules.Elements.Endpoints.Content.Rules.Reorder;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Update;
 
 namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
@@ -82,5 +83,22 @@ public sealed class ManageElementRulesEndpointDriver : IDriver
 
         var response = await client.PutAsJsonAsync($"/api/elements/{elementId}/rules/order", request, _integration.CancellationToken);
         return (response.IsSuccessStatusCode, response.StatusCode);
+    }
+
+    public async Task<(UpdateStatisticRuleResponse? Response, HttpStatusCode StatusCode)> UpdateStatisticRuleAsync(Guid elementId, Guid ruleId, UpdateStatisticRuleRequest request)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.PutAsJsonAsync($"/api/elements/{elementId}/rules/statistics/{ruleId}", request, _integration.CancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return (null, response.StatusCode);
+        }
+
+        var responseContent = await response.Content.ReadFromJsonAsync<UpdateStatisticRuleResponse>(_integration.CancellationToken);
+        responseContent.Should().NotBeNull();
+
+        return (responseContent!, response.StatusCode);
     }
 }

@@ -6,6 +6,7 @@ using Starlights.Modules.Elements.Endpoints.Content.Elements.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 
@@ -112,6 +113,32 @@ public sealed class ManageElementsDriver : IDriver
         await _rulesApi.ReorderRulesAsync(elementId, orderedRuleIds);
     }
 
+    public async Task<UpdateStatisticRuleResponse> UpdateStatisticRule(Guid elementId, Guid ruleId, UpdateStatisticRuleProperties properties)
+    {
+        var request = new UpdateStatisticRuleRequest
+        {
+            Name = properties.Name,
+            Value = properties.Value,
+            StackingBonus = properties.StackingBonus,
+            LevelRequirement = properties.LevelRequirement,
+            DisplayName = properties.DisplayName,
+            Minimum = properties.Minimum,
+            Maximum = properties.Maximum,
+            RequirementsExpression = properties.RequirementsExpression
+        };
+
+        var (response, statusCode) = await _rulesApi.UpdateStatisticRuleAsync(elementId, ruleId, request);
+        statusCode.Should().Be(System.Net.HttpStatusCode.OK);
+        response.Should().NotBeNull();
+        response.ElementId.Should().Be(elementId);
+        response.RuleId.Should().Be(ruleId);
+
+        _integration.Set(response, "last-updated-statistic-rule");
+        _integration.Set(properties, "last-updated-statistic-rule-properties");
+
+        return response;
+    }
+
     public sealed record CreateProperties
     {
         public required string Name { get; set; }
@@ -120,6 +147,18 @@ public sealed class ManageElementsDriver : IDriver
     }
 
     public sealed record CreateStatisticRuleProperties
+    {
+        public required string Name { get; set; }
+        public required string Value { get; set; }
+        public string? StackingBonus { get; set; }
+        public int LevelRequirement { get; set; }
+        public string? DisplayName { get; set; }
+        public int? Minimum { get; set; }
+        public int? Maximum { get; set; }
+        public string? RequirementsExpression { get; set; }
+    }
+
+    public sealed record UpdateStatisticRuleProperties
     {
         public required string Name { get; set; }
         public required string Value { get; set; }

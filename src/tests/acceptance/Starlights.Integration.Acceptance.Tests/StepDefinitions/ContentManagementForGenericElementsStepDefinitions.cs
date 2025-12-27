@@ -83,8 +83,6 @@ public class ContentManagementForGenericElementsStepDefinitions
         await _elementsDriver.CreateElement(properties);
     }
 
-    #region Element Rules
-
     [When(@"the content creator adds a new statistic rule to the element with the following properties")]
     public async Task WhenTheContentCreatorAddsANewStatisticRuleToTheElementWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
@@ -227,8 +225,32 @@ public class ContentManagementForGenericElementsStepDefinitions
         await _elementsDriver.ReorderRules(elementId, orderedRuleIds);
     }
 
+    [When(@"the content creator updates the statistic rule with the name ""([^""]*)"" to have the following properties")]
+    public async Task WhenTheContentCreatorUpdatesTheStatisticRuleWithTheNameToHaveTheFollowingPropertiesAsync(string statisticName, DataTable dataTable)
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var rules = await _elementsDriver.GetStatisticRules(elementId);
+        var rule = rules.SingleOrDefault(r => r.Name.Equals(statisticName, StringComparison.OrdinalIgnoreCase));
 
-    #endregion
+        rule.Should().NotBeNull("Expected to find a statistic rule with the name '{0}', but none was found.", statisticName);
+
+        var current = await _elementsDriver.GetStatisticRuleById(elementId, rule!.RuleId);
+        var updates = dataTable.CreateInstance<StatisticRuleTableRow>(_scenarioContext);
+
+        var properties = new ManageElementsDriver.UpdateStatisticRuleProperties
+        {
+            Name = string.IsNullOrWhiteSpace(updates.Name) ? current.Name : updates.Name,
+            Value = string.IsNullOrWhiteSpace(updates.Value) ? current.Value : updates.Value,
+            StackingBonus = updates.StackingBonus ?? current.StackingBonus,
+            LevelRequirement = updates.LevelRequirement ?? current.LevelRequirement,
+            DisplayName = updates.DisplayName ?? current.DisplayName,
+            Minimum = updates.Minimum ?? current.Minimum,
+            Maximum = updates.Maximum ?? current.Maximum,
+            RequirementsExpression = updates.RequirementsExpression ?? current.Requirements
+        };
+
+        await _elementsDriver.UpdateStatisticRule(elementId, rule.RuleId, properties);
+    }
 
 
     private sealed record ElementTableRow : IMarkdownDescriptionTableRow
