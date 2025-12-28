@@ -157,6 +157,7 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
   - Acceptance tests live under `src/tests/acceptance/` and use Reqnroll (BDD).
   - Keep step definitions focused and reuse the integration harness where possible.
 - **Always build and run the full test suite before considering work complete**.
+  - Specifying a project for 'dotnet test' should be via '--project'.
 
 ## Repository-Specific Rules
 

@@ -4,6 +4,7 @@ using AwesomeAssertions;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Entities.SavingThrows.Create;
 using Starlights.Modules.Elements.Endpoints.Entities.SavingThrows.GetSavingThrows;
+using Starlights.Modules.Elements.Endpoints.Entities.SavingThrows.Update;
 
 namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
@@ -47,5 +48,16 @@ public sealed class ManageSavingThrowsEndpointDriver : IDriver
         responseContent.Should().NotBeNull();
 
         return responseContent!;
+    }
+
+    /// <summary>
+    /// Update a saving throw via the API <code>/api/elements/saving-throws/{{id}}</code>
+    /// </summary>
+    public async Task UpdateAsync(UpdateSavingThrowRequest request)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.PutAsJsonAsync($"/api/elements/saving-throws/{request.Id}", request, _integration.CancellationToken);
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 }

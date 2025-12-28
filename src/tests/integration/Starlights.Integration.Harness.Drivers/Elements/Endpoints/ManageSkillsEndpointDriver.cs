@@ -4,6 +4,7 @@ using AwesomeAssertions;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Entities.Skills.Create;
 using Starlights.Modules.Elements.Endpoints.Entities.Skills.GetSkills;
+using Starlights.Modules.Elements.Endpoints.Entities.Skills.Update;
 
 namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
@@ -47,5 +48,16 @@ public sealed class ManageSkillsEndpointDriver : IDriver
         responseContent.Should().NotBeNull();
 
         return responseContent!;
+    }
+
+    /// <summary>
+    /// Update a skill via the API <code>/api/elements/skills/{id}</code>
+    /// </summary>
+    public async Task UpdateAsync(UpdateSkillRequest request)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.PutAsJsonAsync($"/api/elements/skills/{request.Id}", request, _integration.CancellationToken);
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 }

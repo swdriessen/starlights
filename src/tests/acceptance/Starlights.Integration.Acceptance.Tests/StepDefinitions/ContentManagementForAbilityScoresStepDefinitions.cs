@@ -1,7 +1,6 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Drivers.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.AbilityScores;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;

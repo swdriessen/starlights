@@ -19,8 +19,21 @@ Rule: A content creator can create a saving throw
             | name     | ability  | description |
             | Strength | Strength |             |
     
+@saving-throw
+Rule: A content creator can update an existing saving throw
+
+    Scenario: update an existing saving throw
+        Given an ability score exists with the name "Constitution" and an abbreviation "CON"
+        And a saving throw exists with the name "Constitution" and ability "Constitution"
+        When the content creator updates the saving throw "Constitution" with the following properties
+            | description                  |
+            | Measures physical resilience |
+        Then the saving throw "Constitution" should have at least the following properties
+            | name         | ability      | description                  |
+            | Constitution | Constitution | Measures physical resilience |
+
 @saving-throw @ignore @backlog
 Rule: A content creator can request to create a saving throw for an ability score
 
-@saving-throw @ignore @backlog
+@saving-throw @proficiency @ignore @backlog
 Rule: A content creator can request to create a proficiency for a saving throw

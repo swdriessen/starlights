@@ -52,6 +52,56 @@ public sealed class ContentManagementForSkillsStepDefinitions
         dataTable.AssertProvidedProperties(expected, skill, assertions);
     }
 
+    [Given(@"a skill exists with the name ""(.*)"" and ability ""(.*)""")]
+    public async Task GivenASkillExistsWithTheNameAndAbilityAsync(string name, string ability)
+    {
+        var id = await _skillsDriver.CreateSkillAsync(
+            new ManageSkillsDriver.CreateProperties
+            {
+                Name = name,
+                AbilityName = ability
+            },
+            storeAsLastCreated: false);
+
+        _host.Set(id, $"skill-id:{name}");
+    }
+
+    [When(@"the content creator updates the skill ""(.*)"" with the following properties")]
+    public async Task WhenTheContentCreatorUpdatesTheSkillWithTheFollowingPropertiesAsync(string name, DataTable dataTable)
+    {
+        var id = _host.Get<Guid>($"skill-id:{name}");
+
+        var updates = dataTable.Rows.Count == 0
+            ? new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
+            : dataTable.Rows[0]
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value?.ToString(),
+                    StringComparer.OrdinalIgnoreCase);
+
+        var properties = ManageSkillsDriver.UpdateProperties.FromDictionary(updates);
+
+        await _skillsDriver.UpdateSkillAsync(id, properties);
+    }
+
+    [Then(@"the skill ""(.*)"" should have at least the following properties")]
+    public async Task ThenTheSkillShouldHaveAtLeastTheFollowingPropertiesAsync(string name, DataTable dataTable)
+    {
+        var id = _host.Get<Guid>($"skill-id:{name}");
+        var skill = await _skillsDriver.GetSkillByIdAsync(id);
+
+        var expected = dataTable.CreateInstance<SkillTableRow>(_scenarioContext);
+
+        var assertions = new Dictionary<string, Action<SkillTableRow, SkillListItem>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["name"] = (e, a) => a.Name.Should().Be(e.Name),
+            ["ability"] = (e, a) => a.Ability.Should().Be(e.Ability),
+            ["description"] = (e, a) => a.Description.Should().Be(e.Description ?? string.Empty)
+        };
+
+        dataTable.AssertProvidedProperties(expected, skill, assertions);
+    }
+
     private sealed class SkillTableRow : IMarkdownDescriptionTableRow
     {
         public string Name { get; set; } = string.Empty;
