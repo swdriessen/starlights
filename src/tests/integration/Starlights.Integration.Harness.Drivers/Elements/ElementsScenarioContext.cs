@@ -8,7 +8,7 @@ public sealed class ElementsScenarioContext
 
     public void ElementCreated(string name, Guid id)
     {
-        CreatedMap.Add(name, id);
+        CreatedMap[name] = id;
         LastCreated = id;
     }
 }
