@@ -241,6 +241,36 @@ public class ContentManagementForGenericElementsStepDefinitions
         result.Should().BeTrue("Expected the deletion of the statistic rule '{0}' to succeed.", dexterity);
     }
 
+    [When(@"the content creator deletes the include rule with the name ""([^""]*)"" from the ""([^""]*)"" element")]
+    public async Task WhenTheContentCreatorDeletesTheIncludeRuleWithTheNameFromTheElementAsync(string includeRuleName, string elementName)
+    {
+        var element = await _elementsDriver.GetElementByName(elementName);
+        var includedElement = await _elementsDriver.GetElementByName(includeRuleName);
+
+        var rules = await _elementsDriver.GetIncludeRules(element.Id);
+        var rule = rules.SingleOrDefault(r => r.IncludedElementId == includedElement.Id);
+
+        rule.Should().NotBeNull("Expected to find an include rule for included element '{0}' on element '{1}', but none was found.", includeRuleName, elementName);
+
+        var deleted = await _elementsDriver.DeleteRules(element.Id, [rule.RuleId]);
+        deleted.Should().BeTrue("Expected deletion of include rule '{0}' from element '{1}' to succeed.", includeRuleName, elementName);
+    }
+
+    [When(@"the content creator deletes the selection rule with the name ""([^""]*)"" from the ""([^""]*)"" element")]
+    public async Task WhenTheContentCreatorDeletesTheSelectionRuleWithTheNameFromTheElementAsync(string selectionRuleName, string elementName)
+    {
+        var element = await _elementsDriver.GetElementByName(elementName);
+
+        var rules = await _elementsDriver.GetSelectionRules(element.Id);
+        var rule = rules.SingleOrDefault(r => r.DisplayName.Equals(selectionRuleName, StringComparison.OrdinalIgnoreCase));
+
+        rule.Should().NotBeNull("Expected to find a selection rule with display name '{0}' on element '{1}', but none was found.", selectionRuleName, elementName);
+
+        var deleted = await _elementsDriver.DeleteRules(element.Id, [rule.RuleId]);
+        deleted.Should().BeTrue("Expected deletion of selection rule '{0}' from element '{1}' to succeed.", selectionRuleName, elementName);
+    }
+
+
     [When(@"the content creator deletes all the rules from the element")]
     public async Task WhenTheContentCreatorDeletesAllTheRulesFromTheElementAsync()
     {
@@ -283,6 +313,31 @@ public class ContentManagementForGenericElementsStepDefinitions
             };
 
             dataTable.AssertProvidedProperties(expected, rule, assertions);
+        }
+    }
+
+    [Then(@"the element should have the following selection rules")]
+    public async Task ThenTheElementShouldHaveTheFollowingSelectionRulesAsync(DataTable dataTable)
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var rules = await _elementsDriver.GetSelectionRules(elementId);
+
+        var expectedRows = dataTable.CreateSet<SelectionRuleTableRow>(_scenarioContext).ToList();
+
+        rules.Should().HaveCount(expectedRows.Count);
+
+        for (var i = 0; i < expectedRows.Count; i++)
+        {
+            var expected = expectedRows[i];
+            var actual = rules[i];
+
+            var assertions = new Dictionary<string, Action<SelectionRuleTableRow, Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetList.GetSelectionRulesResponse.SelectionRuleItem>>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName),
+                ["type"] = (e, a) => a.Type.Should().Be(e.Type)
+            };
+
+            dataTable.AssertProvidedProperties<SelectionRuleTableRow, Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetList.GetSelectionRulesResponse.SelectionRuleItem>(expected, actual, assertions);
         }
     }
 
@@ -340,7 +395,7 @@ public class ContentManagementForGenericElementsStepDefinitions
 
         rule.Should().NotBeNull("Expected to find a statistic rule with the name '{0}', but none was found.", statisticName);
 
-        var current = await _elementsDriver.GetStatisticRuleById(elementId, rule!.RuleId);
+        var current = await _elementsDriver.GetStatisticRuleById(elementId, rule.RuleId);
         var updates = dataTable.CreateInstance<StatisticRuleTableRow>(_scenarioContext);
 
         var properties = new ManageElementsDriver.UpdateStatisticRuleProperties

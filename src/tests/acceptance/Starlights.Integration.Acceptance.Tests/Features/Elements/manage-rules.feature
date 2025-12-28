@@ -384,11 +384,31 @@ Rule: A content creator can delete rules from an element
             | strength |     2 |
             | health   |     5 |
 
-    @ignore @wip @include-rule
+    @include-rule
     Scenario: delete an include rule
+        Given the following elements with their respective properties exists
+            | name           | type |
+            | Child Element  | Rule |
+            | Parent Element | Rule |
+        And the element has the following include rules
+            | included element | type |
+            | Child Element    | Rule |
+        When the content creator deletes the include rule with the name "Child Element" from the "Parent Element" element
+        Then the element should have no include rules
 
-    @ignore @wip @selection-rule
+    @selection-rule
     Scenario: delete a selection rule
+        Given an element exists with the name "Selection Element"
+        And the element has the following selection rules
+            | display name        | type          |
+            | Skilled             | Proficiency   |
+            | Linguist            | Language      |
+            | Eldritch Invocation | Class Feature |
+        When the content creator deletes the selection rule with the name "Linguist" from the "Selection Element" element
+        Then the element should have the following selection rules
+            | display name        | type          |
+            | Skilled             | Proficiency   |
+            | Eldritch Invocation | Class Feature |
         
     Scenario: delete all rules from an element
         Given the following elements with their respective properties exists
