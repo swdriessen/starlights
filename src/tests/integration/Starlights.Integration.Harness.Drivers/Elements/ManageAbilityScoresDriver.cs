@@ -1,10 +1,8 @@
-using System.Net;
-using System.Net.Http.Json;
 using AwesomeAssertions;
+using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.AbilityScores;
 using Starlights.Modules.Elements.Endpoints.Content.AbilityScores.Create;
-using Starlights.Modules.Elements.Endpoints.Content.AbilityScores.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.AbilityScores.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
@@ -13,47 +11,35 @@ public sealed class ManageAbilityScoresDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsScenarioContext _elementsContext;
+    private readonly ManageAbilityScoresEndpointDriver _endpoints;
 
     public ManageAbilityScoresDriver(IIntegrationHost integration)
     {
         _integration = integration;
         _elementsContext = _integration.Get<ElementsScenarioContext>();
+        _endpoints = _integration.GetDriver<ManageAbilityScoresEndpointDriver>();
     }
 
     public async Task<Guid> CreateAbilityScoreAsync(CreateProperties properties, bool storeAsLastCreated = true)
     {
-        using var client = _integration.CreateClient();
-
         var request = new CreateAbilityScoreRequest(properties.Name, properties.Abbreviation, properties.Description);
 
-        var response = await client.PostAsJsonAsync("/api/elements/ability-scores/create", request, _integration.CancellationToken);
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var id = await _endpoints.CreateAsync(request);
 
-        var payload = await response.Content.ReadFromJsonAsync<CreateAbilityScoreResponse>(_integration.CancellationToken);
-        payload.Should().NotBeNull();
-        payload!.Id.Should().NotBeEmpty();
-
-        _elementsContext.ElementCreated(properties.Name, payload.Id);
+        _elementsContext.ElementCreated(properties.Name, id);
 
         if (storeAsLastCreated)
         {
-            _integration.Set(payload.Id, "last-created-ability-score-id");
+            _integration.Set(id, "last-created-ability-score-id");
             _integration.Set(properties, "last-created-ability-score-properties");
         }
 
-        return payload.Id;
+        return id;
     }
 
     public async Task<AbilityScoreDataModel> GetAbilityScoreByIdAsync(Guid id)
     {
-        using var client = _integration.CreateClient();
-
-        var response = await client.GetAsync($"/api/elements/ability-scores/{id}", _integration.CancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        var payload = await response.Content.ReadFromJsonAsync<AbilityScoreDataModel>(_integration.CancellationToken);
-        payload.Should().NotBeNull();
-        return payload!;
+        return await _endpoints.GetByIdAsync(id);
     }
 
     public async Task<AbilityScoreDataModel> GetAbilityScoreByNameAsync(string name)
@@ -65,22 +51,14 @@ public sealed class ManageAbilityScoresDriver : IDriver
 
     public async Task<IReadOnlyList<AbilityScoreDataModel>> GetAbilityScoresAsync()
     {
-        using var client = _integration.CreateClient();
+        var payload = await _endpoints.GetListAsync();
+        payload.Items.Should().NotBeNull();
 
-        var response = await client.GetAsync("/api/elements/ability-scores", _integration.CancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        var payload = await response.Content.ReadFromJsonAsync<GetAbilityScoresResponse>(_integration.CancellationToken);
-        payload.Should().NotBeNull();
-        payload!.Items.Should().NotBeNull();
-
-        return [.. payload.Items];
+        return [.. payload.Items!];
     }
 
     public async Task UpdateAbilityScoreAsync(Guid id, UpdateProperties properties)
     {
-        using var client = _integration.CreateClient();
-
         var current = await GetAbilityScoreByIdAsync(id);
 
         var request = new UpdateAbilityScoreRequest(
@@ -89,8 +67,7 @@ public sealed class ManageAbilityScoresDriver : IDriver
             Abbreviation: properties.Abbreviation ?? current.Abbreviation,
             Description: properties.Description ?? current.Description);
 
-        var response = await client.PutAsJsonAsync($"/api/elements/ability-scores/{id}", request, _integration.CancellationToken);
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        await _endpoints.PutAsync(request);
 
         _integration.Set(request, "last-updated-ability-score-request");
     }
