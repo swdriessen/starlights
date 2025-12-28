@@ -130,6 +130,12 @@ public sealed class ManageElementsDriver : IDriver
         return success;
     }
 
+    public async Task<bool> DeleteRules(Guid elementId, IReadOnlyList<Guid> ruleIds)
+    {
+        var (success, _) = await _rulesApi.DeleteRulesAsync(elementId, ruleIds);
+        return success;
+    }
+
     public async Task ReorderRules(Guid elementId, List<Guid> orderedRuleIds)
     {
         await _rulesApi.ReorderRulesAsync(elementId, orderedRuleIds);

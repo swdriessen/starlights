@@ -175,13 +175,25 @@ public sealed class Element : AggregateRoot<ElementId>
     public bool RemoveComponent<T>(ElementComponentId componentId) where T : ElementComponentBase
     {
         var component = _components.Find(c => c is T && c.Id == componentId);
-
         if (component is not null && _components.Remove(component))
         {
             UpdateOrderSequences();
             return true;
         }
+        return false;
+    }
 
+    /// <summary>
+    /// Removes a component by its ID.
+    /// </summary>
+    public bool RemoveComponent(ElementComponentId componentId)
+    {
+        var component = _components.Find(c => c.Id == componentId);
+        if (component is not null && _components.Remove(component))
+        {
+            UpdateOrderSequences();
+            return true;
+        }
         return false;
     }
 

@@ -6,10 +6,10 @@ using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
-using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
 
@@ -155,18 +155,6 @@ public class ContentManagementForGenericElementsStepDefinitions
         rules.Should().Contain(r => r.RuleId == createdRule.RuleId);
     }
 
-    //[When(@"the content creator adds a new statistic rule to the ""([^""]*)"" element with the following properties")]
-    //public async Task WhenTheContentCreatorAddsANewStatisticRuleToTheElementWithTheFollowingPropertiesAsync(string name, DataTable dataTable)
-    //{
-    //    throw new PendingStepException();
-    //}
-
-    //[Then(@"the ""([^""]*)"" element should have a statistic rule with the following properties")]
-    //public async Task ThenTheElementShouldHaveAStatisticRuleWithTheFollowingPropertiesAsync(string name, DataTable dataTable)
-    //{
-    //    throw new PendingStepException();
-    //}
-
     [Given(@"the element has the following statistic rules")]
     public async Task GivenTheElementHasTheFollowingStatisticRulesAsync(DataTable dataTable)
     {
@@ -188,6 +176,58 @@ public class ContentManagementForGenericElementsStepDefinitions
         }
     }
 
+    [Given(@"the element has the following include rules")]
+    public async Task GivenTheElementHasTheFollowingIncludeRulesAsync(DataTable dataTable)
+    {
+        var rows = dataTable.CreateSet<IncludeRuleTableRow>(_scenarioContext);
+        var elementId = _host.Get<Guid>("last-created-element-id");
+
+        foreach (var row in rows)
+        {
+            var includedElement = await _elementsDriver.GetElementByName(row.IncludedElement);
+
+            var properties = new ManageElementsDriver.CreateIncludeRuleProperties
+            {
+                IncludedElementId = includedElement.Id,
+                LevelRequirement = row.LevelRequirement ?? 0,
+                RequirementsExpression = row.RequirementsExpression,
+                DisplayName = row.DisplayName
+            };
+
+            await _elementsDriver.CreateIncludeRule(elementId, properties);
+        }
+    }
+
+    [Given(@"the element has the following selection rules")]
+    public async Task GivenTheElementHasTheFollowingSelectionRulesAsync(DataTable dataTable)
+    {
+        var rows = dataTable.CreateSet<SelectionRuleTableRow>(_scenarioContext);
+        var elementId = _host.Get<Guid>("last-created-element-id");
+
+        foreach (var row in rows)
+        {
+            if (!string.IsNullOrWhiteSpace(row.Default))
+            {
+                throw new PendingStepException("Selection rule 'default' is specified in the feature, but the current API/domain does not support a default selection yet.");
+            }
+
+            var properties = new ManageElementsDriver.CreateSelectionRuleProperties
+            {
+                DisplayName = row.DisplayName,
+                Type = row.Type,
+                Supports = row.Supports,
+                Range = row.Range,
+                Quantity = row.Quantity ?? 1,
+                Optional = row.Optional ?? false,
+                LevelRequirement = row.LevelRequirement ?? 0,
+                Requirements = row.Requirements,
+                Default = row.Default
+            };
+
+            await _elementsDriver.CreateSelectionRule(elementId, properties);
+        }
+    }
+
     [When(@"the content creator deletes the statistic rule with the name ""([^""]*)""")]
     public async Task WhenTheContentCreatorDeletesTheStatisticRuleWithTheNameAsync(string dexterity)
     {
@@ -199,6 +239,26 @@ public class ContentManagementForGenericElementsStepDefinitions
 
         var result = await _elementsDriver.DeleteStatisticRule(elementId, rule.RuleId);
         result.Should().BeTrue("Expected the deletion of the statistic rule '{0}' to succeed.", dexterity);
+    }
+
+    [When(@"the content creator deletes all the rules from the element")]
+    public async Task WhenTheContentCreatorDeletesAllTheRulesFromTheElementAsync()
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+
+        var statisticRules = await _elementsDriver.GetStatisticRules(elementId);
+        var includeRules = await _elementsDriver.GetIncludeRules(elementId);
+        var selectionRules = await _elementsDriver.GetSelectionRules(elementId);
+
+        var ruleIds = statisticRules.Select(r => r.RuleId)
+            .Concat(includeRules.Select(r => r.RuleId))
+            .Concat(selectionRules.Select(r => r.RuleId))
+            .ToList();
+
+        ruleIds.Should().NotBeEmpty("Expected at least one rule to be present before deleting all rules.");
+
+        var deleted = await _elementsDriver.DeleteRules(elementId, ruleIds);
+        deleted.Should().BeTrue("Expected deleting all rules to succeed.");
     }
 
     [Then(@"the element should have the following statistic rules")]
@@ -224,6 +284,30 @@ public class ContentManagementForGenericElementsStepDefinitions
 
             dataTable.AssertProvidedProperties(expected, rule, assertions);
         }
+    }
+
+    [Then(@"the element should have no statistic rules")]
+    public async Task ThenTheElementShouldHaveNoStatisticRulesAsync()
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var rules = await _elementsDriver.GetStatisticRules(elementId);
+        rules.Should().BeEmpty();
+    }
+
+    [Then(@"the element should have no include rules")]
+    public async Task ThenTheElementShouldHaveNoIncludeRulesAsync()
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var rules = await _elementsDriver.GetIncludeRules(elementId);
+        rules.Should().BeEmpty();
+    }
+
+    [Then(@"the element should have no selection rules")]
+    public async Task ThenTheElementShouldHaveNoSelectionRulesAsync()
+    {
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var rules = await _elementsDriver.GetSelectionRules(elementId);
+        rules.Should().BeEmpty();
     }
 
     [When(@"the content creator re-arranges the statistic rules to the following order")]
@@ -370,14 +454,13 @@ public class ContentManagementForGenericElementsStepDefinitions
 
     private sealed record IncludeRuleTableRow : IMarkdownDescriptionTableRow
     {
-        public required string Name { get; set; }
+        public string? Name { get; set; }
         public required string IncludedElement { get; set; }
         public int? LevelRequirement { get; set; }
         public string? RequirementsExpression { get; set; }
         public string? DisplayName { get; set; }
         public string? Description { get; set; }
     }
-
 
 
 

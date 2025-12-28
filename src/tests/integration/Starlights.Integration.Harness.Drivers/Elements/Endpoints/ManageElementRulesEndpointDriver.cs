@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Delete;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetList;
@@ -265,5 +266,20 @@ public sealed class ManageElementRulesEndpointDriver : IDriver
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<GetSelectionRuleResponse>(_integration.CancellationToken);
+    }
+
+    public async Task<(bool IsSuccessStatusCode, HttpStatusCode StatusCode)> DeleteRulesAsync(Guid elementId, IReadOnlyList<Guid> ruleIds)
+    {
+        using var client = _integration.CreateClient();
+
+        var request = new DeleteElementRulesRequest(elementId, ruleIds);
+
+        using var message = new HttpRequestMessage(HttpMethod.Delete, $"/api/elements/{elementId}/rules")
+        {
+            Content = JsonContent.Create(request)
+        };
+
+        var response = await client.SendAsync(message, _integration.CancellationToken);
+        return (response.IsSuccessStatusCode, response.StatusCode);
     }
 }

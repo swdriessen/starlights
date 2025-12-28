@@ -351,7 +351,7 @@ Rule: A content creator can specify a selection rule as optional
             | display name        | optional |
             | Variant Entertainer | true     |
 
-@selection-rule 
+@selection-rule
 Rule: A content creator can specify a selection rule as having a default selection
 
     @ignore @backlog
@@ -370,6 +370,7 @@ Rule: A content creator can specify a selection rule as having a default selecti
 @element-rules
 Rule: A content creator can delete rules from an element
 
+    @statistic-rule
     Scenario: delete a statistic rule
         Given an element exists with the name "Element with Statistic Rules"
         And the element has the following statistic rules
@@ -383,14 +384,31 @@ Rule: A content creator can delete rules from an element
             | strength |     2 |
             | health   |     5 |
 
-    @ignore @wip
+    @ignore @wip @include-rule
     Scenario: delete an include rule
 
-    @ignore @wip
+    @ignore @wip @selection-rule
     Scenario: delete a selection rule
-
-    @ignore @wip
+        
     Scenario: delete all rules from an element
+        Given the following elements with their respective properties exists
+            | name           | type |
+            | Child Element  | Rule |
+            | Parent Element | Rule |
+        And the element has the following statistic rules
+            | name      | value |
+            | strength  |     2 |
+            | dexterity |     3 |
+        And the element has the following include rules
+            | included element |
+            | Child Element    |
+        And the element has the following selection rules
+            | display name         | type     |
+            | A Language Selection | Language |
+        When the content creator deletes all the rules from the element
+        Then the element should have no statistic rules
+        And the element should have no include rules
+        And the element should have no selection rules
 
 @element-rules
 Rule: A content creator can re-arrange the order of the rules of an element
