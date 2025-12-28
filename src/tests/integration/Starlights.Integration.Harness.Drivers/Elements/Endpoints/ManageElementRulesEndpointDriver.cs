@@ -8,6 +8,10 @@ using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Reorder;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Update;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Reorder;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetList;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Update;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
@@ -188,5 +192,78 @@ public sealed class ManageElementRulesEndpointDriver : IDriver
 
         var response = await client.PutAsJsonAsync($"/api/elements/{elementId}/rules/includes/reorder", request, _integration.CancellationToken);
         return (response.IsSuccessStatusCode, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Add a selection rule to an element via the API <code>/api/elements/{elementId}/rules/selections</code>
+    /// </summary>
+    public async Task<CreateSelectionRuleResponse> CreateSelectionRuleAsync(Guid elementId, CreateSelectionRuleRequest request)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.PostAsJsonAsync($"/api/elements/{elementId}/rules/selections/create", request, _integration.CancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        var responseContent = await response.Content.ReadFromJsonAsync<CreateSelectionRuleResponse>(_integration.CancellationToken);
+        responseContent.Should().NotBeNull();
+
+        return responseContent!;
+    }
+
+    public async Task<(UpdateSelectionRuleResponse? Response, HttpStatusCode StatusCode)> UpdateSelectionRuleAsync(Guid elementId, Guid ruleId, UpdateSelectionRuleRequest request)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.PutAsJsonAsync($"/api/elements/{elementId}/rules/selections/{ruleId}", request, _integration.CancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return (null, response.StatusCode);
+        }
+
+        var responseContent = await response.Content.ReadFromJsonAsync<UpdateSelectionRuleResponse>(_integration.CancellationToken);
+        responseContent.Should().NotBeNull();
+
+        return (responseContent!, response.StatusCode);
+    }
+
+    public async Task<(bool IsSuccessStatusCode, HttpStatusCode StatusCode)> DeleteSelectionRuleAsync(Guid elementId, Guid ruleId)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.DeleteAsync($"/api/elements/{elementId}/rules/selections/{ruleId}", _integration.CancellationToken);
+        return (response.IsSuccessStatusCode, response.StatusCode);
+    }
+
+    public async Task<GetSelectionRulesResponse?> GetSelectionRulesAsync(Guid elementId)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.GetAsync($"/api/elements/{elementId}/rules/selections", _integration.CancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<GetSelectionRulesResponse>(_integration.CancellationToken);
+    }
+
+    public async Task<GetSelectionRuleResponse?> GetSelectionRuleByIdAsync(Guid elementId, Guid ruleId)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.GetAsync($"/api/elements/{elementId}/rules/selections/{ruleId}", _integration.CancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<GetSelectionRuleResponse>(_integration.CancellationToken);
     }
 }

@@ -9,6 +9,7 @@ using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
 
@@ -70,7 +71,8 @@ public class ContentManagementForGenericElementsStepDefinitions
         await _elementsDriver.CreateElement(properties);
     }
 
-    [Given(@"elements exist with the following names")]
+    //[Given(@"elements exist with the following properties")]
+    [Given(@"the following elements with their respective properties exists")]
     public async Task GivenElementsExistWithTheFollowingNamesAsync(DataTable dataTable)
     {
         var names = dataTable.CreateSet<ElementTableRow>(_scenarioContext);
@@ -374,5 +376,102 @@ public class ContentManagementForGenericElementsStepDefinitions
         public string? RequirementsExpression { get; set; }
         public string? DisplayName { get; set; }
         public string? Description { get; set; }
+    }
+
+
+
+
+    private sealed record SelectionRuleTableRow : IMarkdownDescriptionTableRow
+    {
+        public required string DisplayName { get; set; }
+        public required string Type { get; set; }
+        public string? Supports { get; set; }
+        public string? Range { get; set; }
+        public int? Quantity { get; set; }
+        public bool? Optional { get; set; }
+        public int? LevelRequirement { get; set; }
+        public string? Requirements { get; set; }
+        public string? Default { get; set; }
+        public string? Description { get; set; }
+    }
+
+    [When(@"the content creator adds a new selection rule to the ""([^""]*)"" element with the following properties")]
+    public async Task WhenTheContentCreatorAddsANewSelectionRuleToTheElementWithTheFollowingPropertiesAsync(string elementName, DataTable dataTable)
+    {
+        var row = dataTable.CreateInstance<SelectionRuleTableRow>(_scenarioContext);
+
+        if (!string.IsNullOrWhiteSpace(row.Default))
+        {
+            throw new PendingStepException("Selection rule 'default' is specified in the feature, but the current API/domain does not support a default selection yet.");
+        }
+
+        ElementDataModel element;
+        try
+        {
+            element = await _elementsDriver.GetElementByName(elementName);
+        }
+        catch (KeyNotFoundException)
+        {
+            var matches = await _elementsDriver.GetElements();
+            element = matches.Single(e => e.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var properties = new ManageElementsDriver.CreateSelectionRuleProperties
+        {
+            DisplayName = row.DisplayName,
+            Type = row.Type,
+            Supports = row.Supports,
+            Range = row.Range,
+            Quantity = row.Quantity ?? 1,
+            Optional = row.Optional ?? false,
+            LevelRequirement = row.LevelRequirement ?? 0,
+            Requirements = row.Requirements,
+            Default = row.Default
+        };
+
+        await _elementsDriver.CreateSelectionRule(element.Id, properties);
+        _host.Set(element.Id, "last-selection-rule-element-id");
+    }
+
+    [Then(@"the element ""([^""]*)"" should have a selection rule with the following properties")]
+    public async Task ThenTheElementShouldHaveASelectionRuleWithTheFollowingPropertiesAsync(string elementName, DataTable dataTable)
+    {
+        var expected = dataTable.CreateInstance<SelectionRuleTableRow>(_scenarioContext);
+
+        if (!string.IsNullOrWhiteSpace(expected.Default))
+        {
+            throw new PendingStepException("Selection rule 'default' is specified in the feature, but the current API/domain does not support a default selection yet.");
+        }
+
+        ElementDataModel element;
+        try
+        {
+            element = await _elementsDriver.GetElementByName(elementName);
+        }
+        catch (KeyNotFoundException)
+        {
+            var matches = await _elementsDriver.GetElements();
+            element = matches.Single(e => e.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var createdRule = _host.Get<Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Create.CreateSelectionRuleResponse>("last-created-selection-rule");
+        var rule = await _elementsDriver.GetSelectionRuleById(element.Id, createdRule.RuleId.Value);
+
+        var assertions = new Dictionary<string, Action<SelectionRuleTableRow, GetSelectionRuleResponse>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName),
+            ["type"] = (e, a) => a.Type.Should().Be(e.Type),
+            ["supports"] = (e, a) => (a.Supports ?? string.Empty).Should().Be(e.Supports ?? string.Empty),
+            ["range"] = (e, a) => (a.Range ?? string.Empty).Should().Be(e.Range ?? string.Empty),
+            ["quantity"] = (e, a) => a.Quantity.Should().Be(e.Quantity ?? 1),
+            ["optional"] = (e, a) => a.Optional.Should().Be(e.Optional ?? false),
+            ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0),
+            ["requirements"] = (e, a) => (a.Requirements ?? string.Empty).Should().Be(e.Requirements ?? string.Empty)
+        };
+
+        dataTable.AssertProvidedProperties(expected, rule, assertions);
+
+        var rules = await _elementsDriver.GetSelectionRules(element.Id);
+        rules.Should().Contain(r => r.RuleId == createdRule.RuleId.Value);
     }
 }

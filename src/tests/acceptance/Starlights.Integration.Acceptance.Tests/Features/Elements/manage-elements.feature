@@ -19,32 +19,32 @@ Background:
 
 Rule: a content creator can create a new generic element
 
-Scenario: create a generic element of a given type
-    When the content creator creates an element with the following properties
-        | name         | type | description                |
-        | Demo Element | Rule | A demo element for testing |
-    Then the element should have at least the following properties
-        | name         | type | description |
-        | Demo Element | Rule | A demo element for testing |
+    Scenario: create a generic element of a given type
+        When the content creator creates an element with the following properties
+            | name         | type | description                |
+            | Demo Element | Rule | A demo element for testing |
+        Then the element should have at least the following properties
+            | name         | type | description                |
+            | Demo Element | Rule | A demo element for testing |
 
 @ignore @wip
 Rule: an element is available in the compendium by default
 
-Scenario: create a generic element available in the compendium
-    When the content creator creates an element with the following properties
-        | name        | type |
-        | Any Element | Rule |
-    Then the element should have at least the following properties
-        | compendium |
-        | true       |
+    Scenario: create a generic element available in the compendium
+        When the content creator creates an element with the following properties
+            | name        | type |
+            | Any Element | Rule |
+        Then the element should have at least the following properties
+            | compendium |
+            | true       |
 
 @ignore @wip
 Rule: a content creator can create a generic element hidden from the compendium
 
-Scenario: create a generic element hidden from the compendium
-    When the content creator creates an element with the following properties
-        | name           | type | compendium |
-        | Hidden Element | Rule | false      |
-    Then the element should have at least the following properties
-        | compendium |
-        | false      |
+    Scenario: create a generic element hidden from the compendium
+        When the content creator creates an element with the following properties
+            | name           | type | compendium |
+            | Hidden Element | Rule | false      |
+        Then the element should have at least the following properties
+            | compendium |
+            | false      |

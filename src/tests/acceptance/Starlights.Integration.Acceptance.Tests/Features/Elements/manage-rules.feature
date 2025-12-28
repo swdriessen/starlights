@@ -9,8 +9,6 @@ A rule provides the data, the actual handling of a rule happens during character
 Background:
     Given I am authenticated as a content creator
 
-# statistic rules
-
 @statistic-rule
 Rule: A content creator can add a new statistic rule to an element
 
@@ -148,7 +146,7 @@ Rule: A content creator can specify constraints in the form of minimum and maxim
 @statistic-rule
 Rule: All provided statistic names and values are normalized
         lowercase, spaces replaced by dashes, special characters removed
-        apart from '-' for spaces and ':' for sub statistics e.g. 'hp:max'
+        apart from '-' for spaces and ':' for sub statistics e.g. 'hp:max' or 'rogue:sneak-attack:die:size'
         unless they are leading or trailing
 
     Scenario Outline: a statistic name is normalized
@@ -190,13 +188,11 @@ Rule: A content creator can update an existing statistic rule on an element
             | name      | value | level requirement | stacking bonus | minimum | maximum | requirements     | display name |
             | dexterity |     3 |                 7 | none           |       1 |       5 | level:rogue >= 3 | Dexterity    |
 
-# include rules
-
 @include-rule
 Rule: A content creator can add a new include rule to an element
 
     Scenario: an include rule applies defaults
-        Given elements exist with the following names
+        Given the following elements with their respective properties exists
             | name      | type          |
             | Rage      | Class Feature |
             | Barbarian | Class         |
@@ -211,7 +207,7 @@ Rule: A content creator can add a new include rule to an element
 Rule: A content creator can specify a display name on an include rule
 
     Scenario: an include rule with a display name
-        Given elements exist with the following names
+        Given the following elements with their respective properties exists
             | name      | type          |
             | Rage      | Class Feature |
             | Barbarian | Class         |
@@ -226,7 +222,7 @@ Rule: A content creator can specify a display name on an include rule
 Rule: A content creator can specify constraints in the form of requirements on an include rule
 
     Scenario: an include rule with a level requirement constraint
-        Given elements exist with the following names
+        Given the following elements with their respective properties exists
             | name            | type          |
             | Reckless Attack | Class Feature |
             | Barbarian       | Class         |
@@ -238,7 +234,7 @@ Rule: A content creator can specify constraints in the form of requirements on a
             | Reckless Attack  |                 2 |
 
     Scenario: an include rule with a requirements expression constraint
-        Given elements exist with the following names
+        Given the following elements with their respective properties exists
             | name      | type          |
             | Frenzy    | Class Feature |
             | Barbarian | Class         |
@@ -249,51 +245,129 @@ Rule: A content creator can specify constraints in the form of requirements on a
             | included element | requirements          |
             | Frenzy           | Path of the Berserker |
 
-# selection rules
-
-@ignore @selection-rule
+@selection-rule
 Rule: A content creator can add a new selection rule to an element
 
     Scenario: a selection rule applies defaults
+        Given the following elements with their respective properties exists
+            | name     | type |
+            | Linguist | Feat |
+        When the content creator adds a new selection rule to the "Linguist" element with the following properties
+            | display name        | type     |
+            | Language (Linguist) | Language |
+        Then the element "Linguist" should have a selection rule with the following properties
+            | display name        | type     | quantity | optional | level requirement |
+            | Language (Linguist) | Language |        1 | false    |                 0 |
 
-@ignore @selection-rule
-Rule: A content creator can specify a display name on a selection rule
-
-    Scenario: a selection rule with a display name
-
-@ignore @selection-rule
+@selection-rule
 Rule: A content creator can specify constraints in the form of requirements on a selection rule
 
     Scenario: a selection rule with a level requirement constraint
+        Given the following elements with their respective properties exists
+            | name      | type  |
+            | Barbarian | Class |
+        When the content creator adds a new selection rule to the "Barbarian" element with the following properties
+            | display name       | type     | supports  | level requirement |
+            | Barbarian Subclass | Subclass | Barbarian |                 3 |
+        Then the element "Barbarian" should have a selection rule with the following properties
+            | display name       | level requirement |
+            | Barbarian Subclass |                 3 |
 
     Scenario: a selection rule with a requirements expression constraint
+        Given the following elements with their respective properties exists
+            | name                 | type          |
+            | Eldritch Invocations | Class Feature |
+        When the content creator adds a new selection rule to the "Eldritch Invocations" element with the following properties
+            | display name        | type          | supports            | level requirement | requirements |
+            | Eldritch Invocation | Class Feature | Eldritch Invocation |                 1 | Warlock      |
+        Then the element "Eldritch Invocations" should have a selection rule with the following properties
+            | display name        | level requirement | requirements |
+            | Eldritch Invocation |                 1 | Warlock      |
 
-@ignore @selection-rule
+@selection-rule
 Rule: A content creator can specify constraints on the selection options on a selection rule
 
     Scenario: a selection rule with element options by type
+        Given the following elements with their respective properties exists
+            | name     | type |
+            | Linguist | Rule |
+        When the content creator adds a new selection rule to the "Linguist" element with the following properties
+            | display name        | type     |
+            | Language (Linguist) | Language |
+        Then the element "Linguist" should have a selection rule with the following properties
+            | display name        | type     |
+            | Language (Linguist) | Language |
 
     Scenario: a selection rule with element options constraint by supports
-
+        Given the following elements with their respective properties exists
+            | name           | type          |
+            | Weapon Mastery | Class Feature |
+        When the content creator adds a new selection rule to the "Weapon Mastery" element with the following properties
+            | display name   | type           | supports                      |
+            | Weapon Mastery | Weapon Mastery | Simple Melee OR Martial Melee |
+        Then the element "Weapon Mastery" should have a selection rule with the following properties
+            | display name   | supports                      |
+            | Weapon Mastery | Simple Melee OR Martial Melee |
+    
     Scenario: a selection rule with element options constraint by range
+        Given the following elements with their respective properties exists
+            | name          | type          |
+            | Arcana        | Proficiency   |
+            | History       | Proficiency   |
+            | Investigation | Proficiency   |
+            | Scholar       | Class Feature |
+        When the content creator adds a new selection rule to the "Scholar" element with the following properties
+            | display name          | type        | range                        |
+            | Proficiency (Scholar) | Proficiency | Arcana;History;Investigation |
+        Then the element "Scholar" should have a selection rule with the following properties
+            | display name          | supports | range                        |
+            | Proficiency (Scholar) |          | Arcana;History;Investigation |
 
-@ignore @selection-rule
+@selection-rule
 Rule: A content creator can specify a selection quantity on a selection rule
 
     Scenario: a selection rule with a specific selection quantity
+        Given the following elements with their respective properties exists
+            | name    | type |
+            | Skilled | Feat |
+        When the content creator adds a new selection rule to the "Skilled" element with the following properties
+            | display name      | type     | quantity |
+            | Language, Skilled | Language |        3 |
+        Then the element "Skilled" should have a selection rule with the following properties
+            | display name      | quantity |
+            | Language, Skilled |        3 |
 
-@ignore @selection-rule
+@selection-rule
 Rule: A content creator can specify a selection rule as optional
 
     Scenario: a selection rule marked as optional
+        Given the following elements with their respective properties exists
+            | name        | type       |
+            | Entertainer | Background |
+        When the content creator adds a new selection rule to the "Entertainer" element with the following properties
+            | display name        | type               | supports            | optional |
+            | Variant Entertainer | Background Variant | Variant Entertainer | true     |
+        Then the element "Entertainer" should have a selection rule with the following properties
+            | display name        | optional |
+            | Variant Entertainer | true     |
 
-@ignore @selection-rule
+@selection-rule 
 Rule: A content creator can specify a selection rule as having a default selection
 
+    @ignore @backlog
     Scenario: a selection rule with a default selection
+        Given the following elements with their respective properties exists
+            | name        | type       |
+            | Draconic    | Language   |
+            | Entertainer | Background |
+        When the content creator adds a new selection rule to the "Tongue of Dragons" element with the following properties
+            | display name                 | type     | default  |
+            | Language (Tongue of Dragons) | Language | Draconic |
+        Then the element "Tongue of Dragons" should have a selection rule with the following properties
+            | display name                 | default  |
+            | Language (Tongue of Dragons) | Draconic |
 
-# generic rules
-
+@element-rules
 Rule: A content creator can delete rules from an element
 
     Scenario: delete a statistic rule
@@ -318,6 +392,7 @@ Rule: A content creator can delete rules from an element
     @ignore @wip
     Scenario: delete all rules from an element
 
+@element-rules
 Rule: A content creator can re-arrange the order of the rules of an element
 
     Scenario: reorder statistic rules

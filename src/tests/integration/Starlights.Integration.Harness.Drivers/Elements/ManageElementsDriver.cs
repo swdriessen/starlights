@@ -7,6 +7,9 @@ using Starlights.Modules.Elements.Endpoints.Content.Elements.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetList;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
@@ -200,6 +203,46 @@ public sealed class ManageElementsDriver : IDriver
         return response;
     }
 
+    public async Task<CreateSelectionRuleResponse> CreateSelectionRule(Guid elementId, CreateSelectionRuleProperties properties)
+    {
+        var request = new CreateSelectionRuleRequest(
+            ElementId: elementId,
+            DisplayName: properties.DisplayName,
+            Type: properties.Type,
+            Supports: properties.Supports,
+            Range: properties.Range,
+            Quantity: properties.Quantity,
+            Optional: properties.Optional,
+            LevelRequirement: properties.LevelRequirement,
+            Requirements: properties.Requirements);
+
+        var response = await _rulesApi.CreateSelectionRuleAsync(elementId, request);
+
+        response.ElementId.Should().Be(elementId);
+        response.RuleId.Value.Should().NotBeEmpty();
+
+        _integration.Set(response, "last-created-selection-rule");
+        _integration.Set(properties, "last-created-selection-rule-properties");
+
+        return response;
+    }
+
+    public async Task<IReadOnlyList<GetSelectionRulesResponse.SelectionRuleItem>> GetSelectionRules(Guid elementId)
+    {
+        var response = await _rulesApi.GetSelectionRulesAsync(elementId);
+        response.Should().NotBeNull();
+        response.Rules.Should().NotBeNull();
+        return response!.Rules;
+    }
+
+    public async Task<GetSelectionRuleResponse> GetSelectionRuleById(Guid elementId, Guid ruleId)
+    {
+        var response = await _rulesApi.GetSelectionRuleByIdAsync(elementId, ruleId);
+        response.Should().NotBeNull();
+        response!.RuleId.Should().Be(ruleId);
+        return response;
+    }
+
     public sealed record CreateProperties
     {
         public required string Name { get; set; }
@@ -237,5 +280,18 @@ public sealed class ManageElementsDriver : IDriver
         public int LevelRequirement { get; set; }
         public string? RequirementsExpression { get; set; }
         public string? DisplayName { get; set; }
+    }
+
+    public sealed record CreateSelectionRuleProperties
+    {
+        public required string DisplayName { get; set; }
+        public required string Type { get; set; }
+        public string? Supports { get; set; }
+        public string? Range { get; set; }
+        public int Quantity { get; set; } = 1;
+        public bool Optional { get; set; }
+        public int LevelRequirement { get; set; }
+        public string? Requirements { get; set; }
+        public string? Default { get; set; }
     }
 }
