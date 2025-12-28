@@ -1,4 +1,5 @@
 using Starlights.Integration.Drivers.Elements;
+using Starlights.Integration.Extensions;
 
 namespace Starlights.Integration.Acceptance.Tests.Hooks;
 
@@ -24,6 +25,9 @@ public class IntegrationHostBuilderHooks
     public void BuildHost()
     {
         _host = _builder.Build();
+
+        _host.Set(new ElementsScenarioContext());
+
         _scenarioContext.ScenarioContainer.RegisterInstanceAs<IIntegrationHost>(_host);
     }
 

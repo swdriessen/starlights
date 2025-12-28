@@ -22,13 +22,12 @@ public sealed class ManageElementsDriver : IDriver
     private readonly IIntegrationHost _integration;
     private readonly ManageElementsEndpointDriver _api;
     private readonly ManageElementRulesEndpointDriver _rulesApi;
-
-    // potentially create a class to hold this data if it grows
-    private readonly Dictionary<string, Guid> _createdElementsByName = [];
+    private readonly ElementsScenarioContext _elementsContext;
 
     public ManageElementsDriver(IIntegrationHost integration, ManageElementsEndpointDriver endpointDriver, ManageElementRulesEndpointDriver rulesEndpointDriver)
     {
         _integration = integration;
+        _elementsContext = _integration.Get<ElementsScenarioContext>();
         _api = endpointDriver;
         _rulesApi = rulesEndpointDriver;
     }
@@ -45,7 +44,7 @@ public sealed class ManageElementsDriver : IDriver
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _createdElementsByName.Add(properties.Name, id);
+        _elementsContext.ElementCreated(properties.Name, id);
 
         if (storeAsLastCreated)
         {
@@ -63,7 +62,7 @@ public sealed class ManageElementsDriver : IDriver
 
     public Task<ElementDataModel> GetElementByName(string name)
     {
-        return !_createdElementsByName.TryGetValue(name, out var id)
+        return !_elementsContext.CreatedMap.TryGetValue(name, out var id)
             ? throw new KeyNotFoundException($"No element found with name '{name}'.")
             : GetElementById(id);
     }
@@ -247,6 +246,12 @@ public sealed class ManageElementsDriver : IDriver
         response.Should().NotBeNull();
         response!.RuleId.Should().Be(ruleId);
         return response;
+    }
+
+    public async Task<bool> DeleteElement(Guid elementId)
+    {
+        var (success, _) = await _api.DeleteAsync(elementId);
+        return success;
     }
 
     public sealed record CreateProperties

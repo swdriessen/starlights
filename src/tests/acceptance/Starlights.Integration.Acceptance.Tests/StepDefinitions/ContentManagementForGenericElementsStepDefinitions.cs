@@ -612,4 +612,22 @@ public class ContentManagementForGenericElementsStepDefinitions
         var rules = await _elementsDriver.GetSelectionRules(element.Id);
         rules.Should().Contain(r => r.RuleId == createdRule.RuleId.Value);
     }
+
+    [When(@"the content creator deletes the element with the name ""([^""]*)""")]
+    public async Task WhenTherContentCreatorDeletesTheElementWithTheNameAsync(string elementName)
+    {
+        var element = await _elementsDriver.GetElementByName(elementName);
+
+        var deleted = await _elementsDriver.DeleteElement(element.Id);
+        deleted.Should().BeTrue("Expected deletion of element '{0}' to succeed.", elementName);
+    }
+
+
+    [Then(@"the element list should not contain an element with the name ""([^""]*)""")]
+    public async Task ThenTheElementListShouldNotContainAnElementWithTheNameAsync(string elementName)
+    {
+        var elements = await _elementsDriver.GetElements();
+        elements.Should().NotContain(e => e.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase));
+    }
+
 }

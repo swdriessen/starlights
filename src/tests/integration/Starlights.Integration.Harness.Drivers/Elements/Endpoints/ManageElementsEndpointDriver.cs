@@ -67,4 +67,15 @@ public sealed class ManageElementsEndpointDriver : IDriver
 
         return responseContent!;
     }
+
+    /// <summary>
+    /// Delete an element by ID via the API <code>/api/elements/{id}</code>
+    /// </summary>
+    public async Task<(bool IsSuccessStatusCode, System.Net.HttpStatusCode StatusCode)> DeleteAsync(Guid id)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.DeleteAsync($"/api/elements/{id}", _integration.CancellationToken);
+        return (response.IsSuccessStatusCode, response.StatusCode);
+    }
 }

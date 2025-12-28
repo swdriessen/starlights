@@ -17,34 +17,65 @@ This allows the system to categorize and handle them appropriately.
 Background:
     Given I am authenticated as a content creator
 
-Rule: a content creator can create a new generic element
+@elements
+Rule: A content creator can create a new generic element
 
-    Scenario: create a generic element of a given type
+    Scenario: create an element with defaults
+    TODO: add compendium false as default check
         When the content creator creates an element with the following properties
-            | name         | type | description                |
-            | Demo Element | Rule | A demo element for testing |
+            | name         | type |
+            | Demo Element | Rule |
         Then the element should have at least the following properties
-            | name         | type | description                |
-            | Demo Element | Rule | A demo element for testing |
+            | name         | type | description |
+            | Demo Element | Rule |             |
 
-@ignore @wip
-Rule: an element is available in the compendium by default
-
-    Scenario: create a generic element available in the compendium
+    Scenario: create an element of a given type
         When the content creator creates an element with the following properties
-            | name        | type |
-            | Any Element | Rule |
+            | name           | type        | description                |
+            | Custom Element | Custom Type | A demo element for testing |
+        Then the element should have at least the following properties
+            | name           | type        | description                |
+            | Custom Element | Custom Type | A demo element for testing |
+
+@elements
+Rule: A content creator can delete an element
+
+    Scenario: delete an element
+        Given an element exists with the name "Existing Element"
+        When the content creator deletes the element with the name "Existing Element"
+        Then the element list should not contain an element with the name "Existing Element"
+
+    @ignore @backlog
+    Scenario: bulk delete elements
+        Given the following elements with their respective properties exists
+            | name          | type |
+            | Element One   | Rule |
+            | Element Two   | Rule |
+            | Element Three | Rule |
+        When the content creator deletes the following elements:
+            | name          |
+            | Element One   |
+            | Element Three |
+        Then the element list should not contain elements with the following names:
+            | name          |
+            | Element One   |
+            | Element Three |
+
+@elements @ignore @backlog
+Rule: A content creator can change the visibility of an element in the compendium
+
+    Scenario: create an element available in the compendium
+        When the content creator creates an element with the following properties
+            | name            | type | compendium |
+            | Visible Element | Rule | true       |
         Then the element should have at least the following properties
             | compendium |
             | true       |
 
-@ignore @wip
-Rule: a content creator can create a generic element hidden from the compendium
-
-    Scenario: create a generic element hidden from the compendium
+    Scenario: create an element hidden from the compendium
         When the content creator creates an element with the following properties
-            | name           | type | compendium |
-            | Hidden Element | Rule | false      |
+            | name                     | type | compendium |
+            | Hidden (Default) Element | Rule | false      |
         Then the element should have at least the following properties
             | compendium |
             | false      |

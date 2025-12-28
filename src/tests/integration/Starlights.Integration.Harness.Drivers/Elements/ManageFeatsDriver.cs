@@ -11,9 +11,12 @@ public class ManageFeatsDriver : IDriver
     private readonly IIntegrationHost _integration;
     private readonly ManageFeatsEndpointDriver _api;
 
+    private readonly ElementsScenarioContext _elementsContext;
+
     public ManageFeatsDriver(IIntegrationHost integration, ManageFeatsEndpointDriver endpointDriver)
     {
         _integration = integration;
+        _elementsContext = integration.Get<ElementsScenarioContext>();
         _api = endpointDriver;
     }
 
@@ -31,6 +34,8 @@ public class ManageFeatsDriver : IDriver
 
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
+
+        _elementsContext.ElementCreated(request.Name, id);
 
         _integration.Set(id, "last-created-feat-id");
         _integration.Set(properties, "last-created-feat-properties");
