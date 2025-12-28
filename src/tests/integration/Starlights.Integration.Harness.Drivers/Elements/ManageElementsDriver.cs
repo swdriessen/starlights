@@ -1,8 +1,12 @@
+using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Elements.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
@@ -16,6 +20,9 @@ public sealed class ManageElementsDriver : IDriver
     private readonly ManageElementsEndpointDriver _api;
     private readonly ManageElementRulesEndpointDriver _rulesApi;
 
+    // potentially create a class to hold this data if it grows
+    private readonly Dictionary<string, Guid> _createdElementsByName = [];
+
     public ManageElementsDriver(IIntegrationHost integration, ManageElementsEndpointDriver endpointDriver, ManageElementRulesEndpointDriver rulesEndpointDriver)
     {
         _integration = integration;
@@ -23,7 +30,7 @@ public sealed class ManageElementsDriver : IDriver
         _rulesApi = rulesEndpointDriver;
     }
 
-    public async Task<Guid> CreateElement(CreateProperties properties)
+    public async Task<Guid> CreateElement(CreateProperties properties, bool storeAsLastCreated = true)
     {
         var request = new CreateElementRequest
         {
@@ -35,8 +42,13 @@ public sealed class ManageElementsDriver : IDriver
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _integration.Set(id, "last-created-element-id");
-        _integration.Set(properties, "last-created-element-properties");
+        _createdElementsByName.Add(properties.Name, id);
+
+        if (storeAsLastCreated)
+        {
+            _integration.Set(id, "last-created-element-id");
+            _integration.Set(properties, "last-created-element-properties");
+        }
 
         return id;
     }
@@ -44,6 +56,13 @@ public sealed class ManageElementsDriver : IDriver
     public Task<ElementDataModel> GetElementById(Guid id)
     {
         return _api.GetByIdAsync(id);
+    }
+
+    public Task<ElementDataModel> GetElementByName(string name)
+    {
+        return !_createdElementsByName.TryGetValue(name, out var id)
+            ? throw new KeyNotFoundException($"No element found with name '{name}'.")
+            : GetElementById(id);
     }
 
     public Task<ElementDataModel> GetLastCreatedElement()
@@ -88,7 +107,7 @@ public sealed class ManageElementsDriver : IDriver
     {
         var response = await _rulesApi.GetStatisticRulesAsync(elementId);
         response.Should().NotBeNull();
-        response!.ElementId.Should().Be(elementId);
+        response.ElementId.Should().Be(elementId);
         response.Rules.Should().NotBeNull();
         return response.Rules;
     }
@@ -97,7 +116,7 @@ public sealed class ManageElementsDriver : IDriver
     {
         var response = await _rulesApi.GetStatisticRuleByIdAsync(elementId, ruleId);
         response.Should().NotBeNull();
-        response!.ElementId.Should().Be(elementId);
+        response.ElementId.Should().Be(elementId);
         response.RuleId.Should().Be(ruleId);
         return response;
     }
@@ -139,6 +158,48 @@ public sealed class ManageElementsDriver : IDriver
         return response;
     }
 
+    public async Task<CreateIncludeRuleResponse> CreateIncludeRule(Guid elementId, CreateIncludeRuleProperties properties)
+    {
+        var request = new CreateIncludeRuleRequest(
+            ElementId: elementId,
+            IncludedElementId: properties.IncludedElementId,
+            LevelRequirement: properties.LevelRequirement,
+            RequirementsExpression: properties.RequirementsExpression,
+            DisplayName: properties.DisplayName);
+
+        _integration.WriteLine($"Creating include rule for ElementId={elementId} with IncludedElementId={properties.IncludedElementId}");
+        var response = await _rulesApi.CreateIncludeRuleAsync(elementId, request);
+
+        response.ElementId.Should().Be(elementId);
+        response.RuleId.Should().NotBeEmpty();
+
+        _integration.Set(response, "last-created-include-rule");
+        _integration.Set(properties, "last-created-include-rule-properties");
+
+        return response;
+    }
+
+    public async Task<IReadOnlyList<GetIncludeRulesResponse.IncludeRuleItem>> GetIncludeRules(Guid elementId)
+    {
+        _integration.WriteLine($"Getting include rules for ElementId={elementId}");
+        using var client = _integration.CreateClient();
+        var response = await client.GetFromJsonAsync<GetIncludeRulesResponse>($"/api/elements/{elementId}/rules/includes");
+        response.Should().NotBeNull();
+        response.ElementId.Should().Be(elementId);
+        return response.Rules;
+    }
+
+    public async Task<GetIncludeRuleResponse> GetIncludeRuleById(Guid elementId, Guid ruleId)
+    {
+        _integration.WriteLine($"Getting include rule by ID: ElementId={elementId}, RuleId={ruleId}");
+        using var client = _integration.CreateClient();
+        var response = await client.GetFromJsonAsync<GetIncludeRuleResponse>($"/api/elements/{elementId}/rules/includes/{ruleId}");
+        response.Should().NotBeNull();
+        response.ElementId.Should().Be(elementId);
+        response.RuleId.Should().Be(ruleId);
+        return response;
+    }
+
     public sealed record CreateProperties
     {
         public required string Name { get; set; }
@@ -168,5 +229,13 @@ public sealed class ManageElementsDriver : IDriver
         public int? Minimum { get; set; }
         public int? Maximum { get; set; }
         public string? RequirementsExpression { get; set; }
+    }
+
+    public sealed record CreateIncludeRuleProperties
+    {
+        public required Guid IncludedElementId { get; set; }
+        public int LevelRequirement { get; set; }
+        public string? RequirementsExpression { get; set; }
+        public string? DisplayName { get; set; }
     }
 }

@@ -4,6 +4,8 @@ using Starlights.Integration.Acceptance.Tests.Extensions;
 using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Elements;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
@@ -66,6 +68,24 @@ public class ContentManagementForGenericElementsStepDefinitions
         };
 
         await _elementsDriver.CreateElement(properties);
+    }
+
+    [Given(@"elements exist with the following names")]
+    public async Task GivenElementsExistWithTheFollowingNamesAsync(DataTable dataTable)
+    {
+        var names = dataTable.CreateSet<ElementTableRow>(_scenarioContext);
+
+        foreach (var row in names)
+        {
+            var properties = new ManageElementsDriver.CreateProperties
+            {
+                Name = row.Name,
+                Type = row.Type ?? "Type",
+                Description = $"Description for {row.Name}"
+            };
+
+            await _elementsDriver.CreateElement(properties);
+        }
     }
 
     [Given(@"an element exists with the following properties")]
@@ -271,5 +291,88 @@ public class ContentManagementForGenericElementsStepDefinitions
         public string? Description { get; set; }
         public string? DisplayName { get; set; }
         public string? RequirementsExpression { get; set; }
+    }
+
+
+
+    [When(@"the content creator adds a new include rule to the element with the following properties")]
+    public async Task WhenTheContentCreatorAddsANewIncludeRuleToTheElementWithTheFollowingPropertiesAsync(DataTable dataTable)
+    {
+        var row = dataTable.CreateInstance<IncludeRuleTableRow>(_scenarioContext);
+
+        var elementId = _host.Get<Guid>("last-created-element-id");
+
+        var includedElementId = await _elementsDriver.CreateElement(new ManageElementsDriver.CreateProperties
+        {
+            Name = row.IncludedElement,
+            Type = "Type",
+            Description = $"Description for {row.IncludedElement}"
+        }, storeAsLastCreated: false);
+
+        var properties = new ManageElementsDriver.CreateIncludeRuleProperties
+        {
+            IncludedElementId = includedElementId,
+            LevelRequirement = row.LevelRequirement ?? 0,
+            RequirementsExpression = row.RequirementsExpression,
+            DisplayName = row.DisplayName
+        };
+
+        await _elementsDriver.CreateIncludeRule(elementId, properties);
+        _host.Set(row.IncludedElement, "last-created-include-rule-name");
+    }
+
+    [When(@"the content creator adds a new include rule to the ""([^""]*)"" element with the following properties")]
+    public async Task WhenTheContentCreatorAddsANewIncludeRuleToTheElementWithTheFollowingPropertiesAsync(string elementName, DataTable dataTable)
+    {
+        var row = dataTable.CreateInstance<IncludeRuleTableRow>(_scenarioContext);
+
+        var element = await _elementsDriver.GetElementByName(elementName);
+
+        var elementToInclude = await _elementsDriver.GetElementByName(row.IncludedElement);
+
+        var properties = new ManageElementsDriver.CreateIncludeRuleProperties
+        {
+            IncludedElementId = elementToInclude.Id,
+            LevelRequirement = row.LevelRequirement ?? 0,
+            RequirementsExpression = row.RequirementsExpression,
+            DisplayName = row.DisplayName
+        };
+
+        await _elementsDriver.CreateIncludeRule(element.Id, properties);
+        _host.Set(row.IncludedElement, "last-created-include-rule-name");
+    }
+
+    [Then(@"the element should have an include rule with the following properties")]
+    public async Task ThenTheElementShouldHaveAnIncludeRuleWithTheFollowingPropertiesAsync(DataTable dataTable)
+    {
+        var expected = dataTable.CreateInstance<IncludeRuleTableRow>(_scenarioContext);
+
+        var elementId = _host.Get<Guid>("last-created-element-id");
+        var createdRule = _host.Get<CreateIncludeRuleResponse>("last-created-include-rule");
+
+        var rule = await _elementsDriver.GetIncludeRuleById(elementId, createdRule.RuleId);
+
+        var assertions = new Dictionary<string, Action<IncludeRuleTableRow, GetIncludeRuleResponse>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["included element"] = (e, a) => a.IncludedElementId.Should().NotBeEmpty(),
+            ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0),
+            ["requirements"] = (e, a) => a.Requirements.Should().Be(e.RequirementsExpression),
+            ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName)
+        };
+
+        dataTable.AssertProvidedProperties(expected, rule, assertions);
+
+        var list = await _elementsDriver.GetIncludeRules(elementId);
+        list.Should().Contain(r => r.RuleId == createdRule.RuleId);
+    }
+
+    private sealed record IncludeRuleTableRow : IMarkdownDescriptionTableRow
+    {
+        public required string Name { get; set; }
+        public required string IncludedElement { get; set; }
+        public int? LevelRequirement { get; set; }
+        public string? RequirementsExpression { get; set; }
+        public string? DisplayName { get; set; }
+        public string? Description { get; set; }
     }
 }

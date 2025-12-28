@@ -11,6 +11,7 @@ Background:
 
 # statistic rules
 
+@statistic-rule
 Rule: A content creator can add a new statistic rule to an element
 
     Scenario: a statistic rule applies defaults
@@ -69,6 +70,7 @@ Rule: A content creator can add a new statistic rule to an element
             | name      | value              |
             | alertness | -strength-modifier |
 
+@statistic-rule
 Rule: A content creator can specify a stacking bonus on a statistic rule
 
     Scenario: a statistic rule with a stacking bonus
@@ -80,6 +82,7 @@ Rule: A content creator can specify a stacking bonus on a statistic rule
             | name         | stacking bonus |
             | intelligence | item           |
 
+@statistic-rule
 Rule: A content creator can specify a display name on a statistic rule
 
     Scenario: a statistic rule with a display name
@@ -91,6 +94,7 @@ Rule: A content creator can specify a display name on a statistic rule
             | name   | value | display name |
             | wisdom |     4 | Barbarian    |
 
+@statistic-rule
 Rule: A content creator can specify constraints in the form of requirements on a statistic rule
 
     Scenario: a statistic rule with a level requirement constraint
@@ -111,6 +115,7 @@ Rule: A content creator can specify constraints in the form of requirements on a
             | requirements                         |
             | level:rogue >= 4 and has:light-armor |
 
+@statistic-rule
 Rule: A content creator can specify constraints in the form of minimum and maximum values on a statistic rule
 
     Scenario: a statistic rule with a minimum value constraint
@@ -140,6 +145,7 @@ Rule: A content creator can specify constraints in the form of minimum and maxim
             | name  | minimum | maximum |
             | speed |       1 |       3 |
 
+@statistic-rule
 Rule: All provided statistic names and values are normalized
         lowercase, spaces replaced by dashes, special characters removed
         apart from '-' for spaces and ':' for sub statistics e.g. 'hp:max'
@@ -170,6 +176,7 @@ Rule: All provided statistic names and values are normalized
             | multiple---dash     | multiple-dash     |
             | spec!@#$%^&*()+char | spec-char         |
 
+@statistic-rule
 Rule: A content creator can update an existing statistic rule on an element
     Scenario: update a statistic rule value
         Given an element exists with the name "Element to Update Statistic Rule"
@@ -185,43 +192,83 @@ Rule: A content creator can update an existing statistic rule on an element
 
 # include rules
 
-@ignore
+@include-rule
 Rule: A content creator can add a new include rule to an element
 
     Scenario: an include rule applies defaults
+        Given elements exist with the following names
+            | name      | type          |
+            | Rage      | Class Feature |
+            | Barbarian | Class         |
+        When the content creator adds a new include rule to the "Barbarian" element with the following properties
+            | included element |
+            | Rage             |
+        Then the element should have an include rule with the following properties
+            | included element | level requirement |
+            | Rage             |                 0 |
 
-@ignore
+@include-rule
 Rule: A content creator can specify a display name on an include rule
 
     Scenario: an include rule with a display name
+        Given elements exist with the following names
+            | name      | type          |
+            | Rage      | Class Feature |
+            | Barbarian | Class         |
+        When the content creator adds a new include rule to the "Barbarian" element with the following properties
+            | included element | display name  |
+            | Rage             | Level 1: Rage |
+        Then the element should have an include rule with the following properties
+            | included element | display name  |
+            | Rage             | Level 1: Rage |
 
-@ignore
+@include-rule
 Rule: A content creator can specify constraints in the form of requirements on an include rule
 
     Scenario: an include rule with a level requirement constraint
+        Given elements exist with the following names
+            | name            | type          |
+            | Reckless Attack | Class Feature |
+            | Barbarian       | Class         |
+        When the content creator adds a new include rule to the "Barbarian" element with the following properties
+            | included element | level requirement |
+            | Reckless Attack  |                 2 |
+        Then the element should have an include rule with the following properties
+            | included element | level requirement |
+            | Reckless Attack  |                 2 |
 
     Scenario: an include rule with a requirements expression constraint
+        Given elements exist with the following names
+            | name      | type          |
+            | Frenzy    | Class Feature |
+            | Barbarian | Class         |
+        When the content creator adds a new include rule to the "Barbarian" element with the following properties
+            | included element | requirements          |
+            | Frenzy           | Path of the Berserker |
+        Then the element should have an include rule with the following properties
+            | included element | requirements          |
+            | Frenzy           | Path of the Berserker |
 
 # selection rules
 
-@ignore
+@ignore @selection-rule
 Rule: A content creator can add a new selection rule to an element
 
     Scenario: a selection rule applies defaults
 
-@ignore
+@ignore @selection-rule
 Rule: A content creator can specify a display name on a selection rule
 
     Scenario: a selection rule with a display name
 
-@ignore
+@ignore @selection-rule
 Rule: A content creator can specify constraints in the form of requirements on a selection rule
 
     Scenario: a selection rule with a level requirement constraint
 
     Scenario: a selection rule with a requirements expression constraint
 
-@ignore
+@ignore @selection-rule
 Rule: A content creator can specify constraints on the selection options on a selection rule
 
     Scenario: a selection rule with element options by type
@@ -230,17 +277,17 @@ Rule: A content creator can specify constraints on the selection options on a se
 
     Scenario: a selection rule with element options constraint by range
 
-@ignore
+@ignore @selection-rule
 Rule: A content creator can specify a selection quantity on a selection rule
 
     Scenario: a selection rule with a specific selection quantity
 
-@ignore
+@ignore @selection-rule
 Rule: A content creator can specify a selection rule as optional
 
     Scenario: a selection rule marked as optional
 
-@ignore
+@ignore @selection-rule
 Rule: A content creator can specify a selection rule as having a default selection
 
     Scenario: a selection rule with a default selection

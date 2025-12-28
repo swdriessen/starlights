@@ -24,6 +24,11 @@ public sealed class IncludeRuleComponent : ElementComponentBase
     public ElementId IncludeElement { get; private set; }
 
     /// <summary>
+    /// Gets the display name for this include rule, if any. This is can be used for human readability (imported legacy content may put the old ID_ here).
+    /// </summary>
+    public string? DisplayName { get; private set; }
+
+    /// <summary>
     /// Gets the level requirement for this include rule.
     /// </summary>
     public int LevelRequirement { get; private set; }
@@ -62,5 +67,23 @@ public sealed class IncludeRuleComponent : ElementComponentBase
             throw new ArgumentException("LevelRequirement cannot be negative.", nameof(levelRequirement));
         }
         LevelRequirement = levelRequirement;
+    }
+
+    /// <summary>
+    /// Updates the display name for this include rule.
+    /// </summary>
+    /// <param name="displayName">The new display name. Use <see langword="null"/> to clear.</param>
+    public void UpdateDisplayName(string? displayName)
+    {
+        DisplayName = string.IsNullOrWhiteSpace(displayName) ? null : displayName.Trim();
+    }
+
+    /// <summary>
+    /// Updates the requirements expression for this include rule.
+    /// </summary>
+    /// <param name="requirements">The requirements expression. Use <see langword="null"/> to clear.</param>
+    public void UpdateRequirements(string? requirements)
+    {
+        Requirements = string.IsNullOrWhiteSpace(requirements) ? null : requirements.Trim();
     }
 }
