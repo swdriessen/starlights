@@ -1,14 +1,12 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Drivers.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
-using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
+using static Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList.GetStatisticRulesResponse;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
 
@@ -18,12 +16,15 @@ public class ContentManagementForGenericElementsStepDefinitions
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageElementsDriver _elementsDriver;
+    private readonly ElementsScenarioContext _elementsContext;
 
     public ContentManagementForGenericElementsStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;
         _elementsDriver = _host.GetDriver<ManageElementsDriver>();
+
+        _elementsContext = _host.Get<ElementsScenarioContext>();
     }
 
     [When(@"the content creator creates an element with the following properties")]
@@ -109,7 +110,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     {
         var row = dataTable.CreateInstance<StatisticRuleTableRow>(_scenarioContext);
 
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
 
         var properties = new ManageElementsDriver.CreateStatisticRuleProperties
         {
@@ -131,12 +132,12 @@ public class ContentManagementForGenericElementsStepDefinitions
     {
         var expected = dataTable.CreateInstance<StatisticRuleTableRow>(_scenarioContext);
 
-        var elementId = _host.Get<Guid>("last-created-element-id");
-        var createdRule = _host.Get<CreateStatisticRuleResponse>("last-created-statistic-rule");
+        var elementId = _elementsContext.LastCreated;
 
-        var rule = await _elementsDriver.GetStatisticRuleById(elementId, createdRule.RuleId);
+        var rules = await _elementsDriver.GetStatisticRules(elementId);
+        rules.Should().HaveCountGreaterThanOrEqualTo(1, "Expected at least one statistic rule to be present on the element.");
 
-        var assertions = new Dictionary<string, Action<StatisticRuleTableRow, GetStatisticRuleResponse>>(StringComparer.OrdinalIgnoreCase)
+        var assertions = new Dictionary<string, Action<StatisticRuleTableRow, StatisticRuleItem>>(StringComparer.OrdinalIgnoreCase)
         {
             ["name"] = (e, a) => a.Name.Should().Be(e.Name),
             ["value"] = (e, a) => a.Value.Should().Be(e.Value),
@@ -148,10 +149,7 @@ public class ContentManagementForGenericElementsStepDefinitions
             ["maximum"] = (e, a) => a.Maximum.Should().Be(e.Maximum)
         };
 
-        dataTable.AssertProvidedProperties(expected, rule, assertions);
-
-        var rules = await _elementsDriver.GetStatisticRules(elementId);
-        rules.Should().Contain(r => r.RuleId == createdRule.RuleId);
+        dataTable.AssertAnyProvidedProperties(expected, rules, assertions);
     }
 
     [Given(@"the element has the following statistic rules")]
@@ -159,7 +157,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     {
         var rows = dataTable.CreateSet<StatisticRuleTableRow>(_scenarioContext);
 
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
 
         foreach (var row in rows)
         {
@@ -179,7 +177,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     public async Task GivenTheElementHasTheFollowingIncludeRulesAsync(DataTable dataTable)
     {
         var rows = dataTable.CreateSet<IncludeRuleTableRow>(_scenarioContext);
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
 
         foreach (var row in rows)
         {
@@ -201,7 +199,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     public async Task GivenTheElementHasTheFollowingSelectionRulesAsync(DataTable dataTable)
     {
         var rows = dataTable.CreateSet<SelectionRuleTableRow>(_scenarioContext);
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
 
         foreach (var row in rows)
         {
@@ -230,7 +228,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     [When(@"the content creator deletes the statistic rule with the name ""([^""]*)""")]
     public async Task WhenTheContentCreatorDeletesTheStatisticRuleWithTheNameAsync(string dexterity)
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
         var rules = await _elementsDriver.GetStatisticRules(elementId);
         var rule = rules.SingleOrDefault(r => r.Name.Equals(dexterity, StringComparison.OrdinalIgnoreCase));
 
@@ -273,7 +271,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     [When(@"the content creator deletes all the rules from the element")]
     public async Task WhenTheContentCreatorDeletesAllTheRulesFromTheElementAsync()
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
 
         var statisticRules = await _elementsDriver.GetStatisticRules(elementId);
         var includeRules = await _elementsDriver.GetIncludeRules(elementId);
@@ -293,7 +291,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     [Then(@"the element should have the following statistic rules")]
     public async Task ThenTheElementShouldHaveTheFollowingStatisticRulesAsync(DataTable dataTable)
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
         var rules = await _elementsDriver.GetStatisticRules(elementId);
 
         var expectedRows = dataTable.CreateSet<StatisticRuleTableRow>(_scenarioContext).ToList();
@@ -318,7 +316,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     [Then(@"the element should have the following selection rules")]
     public async Task ThenTheElementShouldHaveTheFollowingSelectionRulesAsync(DataTable dataTable)
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
         var rules = await _elementsDriver.GetSelectionRules(elementId);
 
         var expectedRows = dataTable.CreateSet<SelectionRuleTableRow>(_scenarioContext).ToList();
@@ -343,7 +341,7 @@ public class ContentManagementForGenericElementsStepDefinitions
     [Then(@"the element should have no statistic rules")]
     public async Task ThenTheElementShouldHaveNoStatisticRulesAsync()
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _elementsContext.LastCreated;
         var rules = await _elementsDriver.GetStatisticRules(elementId);
         rules.Should().BeEmpty();
     }

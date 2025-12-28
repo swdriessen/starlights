@@ -18,9 +18,9 @@ Rule: A content creator can create a proficiency
         Then the proficiency should have at least the following properties
             | name      | proficiency type | description |
             | Dexterity | Saving Throw     |             |
-        #And the element should have a statistic rule with the following properties
-        #    | name                               | value       | stacking bonus | display name |
-        #    | dexterity:saving-throw:proficiency | proficiency | proficiency    | Proficiency  |
+        And the element should have a statistic rule with the following properties
+            | name                               | value       | stacking bonus | display name |
+            | dexterity:saving-throw:proficiency | proficiency | proficiency    | Proficiency  |
 
     Scenario: create a skill proficiency with defaults
         When the content creator creates a proficiency with the following properties
@@ -29,6 +29,6 @@ Rule: A content creator can create a proficiency
         Then the proficiency should have at least the following properties
             | name            | proficiency type | description |
             | Animal Handling | Skill            |             |
-        #And the element should have a statistic rule with the following properties
-        #    | name                        | value       | stacking bonus | display name |
-        #    | animal-handling:proficiency | proficiency | proficiency    | Proficiency  |
+        And the element should have a statistic rule with the following properties
+            | name                        | value       | stacking bonus | display name |
+            | animal-handling:proficiency | proficiency | proficiency    | Proficiency  |

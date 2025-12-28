@@ -116,6 +116,42 @@ internal static class DataTableExtensions
         }
     }
 
+    /// <summary>
+    /// Attempts to apply the provided-property assertions against any item in <paramref name="actuals"/>.
+    /// The call succeeds if at least one item satisfies all assertions. When none match, an exception
+    /// is thrown that includes details from each attempted item.
+    /// </summary>
+    internal static void AssertAnyProvidedProperties<TExpected, TActual>(
+        this DataTable dataTable,
+        TExpected expected,
+        IEnumerable<TActual> actuals,
+        IReadOnlyDictionary<string, Action<TExpected, TActual>> assertions)
+    {
+        if (actuals == null) throw new ArgumentNullException(nameof(actuals));
+
+        var failures = new List<string>();
+        var index = 0;
+
+        foreach (var actual in actuals)
+        {
+            index++;
+            try
+            {
+                // Reuse the single-item assertion method. If it doesn't throw, we have a match.
+                dataTable.AssertProvidedProperties(expected, actual, assertions);
+                return;
+            }
+            catch (Exception ex)
+            {
+                failures.Add($"Item[{index}] failure: {ex.Message}");
+            }
+        }
+
+        var actualCount = index;
+        throw new InvalidOperationException(
+            $"Expected at least one item to match the provided properties, but none did. Checked {actualCount} items. Details: {string.Join("; ", failures)}");
+    }
+
     private static string NormalizeHeader(string header)
     {
         return header.Trim().ToLower(CultureInfo.InvariantCulture);

@@ -25,13 +25,42 @@ public sealed class CreateProficiencyEndpoint : Endpoint<CreateProficiencyReques
 
     public override async Task HandleAsync(CreateProficiencyRequest req, CancellationToken ct)
     {
-        Logger.LogInformation("Creating proficiency '{ProficiencyName}'", req.Name);
+        Logger.LogInformation("Creating proficiency '{ProficiencyName}' of type '{ProficiencyType}'", req.Name, req.ProficiencyType);
+
+        // check if type is one of ....
+        var acceptedTypes = new[] { "Skill", "Saving Throw" };
+        if (!acceptedTypes.Contains(req.ProficiencyType))
+        {
+            Logger.LogWarning("Invalid proficiency type '{ProficiencyType}'", req.ProficiencyType);
+            await Send.ErrorsAsync(statusCode: 400, cancellation: ct);
+            return;
+        }
 
         var repository = _persistence.GetRepository<IElementsRepository>();
 
         var element = Element.Create(req.Name, ElementTypeConstants.Proficiency);
         element.AddComponent(id => new ProficiencyAttributesComponent(id, req.ProficiencyType));
         element.AddComponent(id => new DescriptionComponent(id, req.Description ?? string.Empty));
+
+        if (req.GenerateRules) // generate rules based on type
+        {
+            Logger.LogInformation("Generating rules for proficiency '{ProficiencyName}'", req.Name);
+
+            // based on type, create statistics component
+            // create strategies for typed proficiencies or factories etc
+            if (req.ProficiencyType == "Skill")
+            {
+                var c = element.AddComponent(id => new StatisticRuleComponent(id, $"{req.Name}:proficiency", "proficiency", 0));
+                c.UpdateStackingBonus("proficiency");
+                c.UpdateDisplayName("Proficiency");
+            }
+            else if (req.ProficiencyType == "Saving Throw")
+            {
+                var c = element.AddComponent(id => new StatisticRuleComponent(id, $"{req.Name}:saving-throw:proficiency", "proficiency", 0));
+                c.UpdateStackingBonus("proficiency");
+                c.UpdateDisplayName("Proficiency");
+            }
+        }
 
         repository.Add(element);
         var rows = await _persistence.SaveChangesAsync();
@@ -48,4 +77,8 @@ public sealed class CreateProficiencyEndpoint : Endpoint<CreateProficiencyReques
             new CreateProficiencyResponse(element.Id.Value),
             cancellation: ct);
     }
+
+
+
+
 }

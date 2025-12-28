@@ -1,8 +1,9 @@
-using System.Text.Json.Serialization;
-
 namespace Starlights.Modules.Elements.Endpoints.Entities.Proficiencies.Create;
 
-public sealed record CreateProficiencyRequest(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("proficiencyType")] string ProficiencyType,
-    [property: JsonPropertyName("description")] string? Description);
+public sealed record CreateProficiencyRequest(string Name, string ProficiencyType, string? Description)
+{
+    /// <summary>
+    /// Whether to automatically generate associated statistic rules for the proficiency.
+    /// </summary>
+    public bool GenerateRules { get; init; } = true;
+}
