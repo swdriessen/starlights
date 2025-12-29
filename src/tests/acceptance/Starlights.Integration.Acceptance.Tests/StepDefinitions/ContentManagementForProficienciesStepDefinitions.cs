@@ -2,7 +2,7 @@ using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
 using Starlights.Integration.Drivers.Elements;
-using Starlights.Modules.Elements.Endpoints.Entities.Proficiencies.GetProficiencies;
+using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.GetProficiencies;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
 

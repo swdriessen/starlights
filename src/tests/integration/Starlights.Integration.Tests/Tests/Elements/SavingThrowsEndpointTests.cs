@@ -3,8 +3,8 @@ using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.AbilityScores.Create;
-using Starlights.Modules.Elements.Endpoints.Entities.SavingThrows.Create;
-using Starlights.Modules.Elements.Endpoints.Entities.SavingThrows.GetSavingThrows;
+using Starlights.Modules.Elements.Endpoints.Content.SavingThrows.Create;
+using Starlights.Modules.Elements.Endpoints.Content.SavingThrows.GetSavingThrows;
 
 namespace Starlights.Integration.Tests.Elements;
 

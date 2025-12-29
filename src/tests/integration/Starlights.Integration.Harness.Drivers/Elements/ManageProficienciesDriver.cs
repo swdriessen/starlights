@@ -1,9 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Entities.Proficiencies.Create;
-using Starlights.Modules.Elements.Endpoints.Entities.Proficiencies.GetProficiencies;
-using Starlights.Modules.Elements.Endpoints.Entities.Proficiencies.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.GetProficiencies;
+using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 
@@ -42,7 +42,7 @@ public sealed class ManageProficienciesDriver : IDriver
         var payload = await _endpoints.GetListAsync();
         payload.Items.Should().NotBeNull();
 
-        return payload.Items.ToList();
+        return [.. payload.Items];
     }
 
     public async Task<ProficiencyListItem> GetProficiencyByIdAsync(Guid id)

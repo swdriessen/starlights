@@ -3,8 +3,8 @@ using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.AbilityScores.Create;
-using Starlights.Modules.Elements.Endpoints.Entities.Skills.Create;
-using Starlights.Modules.Elements.Endpoints.Entities.Skills.GetSkills;
+using Starlights.Modules.Elements.Endpoints.Content.Skills.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Skills.GetSkills;
 
 namespace Starlights.Integration.Tests.Elements;
 

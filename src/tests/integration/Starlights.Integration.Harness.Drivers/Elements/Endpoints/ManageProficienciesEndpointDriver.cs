@@ -2,9 +2,9 @@ using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Entities.Proficiencies.Create;
-using Starlights.Modules.Elements.Endpoints.Entities.Proficiencies.GetProficiencies;
-using Starlights.Modules.Elements.Endpoints.Entities.Proficiencies.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.GetProficiencies;
+using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.Update;
 
 namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
