@@ -27,16 +27,16 @@ public static partial class StringExtensions
         /// </remarks>
         public string NormalizeStatistic()
         {
-            var normalizedValue = value
-                .Trim()
-                .ToLowerInvariant()
-                .Replace(' ', '-');
+            var normalizedValue = value.Trim().ToLowerInvariant();
 
+            // remove straight and curly apostrophes in one pass
+            normalizedValue = normalizedValue.Replace(' ', '-');
+            normalizedValue = ApostrophesRegex().Replace(normalizedValue, string.Empty);
             normalizedValue = NormalizeRegex().Replace(normalizedValue, "-");
             normalizedValue = DuplicateHyphensRegex().Replace(normalizedValue, "-");
             normalizedValue = DuplicateColonsRegex().Replace(normalizedValue, ":");
 
-            return normalizedValue.Trim('-', ':');
+            return normalizedValue.Trim('-', ':'); // trim any leading or trailing hyphens or colons
         }
     }
 
@@ -48,5 +48,8 @@ public static partial class StringExtensions
 
     [GeneratedRegex(@"\:{2,}")]
     private static partial Regex DuplicateColonsRegex();
+
+    [GeneratedRegex(@"['’]")]
+    private static partial Regex ApostrophesRegex();
 }
 

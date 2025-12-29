@@ -159,20 +159,21 @@ Rule: All provided statistic names and values are normalized
             | <expected> | <expected> | <expected>     |
 
         Examples:
-            | name                | expected          |
-            | Agility             | agility           |
-            | Sneak Attack:die    | sneak-attack:die  |
-            | HP:max              | hp:max            |
-            | Luck (Fortune)      | luck-fortune      |
-            | Wisdom/Insight      | wisdom-insight    |
-            | Charisma & Presence | charisma-presence |
-            | Intelligence#1      | intelligence-1    |
-            | -leading-trailing-  | leading-trailing  |
-            | :leading:trailing:  | leading:trailing  |
-            | multiple:::colons:  | multiple:colons   |
-            | multiple   spaces   | multiple-spaces   |
-            | multiple---dash     | multiple-dash     |
-            | spec!@#$%^&*()+char | spec-char         |
+            | name                 | expected            |
+            | Agility              | agility             |
+            | Sneak Attack:die     | sneak-attack:die    |
+            | HP:max               | hp:max              |
+            | Luck (Fortune)       | luck-fortune        |
+            | Wisdom/Insight       | wisdom-insight      |
+            | Charisma & Presence  | charisma-presence   |
+            | Intelligence#1       | intelligence-1      |
+            | -leading-trailing-   | leading-trailing    |
+            | :leading:trailing:   | leading:trailing    |
+            | multiple:::colons:   | multiple:colons     |
+            | multiple   spaces    | multiple-spaces     |
+            | multiple---dash      | multiple-dash       |
+            | spec!@#$%^&*()+char  | spec-char           |
+            | Alchemist’s Supplies | alchemists-supplies |
 
 @statistic-rule
 Rule: A content creator can update an existing statistic rule on an element

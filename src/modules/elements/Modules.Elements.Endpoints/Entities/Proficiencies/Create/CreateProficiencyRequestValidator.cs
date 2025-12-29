@@ -14,9 +14,5 @@ public sealed class CreateProficiencyRequestValidator : Validator<CreateProficie
         RuleFor(x => x.ProficiencyType)
             .NotEmpty()
             .WithMessage("Proficiency type is required.");
-
-        RuleFor(x => x.Description)
-            .MaximumLength(4000)
-            .WithMessage("Description must be 4000 characters or less.");
     }
 }

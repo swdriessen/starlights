@@ -28,7 +28,7 @@ public sealed class CreateProficiencyEndpoint : Endpoint<CreateProficiencyReques
         Logger.LogInformation("Creating proficiency '{ProficiencyName}' of type '{ProficiencyType}'", req.Name, req.ProficiencyType);
 
         // check if type is one of ....
-        var acceptedTypes = new[] { "Skill", "Saving Throw" };
+        var acceptedTypes = new[] { "Skill", "Saving Throw", "Weapon", "Armor", "Tool", "Vehicle" };
         if (!acceptedTypes.Contains(req.ProficiencyType))
         {
             Logger.LogWarning("Invalid proficiency type '{ProficiencyType}'", req.ProficiencyType);
@@ -46,20 +46,9 @@ public sealed class CreateProficiencyEndpoint : Endpoint<CreateProficiencyReques
         {
             Logger.LogInformation("Generating rules for proficiency '{ProficiencyName}'", req.Name);
 
-            // based on type, create statistics component
-            // create strategies for typed proficiencies or factories etc
-            if (req.ProficiencyType == "Skill")
-            {
-                var c = element.AddComponent(id => new StatisticRuleComponent(id, $"{req.Name}:proficiency", "proficiency", 0));
-                c.UpdateStackingBonus("proficiency");
-                c.UpdateDisplayName("Proficiency");
-            }
-            else if (req.ProficiencyType == "Saving Throw")
-            {
-                var c = element.AddComponent(id => new StatisticRuleComponent(id, $"{req.Name}:saving-throw:proficiency", "proficiency", 0));
-                c.UpdateStackingBonus("proficiency");
-                c.UpdateDisplayName("Proficiency");
-            }
+            var c = element.AddComponent(id => new StatisticRuleComponent(id, $"{req.Name}:{req.ProficiencyType}:proficiency", "proficiency", 0));
+            c.UpdateStackingBonus("proficiency");
+            c.UpdateDisplayName("Proficiency");
         }
 
         repository.Add(element);
