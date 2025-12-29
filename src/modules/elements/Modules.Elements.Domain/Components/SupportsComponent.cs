@@ -7,7 +7,7 @@ public class SupportsComponent : ElementComponentBase
 {
     private readonly List<string> _supports = [];
 
-    public SupportsComponent(ElementId owningElement, IEnumerable<string> supports)
+    public SupportsComponent(ElementId owningElement, List<string> supports)
         : base(owningElement)
     {
         _supports = [.. supports];
@@ -27,5 +27,20 @@ public class SupportsComponent : ElementComponentBase
 
         _supports.Clear();
         _supports.AddRange(supports);
+    }
+
+    public void AddSupport(string support)
+    {
+        ArgumentNullException.ThrowIfNull(support);
+        if (!_supports.Contains(support))
+        {
+            _supports.Add(support);
+        }
+    }
+
+    public void RemoveSupport(string support)
+    {
+        ArgumentNullException.ThrowIfNull(support);
+        _supports.RemoveAll(s => s == support);
     }
 }
