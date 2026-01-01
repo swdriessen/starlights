@@ -1,21 +1,19 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Drivers.Elements;
-using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Feats;
 
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
+namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 
 [Binding]
-public class ContentManagementForFeatsStepDefinitions
+public class FeatManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageFeatCategoriesDriver _featCategoriesDriver;
     private readonly ManageFeatsDriver _featsDriver;
 
-    public ContentManagementForFeatsStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public FeatManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;

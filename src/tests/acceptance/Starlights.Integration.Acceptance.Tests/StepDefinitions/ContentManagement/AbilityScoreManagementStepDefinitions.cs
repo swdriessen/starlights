@@ -3,16 +3,16 @@ using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.AbilityScores;
 
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
+namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 
 [Binding]
-public sealed class ContentManagementForAbilityScoresStepDefinitions
+public sealed class AbilityScoreManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageAbilityScoresDriver _abilityScoresDriver;
 
-    public ContentManagementForAbilityScoresStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public AbilityScoreManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;

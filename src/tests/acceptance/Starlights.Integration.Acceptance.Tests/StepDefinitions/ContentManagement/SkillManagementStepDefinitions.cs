@@ -1,19 +1,18 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Drivers.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Skills.GetSkills;
 
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
+namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 
 [Binding]
-public sealed class ContentManagementForSkillsStepDefinitions
+public sealed class SkillManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageSkillsDriver _skillsDriver;
 
-    public ContentManagementForSkillsStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public SkillManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;

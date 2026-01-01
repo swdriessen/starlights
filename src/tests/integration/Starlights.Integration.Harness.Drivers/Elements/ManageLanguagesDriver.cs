@@ -11,10 +11,12 @@ public sealed class ManageLanguagesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ManageLanguagesEndpointDriver _api;
+    private readonly ElementsScenarioContext _elementsContext;
 
     public ManageLanguagesDriver(IIntegrationHost integration, ManageLanguagesEndpointDriver endpointDriver)
     {
         _integration = integration;
+        _elementsContext = _integration.Get<ElementsScenarioContext>();
         _api = endpointDriver;
     }
 
@@ -30,6 +32,8 @@ public sealed class ManageLanguagesDriver : IDriver
 
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
+
+        _elementsContext.ElementCreated(request.Name, id);
 
         _integration.Set(id, "last-created-language-id");
 

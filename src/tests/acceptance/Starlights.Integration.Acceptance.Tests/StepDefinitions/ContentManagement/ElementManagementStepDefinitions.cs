@@ -8,17 +8,17 @@ using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
 using static Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList.GetStatisticRulesResponse;
 
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
+namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 
 [Binding]
-public class ContentManagementForGenericElementsStepDefinitions
+public class ElementManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageElementsDriver _elementsDriver;
     private readonly ElementsScenarioContext _elementsContext;
 
-    public ContentManagementForGenericElementsStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public ElementManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;
@@ -41,7 +41,6 @@ public class ContentManagementForGenericElementsStepDefinitions
 
         await _elementsDriver.CreateElement(properties);
     }
-
     [Then(@"the element should have at least the following properties")]
     public async Task ThenTheElementShouldHaveAtLeastTheFollowingPropertiesAsync(DataTable dataTable)
     {
@@ -328,13 +327,13 @@ public class ContentManagementForGenericElementsStepDefinitions
             var expected = expectedRows[i];
             var actual = rules[i];
 
-            var assertions = new Dictionary<string, Action<SelectionRuleTableRow, Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetList.GetSelectionRulesResponse.SelectionRuleItem>>(StringComparer.OrdinalIgnoreCase)
+            var assertions = new Dictionary<string, Action<SelectionRuleTableRow, Modules.Elements.Endpoints.Content.Rules.Selections.GetList.GetSelectionRulesResponse.SelectionRuleItem>>(StringComparer.OrdinalIgnoreCase)
             {
                 ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName),
                 ["type"] = (e, a) => a.Type.Should().Be(e.Type)
             };
 
-            dataTable.AssertProvidedProperties<SelectionRuleTableRow, Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetList.GetSelectionRulesResponse.SelectionRuleItem>(expected, actual, assertions);
+            dataTable.AssertProvidedProperties<SelectionRuleTableRow, Modules.Elements.Endpoints.Content.Rules.Selections.GetList.GetSelectionRulesResponse.SelectionRuleItem>(expected, actual, assertions);
         }
     }
 
@@ -409,6 +408,13 @@ public class ContentManagementForGenericElementsStepDefinitions
 
         await _elementsDriver.UpdateStatisticRule(elementId, rule.RuleId, properties);
     }
+
+
+
+
+
+
+
 
 
     private sealed record ElementTableRow : IMarkdownDescriptionTableRow
@@ -589,7 +595,7 @@ public class ContentManagementForGenericElementsStepDefinitions
             element = matches.Single(e => e.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase));
         }
 
-        var createdRule = _host.Get<Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Create.CreateSelectionRuleResponse>("last-created-selection-rule");
+        var createdRule = _host.Get<Modules.Elements.Endpoints.Content.Rules.Selections.Create.CreateSelectionRuleResponse>("last-created-selection-rule");
         var rule = await _elementsDriver.GetSelectionRuleById(element.Id, createdRule.RuleId.Value);
 
         var assertions = new Dictionary<string, Action<SelectionRuleTableRow, GetSelectionRuleResponse>>(StringComparer.OrdinalIgnoreCase)

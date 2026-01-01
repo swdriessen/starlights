@@ -11,11 +11,13 @@ public class ManageSpellsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ManageSpellsEndpointDriver _api;
+    private readonly ElementsScenarioContext _elementsContext;
 
     public ManageSpellsDriver(IIntegrationHost integration, ManageSpellsEndpointDriver endpointDriver)
     {
         _integration = integration;
         _api = endpointDriver;
+        _elementsContext = _integration.Get<ElementsScenarioContext>();
     }
 
     public async Task<Guid> CreateSpell(CreateProperties properties)
@@ -41,6 +43,8 @@ public class ManageSpellsDriver : IDriver
 
         _integration.Set(id, "last-created-spell-id");
         _integration.Set(properties, "last-created-spell-properties");
+
+        _elementsContext.ElementCreated(request.Name, id);
 
         return id;
     }

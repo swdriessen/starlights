@@ -1,13 +1,11 @@
 using AwesomeAssertions;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Drivers.Elements;
-using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Languages;
 
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
+namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 
 [Binding]
-public class ContentManagementForLanguagesStepDefinitions
+public class LanguageManagementStepDefinitions
 {
     public const string CURRENT_LANGUAGE_TABLE_ROW = "CURRENT-LANGUAGE-ROW";
 
@@ -15,7 +13,7 @@ public class ContentManagementForLanguagesStepDefinitions
     private readonly IIntegrationHost _host;
     private readonly ManageLanguagesDriver _driver;
 
-    public ContentManagementForLanguagesStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public LanguageManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;

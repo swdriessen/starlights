@@ -22,14 +22,20 @@ public sealed class ManageElementsDriver : IDriver
     private readonly IIntegrationHost _integration;
     private readonly ManageElementsEndpointDriver _api;
     private readonly ManageElementRulesEndpointDriver _rulesApi;
+    private readonly ElementLabelsEndpointDriver _labelsApi;
     private readonly ElementsScenarioContext _elementsContext;
 
-    public ManageElementsDriver(IIntegrationHost integration, ManageElementsEndpointDriver endpointDriver, ManageElementRulesEndpointDriver rulesEndpointDriver)
+    public ManageElementsDriver(
+        IIntegrationHost integration,
+        ManageElementsEndpointDriver endpointDriver,
+        ManageElementRulesEndpointDriver rulesEndpointDriver,
+        ElementLabelsEndpointDriver labelsEndpointDriver)
     {
         _integration = integration;
         _elementsContext = _integration.Get<ElementsScenarioContext>();
         _api = endpointDriver;
         _rulesApi = rulesEndpointDriver;
+        _labelsApi = labelsEndpointDriver;
     }
 
     public async Task<Guid> CreateElement(CreateProperties properties, bool storeAsLastCreated = true)
@@ -77,6 +83,23 @@ public sealed class ManageElementsDriver : IDriver
     {
         var response = await _api.GetListAsync(type);
         return [.. response.Items];
+    }
+
+    public async Task AddLabels(Guid elementId, IReadOnlyCollection<string> labels)
+    {
+        var statusCode = await _labelsApi.CreateAsync(elementId, labels);
+        statusCode.Should().Be(System.Net.HttpStatusCode.Created);
+    }
+
+    public Task<IReadOnlyList<string>> GetLabels(Guid elementId)
+    {
+        return _labelsApi.ListAsync(elementId);
+    }
+
+    public async Task ReplaceLabels(Guid elementId, IReadOnlyCollection<string> labels)
+    {
+        var (_, statusCode) = await _labelsApi.UpdateAsync(elementId, labels);
+        statusCode.Should().Be(System.Net.HttpStatusCode.OK);
     }
 
     public async Task<CreateStatisticRuleResponse> CreateStatisticRule(Guid elementId, CreateStatisticRuleProperties properties)

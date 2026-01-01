@@ -1,19 +1,18 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Drivers.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.GetProficiencies;
 
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
+namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 
 [Binding]
-public sealed class ContentManagementForProficienciesStepDefinitions
+public sealed class ProficiencyManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageProficienciesDriver _proficienciesDriver;
 
-    public ContentManagementForProficienciesStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public ProficiencyManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;

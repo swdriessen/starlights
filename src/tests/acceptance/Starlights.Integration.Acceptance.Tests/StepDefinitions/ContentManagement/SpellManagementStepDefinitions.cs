@@ -1,15 +1,13 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Integration.Drivers.Elements;
-using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Spells;
 using static Starlights.Integration.Drivers.Elements.ManageSpellsDriver;
 
-namespace Starlights.Integration.Acceptance.Tests.StepDefinitions;
+namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 
 [Binding]
-public class ContentManagementForSpellsStepDefinitions
+public class SpellManagementStepDefinitions
 {
     public const string CURRENT_SPELL_ID = "CURRENT-SPELL-ID";
     public const string CURRENT_SPELL_PROPERTIES = "CURRENT-SPELL-PROPERTIES";
@@ -18,7 +16,7 @@ public class ContentManagementForSpellsStepDefinitions
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageSpellsDriver _driver;
 
-    public ContentManagementForSpellsStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public SpellManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;

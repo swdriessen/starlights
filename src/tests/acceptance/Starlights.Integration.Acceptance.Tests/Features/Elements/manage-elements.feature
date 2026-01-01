@@ -79,3 +79,42 @@ Rule: A content creator can change the visibility of an element in the compendiu
         Then the element should have at least the following properties
             | compendium |
             | false      |
+            
+@labels
+Rule: A content creator can add labels to an element to allow more granular selection rules
+
+    Scenario: label a tool proficiency as a musical instrument
+        Given an element exists with the name "Tool Proficiency (Pan Flute)"
+        When the content creator adds the "Musical Instrument" label to the "Tool Proficiency (Pan Flute)" element
+        Then the element "Tool Proficiency (Pan Flute)" should contain a "Musical Instrument" label
+
+    Scenario: label an element with multiple labels
+        Given an element exists with the name "Fireball"
+        When the content creator adds the following labels to the "Fireball" element:
+            | label     |
+            | Fire      |
+            | Evocation |
+        Then the element "Fireball" should contain the following labels:
+            | label     |
+            | Fire      |
+            | Evocation |
+            
+    Scenario: change labels on an element
+        Given an element exists with the name "Wrongfully Labeled"
+        And the content creator adds the following labels to the "Wrongfully Labeled" element:
+            | label      |
+            | Ice        |
+            | Abjuration |
+            |          1 |
+        When the content creator updates the "Wrongfully Labeled" element with the following labels:
+            | label          |
+            | Simple  |
+            | Martial |
+            | Origin  |
+            |       4 |
+        Then the element "Wrongfully Labeled" should contain the following labels:
+            | label   |
+            | Simple  |
+            | Martial |
+            | Origin  |
+            |       4 |
