@@ -1,4 +1,4 @@
-Feature: content management for generic elements
+Feature: elements content management 
 
 As a content creator
 I want to manage elements
@@ -107,7 +107,7 @@ Rule: A content creator can add labels to an element to allow more granular sele
             | Abjuration |
             |          1 |
         When the content creator updates the "Wrongfully Labeled" element with the following labels:
-            | label          |
+            | label   |
             | Simple  |
             | Martial |
             | Origin  |
@@ -118,3 +118,25 @@ Rule: A content creator can add labels to an element to allow more granular sele
             | Martial |
             | Origin  |
             |       4 |
+
+
+
+
+@description
+Rule: A content creator can update the description of an existing element
+
+    Scenario: update an existing element's description
+        Given the content creator prepared the following markdown description
+            """
+            # Element Title
+            This is a **bold** statement.
+            - First item
+            - Second item
+            """
+        And an element exists with the name "Updatable Element"
+        When the content creator updates the element "Updatable Element" with the following properties
+            | description            |
+            | <markdown description> |
+        Then the element "Updatable Element" should have at least the following properties
+            | description            |
+            | <markdown description> |

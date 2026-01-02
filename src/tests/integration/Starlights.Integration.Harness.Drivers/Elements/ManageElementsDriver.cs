@@ -79,6 +79,27 @@ public sealed class ManageElementsDriver : IDriver
         return GetElementById(id);
     }
 
+    public async Task<ManageElementsEndpointDriver.UpdateElementResponse> UpdateElement(Guid elementId, UpdateProperties properties)
+    {
+        var current = await GetElementById(elementId);
+
+        var request = new ManageElementsEndpointDriver.UpdateElementRequest
+        {
+            Id = elementId,
+            Name = string.IsNullOrWhiteSpace(properties.Name) ? current.Name : properties.Name,
+            Description = properties.Description
+        };
+
+        var (response, statusCode) = await _api.UpdateAsync(elementId, request);
+        statusCode.Should().Be(System.Net.HttpStatusCode.OK);
+        response.Should().NotBeNull();
+
+        _integration.Set(response!, "last-updated-element");
+        _integration.Set(properties, "last-updated-element-properties");
+
+        return response!;
+    }
+
     public async Task<List<ElementDataModel>> GetElements(string? type = null)
     {
         var response = await _api.GetListAsync(type);
@@ -281,6 +302,12 @@ public sealed class ManageElementsDriver : IDriver
     {
         public required string Name { get; set; }
         public required string Type { get; set; }
+        public string? Description { get; set; }
+    }
+
+    public sealed record UpdateProperties
+    {
+        public string? Name { get; set; }
         public string? Description { get; set; }
     }
 

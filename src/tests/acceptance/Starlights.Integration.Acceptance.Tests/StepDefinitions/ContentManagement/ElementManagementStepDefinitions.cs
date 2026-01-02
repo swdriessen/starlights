@@ -70,6 +70,37 @@ public class ElementManagementStepDefinitions
         await _elementsDriver.CreateElement(properties);
     }
 
+    [When(@"the content creator updates the element ""([^""]*)"" with the following properties")]
+    public async Task WhenTheContentCreatorUpdatesTheElementWithTheFollowingPropertiesAsync(string elementName, DataTable dataTable)
+    {
+        var element = await _elementsDriver.GetElementByName(elementName);
+        var row = dataTable.CreateInstance<ElementTableRow>(_scenarioContext);
+
+        var properties = new ManageElementsDriver.UpdateProperties
+        {
+            Name = string.IsNullOrWhiteSpace(row.Name) ? null : row.Name,
+            Description = row.Description
+        };
+
+        await _elementsDriver.UpdateElement(element.Id, properties);
+    }
+
+    [Then(@"the element ""([^""]*)"" should have at least the following properties")]
+    public async Task ThenTheElementShouldHaveAtLeastTheFollowingPropertiesAsync(string elementName, DataTable dataTable)
+    {
+        var element = await _elementsDriver.GetElementByName(elementName);
+        var expected = dataTable.CreateInstance<ElementTableRow>(_scenarioContext);
+
+        var assertions = new Dictionary<string, Action<ElementTableRow, ElementDataModel>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["name"] = (e, a) => a.Name.Should().Be(e.Name),
+            ["type"] = (e, a) => a.Type.Should().Be(e.Type),
+            ["description"] = (e, a) => a.Description.Should().Be(e.Description ?? string.Empty)
+        };
+
+        dataTable.AssertProvidedProperties(expected, element, assertions);
+    }
+
     //[Given(@"elements exist with the following properties")]
     [Given(@"the following elements with their respective properties exists")]
     public async Task GivenElementsExistWithTheFollowingNamesAsync(DataTable dataTable)

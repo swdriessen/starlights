@@ -1,4 +1,4 @@
-Feature: content management for element rules
+Feature: element rules content management
 
 As a content creator
 I want to create, update, delete, and list rules for elements

@@ -78,4 +78,34 @@ public sealed class ManageElementsEndpointDriver : IDriver
         var response = await client.DeleteAsync($"/api/elements/{id}", _integration.CancellationToken);
         return (response.IsSuccessStatusCode, response.StatusCode);
     }
+
+    /// <summary>
+    /// Update an element by ID via the API <code>/api/elements/{id}</code>
+    /// </summary>
+    public async Task<(UpdateElementResponse? Response, System.Net.HttpStatusCode StatusCode)> UpdateAsync(Guid id, UpdateElementRequest request)
+    {
+        using var client = _integration.CreateClient();
+
+        var response = await client.PutAsJsonAsync($"/api/elements/{id}", request, _integration.CancellationToken);
+        var statusCode = response.StatusCode;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return (null, statusCode);
+        }
+
+        var responseContent = await response.Content.ReadFromJsonAsync<UpdateElementResponse>(_integration.CancellationToken);
+        responseContent.Should().NotBeNull();
+
+        return (responseContent, statusCode);
+    }
+
+    public sealed record UpdateElementRequest
+    {
+        public Guid Id { get; set; }
+        public required string Name { get; set; }
+        public string? Description { get; set; }
+    }
+
+    public sealed record UpdateElementResponse(Guid Id);
 }
