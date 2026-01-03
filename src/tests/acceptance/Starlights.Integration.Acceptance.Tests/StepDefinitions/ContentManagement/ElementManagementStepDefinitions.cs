@@ -4,7 +4,9 @@ using Starlights.Integration.Acceptance.Tests.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
 using static Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList.GetStatisticRulesResponse;
 
@@ -101,7 +103,6 @@ public class ElementManagementStepDefinitions
         dataTable.AssertProvidedProperties(expected, element, assertions);
     }
 
-    //[Given(@"elements exist with the following properties")]
     [Given(@"the following elements with their respective properties exists")]
     public async Task GivenElementsExistWithTheFollowingNamesAsync(DataTable dataTable)
     {
@@ -358,13 +359,13 @@ public class ElementManagementStepDefinitions
             var expected = expectedRows[i];
             var actual = rules[i];
 
-            var assertions = new Dictionary<string, Action<SelectionRuleTableRow, Modules.Elements.Endpoints.Content.Rules.Selections.GetList.GetSelectionRulesResponse.SelectionRuleItem>>(StringComparer.OrdinalIgnoreCase)
+            var assertions = new Dictionary<string, Action<SelectionRuleTableRow, GetSelectionRulesResponse.SelectionRuleItem>>(StringComparer.OrdinalIgnoreCase)
             {
                 ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName),
                 ["type"] = (e, a) => a.Type.Should().Be(e.Type)
             };
 
-            dataTable.AssertProvidedProperties<SelectionRuleTableRow, Modules.Elements.Endpoints.Content.Rules.Selections.GetList.GetSelectionRulesResponse.SelectionRuleItem>(expected, actual, assertions);
+            dataTable.AssertProvidedProperties<SelectionRuleTableRow, GetSelectionRulesResponse.SelectionRuleItem>(expected, actual, assertions);
         }
     }
 
@@ -626,7 +627,7 @@ public class ElementManagementStepDefinitions
             element = matches.Single(e => e.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase));
         }
 
-        var createdRule = _host.Get<Modules.Elements.Endpoints.Content.Rules.Selections.Create.CreateSelectionRuleResponse>("last-created-selection-rule");
+        var createdRule = _host.Get<CreateSelectionRuleResponse>("last-created-selection-rule");
         var rule = await _elementsDriver.GetSelectionRuleById(element.Id, createdRule.RuleId.Value);
 
         var assertions = new Dictionary<string, Action<SelectionRuleTableRow, GetSelectionRuleResponse>>(StringComparer.OrdinalIgnoreCase)

@@ -2,10 +2,10 @@ using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Elements.Labels.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Elements.Labels.Delete;
-using Starlights.Modules.Elements.Endpoints.Content.Elements.Labels.List;
-using Starlights.Modules.Elements.Endpoints.Content.Elements.Labels.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Labels.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Labels.Delete;
+using Starlights.Modules.Elements.Endpoints.Content.Labels.List;
+using Starlights.Modules.Elements.Endpoints.Content.Labels.Update;
 
 namespace Starlights.Integration.Drivers.Elements.Endpoints;
 

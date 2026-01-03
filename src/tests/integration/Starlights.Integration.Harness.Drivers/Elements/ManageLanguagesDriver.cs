@@ -1,9 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Languages;
-using Starlights.Modules.Elements.Endpoints.Content.Languages.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Languages.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 

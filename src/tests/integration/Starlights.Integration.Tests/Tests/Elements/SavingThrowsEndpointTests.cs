@@ -2,9 +2,9 @@ using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.AbilityScores.Create;
-using Starlights.Modules.Elements.Endpoints.Content.SavingThrows.Create;
-using Starlights.Modules.Elements.Endpoints.Content.SavingThrows.GetSavingThrows;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.AbilityScores.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.SavingThrows.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.SavingThrows.GetSavingThrows;
 
 namespace Starlights.Integration.Tests.Elements;
 

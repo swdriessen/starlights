@@ -2,10 +2,10 @@ using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.Create;
-using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.GetById;
-using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.GetList;
-using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.GetList;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.Update;
 
 namespace Starlights.Integration.Tests.Elements;
 

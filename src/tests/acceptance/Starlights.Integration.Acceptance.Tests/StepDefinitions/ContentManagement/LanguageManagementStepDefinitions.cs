@@ -1,6 +1,6 @@
 using AwesomeAssertions;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Languages;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 

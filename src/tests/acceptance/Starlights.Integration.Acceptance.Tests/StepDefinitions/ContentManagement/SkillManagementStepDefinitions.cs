@@ -1,7 +1,7 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Skills.GetSkills;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Skills.GetSkills;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 

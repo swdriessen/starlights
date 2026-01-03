@@ -2,8 +2,8 @@ using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.GetProficiencies;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.GetProficiencies;
 
 namespace Starlights.Integration.Tests.Elements;
 

@@ -1,9 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.Create;
-using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.GetById;
-using Starlights.Modules.Elements.Endpoints.Content.FeatCategories.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.GetById;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 

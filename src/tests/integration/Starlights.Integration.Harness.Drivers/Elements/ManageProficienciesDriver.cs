@@ -1,9 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.GetProficiencies;
-using Starlights.Modules.Elements.Endpoints.Content.Proficiencies.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Update;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Attributes.Proficiencies.GetProficiencies;
 
 namespace Starlights.Integration.Drivers.Elements;
 

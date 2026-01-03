@@ -1,7 +1,7 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Spells;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells;
 using static Starlights.Integration.Drivers.Elements.ManageSpellsDriver;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;

@@ -1,8 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Feats;
-using Starlights.Modules.Elements.Endpoints.Content.Feats.Update;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Create;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 
@@ -22,7 +23,7 @@ public class ManageFeatsDriver : IDriver
 
     public async Task<Guid> CreateFeat(CreateProperties properties)
     {
-        var request = new Modules.Elements.Endpoints.Content.Feats.Create.CreateFeatRequest
+        var request = new CreateFeatRequest
         {
             Name = properties.Name,
             CategoryId = properties.CategoryId,

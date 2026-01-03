@@ -2,7 +2,7 @@
 using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Drivers.Elements.Extensions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Spells;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells;
 using static Starlights.Integration.Drivers.Elements.ManageSpellsDriver;
 
 namespace Starlights.Integration.Tests.Elements;
