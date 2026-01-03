@@ -1,13 +1,13 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Elements;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Elements;
 using static Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList.GetStatisticRulesResponse;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;

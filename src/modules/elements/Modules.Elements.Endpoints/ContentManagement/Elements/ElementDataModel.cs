@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements;
 
 /// <summary>
 /// The generic DTO representing an element.

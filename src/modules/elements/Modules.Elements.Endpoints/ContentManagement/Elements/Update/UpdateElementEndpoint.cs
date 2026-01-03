@@ -4,7 +4,7 @@ using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.Update;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.Update;
 
 /// <summary>
 /// Updates a generic element.

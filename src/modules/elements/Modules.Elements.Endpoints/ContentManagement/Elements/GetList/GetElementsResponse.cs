@@ -1,5 +1,3 @@
-using Starlights.Modules.Elements.Endpoints.Content.Elements;
-
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.GetList;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.GetList;
 
 public record GetElementsResponse(IReadOnlyCollection<ElementDataModel> Items);

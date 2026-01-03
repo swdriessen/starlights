@@ -1,9 +1,9 @@
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Elements;
-using Starlights.Modules.Elements.Endpoints.Content.Elements.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Elements.GetList;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Elements;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.Create;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.GetList;
 
 namespace Starlights.Integration.Drivers.Elements.Endpoints;
 

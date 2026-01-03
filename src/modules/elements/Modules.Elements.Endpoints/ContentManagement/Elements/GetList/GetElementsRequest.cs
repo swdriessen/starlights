@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.GetList;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.GetList;
 
 public sealed record GetElementsRequest
 {

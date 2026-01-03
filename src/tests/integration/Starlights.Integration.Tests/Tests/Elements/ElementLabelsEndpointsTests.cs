@@ -1,11 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
-using Starlights.Modules.Elements.Endpoints.Content.Elements.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Labels.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Labels.Delete;
 using Starlights.Modules.Elements.Endpoints.Content.Labels.List;
 using Starlights.Modules.Elements.Endpoints.Content.Labels.Update;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.Create;
 
 namespace Starlights.Integration.Tests.Elements;
 

@@ -5,19 +5,17 @@ using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.Create;
 
 /// <summary>
 /// Creates a new generic element.
 /// </summary>
 public sealed class CreateElementEndpoint : Endpoint<CreateElementRequest, CreateElementResponse>
 {
-    private readonly ILogger<CreateElementEndpoint> _logger;
     private readonly IPersistence _persistence;
 
-    public CreateElementEndpoint(ILogger<CreateElementEndpoint> logger, IPersistence persistence)
+    public CreateElementEndpoint(IPersistence persistence)
     {
-        _logger = logger;
         _persistence = persistence;
     }
 
@@ -30,29 +28,20 @@ public sealed class CreateElementEndpoint : Endpoint<CreateElementRequest, Creat
 
     public override async Task HandleAsync(CreateElementRequest req, CancellationToken ct)
     {
-        _logger.LogInformation("creating a new element [type='{Type}', name='{Name}']", req.Type, req.Name);
+        Logger.LogInformation("creating a new element [type='{Type}', name='{Name}']", req.Type, req.Name);
 
-        var element = Element.Create(req.Name, req.Type);
+        var newElement = Element.Create(req.Name, req.Type);
 
-        if (req.Description is not null)
-        {
-            element.AddComponent(id => new DescriptionComponent(id, req.Description));
-        }
+        newElement.AddComponent(el => new DescriptionComponent(el, req.Description ?? ""));
 
         var repository = _persistence.GetRepository<IElementsRepository>();
-        repository.Add(element);
+        repository.Add(newElement);
 
-        var rows = await _persistence.SaveChangesAsync();
-        if (rows == 0)
-        {
-            _logger.LogError("failed to create element. No rows affected.");
-            await Send.ErrorsAsync(statusCode: 500, cancellation: ct);
-            return;
-        }
+        await _persistence.SaveChangesAsync();
 
-        _logger.LogInformation("successfully created element with ID: {Id}", element.Id);
+        Logger.LogInformation("successfully created element with ID: {Id}", newElement.Id);
 
-        var response = new CreateElementResponse(element.Id);
+        var response = new CreateElementResponse(newElement.Id);
 
         await Send.CreatedAtAsync("/api/elements/{id}", new { id = response.Id }, response, cancellation: ct);
     }

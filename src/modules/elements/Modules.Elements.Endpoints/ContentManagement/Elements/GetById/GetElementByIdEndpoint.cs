@@ -2,10 +2,9 @@ using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Endpoints.Content.Elements;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.GetById;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.GetById;
 
 /// <summary>
 /// Retrieves a generic element by its identifier.

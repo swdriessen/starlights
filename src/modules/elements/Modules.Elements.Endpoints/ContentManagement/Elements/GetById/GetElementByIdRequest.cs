@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.GetById;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.GetById;
 
 public sealed record GetElementByIdRequest
 {

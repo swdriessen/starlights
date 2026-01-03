@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.GetList;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.GetList;
 
 public class GetElementsRequestValidator : Validator<GetElementsRequest>
 {

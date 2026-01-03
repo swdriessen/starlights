@@ -2,8 +2,6 @@ using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Elements;
-using Starlights.Modules.Elements.Endpoints.Content.Elements.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetList;
@@ -14,6 +12,8 @@ using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.GetList;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Update;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Elements;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.Create;
 
 namespace Starlights.Integration.Drivers.Elements;
 

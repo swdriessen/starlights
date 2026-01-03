@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.Delete;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.Delete;
 
 /// <summary>
 /// Deletes a generic element.

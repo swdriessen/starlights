@@ -70,6 +70,8 @@ public sealed class Element : AggregateRoot<ElementId>
         Id = newId;
     }
 
+    #region Components (TODO: refactor into minimal API and extend with extension methods)
+
     /// <summary>
     /// Adds a component to the element.
     /// </summary>
@@ -160,16 +162,6 @@ public sealed class Element : AggregateRoot<ElementId>
     }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="Element"/> class with the specified name and type.
-    /// </summary>
-    public static Element Create(string name, string type, string systemIdentifier = "DND5E") // hardcoded until experimenting with multiple systems
-    {
-        var element = new Element(name, type, systemIdentifier);
-        element.AddDomainEvent(new ElementCreatedEvent(element.Id, name, type));
-        return element;
-    }
-
-    /// <summary>
     /// Removes the first component of the specified type that matches the given component id.
     /// </summary>
     public bool RemoveComponent<T>(ElementComponentId componentId) where T : ElementComponentBase
@@ -206,5 +198,17 @@ public sealed class Element : AggregateRoot<ElementId>
         {
             _components[i].OrderSequence = i;
         }
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Element"/> class with the specified name and type.
+    /// </summary>
+    public static Element Create(string name, string type, string systemIdentifier = "DND5E") // hardcoded until experimenting with multiple systems
+    {
+        var element = new Element(name, type, systemIdentifier);
+        element.AddDomainEvent(new ElementCreatedEvent(element.Id, name, type));
+        return element;
     }
 }

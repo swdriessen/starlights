@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.Update;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.Update;
 
 public sealed record UpdateElementRequest
 {

@@ -2,10 +2,9 @@ using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Endpoints.Content.Elements;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.GetList;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.GetList;
 
 /// <summary>
 /// Retrieves elements (optionally filtered by type).

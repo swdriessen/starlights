@@ -1,3 +1,3 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Elements.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Elements.Create;
 
 public record CreateElementResponse(Guid Id);

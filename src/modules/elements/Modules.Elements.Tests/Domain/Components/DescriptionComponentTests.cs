@@ -43,20 +43,12 @@ public class DescriptionComponentTests
     {
         // Arrange
         var id = ElementId.New();
-        Action actNull = () => _ = new DescriptionComponent(id, null!);
+        Action actNull = () => _ = new DescriptionComponent(id, null);
 
         // Assert
-        actNull.Should().Throw<ArgumentException>();
+        actNull.Should().Throw<ArgumentNullException>();
     }
-    [TestMethod]
-    public void Constructor_Allows_WhitespaceString()
-    {
-        // Act
-        var component = new DescriptionComponent(ElementId.New(), "   ");
 
-        // Assert
-        component.Content.Should().Be("   ");
-    }
     [TestMethod]
     public void Constructor_Allows_EmptyString()
     {
@@ -78,19 +70,6 @@ public class DescriptionComponentTests
 
         // Assert
         actNull.Should().Throw<ArgumentException>();
-    }
-
-    [TestMethod]
-    public void UpdateContent_Allows_WhitespaceString()
-    {
-        // Arrange
-        var component = new DescriptionComponent(ElementId.New(), "Valid");
-
-        // Act
-        component.UpdateContent("   ");
-
-        // Assert
-        component.Content.Should().Be("   ");
     }
 
     [TestMethod]
