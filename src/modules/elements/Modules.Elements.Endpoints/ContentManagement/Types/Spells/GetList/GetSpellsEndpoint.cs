@@ -2,12 +2,10 @@ using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
-using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells;
-using Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.GetList;
+using Starlights.Modules.Elements.Domain.Components.Aspects;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Attributes.Spells.GetList;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.GetList;
 
 public sealed class GetSpellsEndpoint : EndpointWithoutRequest<GetSpellsResponse>
 {
@@ -37,23 +35,23 @@ public sealed class GetSpellsEndpoint : EndpointWithoutRequest<GetSpellsResponse
         var items = elements
             .Select(element =>
             {
-                var attributes = element.GetRequiredComponent<SpellAttributesComponent>();
+                var attributes = element.GetRequiredComponent<SpellcastingAspects>();
 
                 return new SpellDataModel()
                 {
                     Id = element.Id,
                     Name = element.Name,
-                    Level = attributes.Level,
-                    MagicSchool = attributes.MagicSchool,
-                    CastingTime = attributes.CastingTime,
-                    Range = attributes.Range,
-                    Duration = attributes.Duration,
-                    IsConcentration = attributes.IsConcentrationRequired,
-                    IsRitual = attributes.IsRitual,
-                    HasSomatic = attributes.HasSomaticComponent,
-                    HasVerbal = attributes.HasVerbalComponent,
-                    HasMaterial = attributes.HasMaterialComponent,
-                    MaterialComponent = attributes.MaterialComponentsDescription,
+                    Level = attributes.Classification.Level,
+                    MagicSchool = attributes.Classification.MagicSchool,
+                    CastingTime = attributes.CastingTime.Value,
+                    Range = attributes.Range.Value,
+                    Duration = attributes.Duration.Value,
+                    IsConcentration = attributes.Duration.IsConcentration,
+                    IsRitual = attributes.CastingTime.IsRitual,
+                    HasSomatic = attributes.Components.HasSomatic,
+                    HasVerbal = attributes.Components.HasVerbal,
+                    HasMaterial = attributes.Components.HasMaterial,
+                    MaterialComponent = attributes.Components.MaterialComponent,
                     Description = "" // Description is omitted in the list view
                 };
             })

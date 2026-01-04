@@ -1,4 +1,4 @@
-﻿namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.Create;
+﻿namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Create;
 
 public record CreateSpellRequest
 {

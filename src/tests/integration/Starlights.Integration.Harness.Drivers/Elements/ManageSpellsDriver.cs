@@ -1,9 +1,9 @@
 ﻿using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells;
-using Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.Create;
-using Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.Update;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Create;
+using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Update;
 
 namespace Starlights.Integration.Drivers.Elements;
 

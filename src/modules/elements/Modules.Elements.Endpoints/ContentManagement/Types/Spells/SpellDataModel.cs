@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells;
 
 /// <summary>
 /// The DTO for a spell.

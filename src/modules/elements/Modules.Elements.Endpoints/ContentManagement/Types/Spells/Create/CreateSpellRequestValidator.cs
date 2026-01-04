@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using FluentValidation;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Create;
 
 public class CreateSpellRequestValidator : Validator<CreateSpellRequest>
 {

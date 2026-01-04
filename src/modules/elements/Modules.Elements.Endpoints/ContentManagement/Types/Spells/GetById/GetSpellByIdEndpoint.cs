@@ -3,10 +3,10 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells;
+using Starlights.Modules.Elements.Domain.Components.Aspects;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.GetById;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.GetById;
 
 public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, SpellDataModel>
 {
@@ -39,24 +39,24 @@ public sealed class GetSpellByIdEndpoint : Endpoint<GetSpellByIdRequest, SpellDa
             return;
         }
 
-        var attributes = element.GetRequiredComponent<SpellAttributesComponent>();
+        var attributes = element.GetRequiredComponent<SpellcastingAspects>();
         var description = element.GetRequiredComponent<DescriptionComponent>();
 
         var response = new SpellDataModel
         {
             Id = element.Id,
             Name = element.Name,
-            Level = attributes.Level,
-            MagicSchool = attributes.MagicSchool,
-            CastingTime = attributes.CastingTime,
-            Range = attributes.Range,
-            Duration = attributes.Duration,
-            IsConcentration = attributes.IsConcentrationRequired,
-            IsRitual = attributes.IsRitual,
-            HasSomatic = attributes.HasSomaticComponent,
-            HasVerbal = attributes.HasVerbalComponent,
-            HasMaterial = attributes.HasMaterialComponent,
-            MaterialComponent = attributes.MaterialComponentsDescription,
+            Level = attributes.Classification.Level,
+            MagicSchool = attributes.Classification.MagicSchool,
+            CastingTime = attributes.CastingTime.Value,
+            Range = attributes.Range.Value,
+            Duration = attributes.Duration.Value,
+            IsConcentration = attributes.Duration.IsConcentration,
+            IsRitual = attributes.CastingTime.IsRitual,
+            HasSomatic = attributes.Components.HasSomatic,
+            HasVerbal = attributes.Components.HasVerbal,
+            HasMaterial = attributes.Components.HasMaterial,
+            MaterialComponent = attributes.Components.MaterialComponent,
             Description = description.Content
         };
 

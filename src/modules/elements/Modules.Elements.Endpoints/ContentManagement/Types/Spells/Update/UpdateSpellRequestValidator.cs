@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.Update;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Update;
 
 public sealed class UpdateSpellRequestValidator : Validator<UpdateSpellRequest>
 {

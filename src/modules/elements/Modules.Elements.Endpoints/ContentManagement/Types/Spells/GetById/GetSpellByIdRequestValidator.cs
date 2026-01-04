@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.GetById;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.GetById;
 
 public sealed class GetSpellByIdRequestValidator : Validator<GetSpellByIdRequest>
 {

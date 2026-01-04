@@ -3,9 +3,10 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Aspects;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.Update;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Update;
 
 public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpellResponse>
 {
@@ -40,20 +41,35 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
 
         element.UpdateName(request.Name);
 
-        element.UpdateComponent<DescriptionComponent>(component =>
-        {
-            component.UpdateContent(request.Description);
-        });
+        element.UpdateComponent<DescriptionComponent>(component => component.UpdateContent(request.Description));
 
-        element.UpdateComponent<SpellAttributesComponent>(component =>
+        // update spellcasting aspects
+        var classification = new SpellClassification(request.MagicSchool, request.Level);
+        var time = new CastingTime(request.CastingTime);
+        var range = new SpellcastingRange(request.Range);
+        var duration = new Duration(request.Duration);
+        var components = new SpellComponents()
         {
+            HasSomatic = request.HasSomatic,
+            HasVerbal = request.HasVerbal,
+            HasMaterial = request.HasMaterial,
+            MaterialComponent = request.MaterialComponent
+        };
+
+        element.UpdateComponent<SpellcastingAspects>(component =>
+        {
+
+
+
             component.UpdateLevel(request.Level);
             component.UpdateMagicSchool(request.MagicSchool);
             component.UpdateCastingTime(request.CastingTime);
             component.UpdateRange(request.Range);
-            component.UpdateDuration(request.Duration);
+            component.UpdateDuration(new Duration(request.Duration));
             component.UpdateIsConcentrationRequired(request.IsConcentration);
             component.UpdateIsRitual(request.IsRitual);
+
+
             component.UpdateHasSomaticComponent(request.HasSomatic);
             component.UpdateHasVerbalComponent(request.HasVerbal);
             component.UpdateMaterialComponent(request.HasMaterial, request.MaterialComponent);

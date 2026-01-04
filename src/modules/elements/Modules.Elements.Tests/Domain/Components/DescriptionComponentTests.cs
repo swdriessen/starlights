@@ -43,7 +43,7 @@ public class DescriptionComponentTests
     {
         // Arrange
         var id = ElementId.New();
-        Action actNull = () => _ = new DescriptionComponent(id, null);
+        Action actNull = () => _ = new DescriptionComponent(id, null!);
 
         // Assert
         actNull.Should().Throw<ArgumentNullException>();

@@ -2,9 +2,10 @@ using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Endpoints.Content.Labels.Create;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Labels.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Labels.Create;
 
 /// <summary>
 /// Adds a label to an element.

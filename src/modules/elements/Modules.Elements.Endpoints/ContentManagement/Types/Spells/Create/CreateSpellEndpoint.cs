@@ -3,18 +3,17 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Aspects;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Spells.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Create;
 
 public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellResponse>
 {
-    private readonly ILogger<CreateSpellEndpoint> _logger;
     private readonly IPersistence _persistence;
 
-    public CreateSpellEndpoint(ILogger<CreateSpellEndpoint> logger, IPersistence persistence)
+    public CreateSpellEndpoint(IPersistence persistence)
     {
-        _logger = logger;
         _persistence = persistence;
     }
 
@@ -27,21 +26,31 @@ public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellRespo
 
     public override async Task HandleAsync(CreateSpellRequest req, CancellationToken ct)
     {
-        _logger.LogInformation("creating a new spell [name='{Name}']", req.Name);
+        Logger.LogInformation("creating a new spell [name='{Name}']", req.Name);
 
         var element = Element.Create(req.Name, ElementTypeConstants.Spell);
 
         element.AddComponent(id => new DescriptionComponent(id, req.Description ?? string.Empty));
 
-        element.AddComponent(id => new SpellAttributesComponent(id, req.Level, req.MagicSchool, req.CastingTime, req.Range, req.Duration));
-
-        element.UpdateComponent<SpellAttributesComponent>(component =>
+        var classification = new SpellClassification(req.MagicSchool, req.Level);
+        var time = new CastingTime(req.CastingTime) { IsRitual = req.IsRitual };
+        var range = new SpellcastingRange(req.Range);
+        var duration = new Duration(req.Duration, req.IsConcentration);
+        var components = new SpellComponents()
         {
-            component.UpdateIsConcentrationRequired(req.IsConcentration);
-            component.UpdateIsRitual(req.IsRitual);
-            component.UpdateHasSomaticComponent(req.HasSomatic);
-            component.UpdateHasVerbalComponent(req.HasVerbal);
-            component.UpdateMaterialComponent(req.HasMaterial, req.MaterialComponent);
+            HasVerbal = req.HasVerbal,
+            HasSomatic = req.HasSomatic,
+            HasMaterial = req.HasMaterial,
+            MaterialComponent = req.MaterialComponent
+        };
+
+        element.AddComponent(id => new SpellcastingAspects(id, classification, time, range, duration));
+
+        element.UpdateComponent<SpellcastingAspects>(component =>
+        {
+            component.UpdateHasSomaticComponent(components.HasSomatic);
+            component.UpdateHasVerbalComponent(components.HasVerbal);
+            component.UpdateMaterialComponent(components.HasMaterial, components.MaterialComponent);
         });
 
         var repository = _persistence.GetRepository<IElementsRepository>();
@@ -51,12 +60,12 @@ public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellRespo
         var rows = await _persistence.SaveChangesAsync();
         if (rows == 0)
         {
-            _logger.LogError("failed to create spell. No rows affected.");
+            Logger.LogError("failed to create spell. No rows affected.");
             await Send.ErrorsAsync(statusCode: 500, cancellation: ct);
             return;
         }
 
-        _logger.LogInformation("successfully created spell with ID: {Id}", element.Id);
+        Logger.LogInformation("successfully created spell with ID: {Id}", element.Id);
 
         var response = new CreateSpellResponse(element.Id);
 
