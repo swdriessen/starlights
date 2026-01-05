@@ -1,6 +1,7 @@
 ﻿using AwesomeAssertions;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Values;
 
 namespace Starlights.Modules.Elements.Tests.Domain;
 
@@ -44,7 +45,7 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        var component = new AbilityComponent(element.Id, "STR");
+        var component = new AbilityComponent(element.Id, new Abbreviation("STR"));
 
         // Act
         element.AddComponent(component);
@@ -59,7 +60,7 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        var component = new AbilityComponent(element.Id, "STR");
+        var component = new AbilityComponent(element.Id, new Abbreviation("STR"));
 
         // Act
         element.AddComponent(component);
@@ -73,7 +74,7 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        var component = element.AddComponent(new AbilityComponent(element.Id, "STR"));
+        var component = element.AddComponent(new AbilityComponent(element.Id, new Abbreviation("STR")));
 
         // Act
         var removed = element.RemoveComponent<AbilityComponent>(component.Id);
@@ -88,7 +89,7 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        element.AddComponent(new AbilityComponent(element.Id, "STR"));
+        element.AddComponent(new AbilityComponent(element.Id, new Abbreviation("STR")));
 
         // Act
         var removed = element.RemoveComponent<AbilityComponent>(ElementComponentId.New());

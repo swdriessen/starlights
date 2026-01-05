@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Domain.Components.Aspects;
+using Starlights.Modules.Elements.Domain.Components.Spellcasting;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Create;
@@ -34,7 +34,7 @@ public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellRespo
 
         var classification = new SpellClassification(req.MagicSchool, req.Level);
         var time = new CastingTime(req.CastingTime) { IsRitual = req.IsRitual };
-        var range = new SpellcastingRange(req.Range);
+        var range = new Domain.Components.Spellcasting.Range(req.Range);
         var duration = new Duration(req.Duration, req.IsConcentration);
         var components = new SpellComponents()
         {

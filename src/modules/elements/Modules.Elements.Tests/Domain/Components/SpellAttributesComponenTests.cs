@@ -1,6 +1,6 @@
 using AwesomeAssertions;
 using Starlights.Modules.Elements.Domain;
-using Starlights.Modules.Elements.Domain.Components.Aspects;
+using Starlights.Modules.Elements.Domain.Components.Spellcasting;
 
 namespace Starlights.Modules.Elements.Tests.Domain.Components;
 
@@ -15,7 +15,7 @@ public class SpellAttributesComponentTests
         const string expectedSchool = "Evocation";
         var classification = new SpellClassification(expectedSchool, expectedLevel);
         var time = new CastingTime("1 action");
-        var range = new SpellcastingRange("30 feet");
+        var range = new Elements.Domain.Components.Spellcasting.Range("30 feet");
         var duration = Duration.Instantaneous;
 
         // Act

@@ -3,9 +3,11 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Language;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Create;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Languages.Create;
 
 public sealed class CreateLanguageEndpoint : Endpoint<CreateLanguageRequest, CreateLanguageResponse>
 {
@@ -32,13 +34,7 @@ public sealed class CreateLanguageEndpoint : Endpoint<CreateLanguageRequest, Cre
         var element = Element.Create(req.Name, ElementTypeConstants.Language);
 
         element.AddComponent(id => new DescriptionComponent(id, req.Description ?? string.Empty));
-
-        element.AddComponent(id => new LanguageComponent(id, req.Origin ?? string.Empty));
-
-        element.UpdateComponent<LanguageComponent>(component =>
-        {
-            component.UpdateKind(req.Kind);
-        });
+        element.AddComponent(id => new LanguageAspect(id, new(req.Kind), req.Origin ?? string.Empty));
 
         var repository = _persistence.GetRepository<IElementsRepository>();
         repository.Add(element);

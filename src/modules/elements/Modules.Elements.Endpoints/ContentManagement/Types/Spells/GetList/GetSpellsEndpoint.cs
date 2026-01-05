@@ -2,7 +2,7 @@ using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
-using Starlights.Modules.Elements.Domain.Components.Aspects;
+using Starlights.Modules.Elements.Domain.Components.Spellcasting;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.GetList;
@@ -44,7 +44,7 @@ public sealed class GetSpellsEndpoint : EndpointWithoutRequest<GetSpellsResponse
                     Level = attributes.Classification.Level,
                     MagicSchool = attributes.Classification.MagicSchool,
                     CastingTime = attributes.CastingTime.Value,
-                    Range = attributes.Range.Value,
+                    Range = attributes.Range.ToString(),
                     Duration = attributes.Duration.Value,
                     IsConcentration = attributes.Duration.IsConcentration,
                     IsRitual = attributes.CastingTime.IsRitual,

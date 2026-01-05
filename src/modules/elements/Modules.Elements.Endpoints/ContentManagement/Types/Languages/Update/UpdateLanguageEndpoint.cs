@@ -3,18 +3,18 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Language;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Update;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Update;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Languages.Update;
 
 public sealed class UpdateLanguageEndpoint : Endpoint<UpdateLanguageRequest, UpdateLanguageResponse>
 {
-    private readonly ILogger<UpdateLanguageEndpoint> _logger;
     private readonly IPersistence _persistence;
 
-    public UpdateLanguageEndpoint(ILogger<UpdateLanguageEndpoint> logger, IPersistence persistence)
+    public UpdateLanguageEndpoint(IPersistence persistence)
     {
-        _logger = logger;
         _persistence = persistence;
     }
 
@@ -27,7 +27,7 @@ public sealed class UpdateLanguageEndpoint : Endpoint<UpdateLanguageRequest, Upd
 
     public override async Task HandleAsync(UpdateLanguageRequest request, CancellationToken ct)
     {
-        _logger.LogInformation("updating language [id='{Id}']", request.Id);
+        Logger.LogInformation("updating language [id='{Id}']", request.Id);
 
         var repository = _persistence.GetRepository<IElementsRepository>();
         var element = await repository.GetElementAsync(request.Id);
@@ -40,24 +40,21 @@ public sealed class UpdateLanguageEndpoint : Endpoint<UpdateLanguageRequest, Upd
 
         element.UpdateName(request.Name);
 
-        element.UpdateComponent<DescriptionComponent>(component =>
+        element.UpdateComponent<DescriptionComponent>(component => component.UpdateContent(request.Description));
+
+        element.UpdateComponent<LanguageAspect>(component =>
         {
-            component.UpdateContent(request.Description);
+            component.UpdateClassification(new LanguageClassification(request.Kind));
+
+            if (request.Origin is not null)
+            {
+                component.UpdateOrigin(request.Origin);
+            }
         });
 
-        element.UpdateComponent<LanguageComponent>(component =>
-        {
-            component.UpdateKind(request.Kind);
-            component.UpdateOrigin(request.Origin ?? string.Empty);
-        });
+        await _persistence.SaveChangesAsync();
 
-        var rows = await _persistence.SaveChangesAsync();
-        if (rows == 0)
-        {
-            _logger.LogError("Failed to update language. No rows affected. [id='{Id}']", request.Id);
-            await Send.ErrorsAsync(statusCode: 500, cancellation: ct);
-            return;
-        }
+        Logger.LogInformation("updated language [id='{Id}']", request.Id);
 
         await Send.OkAsync(new UpdateLanguageResponse(element.Id), cancellation: ct);
     }

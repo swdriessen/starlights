@@ -1,4 +1,5 @@
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Values;
 
 namespace Starlights.Modules.Elements.Domain.Builders;
 
@@ -61,7 +62,7 @@ public static class ElementBuilderExtensions
 
     public static ElementBuilder WithAbbreviationComponent(this ElementBuilder builder, string abbreviation)
     {
-        return builder.WithComponent(id => new AbbreviationComponent(id, abbreviation));
+        return builder.WithComponent(id => new AbbreviationComponent(id, new Abbreviation(abbreviation)));
     }
 
     public static ElementBuilder WithSorting(this ElementBuilder builder, double sortingOrder)

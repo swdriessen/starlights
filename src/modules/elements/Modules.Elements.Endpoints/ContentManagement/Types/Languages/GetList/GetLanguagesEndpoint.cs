@@ -2,10 +2,12 @@ using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
-using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Language;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.GetList;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.GetList;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Languages.GetList;
 
 public sealed class GetLanguagesEndpoint : EndpointWithoutRequest<GetLanguagesResponse>
 {
@@ -35,13 +37,13 @@ public sealed class GetLanguagesEndpoint : EndpointWithoutRequest<GetLanguagesRe
         var items = elements
             .Select(element =>
             {
-                var language = element.GetRequiredComponent<LanguageComponent>();
+                var language = element.GetRequiredComponent<LanguageAspect>();
 
                 return new LanguageDataModel
                 {
                     Id = element.Id,
                     Name = element.Name,
-                    Kind = language.Kind,
+                    Kind = language.Classification.Kind,
                     Origin = language.Origin,
                     Description = string.Empty // Description is omitted in the list view
                 };

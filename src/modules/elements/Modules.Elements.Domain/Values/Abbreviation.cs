@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace Starlights.Modules.Elements.Domain.Values;
 
 /// <summary>
 /// Represents an abbreviation value that is always stored in uppercase and trimmed format.
 /// </summary>
+[DebuggerDisplay("{Value}")]
 public readonly record struct Abbreviation
 {
     /// <summary>
@@ -15,11 +18,6 @@ public readonly record struct Abbreviation
     }
 
     public string Value { get; }
-
-    public static implicit operator Abbreviation(string value)
-    {
-        return new Abbreviation(value);
-    }
 
     public static implicit operator string(Abbreviation abbreviation)
     {

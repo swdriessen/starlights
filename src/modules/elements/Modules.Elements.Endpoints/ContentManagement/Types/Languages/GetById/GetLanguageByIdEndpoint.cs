@@ -3,10 +3,12 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Language;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.GetById;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.GetById;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Languages.GetById;
 
 public sealed class GetLanguageByIdEndpoint : Endpoint<GetLanguageByIdRequest, LanguageDataModel>
 {
@@ -39,14 +41,14 @@ public sealed class GetLanguageByIdEndpoint : Endpoint<GetLanguageByIdRequest, L
             return;
         }
 
-        var language = element.GetRequiredComponent<LanguageComponent>();
+        var language = element.GetRequiredComponent<LanguageAspect>();
         var description = element.GetRequiredComponent<DescriptionComponent>();
 
         var response = new LanguageDataModel
         {
             Id = element.Id,
             Name = element.Name,
-            Kind = language.Kind,
+            Kind = language.Classification,
             Origin = language.Origin,
             Description = description.Content
         };
