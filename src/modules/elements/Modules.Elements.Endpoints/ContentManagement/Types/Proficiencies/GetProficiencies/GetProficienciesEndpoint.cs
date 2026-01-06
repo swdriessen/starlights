@@ -33,7 +33,7 @@ public sealed class GetProficienciesEndpoint : EndpointWithoutRequest<GetProfici
         var items = proficiencies
             .Select(x =>
             {
-                var proficiencyType = x.GetComponent<ProficiencyAttributesComponent>()?.ProficiencyType ?? string.Empty;
+                var proficiencyType = x.GetComponent<ProficiencyAspects>()?.Classification ?? string.Empty;
                 var description = x.GetComponent<DescriptionComponent>()?.Content ?? string.Empty;
 
                 return new ProficiencyListItem(

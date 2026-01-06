@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Starlights.Modules.Elements.Domain.Components.Language;
 
-[DebuggerDisplay("{Value}")]
+[DebuggerDisplay("{Kind}")]
 public readonly record struct LanguageClassification
 {
     public static readonly LanguageClassification Standard = new("Standard");

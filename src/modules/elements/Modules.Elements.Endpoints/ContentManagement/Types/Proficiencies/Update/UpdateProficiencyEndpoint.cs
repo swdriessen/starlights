@@ -4,9 +4,10 @@ using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Modules.Elements.Domain.Components.Proficiency;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Update;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Update;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.Update;
 
 public sealed class UpdateProficiencyEndpoint : Endpoint<UpdateProficiencyRequest>
 {
@@ -46,14 +47,18 @@ public sealed class UpdateProficiencyEndpoint : Endpoint<UpdateProficiencyReques
 
         proficiency.UpdateName(req.Name);
 
-        var attributes = proficiency.GetComponent<ProficiencyAttributesComponent>();
+        var attributes = proficiency.GetComponent<ProficiencyAspects>();
+
+
+        var classification = new ProficiencyClassification(req.ProficiencyType);
+
         if (attributes is null)
         {
-            proficiency.AddComponent(id => new ProficiencyAttributesComponent(id, req.ProficiencyType));
+            proficiency.AddComponent(id => new ProficiencyAspects(id, classification));
         }
         else
         {
-            proficiency.UpdateComponent<ProficiencyAttributesComponent>(c => c.UpdateProficiencyType(req.ProficiencyType));
+            proficiency.UpdateComponent<ProficiencyAspects>(c => c.UpdateClassification(classification));
         }
 
         var description = proficiency.GetComponent<DescriptionComponent>();

@@ -40,8 +40,11 @@ public sealed class CreateProficiencyEndpoint : Endpoint<CreateProficiencyReques
 
         var repository = _persistence.GetRepository<IElementsRepository>();
 
+        var classification = new ProficiencyClassification(req.ProficiencyType);
+
+
         var element = Element.Create(req.Name, ElementTypeConstants.Proficiency);
-        element.AddComponent(id => new ProficiencyAttributesComponent(id, req.ProficiencyType));
+        element.AddComponent(id => new ProficiencyAspects(id, classification));
         element.AddComponent(id => new DescriptionComponent(id, req.Description ?? string.Empty));
 
         if (req.GenerateRules) // generate rules based on type
