@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Elements.Domain.Components;
+namespace Starlights.Modules.Elements.Domain.Components.Proficiency;
 
 public class ProficiencyAttributesComponent : ElementComponentBase
 {

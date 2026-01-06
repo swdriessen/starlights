@@ -3,9 +3,11 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Feat;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Update;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Update;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Feats.Update;
 
 public sealed class UpdateFeatEndpoint : Endpoint<UpdateFeatRequest, UpdateFeatResponse>
 {
@@ -48,32 +50,13 @@ public sealed class UpdateFeatEndpoint : Endpoint<UpdateFeatRequest, UpdateFeatR
 
         element.UpdateName(request.Name);
 
-        element.UpdateComponent<FeatAttributesComponent>(component =>
-        {
-            component.UpdateCategory(categoryElement.Id, categoryElement.Name);
-        });
-
-        element.UpdateComponent<PrerequisitesComponent>(component =>
-        {
-            component.UpdatePrerequisites(request.Prerequisite ?? string.Empty);
-        });
-
-        element.UpdateComponent<RepeatableComponent>(component =>
-        {
-            component.SetRepeatable(request.IsRepeatable);
-        });
-
-        element.UpdateComponent<DescriptionComponent>(component =>
-        {
-            component.UpdateContent(request.Description);
-        });
-
+        element.UpdateComponent<FeatAspects>(component => component.UpdateCategory(new(categoryElement.Id, categoryElement.Name)));
+        element.UpdateComponent<PrerequisitesComponent>(component => component.UpdatePrerequisites(request.Prerequisite ?? string.Empty));
+        element.UpdateComponent<RepeatableComponent>(component => component.SetRepeatable(request.IsRepeatable));
+        element.UpdateComponent<DescriptionComponent>(component => component.UpdateContent(request.Description));
         if (request.ShortDescription != null)
         {
-            element.UpdateComponent<ShortDescriptionComponent>(component =>
-            {
-                component.UpdateContent(request.ShortDescription);
-            });
+            element.UpdateComponent<ShortDescriptionComponent>(component => component.UpdateContent(request.ShortDescription));
         }
 
         var rows = await _persistence.SaveChangesAsync();

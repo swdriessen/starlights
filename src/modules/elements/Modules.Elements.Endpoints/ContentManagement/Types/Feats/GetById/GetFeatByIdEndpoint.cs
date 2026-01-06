@@ -3,10 +3,12 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Feat;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.GetById;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.GetById;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Feats.GetById;
 
 /// <summary>
 /// Retrieves a feat by its identifier.
@@ -42,7 +44,7 @@ public sealed class GetFeatByIdEndpoint : Endpoint<GetFeatByIdRequest, FeatDataM
             return;
         }
 
-        var attributes = element.GetRequiredComponent<FeatAttributesComponent>();
+        var attributes = element.GetRequiredComponent<FeatAspects>();
         var prerequisites = element.GetRequiredComponent<PrerequisitesComponent>();
         var repeatable = element.GetRequiredComponent<RepeatableComponent>();
         var shortDescription = element.GetComponent<ShortDescriptionComponent>();
@@ -52,8 +54,8 @@ public sealed class GetFeatByIdEndpoint : Endpoint<GetFeatByIdRequest, FeatDataM
         {
             Id = element.Id,
             Name = element.Name,
-            CategoryId = attributes.CategoryId,
-            Category = attributes.Category,
+            CategoryId = attributes.Category.Id.Value,
+            Category = attributes.Category.Name,
             ShortDescription = shortDescription?.Content ?? string.Empty,
             Description = description?.Content ?? string.Empty,
             Prerequisites = prerequisites?.Prerequisites ?? string.Empty,

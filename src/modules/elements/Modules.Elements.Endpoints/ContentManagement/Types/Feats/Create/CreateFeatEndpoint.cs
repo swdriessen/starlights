@@ -3,9 +3,11 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Feat;
+using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Create;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Feats.Create;
 
 /// <summary>
 /// Creates a new feat element.
@@ -43,7 +45,7 @@ public sealed class CreateFeatEndpoint : Endpoint<CreateFeatRequest, CreateFeatR
         }
 
         var element = Element.Create(req.Name, ElementTypeConstants.Feat);
-        element.AddComponent(id => new FeatAttributesComponent(id, categoryElement.Id, categoryElement.Name));
+        element.AddComponent(id => new FeatAspects(id, new(categoryElement.Id, categoryElement.Name)));
         element.AddComponent(id => new PrerequisitesComponent(id, req.Prerequisite ?? string.Empty));
         element.AddComponent(id => new RepeatableComponent(id, req.IsRepeatable));
         element.AddComponent(id => new ShortDescriptionComponent(id, req.ShortDescription ?? string.Empty));

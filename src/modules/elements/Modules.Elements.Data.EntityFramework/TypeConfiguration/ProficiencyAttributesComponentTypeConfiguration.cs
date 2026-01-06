@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Proficiency;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework.TypeConfiguration;
 

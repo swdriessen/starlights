@@ -1,6 +1,7 @@
 ﻿using AwesomeAssertions;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Ability;
 using Starlights.Modules.Elements.Domain.Values;
 
 namespace Starlights.Modules.Elements.Tests.Domain;
@@ -45,13 +46,13 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        var component = new AbilityComponent(element.Id, new Abbreviation("STR"));
+        var component = new AbilityAspects(element.Id, new Abbreviation("STR"));
 
         // Act
         element.AddComponent(component);
 
         // Assert
-        element.Components.OfType<AbilityComponent>()
+        element.Components.OfType<AbilityAspects>()
             .Should().ContainSingle();
     }
 
@@ -60,7 +61,7 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        var component = new AbilityComponent(element.Id, new Abbreviation("STR"));
+        var component = new AbilityAspects(element.Id, new Abbreviation("STR"));
 
         // Act
         element.AddComponent(component);
@@ -74,14 +75,14 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        var component = element.AddComponent(new AbilityComponent(element.Id, new Abbreviation("STR")));
+        var component = element.AddComponent(new AbilityAspects(element.Id, new Abbreviation("STR")));
 
         // Act
-        var removed = element.RemoveComponent<AbilityComponent>(component.Id);
+        var removed = element.RemoveComponent<AbilityAspects>(component.Id);
 
         // Assert
         removed.Should().BeTrue();
-        element.Components.OfType<AbilityComponent>().Should().BeEmpty();
+        element.Components.OfType<AbilityAspects>().Should().BeEmpty();
     }
 
     [TestMethod]
@@ -89,10 +90,10 @@ public sealed class ElementTests
     {
         // Arrange
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        element.AddComponent(new AbilityComponent(element.Id, new Abbreviation("STR")));
+        element.AddComponent(new AbilityAspects(element.Id, new Abbreviation("STR")));
 
         // Act
-        var removed = element.RemoveComponent<AbilityComponent>(ElementComponentId.New());
+        var removed = element.RemoveComponent<AbilityAspects>(ElementComponentId.New());
 
         // Assert
         removed.Should().BeFalse();

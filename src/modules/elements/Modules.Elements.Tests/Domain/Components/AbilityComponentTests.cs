@@ -1,6 +1,6 @@
 ﻿using AwesomeAssertions;
 using Starlights.Modules.Elements.Domain;
-using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Ability;
 using Starlights.Modules.Elements.Domain.Values;
 
 namespace Starlights.Modules.Elements.Tests.Domain.Components;
@@ -15,7 +15,7 @@ public class AbilityComponentTests
         const string abbreviation = " Str ";
 
         // Act
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation(abbreviation));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation(abbreviation));
 
         // Assert
         component.Abbreviation.Value.Should().Be("STR");
@@ -28,7 +28,7 @@ public class AbilityComponentTests
         const string abbreviation = "dex";
 
         // Act
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation(abbreviation));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation(abbreviation));
 
         // Assert
         component.Abbreviation.Value.Should().Be("DEX");
@@ -41,7 +41,7 @@ public class AbilityComponentTests
         const string abbreviation = "iNt";
 
         // Act
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation(abbreviation));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation(abbreviation));
 
         // Assert
         component.Abbreviation.Value.Should().Be("INT");
@@ -51,7 +51,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldUpdateAbbreviation_TrimmedAndUppercase_WhenValidAbbreviationProvided()
     {
         // Arrange
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation("DEX"));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation("DEX"));
 
         // Act
         component.UpdateAbbreviation(new Abbreviation(" Int "));
@@ -64,7 +64,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldUpdateAbbreviation_Uppercase_WhenLowercaseProvided()
     {
         // Arrange
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation("DEX"));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation("DEX"));
 
         // Act
         component.UpdateAbbreviation(new Abbreviation("str"));
@@ -77,7 +77,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldUpdateAbbreviation_Uppercase_WhenMixedCaseProvided()
     {
         // Arrange
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation("DEX"));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation("DEX"));
 
         // Act
         component.UpdateAbbreviation(new Abbreviation("wIs"));
@@ -90,7 +90,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldUpdateAbbreviation_Uppercase_WhenWhitespaceAndMixedCaseProvided()
     {
         // Arrange
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation("DEX"));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation("DEX"));
 
         // Act
         component.UpdateAbbreviation(new Abbreviation("  cHa  "));
@@ -103,7 +103,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldThrowArgumentException_WhenAbbreviationIsNull()
     {
         // Arrange
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation("DEX"));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation("DEX"));
 
         // Act
         var act = () => component.UpdateAbbreviation(new Abbreviation(null!));
@@ -116,7 +116,7 @@ public class AbilityComponentTests
     public void UpdateAbbreviation_ShouldThrowArgumentException_WhenAbbreviationIsWhitespace()
     {
         // Arrange
-        var component = new AbilityComponent(ElementId.New(), new Abbreviation("DEX"));
+        var component = new AbilityAspects(ElementId.New(), new Abbreviation("DEX"));
 
         // Act
         var act = () => component.UpdateAbbreviation(new Abbreviation("   "));

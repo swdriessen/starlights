@@ -1,10 +1,10 @@
 ﻿using Starlights.Modules.Elements.Domain.Values;
 
-namespace Starlights.Modules.Elements.Domain.Components;
+namespace Starlights.Modules.Elements.Domain.Components.Ability;
 
-public sealed class AbilityComponent : ElementComponentBase
+public sealed class AbilityAspects : ElementComponentBase
 {
-    public AbilityComponent(ElementId owningElement, Abbreviation abbreviation)
+    public AbilityAspects(ElementId owningElement, Abbreviation abbreviation)
         : base(owningElement)
     {
         Abbreviation = abbreviation;
