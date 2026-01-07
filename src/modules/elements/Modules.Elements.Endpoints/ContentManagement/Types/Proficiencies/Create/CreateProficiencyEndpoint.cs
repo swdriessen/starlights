@@ -4,7 +4,6 @@ using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Modules.Elements.Domain.Components.Proficiency;
-using Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Create;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.Create;

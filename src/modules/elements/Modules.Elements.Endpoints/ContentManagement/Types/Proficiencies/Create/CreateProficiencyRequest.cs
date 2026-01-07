@@ -1,4 +1,4 @@
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.Create;
 
 public sealed record CreateProficiencyRequest(string Name, string ProficiencyType, string? Description)
 {

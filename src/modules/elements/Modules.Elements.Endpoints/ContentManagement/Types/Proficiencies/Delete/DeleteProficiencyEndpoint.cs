@@ -4,7 +4,7 @@ using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Delete;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.Delete;
 
 public sealed class DeleteProficiencyEndpoint : EndpointWithoutRequest
 {

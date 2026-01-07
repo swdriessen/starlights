@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Create;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.Create;
 
 public sealed class CreateProficiencyRequestValidator : Validator<CreateProficiencyRequest>
 {

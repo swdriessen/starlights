@@ -1,7 +1,7 @@
 using FastEndpoints;
 using FluentValidation;
 
-namespace Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.Update;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.Update;
 
 public sealed class UpdateProficiencyRequestValidator : Validator<UpdateProficiencyRequest>
 {

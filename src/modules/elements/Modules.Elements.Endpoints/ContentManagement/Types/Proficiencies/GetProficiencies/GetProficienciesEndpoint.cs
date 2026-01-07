@@ -3,10 +3,9 @@ using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
 using Starlights.Modules.Elements.Domain.Components.Proficiency;
-using Starlights.Modules.Elements.Endpoints.Content.Attributes.Proficiencies.GetProficiencies;
 using Starlights.Platform.Data;
 
-namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Attributes.Proficiencies.GetProficiencies;
+namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.GetProficiencies;
 
 public sealed class GetProficienciesEndpoint : EndpointWithoutRequest<GetProficienciesResponse>
 {
