@@ -39,7 +39,8 @@ public sealed class ElementLabelManagementStepDefinitions
         await _elementsDriver.AddLabels(element.Id, labels);
     }
 
-    [Then(@"the element ""([^""]*)"" should contain a ""([^""]*)"" label")]
+    [Then(@"the ""([^""]*)"" element should contain a ""([^""]*)"" label")]
+    [Then(@"the ""([^""]*)"" .+ should contain a ""([^""]*)"" label")]
     public async Task ThenTheElementShouldContainALabelAsync(string elementName, string label)
     {
         var elementId = ResolveElementId(elementName);
@@ -47,6 +48,8 @@ public sealed class ElementLabelManagementStepDefinitions
         labels.Should().Contain(label);
     }
 
+    [Then(@"the ""([^""]*)"" element should contain the following labels:")]
+    [Then(@"the ""([^""]*)"" .+ should contain the following labels:")]
     [Then(@"the element ""([^""]*)"" should contain the following labels:")]
     public async Task ThenTheElementShouldContainTheFollowingLabelsAsync(string elementName, DataTable dataTable)
     {

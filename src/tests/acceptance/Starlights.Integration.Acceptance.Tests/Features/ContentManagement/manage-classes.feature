@@ -15,7 +15,7 @@ Rule: A content creator can create a class
         Then the "Barbarian" class should have at least the following properties
             | type  | hit point die |
             | Class | D12           |
-      
+
 @class
 Rule: A content creator can create a class feature for a class
 
@@ -36,7 +36,13 @@ Rule: A content creator can create a subclass for a class
             | name                      | type      | feature parent |
             | Path of the Totem Warrior | Sub Class | Barbarian      |
 
-            # check label selector
+@class @labels
+Rule: A created subclass automatically gets a label matching its parent class
+    
+    Scenario: verify subclass label
+        Given a class exists with the name "Rogue"
+        When the content creator creates a subclass for the "Rogue" class with the name "Thief"
+        Then the "Thief" subclass should contain a "Rogue" label
 
 @spellcasting @ignore @backlog
 Rule: A content creator can create class feature with a spellcasting rule

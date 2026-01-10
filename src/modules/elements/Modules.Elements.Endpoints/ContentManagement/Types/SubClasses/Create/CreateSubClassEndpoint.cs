@@ -26,9 +26,9 @@ public sealed class CreateSubClassEndpoint : Endpoint<CreateSubClassRequest, Cre
     public override async Task HandleAsync(CreateSubClassRequest req, CancellationToken ct)
     {
         Logger.LogInformation(
-            "creating a new sub class [name='{Name}', parentClassId='{ParentClassId}']",
+            "creating a new sub class [name='{Name}', ParentClassName='{ParentClassName}']",
             req.Name,
-            req.ParentClassId);
+            req.ParentClassName);
 
         var element = Element.Create(req.Name, ElementTypeConstants.SubClass);
 
@@ -36,6 +36,9 @@ public sealed class CreateSubClassEndpoint : Endpoint<CreateSubClassRequest, Cre
 
         var parent = new ParentElement(new ElementId { Value = req.ParentClassId }, req.ParentClassName);
         element.AddComponent(id => new MetaComponent(id, parent));
+
+        var classifications = element.AddComponent(id => new ClassificationsComponent(id));
+        classifications.AddLabel(parent.Name);
 
         var repository = _persistence.GetRepository<IElementsRepository>();
         repository.Add(element);

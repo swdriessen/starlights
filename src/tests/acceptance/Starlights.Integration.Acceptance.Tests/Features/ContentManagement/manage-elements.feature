@@ -62,6 +62,9 @@ Rule: A content creator can delete an element
             | Element Three |
 
 @elements @ignore @backlog
+Rule: A content creator can mark an element so it can be chosen more than once during character creation
+
+@elements @ignore @backlog
 Rule: A content creator can change the visibility of an element in the compendium
 
     Scenario: create an element available in the compendium
