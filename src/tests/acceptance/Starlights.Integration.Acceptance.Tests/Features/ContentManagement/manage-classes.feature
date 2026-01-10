@@ -10,7 +10,7 @@ Background:
 @class
 Rule: A content creator can create a class
 
-    Scenario: a class with the hit die
+    Scenario: create a new class element
         When the content creator creates a "Barbarian" class with a "D12" hit point die
         Then the "Barbarian" class should have at least the following properties
             | type  | hit point die |
@@ -19,20 +19,20 @@ Rule: A content creator can create a class
 @class
 Rule: A content creator can create a class feature for a class
 
-    Scenario: a level 2 Barbarian feature
+    Scenario: create a level 2 class feature
         Given a class exists with the name "Barbarian"
         When the content creator creates a level 2 class feature for the "Barbarian" class with the name "Danger Sense"
-        Then the class feature should have at least the following properties
+        Then the "Danger Sense" class feature should have at least the following properties
             | name         | type          | feature level | feature parent |
             | Danger Sense | Class Feature |             2 | Barbarian      |
 
 @class
 Rule: A content creator can create a subclass for a class
 
-    Scenario: a barbarian subclass
+    Scenario: create a barbarian subclass
         Given a class exists with the name "Barbarian"
         When the content creator creates a subclass for the "Barbarian" class with the name "Path of the Totem Warrior"
-        Then the subclass should have at least the following properties
+        Then the "Path of the Totem Warrior" subclass should have at least the following properties
             | name                      | type      | feature parent |
             | Path of the Totem Warrior | Sub Class | Barbarian      |
 
@@ -41,7 +41,7 @@ Rule: A content creator can create a subclass for a class
 @spellcasting @ignore @backlog
 Rule: A content creator can create class feature with a spellcasting rule
 
-    Scenario: spellcasting feature for a wizard
+    Scenario: create a spellcasting feature for a wizard
         Given a class exists with the name "Wizard" with the following class features:
             | name         | type          | feature level | feature parent |
             | Spellcasting | Class Feature |             1 | Wizard         |
@@ -63,7 +63,7 @@ Rule: A content creator can create a spell list for a spellcaster class
             | Shield        |     2 | Abjuration  |
             | Fireball      |     3 | Evocation   |
 
-    Scenario: a spell list for the Wizard class
+    Scenario: create a spell list for the Wizard class
         Given a spellcaster class exists with the name "Wizard" and a spellcasting feature named "Spellcasting"
         When the content creator updates to the spellcasting rule of the "Spellcasting" class feature with the following "Wizard" spell list:
             | spell         |
