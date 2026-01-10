@@ -34,7 +34,7 @@ public sealed class CreateLanguageEndpoint : Endpoint<CreateLanguageRequest, Cre
         var element = Element.Create(req.Name, ElementTypeConstants.Language);
 
         element.AddComponent(id => new DescriptionComponent(id, req.Description ?? string.Empty));
-        element.AddComponent(id => new LanguageAspect(id, new(req.Kind), req.Origin ?? string.Empty));
+        element.AddComponent(id => new LanguageAspects(id, new(req.Kind), req.Origin ?? string.Empty));
 
         var repository = _persistence.GetRepository<IElementsRepository>();
         repository.Add(element);

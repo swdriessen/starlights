@@ -4,9 +4,9 @@ using Starlights.Modules.Elements.Domain.Components.Language;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework.TypeConfiguration;
 
-public class LanguageAspectTypeConfiguration : IEntityTypeConfiguration<LanguageAspect>
+public class LanguageAspectTypeConfiguration : IEntityTypeConfiguration<LanguageAspects>
 {
-    public void Configure(EntityTypeBuilder<LanguageAspect> builder)
+    public void Configure(EntityTypeBuilder<LanguageAspects> builder)
     {
         builder.ToTable("element_component_aspect_language");
 

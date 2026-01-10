@@ -1,11 +1,11 @@
-namespace Starlights.Modules.Elements.Domain.Components.Spellcasting;
+namespace Starlights.Modules.Elements.Domain.Components.Spell;
 
 /// <summary>
 /// Represents a component that defines aspects of a spell element.
 /// </summary>
-public sealed class SpellcastingAspects : ElementComponentBase
+public sealed class SpellAspects : ElementComponentBase
 {
-    public SpellcastingAspects(ElementId owningElement, SpellClassification classification, CastingTime castingTime, Range range, Duration duration)
+    public SpellAspects(ElementId owningElement, SpellClassification classification, CastingTime castingTime, Range range, Duration duration)
         : base(owningElement)
     {
         Classification = classification;

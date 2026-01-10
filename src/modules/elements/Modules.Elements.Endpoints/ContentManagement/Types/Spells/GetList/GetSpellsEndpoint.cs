@@ -2,7 +2,7 @@ using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
-using Starlights.Modules.Elements.Domain.Components.Spellcasting;
+using Starlights.Modules.Elements.Domain.Components.Spell;
 using Starlights.Platform.Data;
 
 namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.GetList;
@@ -35,7 +35,7 @@ public sealed class GetSpellsEndpoint : EndpointWithoutRequest<GetSpellsResponse
         var items = elements
             .Select(element =>
             {
-                var attributes = element.GetRequiredComponent<SpellcastingAspects>();
+                var attributes = element.GetRequiredComponent<SpellAspects>();
 
                 return new SpellDataModel()
                 {

@@ -37,7 +37,7 @@ public sealed class GetLanguagesEndpoint : EndpointWithoutRequest<GetLanguagesRe
         var items = elements
             .Select(element =>
             {
-                var language = element.GetRequiredComponent<LanguageAspect>();
+                var language = element.GetRequiredComponent<LanguageAspects>();
 
                 return new LanguageDataModel
                 {

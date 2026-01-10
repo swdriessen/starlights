@@ -42,7 +42,7 @@ public sealed class UpdateLanguageEndpoint : Endpoint<UpdateLanguageRequest, Upd
 
         element.UpdateComponent<DescriptionComponent>(component => component.UpdateContent(request.Description));
 
-        element.UpdateComponent<LanguageAspect>(component =>
+        element.UpdateComponent<LanguageAspects>(component =>
         {
             component.UpdateClassification(new LanguageClassification(request.Kind));
 

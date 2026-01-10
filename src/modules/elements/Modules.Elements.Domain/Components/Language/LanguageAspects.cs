@@ -3,16 +3,16 @@ namespace Starlights.Modules.Elements.Domain.Components.Language;
 /// <summary>
 /// Represents a component that defines the language aspect of an element.
 /// </summary>
-public sealed class LanguageAspect : ElementComponentBase
+public sealed class LanguageAspects : ElementComponentBase
 {
-    public LanguageAspect(ElementId owningElement, LanguageClassification classification, string origin)
+    public LanguageAspects(ElementId owningElement, LanguageClassification classification, string origin)
         : base(owningElement)
     {
         Classification = classification;
         Origin = origin.Trim();
     }
 
-    public LanguageAspect(ElementId owningElement)
+    public LanguageAspects(ElementId owningElement)
         : base(owningElement)
     {
         Classification = LanguageClassification.Standard;

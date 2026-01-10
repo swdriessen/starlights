@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Starlights.Modules.Elements.Domain.Components.Spellcasting;
+namespace Starlights.Modules.Elements.Domain.Components.Spell;
 
 [DebuggerDisplay("Level = {Level}, School = {MagicSchool}")]
 public readonly record struct SpellClassification

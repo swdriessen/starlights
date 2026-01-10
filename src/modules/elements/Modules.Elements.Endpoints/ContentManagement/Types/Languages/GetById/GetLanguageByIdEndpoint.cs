@@ -41,7 +41,7 @@ public sealed class GetLanguageByIdEndpoint : Endpoint<GetLanguageByIdRequest, L
             return;
         }
 
-        var language = element.GetRequiredComponent<LanguageAspect>();
+        var language = element.GetRequiredComponent<LanguageAspects>();
         var description = element.GetRequiredComponent<DescriptionComponent>();
 
         var response = new LanguageDataModel

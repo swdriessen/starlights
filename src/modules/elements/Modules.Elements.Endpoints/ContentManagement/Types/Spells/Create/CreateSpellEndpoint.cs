@@ -3,8 +3,9 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Domain.Components.Spellcasting;
+using Starlights.Modules.Elements.Domain.Components.Spell;
 using Starlights.Platform.Data;
+using Range = Starlights.Modules.Elements.Domain.Components.Spell.Range;
 
 namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Create;
 
@@ -34,7 +35,7 @@ public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellRespo
 
         var classification = new SpellClassification(req.MagicSchool, req.Level);
         var time = new CastingTime(req.CastingTime) { IsRitual = req.IsRitual };
-        var range = new Domain.Components.Spellcasting.Range(req.Range);
+        var range = new Range(req.Range);
         var duration = new Duration(req.Duration, req.IsConcentration);
         var components = new SpellComponents()
         {
@@ -44,9 +45,9 @@ public class CreateSpellEndpoint : Endpoint<CreateSpellRequest, CreateSpellRespo
             MaterialComponent = req.MaterialComponent
         };
 
-        element.AddComponent(id => new SpellcastingAspects(id, classification, time, range, duration));
+        element.AddComponent(id => new SpellAspects(id, classification, time, range, duration));
 
-        element.UpdateComponent<SpellcastingAspects>(component =>
+        element.UpdateComponent<SpellAspects>(component =>
         {
             component.UpdateHasSomaticComponent(components.HasSomatic);
             component.UpdateHasVerbalComponent(components.HasVerbal);

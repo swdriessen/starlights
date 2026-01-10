@@ -15,7 +15,7 @@ public class LanguageComponentTests
         const string origin = "Ancient Greece";
 
         // Act
-        var component = new LanguageAspect(owningElement, LanguageClassification.Standard, origin);
+        var component = new LanguageAspects(owningElement, LanguageClassification.Standard, origin);
 
         // Assert
         component.Origin.Should().Be(origin);
@@ -26,7 +26,7 @@ public class LanguageComponentTests
     public void UpdateKind_ShouldUpdate_WhenValidStringProvided()
     {
         // Arrange
-        var component = new LanguageAspect(ElementId.New(), LanguageClassification.Standard, "Latin");
+        var component = new LanguageAspects(ElementId.New(), LanguageClassification.Standard, "Latin");
         var newKind = LanguageClassification.Rare;
 
         // Act
@@ -40,7 +40,7 @@ public class LanguageComponentTests
     public void UpdateKind_ShouldThrowArgumentException_WhenNullProvided()
     {
         // Arrange
-        var component = new LanguageAspect(ElementId.New(), LanguageClassification.Standard, "Latin");
+        var component = new LanguageAspects(ElementId.New(), LanguageClassification.Standard, "Latin");
 
         // Act
         var act = () => component.UpdateClassification(new LanguageClassification(null!));
@@ -53,7 +53,7 @@ public class LanguageComponentTests
     public void UpdateOrigin_ShouldUpdate_WhenValidStringProvided()
     {
         // Arrange
-        var component = new LanguageAspect(ElementId.New(), LanguageClassification.Standard, "Old Norse");
+        var component = new LanguageAspects(ElementId.New(), LanguageClassification.Standard, "Old Norse");
         const string newOrigin = "Modern Icelandic";
 
         // Act
@@ -67,7 +67,7 @@ public class LanguageComponentTests
     public void UpdateOrigin_ShouldAllowEmptyString()
     {
         // Arrange
-        var component = new LanguageAspect(ElementId.New(), LanguageClassification.Standard, "Latin");
+        var component = new LanguageAspects(ElementId.New(), LanguageClassification.Standard, "Latin");
 
         // Act
         component.UpdateOrigin("");
@@ -80,7 +80,7 @@ public class LanguageComponentTests
     public void UpdateOrigin_ShouldThrowArgumentException_WhenNullProvided()
     {
         // Arrange
-        var component = new LanguageAspect(ElementId.New(), LanguageClassification.Standard, "English");
+        var component = new LanguageAspects(ElementId.New(), LanguageClassification.Standard, "English");
 
         // Act
         var act = () => component.UpdateOrigin(null!);

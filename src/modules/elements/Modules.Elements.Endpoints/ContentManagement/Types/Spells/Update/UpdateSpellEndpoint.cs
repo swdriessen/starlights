@@ -3,8 +3,9 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
-using Starlights.Modules.Elements.Domain.Components.Spellcasting;
+using Starlights.Modules.Elements.Domain.Components.Spell;
 using Starlights.Platform.Data;
+using Range = Starlights.Modules.Elements.Domain.Components.Spell.Range;
 
 namespace Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Update;
 
@@ -46,7 +47,7 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
         // update spellcasting aspects
         var classification = new SpellClassification(request.MagicSchool, request.Level);
         var time = new CastingTime(request.CastingTime);
-        var range = new Domain.Components.Spellcasting.Range(request.Range);
+        var range = new Range(request.Range);
         var duration = new Duration(request.Duration);
         var components = new SpellComponents()
         {
@@ -56,7 +57,7 @@ public sealed class UpdateSpellEndpoint : Endpoint<UpdateSpellRequest, UpdateSpe
             MaterialComponent = request.MaterialComponent
         };
 
-        element.UpdateComponent<SpellcastingAspects>(component =>
+        element.UpdateComponent<SpellAspects>(component =>
         {
 
 

@@ -1,14 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Starlights.Modules.Elements.Domain.Components.Spellcasting;
+using Starlights.Modules.Elements.Domain.Components.Spell;
 using Starlights.Platform.Components.Data.EntityFramework.Extensions;
-using Range = Starlights.Modules.Elements.Domain.Components.Spellcasting.Range;
+using Range = Starlights.Modules.Elements.Domain.Components.Spell.Range;
 
 namespace Starlights.Modules.Elements.Data.EntityFramework.TypeConfiguration;
 
-public class SpellcastingAspectsTypeConfiguration : IEntityTypeConfiguration<SpellcastingAspects>
+public class SpellcastingAspectsTypeConfiguration : IEntityTypeConfiguration<SpellAspects>
 {
-    public void Configure(EntityTypeBuilder<SpellcastingAspects> builder)
+    public void Configure(EntityTypeBuilder<SpellAspects> builder)
     {
         builder.ToTable("element_component_aspect_spellcasting");
 

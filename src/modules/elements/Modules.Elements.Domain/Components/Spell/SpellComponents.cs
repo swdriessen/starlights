@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Starlights.Modules.Elements.Domain.Components.Spellcasting;
+namespace Starlights.Modules.Elements.Domain.Components.Spell;
 
 [DebuggerDisplay("V = {HasSomatic}, S = {HasVerbal}, M = {HasMaterial}, Material = {MaterialComponent}")]
 public readonly record struct SpellComponents

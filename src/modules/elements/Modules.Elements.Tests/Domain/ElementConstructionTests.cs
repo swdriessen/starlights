@@ -73,7 +73,7 @@ public class ElementConstructionTests
     {
         // Act
         var element = Element.Create("Common", ElementTypeConstants.Language);
-        element.AddComponent(new LanguageAspect(element.Id, LanguageClassification.Standard, "Sigil"));
+        element.AddComponent(new LanguageAspects(element.Id, LanguageClassification.Standard, "Sigil"));
         element.AddComponent(new DescriptionComponent(element.Id, "Common is the most widely spoken language in the world."));
 
         // Assert

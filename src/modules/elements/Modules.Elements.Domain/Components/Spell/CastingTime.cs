@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Starlights.Modules.Elements.Domain.Components.Spellcasting;
+namespace Starlights.Modules.Elements.Domain.Components.Spell;
 
 [DebuggerDisplay("Time = {Value}, Ritual = {IsRitual}")]
 public readonly record struct CastingTime
