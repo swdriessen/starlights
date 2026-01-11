@@ -9,11 +9,11 @@ using Starlights.Modules.Elements.Endpoints.Content.Labels.Update;
 
 namespace Starlights.Integration.Drivers.Elements.Endpoints;
 
-public sealed class ElementLabelsEndpointDriver : IDriver
+public sealed class ManageElementLabelsEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
 
-    public ElementLabelsEndpointDriver(IIntegrationHost integration)
+    public ManageElementLabelsEndpointDriver(IIntegrationHost integration)
     {
         _integration = integration;
     }

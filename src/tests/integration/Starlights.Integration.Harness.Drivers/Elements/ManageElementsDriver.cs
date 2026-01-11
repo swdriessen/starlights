@@ -26,14 +26,14 @@ public sealed class ManageElementsDriver : IDriver
     private readonly ElementsEventObserverCollection _events;
     private readonly ManageElementsEndpointDriver _api;
     private readonly ManageElementRulesEndpointDriver _rulesApi;
-    private readonly ElementLabelsEndpointDriver _labelsApi;
+    private readonly ManageElementLabelsEndpointDriver _labelsApi;
 
     public ManageElementsDriver(
         IIntegrationHost integration,
         ElementsDriverContext driverContext,
         ManageElementsEndpointDriver endpointDriver,
         ManageElementRulesEndpointDriver rulesEndpointDriver,
-        ElementLabelsEndpointDriver labelsEndpointDriver)
+        ManageElementLabelsEndpointDriver labelsEndpointDriver)
     {
         _integration = integration;
         _driverContext = driverContext;
