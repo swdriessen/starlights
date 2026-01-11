@@ -14,7 +14,9 @@ Rule: A content creator can create spells with the minimum required fields
         When the content creator creates a spell with the following properties
             | name        | level | magic school | casting time | range  | duration      |
             | Magic Spell |     0 | Evocation    | 1 action     | 100 ft | Instantaneous |
-        Then the spell appears in the spell list with all provided properties
+        Then the spell in the spell list should have the following properties
+            | name        | level | magic school | casting time | range  | duration      |
+            | Magic Spell |     0 | Evocation    | 1 action     | 100 ft | Instantaneous |
 
 @spell
 Rule: A content creator can create spells up to level 9
@@ -23,7 +25,9 @@ Rule: A content creator can create spells up to level 9
         When the content creator creates a spell with the following properties
             | name   | level   | magic school   | casting time   | range   | duration   |
             | <name> | <level> | <magic school> | <casting time> | <range> | <duration> |
-        Then the spell appears in the spell list with all provided properties
+        Then the spell in the spell list should have the following properties
+            | name   | level   | magic school   | casting time   | range   | duration   |
+            | <name> | <level> | <magic school> | <casting time> | <range> | <duration> |
 
         Examples:
             | name                       | level | magic school | casting time   | range | duration                      |
@@ -68,7 +72,9 @@ Rule: A content creator can create spells that require a combination of somatic,
         When the content creator creates a spell with the following properties
             | name        | level | magic school | casting time | range  | duration | material | material components |
             | Magic Spell |     5 | Evocation    | 1 action     | 100 ft | 1 hour   | true     | a small crystal rod |
-        Then the spell appears in the spell list as having a material component with the provided material components description
+        Then the spell in the spell list should have the following properties
+            | name        | material | material components |
+            | Magic Spell | true     | a small crystal rod |
 
 @spell
 Rule: A content creator can create spells with detailed descriptions
@@ -77,7 +83,9 @@ Rule: A content creator can create spells with detailed descriptions
         When the content creator creates a spell with the following properties
             | name        | level | magic school | casting time | range  | duration | description                                   |
             | Magic Spell |     5 | Evocation    | 1 action     | 100 ft | 1 hour   | A powerful evocation spell that deals damage. |
-        Then the spell appears in the spell list with the provided description
+        Then the spell in the spell list should have the following properties
+            | name        | description                                   |
+            | Magic Spell | A powerful evocation spell that deals damage. |
 
     Scenario: create a spell with a markdown description
         Given the content creator prepared the following markdown description
@@ -93,7 +101,9 @@ Rule: A content creator can create spells with detailed descriptions
         When the content creator creates a spell with the following properties
             | name     | level | magic school | casting time | range  | duration      | description            |
             | Fireball |     3 | Evocation    | 1 action     | 150 ft | Instantaneous | <markdown description> |
-        Then the spell appears in the spell list with the provided description
+        Then the spell in the spell list should have the following properties
+            | name     | description            |
+            | Fireball | <markdown description> |
         
 @spell
 Rule: A content creator can update existing spells

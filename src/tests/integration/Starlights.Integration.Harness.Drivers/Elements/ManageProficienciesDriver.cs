@@ -1,6 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.Create;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.GetProficiencies;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Proficiencies.Update;
@@ -11,6 +14,7 @@ public sealed class ManageProficienciesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
+    private readonly ElementsEventObserverCollection _events;
     private readonly ManageProficienciesEndpointDriver _endpoints;
 
     public ManageProficienciesDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
@@ -18,9 +22,10 @@ public sealed class ManageProficienciesDriver : IDriver
         _integration = integration;
         _driverContext = driverContext;
         _endpoints = _integration.GetDriver<ManageProficienciesEndpointDriver>();
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
-    public async Task<Guid> CreateProficiencyAsync(CreateProperties properties, bool storeAsLastCreated = true)
+    public async Task<Guid> CreateProficiencyAsync(CreateProperties properties)
     {
         var request = new CreateProficiencyRequest(properties.Name, properties.ProficiencyType, Description: null);
 
@@ -28,11 +33,7 @@ public sealed class ManageProficienciesDriver : IDriver
 
         _driverContext.WithCreatedElement(id, request.Name);
 
-        if (storeAsLastCreated)
-        {
-            _integration.Set(id, "last-created-proficiency-id");
-            _integration.Set(properties, "last-created-proficiency-properties");
-        }
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.Proficiency);
 
         return id;
     }
@@ -49,6 +50,12 @@ public sealed class ManageProficienciesDriver : IDriver
     {
         var items = await GetProficienciesAsync();
         return items.Single(x => x.Id == id);
+    }
+
+    public async Task<ProficiencyListItem> GetLastCreatedProficiency()
+    {
+        var items = await GetProficienciesAsync();
+        return items.Single(x => x.Id == _driverContext.CurrentElement.Id);
     }
 
     public async Task UpdateProficiencyAsync(Guid id, UpdateProperties properties)

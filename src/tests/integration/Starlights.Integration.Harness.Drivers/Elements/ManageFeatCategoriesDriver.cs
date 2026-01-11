@@ -1,5 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
+using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.Update;
@@ -9,14 +13,16 @@ namespace Starlights.Integration.Drivers.Elements;
 public sealed class ManageFeatCategoriesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
-    private readonly ManageFeatCategoriesEndpointDriver _api;
     private readonly ElementsDriverContext _driverContext;
+    private readonly ElementsEventObserverCollection _events;
+    private readonly ManageFeatCategoriesEndpointDriver _api;
 
     public ManageFeatCategoriesDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageFeatCategoriesEndpointDriver endpointDriver)
     {
         _integration = integration;
         _driverContext = driverContext;
         _api = endpointDriver;
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
     public async Task<Guid> CreateFeatCategory(string name, string? description = null)
@@ -31,6 +37,8 @@ public sealed class ManageFeatCategoriesDriver : IDriver
         id.Should().NotBeEmpty();
 
         _driverContext.WithCreatedElement(id, request.Name);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.FeatCategory);
 
         return id;
     }

@@ -9,9 +9,6 @@ namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagem
 [Binding]
 public class SpellManagementStepDefinitions
 {
-    public const string CURRENT_SPELL_ID = "CURRENT-SPELL-ID";
-    public const string CURRENT_SPELL_PROPERTIES = "CURRENT-SPELL-PROPERTIES";
-
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageSpellsDriver _driver;
@@ -35,8 +32,6 @@ public class SpellManagementStepDefinitions
     {
         var row = dataTable.CreateInstance<CreateSpellTableRow>(_scenarioContext);
 
-        _scenarioContext.Set(row, CURRENT_SPELL_PROPERTIES);
-
         var properties = new CreateProperties
         {
             Name = row.Name,
@@ -56,30 +51,6 @@ public class SpellManagementStepDefinitions
 
         var id = await _driver.CreateSpell(properties);
         id.Should().NotBeEmpty();
-
-        _scenarioContext.Set(id, CURRENT_SPELL_ID);
-    }
-
-    [Then("the spell appears in the spell list with all provided properties")]
-    public async Task ThenTheSpellAppearsInTheSpellListWithAllProvidedProperties()
-    {
-        var spell = await _driver.GetLastCreatedSpell();
-
-        var expected = _scenarioContext.Get<CreateSpellTableRow>(CURRENT_SPELL_PROPERTIES);
-
-        spell.Name.Should().Be(expected.Name);
-        spell.Level.Should().Be(expected.Level);
-        spell.MagicSchool.Should().Be(expected.MagicSchool);
-        spell.CastingTime.Should().Be(expected.CastingTime);
-        spell.Range.Should().Be(expected.Range);
-        spell.Duration.Should().Be(expected.Duration);
-        spell.IsConcentration.Should().Be(expected.Concentration);
-        spell.IsRitual.Should().Be(expected.Ritual);
-        spell.HasSomatic.Should().Be(expected.Somatic);
-        spell.HasVerbal.Should().Be(expected.Verbal);
-        spell.HasMaterial.Should().Be(expected.Material);
-        spell.MaterialComponent.Should().Be(expected.MaterialComponents);
-        spell.Description.Should().Be(expected.Description);
     }
 
     [Then("the spell appears in the spell list as a concentration spell")]
@@ -110,39 +81,17 @@ public class SpellManagementStepDefinitions
         spell.HasVerbal.Should().BeTrue("expected the spell to have a verbal component");
     }
 
-    [Then("the spell appears in the spell list as having a material component with the provided material components description")]
-    public async Task ThenTheSpellAppearsInTheSpellListAsHavingAMaterialComponentWithTheProvidedMaterialComponentsDescription()
-    {
-        var row = _scenarioContext.Get<CreateSpellTableRow>(CURRENT_SPELL_PROPERTIES);
-
-        var spell = await _driver.GetLastCreatedSpell();
-        spell.HasMaterial.Should().BeTrue("expected the spell to have a material component");
-        spell.MaterialComponent.Should().Be(row.MaterialComponents);
-    }
-
-    [Then("the spell appears in the spell list with the provided description")]
-    public async Task ThenTheSpellAppearsInTheSpellListWithTheProvidedDescription()
-    {
-        var row = _scenarioContext.Get<CreateSpellTableRow>(CURRENT_SPELL_PROPERTIES);
-
-        var spell = await _driver.GetLastCreatedSpell();
-        spell.Description.Should().Be(row.Description);
-    }
-
     [Given("a spell exists that includes the following properties")]
     public async Task GivenASpellExistsWithTheFollowingProperties(DataTable dataTable)
     {
-        var input = dataTable.CreateInstance<CreateSpellTableRow>(_scenarioContext);
-        _scenarioContext.Set(input, CURRENT_SPELL_PROPERTIES);
-
         var row = new CreateSpellTableRow()
         {
-            Name = "Name",
+            Name = "RequiredDefaultName",
             Level = 0,
-            MagicSchool = "MagicSchool",
-            CastingTime = "CastingTime",
-            Range = "Range",
-            Duration = "Duration"
+            MagicSchool = "RequiredDefaultMagicSchool",
+            CastingTime = "RequiredDefaultCastingTime",
+            Range = "RequiredDefaultRange",
+            Duration = "RequiredDefaultDuration"
         };
 
         dataTable.FillInstance(row); // fill the properties from the table which may not contain all required fields

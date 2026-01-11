@@ -1,5 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
+using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Update;
@@ -10,6 +14,7 @@ public class ManageFeatsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
+    private readonly ElementsEventObserverCollection _events;
     private readonly ManageFeatsEndpointDriver _api;
 
     public ManageFeatsDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageFeatsEndpointDriver endpointDriver)
@@ -17,6 +22,7 @@ public class ManageFeatsDriver : IDriver
         _integration = integration;
         _driverContext = driverContext;
         _api = endpointDriver;
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
     public async Task<Guid> CreateFeat(CreateProperties properties)
@@ -35,6 +41,8 @@ public class ManageFeatsDriver : IDriver
         id.Should().NotBeEmpty();
 
         _driverContext.WithCreatedElement(id, request.Name);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.Feat);
 
         return id;
     }

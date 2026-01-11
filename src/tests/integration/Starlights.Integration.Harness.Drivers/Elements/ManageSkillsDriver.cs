@@ -1,7 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Skills.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Skills.GetSkills;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Skills.Update;
@@ -12,6 +14,7 @@ public sealed class ManageSkillsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
+    private readonly ElementsEventObserverCollection _events;
     private readonly ManageSkillsEndpointDriver _skillsEndpoint;
 
     public ManageSkillsDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
@@ -20,6 +23,7 @@ public sealed class ManageSkillsDriver : IDriver
         _driverContext = driverContext;
 
         _skillsEndpoint = _integration.GetDriver<ManageSkillsEndpointDriver>();
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
     public async Task<Guid> CreateSkillAsync(CreateProperties properties)
@@ -31,6 +35,8 @@ public sealed class ManageSkillsDriver : IDriver
         var id = await _skillsEndpoint.CreateAsync(request);
 
         _driverContext.WithCreatedElement(id, request.Name, ElementTypeConstants.Skill);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.Skill);
 
         return id;
     }

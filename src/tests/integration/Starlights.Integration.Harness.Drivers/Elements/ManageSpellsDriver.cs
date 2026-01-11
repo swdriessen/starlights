@@ -1,6 +1,9 @@
 ﻿using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
+using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Create;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Update;
@@ -12,12 +15,15 @@ public class ManageSpellsDriver : IDriver
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
     private readonly ManageSpellsEndpointDriver _api;
+    private readonly ElementsEventObserverCollection _events;
 
     public ManageSpellsDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageSpellsEndpointDriver endpointDriver)
     {
         _integration = integration;
         _driverContext = driverContext;
         _api = endpointDriver;
+
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
     public async Task<Guid> CreateSpell(CreateProperties properties)
@@ -42,6 +48,8 @@ public class ManageSpellsDriver : IDriver
         var id = await _api.CreateAsync(request);
 
         _driverContext.WithCreatedElement(id, request.Name, ElementTypeConstants.Spell);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.Spell);
 
         return id;
     }

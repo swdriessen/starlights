@@ -1,6 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.SavingThrows.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.SavingThrows.GetSavingThrows;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.SavingThrows.Update;
@@ -11,6 +14,7 @@ public sealed class ManageSavingThrowsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
+    private readonly ElementsEventObserverCollection _events;
     private readonly ManageSavingThrowsEndpointDriver _endpoints;
 
     public ManageSavingThrowsDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
@@ -18,6 +22,7 @@ public sealed class ManageSavingThrowsDriver : IDriver
         _integration = integration;
         _driverContext = driverContext;
         _endpoints = _integration.GetDriver<ManageSavingThrowsEndpointDriver>();
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
     public async Task<Guid> CreateSavingThrowAsync(CreateProperties properties)
@@ -29,6 +34,8 @@ public sealed class ManageSavingThrowsDriver : IDriver
         var id = await _endpoints.CreateAsync(request);
 
         _driverContext.WithCreatedElement(id, properties.Name);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.SavingThrow);
 
         return id;
     }

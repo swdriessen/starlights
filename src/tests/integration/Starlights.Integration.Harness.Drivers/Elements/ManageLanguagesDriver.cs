@@ -1,5 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
+using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Update;
@@ -10,6 +14,7 @@ public sealed class ManageLanguagesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
+    private readonly ElementsEventObserverCollection _events;
     private readonly ManageLanguagesEndpointDriver _api;
 
     public ManageLanguagesDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageLanguagesEndpointDriver endpointDriver)
@@ -17,6 +22,7 @@ public sealed class ManageLanguagesDriver : IDriver
         _integration = integration;
         _driverContext = driverContext;
         _api = endpointDriver;
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
     public async Task<Guid> CreateLanguage(string name, string kind, string? origin, string? description)
@@ -33,6 +39,8 @@ public sealed class ManageLanguagesDriver : IDriver
         id.Should().NotBeEmpty();
 
         _driverContext.WithCreatedElement(id, request.Name);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.Language);
 
         return id;
     }
