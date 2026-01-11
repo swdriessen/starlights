@@ -122,7 +122,6 @@ public class LanguageManagementStepDefinitions
     }
 
 
-
     #region Table Bindings
 
     private sealed record CreateLanguageTableRow : IMarkdownDescriptionTableRow

@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
+using Starlights.Integration.Drivers;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Create;
@@ -16,20 +17,19 @@ namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagem
 public class ElementManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageElementsDriver _elementsDriver;
-    private readonly ElementsScenarioContext _elementsContext;
 
-    public ElementManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public ElementManagementStepDefinitions(IIntegrationHost host, ElementsDriverContext driverContext, ScenarioContext scenarioContext)
     {
         _host = host;
+        _driverContext = driverContext;
         _scenarioContext = scenarioContext;
         _elementsDriver = _host.GetDriver<ManageElementsDriver>();
-
-        _elementsContext = _host.Get<ElementsScenarioContext>();
     }
 
-    [When(@"the content creator creates an element with the following properties")]
+    [When("the content creator creates an element with the following properties")]
     public async Task WhenTheContentCreatorCreatesAnElementWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<ElementTableRow>(_scenarioContext);
@@ -43,7 +43,7 @@ public class ElementManagementStepDefinitions
 
         await _elementsDriver.CreateElement(properties);
     }
-    [Then(@"the element should have at least the following properties")]
+    [Then("the element should have at least the following properties")]
     public async Task ThenTheElementShouldHaveAtLeastTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var element = await _elementsDriver.GetLastCreatedElement();
@@ -103,7 +103,7 @@ public class ElementManagementStepDefinitions
         dataTable.AssertProvidedProperties(expected, element, assertions);
     }
 
-    [Given(@"the following elements with their respective properties exists")]
+    [Given("the following elements with their respective properties exists")]
     public async Task GivenElementsExistWithTheFollowingNamesAsync(DataTable dataTable)
     {
         var names = dataTable.CreateSet<ElementTableRow>(_scenarioContext);
@@ -121,7 +121,7 @@ public class ElementManagementStepDefinitions
         }
     }
 
-    [Given(@"an element exists with the following properties")]
+    [Given("an element exists with the following properties")]
     public async Task GivenAnElementExistsWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<ElementTableRow>(_scenarioContext);
@@ -136,12 +136,12 @@ public class ElementManagementStepDefinitions
         await _elementsDriver.CreateElement(properties);
     }
 
-    [When(@"the content creator adds a new statistic rule to the element with the following properties")]
+    [When("the content creator adds a new statistic rule to the element with the following properties")]
     public async Task WhenTheContentCreatorAddsANewStatisticRuleToTheElementWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<StatisticRuleTableRow>(_scenarioContext);
 
-        var elementId = _elementsContext.LastCreated;
+        var elementId = _driverContext.CurrentElement.Id;
 
         var properties = new ManageElementsDriver.CreateStatisticRuleProperties
         {
@@ -158,12 +158,12 @@ public class ElementManagementStepDefinitions
         await _elementsDriver.CreateStatisticRule(elementId, properties);
     }
 
-    [Then(@"the element should have a statistic rule with the following properties")]
+    [Then("the element should have a statistic rule with the following properties")]
     public async Task ThenTheElementShouldHaveAStatisticRuleWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var expected = dataTable.CreateInstance<StatisticRuleTableRow>(_scenarioContext);
 
-        var elementId = _elementsContext.LastCreated;
+        var elementId = _driverContext.CurrentElement.Id;
 
         var rules = await _elementsDriver.GetStatisticRules(elementId);
         rules.Should().HaveCountGreaterThanOrEqualTo(1, "Expected at least one statistic rule to be present on the element.");
@@ -183,12 +183,12 @@ public class ElementManagementStepDefinitions
         dataTable.AssertAnyProvidedProperties(expected, rules, assertions);
     }
 
-    [Given(@"the element has the following statistic rules")]
+    [Given("the element has the following statistic rules")]
     public async Task GivenTheElementHasTheFollowingStatisticRulesAsync(DataTable dataTable)
     {
         var rows = dataTable.CreateSet<StatisticRuleTableRow>(_scenarioContext);
 
-        var elementId = _elementsContext.LastCreated;
+        var elementId = _driverContext.CurrentElement.Id;
 
         foreach (var row in rows)
         {
@@ -204,11 +204,10 @@ public class ElementManagementStepDefinitions
         }
     }
 
-    [Given(@"the element has the following include rules")]
+    [Given("the element has the following include rules")]
     public async Task GivenTheElementHasTheFollowingIncludeRulesAsync(DataTable dataTable)
     {
         var rows = dataTable.CreateSet<IncludeRuleTableRow>(_scenarioContext);
-        var elementId = _elementsContext.LastCreated;
 
         foreach (var row in rows)
         {
@@ -222,15 +221,16 @@ public class ElementManagementStepDefinitions
                 DisplayName = row.DisplayName
             };
 
-            await _elementsDriver.CreateIncludeRule(elementId, properties);
+            await _elementsDriver.CreateIncludeRule(_driverContext.CurrentElement.Id, properties);
         }
     }
 
-    [Given(@"the element has the following selection rules")]
+    [Given("the element has the following selection rules")]
     public async Task GivenTheElementHasTheFollowingSelectionRulesAsync(DataTable dataTable)
     {
         var rows = dataTable.CreateSet<SelectionRuleTableRow>(_scenarioContext);
-        var elementId = _elementsContext.LastCreated;
+
+        var elementId = _driverContext.CurrentElement.Id;
 
         foreach (var row in rows)
         {
@@ -259,7 +259,7 @@ public class ElementManagementStepDefinitions
     [When(@"the content creator deletes the statistic rule with the name ""([^""]*)""")]
     public async Task WhenTheContentCreatorDeletesTheStatisticRuleWithTheNameAsync(string dexterity)
     {
-        var elementId = _elementsContext.LastCreated;
+        var elementId = _driverContext.CurrentElement.Id;
         var rules = await _elementsDriver.GetStatisticRules(elementId);
         var rule = rules.SingleOrDefault(r => r.Name.Equals(dexterity, StringComparison.OrdinalIgnoreCase));
 
@@ -298,11 +298,10 @@ public class ElementManagementStepDefinitions
         deleted.Should().BeTrue("Expected deletion of selection rule '{0}' from element '{1}' to succeed.", selectionRuleName, elementName);
     }
 
-
-    [When(@"the content creator deletes all the rules from the element")]
+    [When("the content creator deletes all the rules from the element")]
     public async Task WhenTheContentCreatorDeletesAllTheRulesFromTheElementAsync()
     {
-        var elementId = _elementsContext.LastCreated;
+        var elementId = _driverContext.CurrentElement.Id;
 
         var statisticRules = await _elementsDriver.GetStatisticRules(elementId);
         var includeRules = await _elementsDriver.GetIncludeRules(elementId);
@@ -319,10 +318,10 @@ public class ElementManagementStepDefinitions
         deleted.Should().BeTrue("Expected deleting all rules to succeed.");
     }
 
-    [Then(@"the element should have the following statistic rules")]
+    [Then("the element should have the following statistic rules")]
     public async Task ThenTheElementShouldHaveTheFollowingStatisticRulesAsync(DataTable dataTable)
     {
-        var elementId = _elementsContext.LastCreated;
+        var elementId = _driverContext.CurrentElement.Id;
         var rules = await _elementsDriver.GetStatisticRules(elementId);
 
         var expectedRows = dataTable.CreateSet<StatisticRuleTableRow>(_scenarioContext).ToList();
@@ -344,10 +343,10 @@ public class ElementManagementStepDefinitions
         }
     }
 
-    [Then(@"the element should have the following selection rules")]
+    [Then("the element should have the following selection rules")]
     public async Task ThenTheElementShouldHaveTheFollowingSelectionRulesAsync(DataTable dataTable)
     {
-        var elementId = _elementsContext.LastCreated;
+        var elementId = _driverContext.CurrentElement.Id;
         var rules = await _elementsDriver.GetSelectionRules(elementId);
 
         var expectedRows = dataTable.CreateSet<SelectionRuleTableRow>(_scenarioContext).ToList();
@@ -369,37 +368,33 @@ public class ElementManagementStepDefinitions
         }
     }
 
-    [Then(@"the element should have no statistic rules")]
+    [Then("the element should have no statistic rules")]
     public async Task ThenTheElementShouldHaveNoStatisticRulesAsync()
     {
-        var elementId = _elementsContext.LastCreated;
+        var elementId = _driverContext.CurrentElement.Id;
         var rules = await _elementsDriver.GetStatisticRules(elementId);
         rules.Should().BeEmpty();
     }
 
-    [Then(@"the element should have no include rules")]
+    [Then("the element should have no include rules")]
     public async Task ThenTheElementShouldHaveNoIncludeRulesAsync()
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
-        var rules = await _elementsDriver.GetIncludeRules(elementId);
+        var rules = await _elementsDriver.GetIncludeRules(_driverContext.CurrentElement.Id);
         rules.Should().BeEmpty();
     }
 
-    [Then(@"the element should have no selection rules")]
+    [Then("the element should have no selection rules")]
     public async Task ThenTheElementShouldHaveNoSelectionRulesAsync()
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
-        var rules = await _elementsDriver.GetSelectionRules(elementId);
+        var rules = await _elementsDriver.GetSelectionRules(_driverContext.CurrentElement.Id);
         rules.Should().BeEmpty();
     }
 
-    [When(@"the content creator re-arranges the statistic rules to the following order")]
+    [When("the content creator re-arranges the statistic rules to the following order")]
     public async Task WhenTheContentCreatorRe_ArrangesTheStatisticRulesToTheFollowingOrderAsync(DataTable dataTable)
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _driverContext.CurrentElement.Id;
         var rules = await _elementsDriver.GetStatisticRules(elementId);
-
-
 
         var orderedRuleIds = new List<Guid>();
         foreach (var row in dataTable.CreateSet<StatisticRuleTableRow>(_scenarioContext))
@@ -409,15 +404,13 @@ public class ElementManagementStepDefinitions
             orderedRuleIds.Add(rule.RuleId);
         }
 
-
-
         await _elementsDriver.ReorderRules(elementId, orderedRuleIds);
     }
 
     [When(@"the content creator updates the statistic rule with the name ""([^""]*)"" to have the following properties")]
     public async Task WhenTheContentCreatorUpdatesTheStatisticRuleWithTheNameToHaveTheFollowingPropertiesAsync(string statisticName, DataTable dataTable)
     {
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _driverContext.CurrentElement.Id;
         var rules = await _elementsDriver.GetStatisticRules(elementId);
         var rule = rules.SingleOrDefault(r => r.Name.Equals(statisticName, StringComparison.OrdinalIgnoreCase));
 
@@ -441,42 +434,12 @@ public class ElementManagementStepDefinitions
         await _elementsDriver.UpdateStatisticRule(elementId, rule.RuleId, properties);
     }
 
-
-
-
-
-
-
-
-
-    private sealed record ElementTableRow : IMarkdownDescriptionTableRow
-    {
-        public required string Name { get; set; }
-        public required string Type { get; set; }
-        public string? Description { get; set; }
-    }
-
-    private sealed record StatisticRuleTableRow : IMarkdownDescriptionTableRow
-    {
-        public required string Name { get; set; }
-        public required string Value { get; set; }
-        public string? StackingBonus { get; set; }
-        public int? LevelRequirement { get; set; }
-        public int? Minimum { get; set; }
-        public int? Maximum { get; set; }
-        public string? Description { get; set; }
-        public string? DisplayName { get; set; }
-        public string? RequirementsExpression { get; set; }
-    }
-
-
-
-    [When(@"the content creator adds a new include rule to the element with the following properties")]
+    [When("the content creator adds a new include rule to the element with the following properties")]
     public async Task WhenTheContentCreatorAddsANewIncludeRuleToTheElementWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<IncludeRuleTableRow>(_scenarioContext);
 
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _driverContext.CurrentElement.Id;
 
         var includedElementId = await _elementsDriver.CreateElement(new ManageElementsDriver.CreateProperties
         {
@@ -518,19 +481,23 @@ public class ElementManagementStepDefinitions
         _host.Set(row.IncludedElement, "last-created-include-rule-name");
     }
 
-    [Then(@"the element should have an include rule with the following properties")]
+    [Then("the element should have an include rule with the following properties")]
     public async Task ThenTheElementShouldHaveAnIncludeRuleWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var expected = dataTable.CreateInstance<IncludeRuleTableRow>(_scenarioContext);
 
-        var elementId = _host.Get<Guid>("last-created-element-id");
+        var elementId = _driverContext.CurrentElement.Id;
         var createdRule = _host.Get<CreateIncludeRuleResponse>("last-created-include-rule");
 
         var rule = await _elementsDriver.GetIncludeRuleById(elementId, createdRule.RuleId);
 
         var assertions = new Dictionary<string, Action<IncludeRuleTableRow, GetIncludeRuleResponse>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["included element"] = (e, a) => a.IncludedElementId.Should().NotBeEmpty(),
+            ["included element"] = async (e, a) =>
+            {
+                var expectedElementToInclude = await _elementsDriver.GetElementByName(e.IncludedElement);
+                a.IncludedElementId.Should().Be(expectedElementToInclude.Id);
+            },
             ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0),
             ["requirements"] = (e, a) => a.Requirements.Should().Be(e.RequirementsExpression),
             ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName)
@@ -540,32 +507,6 @@ public class ElementManagementStepDefinitions
 
         var list = await _elementsDriver.GetIncludeRules(elementId);
         list.Should().Contain(r => r.RuleId == createdRule.RuleId);
-    }
-
-    private sealed record IncludeRuleTableRow : IMarkdownDescriptionTableRow
-    {
-        public string? Name { get; set; }
-        public required string IncludedElement { get; set; }
-        public int? LevelRequirement { get; set; }
-        public string? RequirementsExpression { get; set; }
-        public string? DisplayName { get; set; }
-        public string? Description { get; set; }
-    }
-
-
-
-    private sealed record SelectionRuleTableRow : IMarkdownDescriptionTableRow
-    {
-        public required string DisplayName { get; set; }
-        public required string Type { get; set; }
-        public string? Supports { get; set; }
-        public string? Range { get; set; }
-        public int? Quantity { get; set; }
-        public bool? Optional { get; set; }
-        public int? LevelRequirement { get; set; }
-        public string? Requirements { get; set; }
-        public string? Default { get; set; }
-        public string? Description { get; set; }
     }
 
     [When(@"the content creator adds a new selection rule to the ""([^""]*)"" element with the following properties")]
@@ -657,7 +598,6 @@ public class ElementManagementStepDefinitions
         deleted.Should().BeTrue("Expected deletion of element '{0}' to succeed.", elementName);
     }
 
-
     [Then(@"the element list should not contain an element with the name ""([^""]*)""")]
     public async Task ThenTheElementListShouldNotContainAnElementWithTheNameAsync(string elementName)
     {
@@ -665,4 +605,51 @@ public class ElementManagementStepDefinitions
         elements.Should().NotContain(e => e.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase));
     }
 
+    #region Table Bindings
+
+    private sealed record ElementTableRow : IMarkdownDescriptionTableRow
+    {
+        public required string Name { get; set; }
+        public required string Type { get; set; }
+        public string? Description { get; set; }
+    }
+
+    private sealed record StatisticRuleTableRow : IMarkdownDescriptionTableRow
+    {
+        public required string Name { get; set; }
+        public required string Value { get; set; }
+        public string? StackingBonus { get; set; }
+        public int? LevelRequirement { get; set; }
+        public int? Minimum { get; set; }
+        public int? Maximum { get; set; }
+        public string? Description { get; set; }
+        public string? DisplayName { get; set; }
+        public string? RequirementsExpression { get; set; }
+    }
+
+    private sealed record IncludeRuleTableRow : IMarkdownDescriptionTableRow
+    {
+        public string? Name { get; set; }
+        public required string IncludedElement { get; set; }
+        public int? LevelRequirement { get; set; }
+        public string? RequirementsExpression { get; set; }
+        public string? DisplayName { get; set; }
+        public string? Description { get; set; }
+    }
+
+    private sealed record SelectionRuleTableRow : IMarkdownDescriptionTableRow
+    {
+        public required string DisplayName { get; set; }
+        public required string Type { get; set; }
+        public string? Supports { get; set; }
+        public string? Range { get; set; }
+        public int? Quantity { get; set; }
+        public bool? Optional { get; set; }
+        public int? LevelRequirement { get; set; }
+        public string? Requirements { get; set; }
+        public string? Default { get; set; }
+        public string? Description { get; set; }
+    }
+
+    #endregion
 }

@@ -1,5 +1,5 @@
-using Starlights.Integration.Drivers.Elements;
-using Starlights.Integration.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Starlights.Integration.Drivers;
 
 namespace Starlights.Integration.Acceptance.Tests.Hooks;
 
@@ -18,7 +18,8 @@ public class IntegrationHostBuilderHooks
 
         _builder = IntegrationHost.CreateBuilder()
             .WithDriverAssemblies(typeof(ManageSpellsDriver).Assembly)
-            .WithTestContext(testContext);
+            .WithTestContext(testContext)
+            .ConfigureServices(services => services.AddSingleton(new ElementsDriverContext()));
     }
 
     [BeforeScenario]
@@ -26,9 +27,9 @@ public class IntegrationHostBuilderHooks
     {
         _host = _builder.Build();
 
-        _host.Set(new ElementsScenarioContext());
-
+        // inject the host and driver context into the scenario container to ease dependency resolution
         _scenarioContext.ScenarioContainer.RegisterInstanceAs<IIntegrationHost>(_host);
+        _scenarioContext.ScenarioContainer.RegisterInstanceAs(_host.Services.GetRequiredService<ElementsDriverContext>());
     }
 
     [AfterScenario]

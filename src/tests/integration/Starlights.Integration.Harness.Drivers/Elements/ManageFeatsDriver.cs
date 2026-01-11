@@ -1,6 +1,5 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
-using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Feats.Update;
@@ -10,14 +9,13 @@ namespace Starlights.Integration.Drivers.Elements;
 public class ManageFeatsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ManageFeatsEndpointDriver _api;
 
-    private readonly ElementsScenarioContext _elementsContext;
-
-    public ManageFeatsDriver(IIntegrationHost integration, ManageFeatsEndpointDriver endpointDriver)
+    public ManageFeatsDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageFeatsEndpointDriver endpointDriver)
     {
         _integration = integration;
-        _elementsContext = integration.Get<ElementsScenarioContext>();
+        _driverContext = driverContext;
         _api = endpointDriver;
     }
 
@@ -36,10 +34,7 @@ public class ManageFeatsDriver : IDriver
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _elementsContext.ElementCreated(request.Name, id);
-
-        _integration.Set(id, "last-created-feat-id");
-        _integration.Set(properties, "last-created-feat-properties");
+        _driverContext.WithCreatedElement(id, request.Name);
 
         return id;
     }
@@ -51,8 +46,7 @@ public class ManageFeatsDriver : IDriver
 
     public Task<FeatDataModel> GetLastCreatedFeat()
     {
-        var id = _integration.Get<Guid>("last-created-feat-id");
-        return GetFeatById(id);
+        return GetFeatById(_driverContext.CurrentElement.Id);
     }
 
     public async Task<List<FeatDataModel>> GetFeats()

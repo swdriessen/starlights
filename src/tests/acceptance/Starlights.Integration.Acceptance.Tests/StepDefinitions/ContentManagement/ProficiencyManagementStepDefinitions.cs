@@ -19,7 +19,7 @@ public sealed class ProficiencyManagementStepDefinitions
         _proficienciesDriver = _host.GetDriver<ManageProficienciesDriver>();
     }
 
-    [When(@"the content creator creates a proficiency with the following properties")]
+    [When("the content creator creates a proficiency with the following properties")]
     public async Task WhenTheContentCreatorCreatesAProficiencyWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<ProficiencyTableRow>(_scenarioContext);
@@ -33,7 +33,7 @@ public sealed class ProficiencyManagementStepDefinitions
         await _proficienciesDriver.CreateProficiencyAsync(properties);
     }
 
-    [Then(@"the proficiency should have at least the following properties")]
+    [Then("the proficiency should have at least the following properties")]
     public async Task ThenTheProficiencyShouldHaveAtLeastTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var id = _host.Get<Guid>("last-created-proficiency-id");
@@ -51,10 +51,14 @@ public sealed class ProficiencyManagementStepDefinitions
         dataTable.AssertProvidedProperties(expected, proficiency, assertions);
     }
 
+    #region Table Bindings
+
     private sealed class ProficiencyTableRow : IMarkdownDescriptionTableRow
     {
         public string Name { get; set; } = string.Empty;
         public string ProficiencyType { get; set; } = string.Empty;
         public string? Description { get; set; }
     }
+
+    #endregion
 }

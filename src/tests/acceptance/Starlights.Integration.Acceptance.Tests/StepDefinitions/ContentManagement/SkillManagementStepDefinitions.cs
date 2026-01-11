@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
+using Starlights.Integration.Drivers;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Skills.GetSkills;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
@@ -9,17 +10,20 @@ namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagem
 public sealed class SkillManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageSkillsDriver _skillsDriver;
 
-    public SkillManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public SkillManagementStepDefinitions(IIntegrationHost host, ElementsDriverContext driverContext, ScenarioContext scenarioContext)
     {
         _host = host;
+        _driverContext = driverContext;
         _scenarioContext = scenarioContext;
+
         _skillsDriver = _host.GetDriver<ManageSkillsDriver>();
     }
 
-    [When(@"the content creator creates a skill with the following properties")]
+    [When("the content creator creates a skill with the following properties")]
     public async Task WhenTheContentCreatorCreatesASkillWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<SkillTableRow>(_scenarioContext);
@@ -33,11 +37,11 @@ public sealed class SkillManagementStepDefinitions
         await _skillsDriver.CreateSkillAsync(properties);
     }
 
-    [Then(@"the skill should have at least the following properties")]
+    [Then("the skill should have at least the following properties")]
     public async Task ThenTheSkillShouldHaveAtLeastTheFollowingPropertiesAsync(DataTable dataTable)
     {
-        var id = _host.Get<Guid>("last-created-skill-id");
-        var skill = await _skillsDriver.GetSkillByIdAsync(id);
+        var current = _driverContext.CurrentElement;
+        var skill = await _skillsDriver.GetSkillByIdAsync(current.Id);
 
         var expected = dataTable.CreateInstance<SkillTableRow>(_scenarioContext);
 
@@ -54,13 +58,15 @@ public sealed class SkillManagementStepDefinitions
     [Given(@"a skill exists with the name ""(.*)"" and ability ""(.*)""")]
     public async Task GivenASkillExistsWithTheNameAndAbilityAsync(string name, string ability)
     {
-        var id = await _skillsDriver.CreateSkillAsync(
-            new ManageSkillsDriver.CreateProperties
-            {
-                Name = name,
-                AbilityName = ability
-            },
-            storeAsLastCreated: false);
+        // TODO: get by name, only create if not existing
+
+        var properties = new ManageSkillsDriver.CreateProperties
+        {
+            Name = name,
+            AbilityName = ability
+        };
+
+        var id = await _skillsDriver.CreateSkillAsync(properties);
 
         _host.Set(id, $"skill-id:{name}");
     }
@@ -101,10 +107,14 @@ public sealed class SkillManagementStepDefinitions
         dataTable.AssertProvidedProperties(expected, skill, assertions);
     }
 
+    #region Table Bindings
+
     private sealed class SkillTableRow : IMarkdownDescriptionTableRow
     {
         public string Name { get; set; } = string.Empty;
         public string Ability { get; set; } = string.Empty;
         public string? Description { get; set; }
     }
+
+    #endregion
 }

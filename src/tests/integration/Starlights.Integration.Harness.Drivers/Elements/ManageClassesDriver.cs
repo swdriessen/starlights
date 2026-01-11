@@ -1,6 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Classes;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Classes.Create;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.ClassFeatures;
@@ -13,18 +16,22 @@ namespace Starlights.Integration.Drivers.Elements;
 public sealed class ManageClassesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
-    private readonly ElementsScenarioContext _elementsContext;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ManageClassesEndpointDriver _classesApi;
     private readonly ManageClassFeaturesEndpointDriver _classFeaturesApi;
     private readonly ManageSubClassesEndpointDriver _subClassesApi;
+    private readonly ElementsEventObserverCollection _events;
 
-    public ManageClassesDriver(IIntegrationHost integration)
+    public ManageClassesDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
     {
         _integration = integration;
-        _elementsContext = _integration.Get<ElementsScenarioContext>();
+        _driverContext = driverContext;
+
         _classesApi = _integration.GetDriver<ManageClassesEndpointDriver>();
         _classFeaturesApi = _integration.GetDriver<ManageClassFeaturesEndpointDriver>();
         _subClassesApi = _integration.GetDriver<ManageSubClassesEndpointDriver>();
+
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
     public async Task<Guid> CreateClassAsync(CreateClassProperties properties)
@@ -41,7 +48,9 @@ public sealed class ManageClassesDriver : IDriver
         var id = await _classesApi.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _elementsContext.ElementCreated(properties.Name, id);
+        _driverContext.WithCreatedElement(id, properties.Name, ElementTypeConstants.Class);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.Class);
 
         return id;
     }
@@ -55,9 +64,8 @@ public sealed class ManageClassesDriver : IDriver
 
     public Task<ClassDataModel> GetClassByNameAsync(string name)
     {
-        return !_elementsContext.CreatedMap.TryGetValue(name, out var id)
-            ? throw new KeyNotFoundException($"No class found with name '{name}'.")
-            : GetClassByIdAsync(id);
+        var element = _driverContext.GetElement(name);
+        return GetClassByIdAsync(element.Id);
     }
 
     public async Task<Guid> CreateClassFeatureAsync(CreateClassFeatureProperties properties)
@@ -74,16 +82,17 @@ public sealed class ManageClassesDriver : IDriver
         var id = await _classFeaturesApi.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _elementsContext.ElementCreated(properties.Name, id);
+        _driverContext.WithCreatedElement(id, properties.Name, ElementTypeConstants.ClassFeature);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.ClassFeature);
 
         return id;
     }
 
     public Task<ClassFeatureDataModel> GetClassFeatureByNameAsync(string name)
     {
-        return !_elementsContext.CreatedMap.TryGetValue(name, out var id)
-            ? throw new KeyNotFoundException($"No class feature found with name '{name}'.")
-            : GetClassFeatureByIdAsync(id);
+        var element = _driverContext.GetElement(name, ElementTypeConstants.ClassFeature);
+        return GetClassFeatureByIdAsync(element.Id);
     }
 
     public async Task<ClassFeatureDataModel> GetClassFeatureByIdAsync(Guid id)
@@ -106,16 +115,17 @@ public sealed class ManageClassesDriver : IDriver
         var id = await _subClassesApi.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _elementsContext.ElementCreated(properties.Name, id);
+        _driverContext.WithCreatedElement(id, properties.Name, ElementTypeConstants.SubClass);
+
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.SubClass);
 
         return id;
     }
 
     public Task<SubClassDataModel> GetSubClassByNameAsync(string name)
     {
-        return !_elementsContext.CreatedMap.TryGetValue(name, out var id)
-            ? throw new KeyNotFoundException($"No subclass found with name '{name}'.")
-            : GetSubClassByIdAsync(id);
+        var element = _driverContext.GetElement(name, ElementTypeConstants.SubClass);
+        return GetSubClassByIdAsync(element.Id);
     }
 
     public async Task<SubClassDataModel> GetSubClassByIdAsync(Guid id)

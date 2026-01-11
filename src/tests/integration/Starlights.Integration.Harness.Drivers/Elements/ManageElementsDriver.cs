@@ -1,7 +1,9 @@
 using System.Net.Http.Json;
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.GetList;
@@ -20,22 +22,25 @@ namespace Starlights.Integration.Drivers.Elements;
 public sealed class ManageElementsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ManageElementsEndpointDriver _api;
     private readonly ManageElementRulesEndpointDriver _rulesApi;
     private readonly ElementLabelsEndpointDriver _labelsApi;
-    private readonly ElementsScenarioContext _elementsContext;
+    private readonly ElementsEventObserverCollection _events;
 
     public ManageElementsDriver(
         IIntegrationHost integration,
+        ElementsDriverContext driverContext,
         ManageElementsEndpointDriver endpointDriver,
         ManageElementRulesEndpointDriver rulesEndpointDriver,
         ElementLabelsEndpointDriver labelsEndpointDriver)
     {
         _integration = integration;
-        _elementsContext = _integration.Get<ElementsScenarioContext>();
+        _driverContext = driverContext;
         _api = endpointDriver;
         _rulesApi = rulesEndpointDriver;
         _labelsApi = labelsEndpointDriver;
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
     public async Task<Guid> CreateElement(CreateProperties properties, bool storeAsLastCreated = true)
@@ -50,13 +55,9 @@ public sealed class ManageElementsDriver : IDriver
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _elementsContext.ElementCreated(properties.Name, id);
+        _driverContext.WithCreatedElement(id, properties.Name, properties.Type);
 
-        if (storeAsLastCreated)
-        {
-            _integration.Set(id, "last-created-element-id");
-            _integration.Set(properties, "last-created-element-properties");
-        }
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == properties.Type);
 
         return id;
     }
@@ -68,15 +69,13 @@ public sealed class ManageElementsDriver : IDriver
 
     public Task<ElementDataModel> GetElementByName(string name)
     {
-        return !_elementsContext.CreatedMap.TryGetValue(name, out var id)
-            ? throw new KeyNotFoundException($"No element found with name '{name}'.")
-            : GetElementById(id);
+        var element = _driverContext.GetElement(name);
+        return GetElementById(element.Id);
     }
 
     public Task<ElementDataModel> GetLastCreatedElement()
     {
-        var id = _integration.Get<Guid>("last-created-element-id");
-        return GetElementById(id);
+        return GetElementById(_driverContext.CurrentElement.Id);
     }
 
     public async Task<ManageElementsEndpointDriver.UpdateElementResponse> UpdateElement(Guid elementId, UpdateProperties properties)
@@ -93,9 +92,6 @@ public sealed class ManageElementsDriver : IDriver
         var (response, statusCode) = await _api.UpdateAsync(elementId, request);
         statusCode.Should().Be(System.Net.HttpStatusCode.OK);
         response.Should().NotBeNull();
-
-        _integration.Set(response!, "last-updated-element");
-        _integration.Set(properties, "last-updated-element-properties");
 
         return response!;
     }

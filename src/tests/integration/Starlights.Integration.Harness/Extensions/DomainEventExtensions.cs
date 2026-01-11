@@ -9,4 +9,8 @@ public static class DomainEventExtensions
     {
         return host.Services.GetRequiredService<EventObserverCollection>();
     }
+    public static ElementsEventObserverCollection GetElementsEventObserverCollection(this IIntegrationHost host)
+    {
+        return host.Services.GetRequiredService<ElementsEventObserverCollection>();
+    }
 }

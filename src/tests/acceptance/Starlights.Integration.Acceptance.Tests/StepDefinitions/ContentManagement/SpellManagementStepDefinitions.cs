@@ -23,12 +23,6 @@ public class SpellManagementStepDefinitions
         _driver = _host.GetDriver<ManageSpellsDriver>();
     }
 
-    [Given("I am authenticated as a content creator")]
-    public void GivenIAmAuthenticatedAsAContentCreator()
-    {
-        _host.WriteStepNotImplemented();
-    }
-
     [Given("there are no existing spells")]
     public async Task GivenThereAreNoExistingSpells()
     {
@@ -299,8 +293,6 @@ public class SpellManagementStepDefinitions
         _scenarioContext.SetMarkdownDescription(multilineText);
     }
 
-
-
     #region Table Bindings
     internal record CreateSpellTableRow : IMarkdownDescriptionTableRow
     {
@@ -335,5 +327,6 @@ public class SpellManagementStepDefinitions
         public string? MaterialComponents { get; set; }
         public string? Description { get; set; }
     }
+
     #endregion
 }

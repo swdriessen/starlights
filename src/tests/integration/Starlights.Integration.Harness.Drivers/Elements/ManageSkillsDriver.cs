@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Skills.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Skills.GetSkills;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Skills.Update;
@@ -10,41 +11,33 @@ namespace Starlights.Integration.Drivers.Elements;
 public sealed class ManageSkillsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
-    private readonly ElementsScenarioContext _elementsContext;
-    private readonly ManageSkillsEndpointDriver _endpoints;
+    private readonly ElementsDriverContext _driverContext;
+    private readonly ManageSkillsEndpointDriver _skillsEndpoint;
 
-    public ManageSkillsDriver(IIntegrationHost integration)
+    public ManageSkillsDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
     {
         _integration = integration;
-        _elementsContext = _integration.Get<ElementsScenarioContext>();
-        _endpoints = _integration.GetDriver<ManageSkillsEndpointDriver>();
+        _driverContext = driverContext;
+
+        _skillsEndpoint = _integration.GetDriver<ManageSkillsEndpointDriver>();
     }
 
-    public async Task<Guid> CreateSkillAsync(CreateProperties properties, bool storeAsLastCreated = true)
+    public async Task<Guid> CreateSkillAsync(CreateProperties properties)
     {
-        if (!_elementsContext.CreatedMap.TryGetValue(properties.AbilityName, out var abilityId))
-        {
-            throw new KeyNotFoundException($"No ability score found with name '{properties.AbilityName}'.");
-        }
+        var existingAbility = _driverContext.GetElement(properties.AbilityName);
 
-        var request = new CreateSkillRequest(properties.Name, abilityId);
+        var request = new CreateSkillRequest(properties.Name, existingAbility.Id);
 
-        var id = await _endpoints.CreateAsync(request);
+        var id = await _skillsEndpoint.CreateAsync(request);
 
-        _elementsContext.ElementCreated(properties.Name, id);
-
-        if (storeAsLastCreated)
-        {
-            _integration.Set(id, "last-created-skill-id");
-            _integration.Set(properties, "last-created-skill-properties");
-        }
+        _driverContext.WithCreatedElement(id, request.Name, ElementTypeConstants.Skill);
 
         return id;
     }
 
     public async Task<IReadOnlyList<SkillListItem>> GetSkillsAsync()
     {
-        var payload = await _endpoints.GetListAsync();
+        var payload = await _skillsEndpoint.GetListAsync();
         payload.Skills.Should().NotBeNull();
 
         return payload.Skills!;
@@ -72,7 +65,7 @@ public sealed class ManageSkillsDriver : IDriver
             request = request with { AbilityId = ability.Id };
         }
 
-        await _endpoints.UpdateAsync(request);
+        await _skillsEndpoint.UpdateAsync(request);
     }
 
     public sealed record CreateProperties

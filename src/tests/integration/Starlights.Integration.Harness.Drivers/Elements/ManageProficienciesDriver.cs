@@ -10,13 +10,13 @@ namespace Starlights.Integration.Drivers.Elements;
 public sealed class ManageProficienciesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
-    private readonly ElementsScenarioContext _elementsContext;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ManageProficienciesEndpointDriver _endpoints;
 
-    public ManageProficienciesDriver(IIntegrationHost integration)
+    public ManageProficienciesDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
     {
         _integration = integration;
-        _elementsContext = _integration.Get<ElementsScenarioContext>();
+        _driverContext = driverContext;
         _endpoints = _integration.GetDriver<ManageProficienciesEndpointDriver>();
     }
 
@@ -26,7 +26,7 @@ public sealed class ManageProficienciesDriver : IDriver
 
         var id = await _endpoints.CreateAsync(request);
 
-        _elementsContext.ElementCreated(properties.Name, id);
+        _driverContext.WithCreatedElement(id, request.Name);
 
         if (storeAsLastCreated)
         {

@@ -130,7 +130,7 @@ public class FeatManagementStepDefinitions
         }
     }
 
-    [Then(@"the feat should have at least the following properties")]
+    [Then("the feat should have at least the following properties")]
     public async Task ThenThisFeatShouldHaveTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var feat = await _featsDriver.GetLastCreatedFeat();
@@ -149,7 +149,7 @@ public class FeatManagementStepDefinitions
         dataTable.AssertProvidedProperties(expected, feat, assertions);
     }
 
-    [Given(@"a feat exists that includes the following properties")]
+    [Given("a feat exists that includes the following properties")]
     public async Task GivenAFeatExistsThatIncludesTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<FeatTableRow>(_scenarioContext);
@@ -174,7 +174,7 @@ public class FeatManagementStepDefinitions
         await _featsDriver.CreateFeat(properties);
     }
 
-    [When(@"the content creator updates the feat with the following properties")]
+    [When("the content creator updates the feat with the following properties")]
     public async Task WhenTheContentCreatorUpdatesTheFeatWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<UpdateFeatTableRow>(_scenarioContext);

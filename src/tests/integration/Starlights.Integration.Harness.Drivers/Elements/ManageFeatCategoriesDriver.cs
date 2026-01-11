@@ -1,6 +1,5 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
-using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.GetById;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.FeatCategories.Update;
@@ -11,12 +10,12 @@ public sealed class ManageFeatCategoriesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ManageFeatCategoriesEndpointDriver _api;
-    private readonly ElementsScenarioContext _elementsContext;
+    private readonly ElementsDriverContext _driverContext;
 
-    public ManageFeatCategoriesDriver(IIntegrationHost integration, ManageFeatCategoriesEndpointDriver endpointDriver)
+    public ManageFeatCategoriesDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageFeatCategoriesEndpointDriver endpointDriver)
     {
         _integration = integration;
-        _elementsContext = integration.Get<ElementsScenarioContext>();
+        _driverContext = driverContext;
         _api = endpointDriver;
     }
 
@@ -31,9 +30,7 @@ public sealed class ManageFeatCategoriesDriver : IDriver
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _elementsContext.ElementCreated(request.Name, id);
-
-        _integration.Set(id, "last-created-feat-category-id");
+        _driverContext.WithCreatedElement(id, request.Name);
 
         return id;
     }
@@ -62,8 +59,7 @@ public sealed class ManageFeatCategoriesDriver : IDriver
 
     public async Task<FeatCategoryDataModel> GetLastCreatedFeatCategory()
     {
-        var id = _integration.Get<Guid>("last-created-feat-category-id");
-        var featCategory = await GetFeatCategory(id);
+        var featCategory = await GetFeatCategory(_driverContext.CurrentElement.Id);
         featCategory.Should().NotBeNull();
         return featCategory;
     }

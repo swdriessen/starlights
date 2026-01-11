@@ -1,6 +1,6 @@
 ﻿using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
-using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Create;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Update;
@@ -10,14 +10,14 @@ namespace Starlights.Integration.Drivers.Elements;
 public class ManageSpellsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ManageSpellsEndpointDriver _api;
-    private readonly ElementsScenarioContext _elementsContext;
 
-    public ManageSpellsDriver(IIntegrationHost integration, ManageSpellsEndpointDriver endpointDriver)
+    public ManageSpellsDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageSpellsEndpointDriver endpointDriver)
     {
         _integration = integration;
+        _driverContext = driverContext;
         _api = endpointDriver;
-        _elementsContext = _integration.Get<ElementsScenarioContext>();
     }
 
     public async Task<Guid> CreateSpell(CreateProperties properties)
@@ -41,10 +41,7 @@ public class ManageSpellsDriver : IDriver
 
         var id = await _api.CreateAsync(request);
 
-        _integration.Set(id, "last-created-spell-id");
-        _integration.Set(properties, "last-created-spell-properties");
-
-        _elementsContext.ElementCreated(request.Name, id);
+        _driverContext.WithCreatedElement(id, request.Name, ElementTypeConstants.Spell);
 
         return id;
     }
@@ -56,8 +53,7 @@ public class ManageSpellsDriver : IDriver
 
     public async Task<SpellDataModel> GetLastCreatedSpell()
     {
-        var id = _integration.Get<Guid>("last-created-spell-id");
-        var spell = await _api.GetAsync(id);
+        var spell = await _api.GetAsync(_driverContext.CurrentElement.Id);
         spell.Should().NotBeNull();
         return spell;
     }

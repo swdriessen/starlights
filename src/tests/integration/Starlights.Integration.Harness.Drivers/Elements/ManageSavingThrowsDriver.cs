@@ -10,34 +10,25 @@ namespace Starlights.Integration.Drivers.Elements;
 public sealed class ManageSavingThrowsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
-    private readonly ElementsScenarioContext _elementsContext;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ManageSavingThrowsEndpointDriver _endpoints;
 
-    public ManageSavingThrowsDriver(IIntegrationHost integration)
+    public ManageSavingThrowsDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
     {
         _integration = integration;
-        _elementsContext = _integration.Get<ElementsScenarioContext>();
+        _driverContext = driverContext;
         _endpoints = _integration.GetDriver<ManageSavingThrowsEndpointDriver>();
     }
 
-    public async Task<Guid> CreateSavingThrowAsync(CreateProperties properties, bool storeAsLastCreated = true)
+    public async Task<Guid> CreateSavingThrowAsync(CreateProperties properties)
     {
-        if (!_elementsContext.CreatedMap.TryGetValue(properties.AbilityName, out var abilityId))
-        {
-            throw new KeyNotFoundException($"No ability score found with name '{properties.AbilityName}'.");
-        }
+        var existingAbility = _driverContext.GetElement(properties.AbilityName);
 
-        var request = new CreateSavingThrowRequest(properties.Name, abilityId);
+        var request = new CreateSavingThrowRequest(properties.Name, existingAbility.Id);
 
         var id = await _endpoints.CreateAsync(request);
 
-        _elementsContext.ElementCreated(properties.Name, id);
-
-        if (storeAsLastCreated)
-        {
-            _integration.Set(id, "last-created-saving-throw-id");
-            _integration.Set(properties, "last-created-saving-throw-properties");
-        }
+        _driverContext.WithCreatedElement(id, properties.Name);
 
         return id;
     }

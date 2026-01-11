@@ -1,5 +1,6 @@
 using AwesomeAssertions;
 using Starlights.Integration.Acceptance.Tests.Extensions;
+using Starlights.Integration.Drivers;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
 
@@ -7,23 +8,24 @@ namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagem
 public sealed class ElementLabelManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageElementsDriver _elementsDriver;
-    private readonly ElementsScenarioContext _elementsContext;
 
-    public ElementLabelManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public ElementLabelManagementStepDefinitions(IIntegrationHost host, ElementsDriverContext driverContext, ScenarioContext scenarioContext)
     {
         _host = host;
+        _driverContext = driverContext;
         _scenarioContext = scenarioContext;
+
         _elementsDriver = _host.GetDriver<ManageElementsDriver>();
-        _elementsContext = _host.Get<ElementsScenarioContext>();
     }
 
     [When(@"the content creator adds the ""([^""]*)"" label to the ""([^""]*)"" element")]
     public async Task WhenTheContentCreatorAddsTheLabelToTheElementAsync(string label, string elementName)
     {
         var element = await _elementsDriver.GetElementByName(elementName);
-        await _elementsDriver.AddLabels(element.Id, new[] { label });
+        await _elementsDriver.AddLabels(element.Id, [label]);
     }
 
     [Given(@"the content creator adds the following labels to the ""([^""]*)"" element:")]
@@ -43,7 +45,7 @@ public sealed class ElementLabelManagementStepDefinitions
     [Then(@"the ""([^""]*)"" .+ should contain a ""([^""]*)"" label")]
     public async Task ThenTheElementShouldContainALabelAsync(string elementName, string label)
     {
-        var elementId = ResolveElementId(elementName);
+        var elementId = _driverContext.GetElement(elementName).Id;
         var labels = await _elementsDriver.GetLabels(elementId);
         labels.Should().Contain(label);
     }
@@ -59,8 +61,7 @@ public sealed class ElementLabelManagementStepDefinitions
 
         expected.Should().NotBeEmpty("at least one expected label must be provided");
 
-
-        var elementId = ResolveElementId(elementName);
+        var elementId = _driverContext.GetElement(elementName).Id;
         var labels = await _elementsDriver.GetLabels(elementId);
 
         labels.Should().Contain(expected);
@@ -78,18 +79,12 @@ public sealed class ElementLabelManagementStepDefinitions
         await _elementsDriver.ReplaceLabels(element.Id, labels);
     }
 
-    private Guid ResolveElementId(string elementName)
-    {
-        if (_elementsContext.CreatedMap.TryGetValue(elementName, out var id))
-        {
-            return id;
-        }
-
-        throw new KeyNotFoundException($"No element found with name '{elementName}'. Ensure the scenario creates it using the API-backed steps.");
-    }
+    #region Table Bindings
 
     private sealed record LabelTableRow : ITableRow
     {
         public required string Label { get; init; }
     }
+
+    #endregion
 }

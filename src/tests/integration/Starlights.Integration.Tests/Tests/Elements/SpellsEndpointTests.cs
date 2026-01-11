@@ -19,7 +19,7 @@ public sealed class SpellsEndpointTests : IntegrationTestBase
         _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
 
-        _integration.Set(new ElementsScenarioContext());
+        //_integration.Set(new ElementsScenarioContext());
 
         _driver = _integration.GetDriver<ManageSpellsDriver>();
     }

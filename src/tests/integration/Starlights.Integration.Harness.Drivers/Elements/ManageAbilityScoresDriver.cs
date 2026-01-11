@@ -1,6 +1,9 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
+using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
+using Starlights.Modules.Elements.Domain;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.AbilityScores;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.AbilityScores.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.AbilityScores.Update;
@@ -10,48 +13,51 @@ namespace Starlights.Integration.Drivers.Elements;
 public sealed class ManageAbilityScoresDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
-    private readonly ElementsScenarioContext _elementsContext;
-    private readonly ManageAbilityScoresEndpointDriver _endpoints;
+    private readonly ElementsDriverContext _driverContext;
+    private readonly ManageAbilityScoresEndpointDriver _api;
+    private readonly ElementsEventObserverCollection _events;
 
-    public ManageAbilityScoresDriver(IIntegrationHost integration)
+    public ManageAbilityScoresDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
     {
         _integration = integration;
-        _elementsContext = _integration.Get<ElementsScenarioContext>();
-        _endpoints = _integration.GetDriver<ManageAbilityScoresEndpointDriver>();
+        _driverContext = driverContext;
+
+        _api = _integration.GetDriver<ManageAbilityScoresEndpointDriver>();
+        _events = _integration.GetElementsEventObserverCollection();
     }
 
-    public async Task<Guid> CreateAbilityScoreAsync(CreateProperties properties, bool storeAsLastCreated = true)
+    public async Task<Guid> CreateAbilityScoreAsync(CreateProperties properties)
     {
         var request = new CreateAbilityScoreRequest(properties.Name, properties.Abbreviation, properties.Description);
 
-        var id = await _endpoints.CreateAsync(request);
+        var id = await _api.CreateAsync(request);
 
-        _elementsContext.ElementCreated(properties.Name, id);
+        await _events.EnsureObservation<ElementCreatedEvent>(e => e.ElementId == id && e.Type == ElementTypeConstants.Ability);
 
-        if (storeAsLastCreated)
-        {
-            _integration.Set(id, "last-created-ability-score-id");
-            _integration.Set(properties, "last-created-ability-score-properties");
-        }
+        _driverContext.WithCreatedElement(id, request.Name);
 
         return id;
     }
 
     public async Task<AbilityScoreDataModel> GetAbilityScoreByIdAsync(Guid id)
     {
-        return await _endpoints.GetByIdAsync(id);
+        return await _api.GetByIdAsync(id);
+    }
+
+    public async Task<AbilityScoreDataModel> GetLastCreatedAbilityScore()
+    {
+        return await _api.GetByIdAsync(_driverContext.CurrentElement.Id);
     }
 
     public async Task<AbilityScoreDataModel> GetAbilityScoreByNameAsync(string name)
     {
-        return !_elementsContext.CreatedMap.TryGetValue(name, out var id)
-            ? throw new KeyNotFoundException($"No ability score found with name '{name}'.")
-            : await GetAbilityScoreByIdAsync(id);
+        var element = _driverContext.GetElement(name);
+        return await _api.GetByIdAsync(element.Id);
     }
 
     public async Task<IReadOnlyList<AbilityScoreDataModel>> GetAbilityScoresAsync()
     {
-        var payload = await _endpoints.GetListAsync();
+        var payload = await _api.GetListAsync();
         payload.Items.Should().NotBeNull();
 
         return [.. payload.Items!];
@@ -67,7 +73,7 @@ public sealed class ManageAbilityScoresDriver : IDriver
             Abbreviation: properties.Abbreviation ?? current.Abbreviation,
             Description: properties.Description ?? current.Description);
 
-        await _endpoints.PutAsync(request);
+        await _api.PutAsync(request);
 
         _integration.Set(request, "last-updated-ability-score-request");
     }

@@ -15,13 +15,13 @@ public class ElementCreatedHandler : IDomainEventHandler<ElementCreatedEvent>, I
 
     public Task HandleAsync(ElementCreatedEvent domainEvent)
     {
-        _logger.LogInformation("⌛ element created: {ElementName} ({ElementType}) [id={ElementId}]", domainEvent.Name, domainEvent.Type, domainEvent.ElementId);
+        //_logger.LogInformation("⌛ element created: {ElementName} ({ElementType}) [id={ElementId}]", domainEvent.Name, domainEvent.Type, domainEvent.ElementId);
         return Task.CompletedTask;
     }
 
     public Task HandleAsync(ElementComponentCreatedEvent domainEvent)
     {
-        _logger.LogDebug("⌛   component created: {ComponentName} [id={ElementId}]", domainEvent.ComponentName, domainEvent.ElementId);
+        //_logger.LogDebug("⌛   component created: {ComponentName} [id={ElementId}]", domainEvent.ComponentName, domainEvent.ElementId);
         return Task.CompletedTask;
     }
 }

@@ -1,10 +1,13 @@
-﻿namespace Starlights.Integration;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Starlights.Integration;
 
 /// <summary>
 /// Builder for creating an integration host.
 /// </summary>
 public class IntegrationHostBuilder
 {
+    private readonly List<Action<IServiceCollection>> _configureServices = [];
     private readonly List<Action<IntegrationHostOptions>> _configureOptionsCollection = [];
 
     /// <summary>
@@ -21,6 +24,12 @@ public class IntegrationHostBuilder
         return this;
     }
 
+    public IntegrationHostBuilder ConfigureServices(Action<IServiceCollection> configureServices)
+    {
+        _configureServices.Add(configureServices);
+        return this;
+    }
+
     /// <summary>
     /// Builds the integration host.
     /// </summary>
@@ -29,13 +38,10 @@ public class IntegrationHostBuilder
         return new IntegrationHost(
             properties =>
             {
-                // add all properties to the host
                 foreach (var (key, value) in Properties)
                 {
                     properties[key] = value;
                 }
-
-                // rather register an IntegrationTestContext if a TestContext was provided?
             },
             options =>
             {
@@ -43,8 +49,14 @@ public class IntegrationHostBuilder
                 {
                     configureOptions(options);
                 }
+            },
+            services =>
+            {
+                foreach (var configureServices in _configureServices)
+                {
+                    configureServices(services);
+                }
             }
-
         );
     }
 }

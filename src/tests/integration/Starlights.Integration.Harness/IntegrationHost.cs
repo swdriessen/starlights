@@ -20,7 +20,10 @@ public class IntegrationHost : IIntegrationHost, IDisposable
     private readonly WebApplicationFactory<Program> _factory;
     private bool _disposedValue;
 
-    public IntegrationHost(Action<Dictionary<string, object>>? configureProperties = null, Action<IntegrationHostOptions>? configureOptions = null)
+    public IntegrationHost(
+        Action<Dictionary<string, object>>? configureProperties = null,
+        Action<IntegrationHostOptions>? configureOptions = null,
+        Action<IServiceCollection>? configureServices = null)
     {
         var options = new IntegrationHostOptions();
         configureOptions?.Invoke(options);
@@ -46,6 +49,10 @@ public class IntegrationHost : IIntegrationHost, IDisposable
                     services.AddSingleton<EventObserverCollection>();
                     services.AddDomainEventHandlersFrom(typeof(IntegrationHost).Assembly);
 
+                    services.AddSingleton<ElementsEventObserverCollection>();
+
+
+
                     // auto register all IDriver implementations
                     services.RegisterDrivers(options.DriverAssemblies ?? [typeof(IntegrationHost).Assembly]);
 
@@ -57,6 +64,8 @@ public class IntegrationHost : IIntegrationHost, IDisposable
                         services.AddOpenTelemetry()
                             .WithTracing(tracing => tracing.AddProcessor<CustomConsoleActivityProcessor>());
                     }
+
+                    configureServices?.Invoke(services);
                 });
             });
 

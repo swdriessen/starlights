@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using Reqnroll.Assist;
 using Starlights.Integration.Acceptance.Tests.Extensions;
+using Starlights.Integration.Drivers;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.SavingThrows.GetSavingThrows;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagement;
@@ -9,17 +10,19 @@ namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.ContentManagem
 public sealed class SavingThrowManagementStepDefinitions
 {
     private readonly IIntegrationHost _host;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ScenarioContext _scenarioContext;
     private readonly ManageSavingThrowsDriver _savingThrowsDriver;
 
-    public SavingThrowManagementStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
+    public SavingThrowManagementStepDefinitions(IIntegrationHost host, ElementsDriverContext driverContext, ScenarioContext scenarioContext)
     {
         _host = host;
+        _driverContext = driverContext;
         _scenarioContext = scenarioContext;
         _savingThrowsDriver = _host.GetDriver<ManageSavingThrowsDriver>();
     }
 
-    [When(@"a content creator creates a saving throw with the following properties")]
+    [When("a content creator creates a saving throw with the following properties")]
     public async Task WhenAContentCreatorCreatesASavingThrowWithTheFollowingPropertiesAsync(DataTable dataTable)
     {
         var row = dataTable.CreateInstance<SavingThrowTableRow>(_scenarioContext);
@@ -33,10 +36,10 @@ public sealed class SavingThrowManagementStepDefinitions
         await _savingThrowsDriver.CreateSavingThrowAsync(properties);
     }
 
-    [Then(@"the saving throw should have at least the following properties")]
+    [Then("the saving throw should have at least the following properties")]
     public async Task ThenTheSavingThrowShouldHaveAtLeastTheFollowingPropertiesAsync(DataTable dataTable)
     {
-        var id = _host.Get<Guid>("last-created-saving-throw-id");
+        var id = _driverContext.CurrentElement.Id;
         var savingThrow = await _savingThrowsDriver.GetSavingThrowByIdAsync(id);
 
         var expected = dataTable.CreateInstance<SavingThrowTableRow>(_scenarioContext);
@@ -54,21 +57,19 @@ public sealed class SavingThrowManagementStepDefinitions
     [Given(@"a saving throw exists with the name ""(.*)"" and ability ""(.*)""")]
     public async Task GivenASavingThrowExistsWithTheNameAndAbilityAsync(string name, string ability)
     {
-        var id = await _savingThrowsDriver.CreateSavingThrowAsync(
-            new ManageSavingThrowsDriver.CreateProperties
-            {
-                Name = name,
-                AbilityName = ability
-            },
-            storeAsLastCreated: false);
+        var properties = new ManageSavingThrowsDriver.CreateProperties
+        {
+            Name = name,
+            AbilityName = ability
+        };
 
-        _host.Set(id, $"saving-throw-id:{name}");
+        await _savingThrowsDriver.CreateSavingThrowAsync(properties);
     }
 
     [When(@"the content creator updates the saving throw ""(.*)"" with the following properties")]
     public async Task WhenTheContentCreatorUpdatesTheSavingThrowWithTheFollowingPropertiesAsync(string name, DataTable dataTable)
     {
-        var id = _host.Get<Guid>($"saving-throw-id:{name}");
+        var id = _driverContext.CurrentElement.Id;
 
         var updates = dataTable.Rows.Count == 0
             ? new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
@@ -86,7 +87,7 @@ public sealed class SavingThrowManagementStepDefinitions
     [Then(@"the saving throw ""(.*)"" should have at least the following properties")]
     public async Task ThenTheSavingThrowShouldHaveAtLeastTheFollowingPropertiesAsync(string name, DataTable dataTable)
     {
-        var id = _host.Get<Guid>($"saving-throw-id:{name}");
+        var id = _driverContext.CurrentElement.Id;
         var savingThrow = await _savingThrowsDriver.GetSavingThrowByIdAsync(id);
 
         var expected = dataTable.CreateInstance<SavingThrowTableRow>(_scenarioContext);
@@ -101,10 +102,14 @@ public sealed class SavingThrowManagementStepDefinitions
         dataTable.AssertProvidedProperties(expected, savingThrow, assertions);
     }
 
+    #region Table Bindings
+
     private sealed class SavingThrowTableRow : IMarkdownDescriptionTableRow
     {
         public string Name { get; set; } = string.Empty;
         public string Ability { get; set; } = string.Empty;
         public string? Description { get; set; }
     }
+
+    #endregion
 }

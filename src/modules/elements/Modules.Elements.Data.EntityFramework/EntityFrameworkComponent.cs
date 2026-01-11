@@ -19,7 +19,6 @@ internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformAp
     {
         builder.Services.AddScoped<IElementsRepository, ElementsRepository>();
 
-        //builder.Services.AddSingleton<IPersistenceContextFactory, ElementsPersistenceContextFactory>();
         builder.Services.AddSingleton<PersistenceElementsContextFactory>();
         builder.Services.AddDbContextFactory<ElementsContext>(options =>
         {

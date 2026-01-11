@@ -1,6 +1,5 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.Elements.Endpoints;
-using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Attributes.Languages.Update;
@@ -10,13 +9,13 @@ namespace Starlights.Integration.Drivers.Elements;
 public sealed class ManageLanguagesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
+    private readonly ElementsDriverContext _driverContext;
     private readonly ManageLanguagesEndpointDriver _api;
-    private readonly ElementsScenarioContext _elementsContext;
 
-    public ManageLanguagesDriver(IIntegrationHost integration, ManageLanguagesEndpointDriver endpointDriver)
+    public ManageLanguagesDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageLanguagesEndpointDriver endpointDriver)
     {
         _integration = integration;
-        _elementsContext = _integration.Get<ElementsScenarioContext>();
+        _driverContext = driverContext;
         _api = endpointDriver;
     }
 
@@ -33,9 +32,7 @@ public sealed class ManageLanguagesDriver : IDriver
         var id = await _api.CreateAsync(request);
         id.Should().NotBeEmpty();
 
-        _elementsContext.ElementCreated(request.Name, id);
-
-        _integration.Set(id, "last-created-language-id");
+        _driverContext.WithCreatedElement(id, request.Name);
 
         return id;
     }
@@ -47,8 +44,7 @@ public sealed class ManageLanguagesDriver : IDriver
 
     public async Task<LanguageDataModel> GetLastCreatedLanguage()
     {
-        var id = _integration.Get<Guid>("last-created-language-id");
-        var language = await _api.GetAsync(id);
+        var language = await _api.GetAsync(_driverContext.CurrentElement.Id);
         language.Should().NotBeNull();
         return language!;
     }

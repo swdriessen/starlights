@@ -91,6 +91,28 @@ public class ClassManagementStepDefinitions
         await _driver.CreateClassFeatureAsync(properties);
     }
 
+    [When(@"the content creator creates the following class features for the ""([^""]*)"" class:")]
+    public async Task WhenTheContentCreatorCreatesTheFollowingClassFeaturesForTheClassAsync(string className, DataTable dataTable)
+    {
+        var parent = await _driver.GetClassByNameAsync(className);
+
+        var rows = dataTable.CreateSet<ClassFeatureTableRow>();
+
+        foreach (var row in rows)
+        {
+            var properties = new ManageClassesDriver.CreateClassFeatureProperties
+            {
+                Name = row.Name!,
+                Level = row.FeatureLevel ?? 1,
+                ParentClassId = parent.Id,
+                ParentClassName = className,
+                Description = $"Description for {row.Name}"
+            };
+
+            await _driver.CreateClassFeatureAsync(properties);
+        }
+    }
+
     [Then(@"the ""([^""]*)"" class feature should have at least the following properties")]
     public async Task ThenTheClassFeatureShouldHaveAtLeastTheFollowingPropertiesAsync(string featureName, DataTable dataTable)
     {
