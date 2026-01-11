@@ -486,6 +486,9 @@ public class ElementManagementStepDefinitions
     {
         var expected = dataTable.CreateInstance<IncludeRuleTableRow>(_scenarioContext);
 
+        var expectedIncludeElement = await _elementsDriver.GetElementByName(expected.IncludedElement);
+        expected = expected with { IncludedElementId = expectedIncludeElement.Id };
+
         var elementId = _driverContext.CurrentElement.Id;
         var createdRule = _host.Get<CreateIncludeRuleResponse>("last-created-include-rule");
 
@@ -493,11 +496,7 @@ public class ElementManagementStepDefinitions
 
         var assertions = new Dictionary<string, Action<IncludeRuleTableRow, GetIncludeRuleResponse>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["included element"] = async (e, a) =>
-            {
-                var expectedElementToInclude = await _elementsDriver.GetElementByName(e.IncludedElement);
-                a.IncludedElementId.Should().Be(expectedElementToInclude.Id);
-            },
+            ["included element"] = (e, a) => a.IncludedElementId.Should().Be(e.IncludedElementId),
             ["level requirement"] = (e, a) => a.LevelRequirement.Should().Be(e.LevelRequirement ?? 0),
             ["requirements"] = (e, a) => a.Requirements.Should().Be(e.RequirementsExpression),
             ["display name"] = (e, a) => a.DisplayName.Should().Be(e.DisplayName)
@@ -631,6 +630,7 @@ public class ElementManagementStepDefinitions
     {
         public string? Name { get; set; }
         public required string IncludedElement { get; set; }
+        public Guid IncludedElementId { get; set; }
         public int? LevelRequirement { get; set; }
         public string? RequirementsExpression { get; set; }
         public string? DisplayName { get; set; }
