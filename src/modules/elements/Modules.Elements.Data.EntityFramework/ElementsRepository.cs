@@ -20,6 +20,19 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
         Entities.Add(element);
     }
 
+    public async Task<bool> DeleteElementAsync(Guid identifier)
+    {
+        var element = await Entities.SingleOrDefaultAsync(e => e.Id == identifier);
+        if (element is null)
+        {
+            _logger.LogWarning("element with identifier {Identifier} not found", identifier);
+            return false;
+        }
+
+        Entities.Remove(element);
+        return true;
+    }
+
     public async Task<Element?> GetElementAsync(Guid identifier)
     {
         var element = await Entities
@@ -32,6 +45,15 @@ internal class ElementsRepository : RepositoryBase<Element>, IElementsRepository
         }
 
         return element;
+    }
+
+    public async Task<List<Element>> GetElementsAsync()
+    {
+        _logger.LogInformation("getting all elements");
+
+        return await Entities
+            .Include(x => x.Components.OrderBy(c => c.OrderSequence))
+            .ToListAsync();
     }
 
     public async Task<List<Element>> GetElementsByTypeAsync(string type)

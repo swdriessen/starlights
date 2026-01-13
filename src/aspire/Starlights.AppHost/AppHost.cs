@@ -23,7 +23,7 @@ if (builder.ExecutionContext.IsRunMode)
 
     var characters = migrationResource.WithMigrationWorker<Projects.Modules_Characters_Data_EntityFramework_MigrationService>("characters-context")
         .WithReference(database)
-        .WaitFor(database);
+        .WaitFor(elements);
 
     // wait for the migration services to complete before starting the application
     application.WaitForCompletion(elements);

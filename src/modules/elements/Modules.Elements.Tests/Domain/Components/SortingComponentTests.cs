@@ -4,9 +4,6 @@ using Starlights.Modules.Elements.Domain.Components;
 
 namespace Starlights.Modules.Elements.Tests.Domain.Components;
 
-/// <summary>
-/// Unit tests for <see cref="SortingComponent"/>.
-/// </summary>
 [TestClass]
 public class SortingComponentTests
 {

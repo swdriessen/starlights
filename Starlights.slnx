@@ -47,6 +47,7 @@
     <Project Path="src/modules/elements/Modules.Elements/Modules.Elements.csproj" />
   </Folder>
   <Folder Name="/src/modules/elements/infrastructure/">
+    <Project Path="src/modules/elements/Modules.Elements.Data.EntityFramework.EventProcessing/Modules.Elements.Data.EntityFramework.EventProcessing.csproj" />
     <Project Path="src/modules/elements/Modules.Elements.Data.EntityFramework.MigrationService/Modules.Elements.Data.EntityFramework.MigrationService.csproj" />
   </Folder>
   <Folder Name="/src/modules/elements/integration/">
@@ -77,8 +78,12 @@
     <Project Path="src/source-generators/Starlights.Platform.SourceGenerators/Starlights.Platform.SourceGenerators.csproj" />
   </Folder>
   <Folder Name="/src/systems/" />
-  <Folder Name="/tests/" />
-  <Folder Name="/tests/integration/">
+  <Folder Name="/tests/">
+    <Project Path="src/tests/acceptance/Starlights.Integration.Acceptance.Tests/Starlights.Integration.Acceptance.Tests.csproj" Id="cd05f807-0896-429b-b647-4596724bf67a" />
     <Project Path="src/tests/integration/Starlights.Integration.Tests/Starlights.Integration.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/harness/">
+    <Project Path="src/tests/integration/Starlights.Integration.Harness.Drivers/Starlights.Integration.Harness.Drivers.csproj" Id="e045bdfd-4a12-4764-bd44-58c5b7ff9040" />
+    <Project Path="src/tests/integration/Starlights.Integration.Harness/Starlights.Integration.Harness.csproj" />
   </Folder>
 </Solution>

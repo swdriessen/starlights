@@ -19,12 +19,12 @@ public sealed class SelectionRuleComponent : ElementComponentBase
     /// <summary>
     /// Gets the element type for this selection rule.
     /// </summary>
-    public string ElementType { get; }
+    public string ElementType { get; private set; }
 
     /// <summary>
     /// Gets the descriptive name of the selection option.
     /// </summary>
-    public string Name { get; }
+    public string Name { get; private set; }
 
     /// <summary>
     /// Gets a short description for the selection option(s).
@@ -124,4 +124,14 @@ public sealed class SelectionRuleComponent : ElementComponentBase
     /// Marks the rule optional or required.
     /// </summary>
     public void UpdateIsOptional(bool isOptional) => IsOptional = isOptional;
+
+    /// <summary>
+    /// Updates the element type.
+    /// </summary>
+    public void UpdateElementType(string elementType) => ElementType = elementType.Trim();
+
+    /// <summary>
+    /// Updates the display name.
+    /// </summary>
+    public void UpdateName(string name) => Name = name.Trim();
 }

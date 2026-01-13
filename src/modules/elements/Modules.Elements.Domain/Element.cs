@@ -1,4 +1,5 @@
-﻿using Starlights.Platform.Domain;
+﻿using Starlights.Modules.Elements.Domain.Eventing;
+using Starlights.Platform.Domain;
 
 namespace Starlights.Modules.Elements.Domain;
 
@@ -25,7 +26,7 @@ public sealed class Element : AggregateRoot<ElementId>
     /// <summary>
     /// Gets the name of the element.
     /// </summary>
-    public string Name { get; }
+    public string Name { get; private set; }
 
     /// <summary>
     /// Gets the type of the element.
@@ -36,6 +37,22 @@ public sealed class Element : AggregateRoot<ElementId>
     /// Gets the identifier of the game system this element belongs to.
     /// </summary>
     public string SystemIdentifier { get; }
+
+    /// <summary>
+    /// Updates the name of the element.
+    /// </summary>
+    /// <param name="newName"></param>
+    public void UpdateName(string newName)
+    {
+        newName = newName.Trim();
+
+        if (Name == newName)
+        {
+            return;
+        }
+
+        Name = newName;
+    }
 
     /// <summary>
     /// Sets the ID of the element. This may be used when importing data instead of creating new elements.
@@ -53,15 +70,48 @@ public sealed class Element : AggregateRoot<ElementId>
         Id = newId;
     }
 
+    #region Components (TODO: refactor into minimal API and extend with extension methods)
+
     /// <summary>
     /// Adds a component to the element.
     /// </summary>
     public T AddComponent<T>(T component) where T : ElementComponentBase
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
+        if (component.OwningElement != Id)
+        {
+            throw new InvalidOperationException("Component's owning element does not match.");
+        }
         component.OrderSequence = _components.Count; // append
         _components.Add(component);
+
+        AddDomainEvent(new ElementComponentCreatedEvent(Id, component.Id, typeof(T).Name));
         return component;
+    }
+
+    /// <summary>
+    /// Adds a component to the element using a factory function.
+    /// </summary>
+    public T AddComponent<T>(Func<ElementId, T> componentFactory) where T : ElementComponentBase
+    {
+        ArgumentNullException.ThrowIfNull(componentFactory, nameof(componentFactory));
+        var component = componentFactory(Id);
+        component.OrderSequence = _components.Count; // append
+        _components.Add(component);
+
+        AddDomainEvent(new ElementComponentCreatedEvent(Id, component.Id, typeof(T).Name));
+        return component;
+    }
+
+    /// <summary>
+    /// Updates a component of the specified type using the provided action.
+    /// </summary>
+    public Element UpdateComponent<T>(Action<T> updateAction) where T : ElementComponentBase
+    {
+        ArgumentNullException.ThrowIfNull(updateAction, nameof(updateAction));
+        var component = GetRequiredComponent<T>();
+        updateAction(component);
+        return this;
     }
 
     /// <summary>
@@ -84,19 +134,23 @@ public sealed class Element : AggregateRoot<ElementId>
         _components.RemoveAt(idx);
         _components.Insert(newIndex, item);
 
-        // Reassign order sequence
-        for (int i = 0; i < _components.Count; i++)
-        {
-            _components[i].OrderSequence = i;
-        }
+        UpdateOrderSequences();
     }
 
     /// <summary>
     /// Retrieves a single component of the specified type.
     /// </summary>
-    public T GetComponent<T>()
+    public T GetRequiredComponent<T>()
     {
         return _components.OfType<T>().Single();
+    }
+
+    /// <summary>
+    /// Retrieves a single component of the specified type, or null if not found.
+    /// </summary>
+    public T? GetComponent<T>()
+    {
+        return _components.OfType<T>().SingleOrDefault();
     }
 
     /// <summary>
@@ -108,12 +162,53 @@ public sealed class Element : AggregateRoot<ElementId>
     }
 
     /// <summary>
+    /// Removes the first component of the specified type that matches the given component id.
+    /// </summary>
+    public bool RemoveComponent<T>(ElementComponentId componentId) where T : ElementComponentBase
+    {
+        var component = _components.Find(c => c is T && c.Id == componentId);
+        if (component is not null && _components.Remove(component))
+        {
+            UpdateOrderSequences();
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Removes a component by its ID.
+    /// </summary>
+    public bool RemoveComponent(ElementComponentId componentId)
+    {
+        var component = _components.Find(c => c.Id == componentId);
+        if (component is not null && _components.Remove(component))
+        {
+            UpdateOrderSequences();
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Updates the order sequences of all components to ensure they are sequential starting from 0. 
+    /// </summary>
+    private void UpdateOrderSequences()
+    {
+        for (int i = 0; i < _components.Count; i++)
+        {
+            _components[i].OrderSequence = i;
+        }
+    }
+
+    #endregion
+
+    /// <summary>
     /// Creates a new instance of the <see cref="Element"/> class with the specified name and type.
     /// </summary>
     public static Element Create(string name, string type, string systemIdentifier = "DND5E") // hardcoded until experimenting with multiple systems
     {
         var element = new Element(name, type, systemIdentifier);
-        // raise an 'ElementCreated' domain event here if needed
+        element.AddDomainEvent(new ElementCreatedEvent(element.Id, name, type));
         return element;
     }
 }

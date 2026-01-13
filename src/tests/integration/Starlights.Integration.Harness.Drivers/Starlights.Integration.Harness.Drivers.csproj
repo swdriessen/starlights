@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+		<RootNamespace>Starlights.Integration.Drivers</RootNamespace>
+		<!-- there are no tests in this library -->
+		<NoWarn>$(NoWarn);MSTEST0001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+		<PackageReference Include="AwesomeAssertions" />
+    <ProjectReference Include="..\Starlights.Integration.Harness\Starlights.Integration.Harness.csproj" />
+  </ItemGroup>
+
+</Project>

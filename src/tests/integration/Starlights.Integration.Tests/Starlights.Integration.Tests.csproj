@@ -3,13 +3,10 @@
 	<PropertyGroup>
 		<RootNamespace>Starlights.Integration</RootNamespace>
 	</PropertyGroup>
-	
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-  </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\apps\Starlights.Application\Starlights.Application.csproj" />
+    <ProjectReference Include="..\Starlights.Integration.Harness.Drivers\Starlights.Integration.Harness.Drivers.csproj" />
+    <ProjectReference Include="..\Starlights.Integration.Harness\Starlights.Integration.Harness.csproj" />
   </ItemGroup>
 
 </Project>

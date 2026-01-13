@@ -29,23 +29,30 @@ public sealed class DomainEventProcessingService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("starting EventProcessing service... [batch='{BatchSize}', max-interval='{MaximumInterval}ms']", BatchSize, MaximumInterval);
+        _logger.LogInformation("[Characters] starting EventProcessing service... [batch='{BatchSize}', max-interval='{MaximumInterval}ms']",
+            BatchSize, MaximumInterval);
 
         var interval = TimeSpan.FromMilliseconds(InitialInterval);
 
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            using var scope = _factory.CreateScope();
+            while (!stoppingToken.IsCancellationRequested)
             {
+                using var scope = _factory.CreateScope();
                 var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<CharactersContext>>();
 
                 await using var context = await contextFactory.CreateDbContextAsync(stoppingToken);
+
+                if (stoppingToken.IsCancellationRequested)
+                {
+                    break;
+                }
 
                 var newEvents = await context.Set<EventMessage>()
                     .Where(x => x.ProcessedOn == null)
                     .OrderBy(x => x.OccurredOn)
                     .Take(BatchSize)
-                    .ToListAsync(cancellationToken: stoppingToken);
+                    .ToListAsync(stoppingToken);
 
                 if (newEvents.Count > 0)
                 {
@@ -94,10 +101,17 @@ public sealed class DomainEventProcessingService : BackgroundService
                     > 0 => TimeSpan.FromMilliseconds(InitialInterval),
                     _ => TimeSpan.FromMilliseconds(Math.Min(interval.TotalMilliseconds * 2, MaximumInterval)),
                 };
-            }
 
-            _logger.LogDebug("service waiting... [interval='{Interval}ms', IsCancellationRequested={IsCancellationRequested}]", interval.TotalMilliseconds, stoppingToken.IsCancellationRequested);
-            await Task.Delay(interval, stoppingToken);
+                _logger.LogDebug("service waiting... [interval='{Interval}ms', IsCancellationRequested={IsCancellationRequested}]",
+                    interval.TotalMilliseconds, stoppingToken.IsCancellationRequested);
+
+                await Task.Delay(interval, stoppingToken);
+            }
+        }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
+            _logger.LogWarning("domain processing operation canceled due to shutdown");
+
         }
 
         _logger.LogWarning("stopping EventProcessing service...");

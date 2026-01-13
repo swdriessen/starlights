@@ -1,0 +1,12 @@
+﻿<Project Sdk="MSTest.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Reqnroll.MsTest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\integration\Starlights.Integration.Harness.Drivers\Starlights.Integration.Harness.Drivers.csproj" />
+    <ProjectReference Include="..\..\integration\Starlights.Integration.Harness\Starlights.Integration.Harness.csproj" />
+  </ItemGroup>
+	
+</Project>

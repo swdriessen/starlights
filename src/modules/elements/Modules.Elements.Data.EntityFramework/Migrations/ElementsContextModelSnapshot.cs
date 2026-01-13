@@ -18,7 +18,7 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("elements")
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -73,6 +73,33 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     b.UseTpcMappingStrategy();
                 });
 
+            modelBuilder.Entity("Starlights.Platform.Components.Data.EntityFramework.EventMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OccurredOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ProcessedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("event_messages", "elements");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.AbbreviationComponent", b =>
                 {
                     b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
@@ -86,7 +113,7 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     b.ToTable("element_component_abbreviation", "elements");
                 });
 
-            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.AbilityComponent", b =>
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.Ability.AbilityAspects", b =>
                 {
                     b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
 
@@ -95,7 +122,51 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("abbreviation");
 
-                    b.ToTable("element_component_ability", "elements");
+                    b.ToTable("element_component_aspect_ability", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.Class.ClassAspects", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("HitDice")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("hd");
+
+                    b.ToTable("element_component_aspect_class", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.Class.FeatureAspects", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int")
+                        .HasColumnName("level");
+
+                    b.Property<double>("ListingOrder")
+                        .HasColumnType("float")
+                        .HasColumnName("listing_order");
+
+                    b.ToTable("element_component_aspect_feature", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.ClassificationsComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("_labels")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("labels");
+
+                    b.Property<string>("_tags")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("tags");
+
+                    b.ToTable("element_component_classifications", "elements");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.DescriptionComponent", b =>
@@ -110,9 +181,24 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     b.ToTable("element_component_description", "elements");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.Feat.FeatAspects", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("category");
+
+                    b.ToTable("element_component_aspect_feat", "elements");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.IncludeRuleComponent", b =>
                 {
                     b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("IncludeElement")
                         .HasColumnType("uniqueidentifier")
@@ -129,11 +215,11 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     b.ToTable("element_component_include_rule", "elements");
                 });
 
-            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.LanguageComponent", b =>
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.Language.LanguageAspects", b =>
                 {
                     b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
 
-                    b.Property<string>("Kind")
+                    b.Property<string>("Classification")
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)")
@@ -145,7 +231,18 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasColumnName("origin");
 
-                    b.ToTable("element_component_language", "elements");
+                    b.ToTable("element_component_aspect_language", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.MetaComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("Parent")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("parent_element");
+
+                    b.ToTable("element_component_meta", "elements");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.PrerequisitesComponent", b =>
@@ -175,6 +272,29 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                         .HasColumnName("primary_ability_id");
 
                     b.ToTable("element_component_primary_ability", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.Proficiency.ProficiencyAspects", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("Classification")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("proficiency_type");
+
+                    b.ToTable("element_component_aspect_proficiency", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.RepeatableComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<bool>("IsRepeatable")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_repeatable");
+
+                    b.ToTable("element_component_repeatable", "elements");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.SelectionRuleComponent", b =>
@@ -245,6 +365,38 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     b.ToTable("element_component_sorting", "elements");
                 });
 
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.Spell.SpellAspects", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("CastingTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("casting_time");
+
+                    b.Property<string>("Classification")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("level");
+
+                    b.Property<string>("Components")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("components");
+
+                    b.Property<string>("Duration")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("duration");
+
+                    b.Property<string>("Range")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("range");
+
+                    b.ToTable("element_component_aspect_spellcasting", "elements");
+                });
+
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.StatisticRuleComponent", b =>
                 {
                     b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
@@ -256,6 +408,14 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                     b.Property<int>("LevelRequirement")
                         .HasColumnType("int")
                         .HasColumnName("level_requirement");
+
+                    b.Property<int?>("Maximum")
+                        .HasColumnType("int")
+                        .HasColumnName("maximum");
+
+                    b.Property<int?>("Minimum")
+                        .HasColumnType("int")
+                        .HasColumnName("minimum");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -276,6 +436,18 @@ namespace Starlights.Modules.Elements.Data.EntityFramework.Migrations
                         .HasColumnName("value");
 
                     b.ToTable("element_component_statistic_rule", "elements");
+                });
+
+            modelBuilder.Entity("Starlights.Modules.Elements.Domain.Components.SupportsComponent", b =>
+                {
+                    b.HasBaseType("Starlights.Modules.Elements.Domain.ElementComponentBase");
+
+                    b.Property<string>("_supports")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("supports");
+
+                    b.ToTable("element_component_supports", "elements");
                 });
 
             modelBuilder.Entity("Starlights.Modules.Elements.Domain.ElementComponentBase", b =>

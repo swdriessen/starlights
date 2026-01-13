@@ -1,6 +1,8 @@
 ﻿using AwesomeAssertions;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
+using Starlights.Modules.Elements.Domain.Components.Language;
+using Starlights.Modules.Elements.Domain.Values;
 
 namespace Starlights.Modules.Elements.Tests.Domain;
 
@@ -27,7 +29,7 @@ public class ElementConstructionTests
     {
         // Act
         var element = Element.Create("Strength", ElementTypeConstants.Ability);
-        element.AddComponent(new AbbreviationComponent(element.Id, "STR"));
+        element.AddComponent(new AbbreviationComponent(element.Id, new Abbreviation("STR")));
         element.AddComponent(new DescriptionComponent(element.Id, "Strength is a measure of physical power and athleticism."));
 
         // Assert
@@ -39,7 +41,7 @@ public class ElementConstructionTests
     {
         // Arrange
         var abilityElement = Element.Create("Intelligence", ElementTypeConstants.Ability);
-        abilityElement.AddComponent(new AbbreviationComponent(abilityElement.Id, "INT"));
+        abilityElement.AddComponent(new AbbreviationComponent(abilityElement.Id, new Abbreviation("INT")));
 
         // Act
         var skillElement = Element.Create("Arcana", ElementTypeConstants.Skill);
@@ -55,7 +57,7 @@ public class ElementConstructionTests
     {
         // Arrange
         var abilityElement = Element.Create("Intelligence", ElementTypeConstants.Ability);
-        abilityElement.AddComponent(new AbbreviationComponent(abilityElement.Id, "INT"));
+        abilityElement.AddComponent(new AbbreviationComponent(abilityElement.Id, new Abbreviation("INT")));
 
         // Act
         var saveElement = Element.Create("Intelligence", ElementTypeConstants.SavingThrow);
@@ -71,7 +73,7 @@ public class ElementConstructionTests
     {
         // Act
         var element = Element.Create("Common", ElementTypeConstants.Language);
-        element.AddComponent(new LanguageComponent(element.Id, "Sigil"));
+        element.AddComponent(new LanguageAspects(element.Id, LanguageClassification.Standard, "Sigil"));
         element.AddComponent(new DescriptionComponent(element.Id, "Common is the most widely spoken language in the world."));
 
         // Assert
@@ -90,7 +92,7 @@ public class ElementConstructionTests
 
         // Assert
         element.Should().NotBeNull();
-        var includeRule = element.GetComponent<IncludeRuleComponent>();
+        var includeRule = element.GetRequiredComponent<IncludeRuleComponent>();
         includeRule.IncludeElement.Should().Be(freeElement.Id);
         includeRule.LevelRequirement.Should().Be(0);
     }

@@ -19,7 +19,6 @@ public sealed class PrerequisitesComponent : ElementComponentBase
     /// </summary>
     public string Prerequisites { get; private set; } = string.Empty;
 
-
     /// <summary>
     /// Gets the requirements string.
     /// </summary>

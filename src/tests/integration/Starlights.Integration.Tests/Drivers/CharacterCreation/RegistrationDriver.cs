@@ -1,8 +1,7 @@
 ﻿using AwesomeAssertions;
 using Starlights.Integration.Constants;
-using Starlights.Integration.Core;
-using Starlights.Integration.Core.Eventing;
-using Starlights.Integration.Core.Extensions;
+using Starlights.Integration.Eventing;
+using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegistrations;

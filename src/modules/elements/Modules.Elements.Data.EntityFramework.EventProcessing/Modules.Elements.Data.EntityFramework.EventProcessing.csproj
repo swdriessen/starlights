@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>Starlights.Modules.Elements.Data.EntityFramework.EventProcessing</RootNamespace>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.Elements.Data.EntityFramework\Modules.Elements.Data.EntityFramework.csproj" />
+  </ItemGroup>
+
+</Project>

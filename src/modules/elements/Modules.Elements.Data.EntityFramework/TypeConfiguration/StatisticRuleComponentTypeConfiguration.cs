@@ -30,5 +30,11 @@ public class StatisticRuleComponentTypeConfiguration : IEntityTypeConfiguration<
 
         builder.Property(x => x.Requirements)
             .HasColumnName("requirements");
+
+        builder.Property(x => x.Minimum)
+            .HasColumnName("minimum");
+
+        builder.Property(x => x.Maximum)
+            .HasColumnName("maximum");
     }
 }

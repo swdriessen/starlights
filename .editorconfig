@@ -181,3 +181,20 @@ indent_size = 2
 
 [*.json]
 indent_size = 2
+
+[*.{cs,vb}]
+# avoid analyzer complaining about every log message
+dotnet_diagnostic.CA1873.severity = none
+
+[*.feature]
+charset = utf-8
+gherkin_indent_feature_children = false
+gherkin_indent_rule_children = true
+gherkin_indent_steps = true
+gherkin_indent_and_steps = false
+gherkin_indent_examples = true
+gherkin_indent_examples_table = true
+gherkin_indent_datatable = true
+gherkin_indent_docstring = true
+gherkin_table_cell_padding_size = 1
+gherkin_table_cell_right_align_numeric_content = true

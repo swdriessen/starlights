@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.reqnroll.net/reqnroll-config-latest.json",
+  "bindingAssemblies": [],
+  "trace": {
+    "stepDefinitionSkeletonStyle": "AsyncRegexAttribute",
+    "coloredOutput": true    
+  },
+  "generator": {
+    "allowRowTests": false,
+    "disableFriendlyTestNames": false
+  } 
+}

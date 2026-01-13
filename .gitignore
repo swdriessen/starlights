@@ -424,6 +424,11 @@ FodyWeavers.xsd
 /.github/instructions/local/
 /.vscode/tasks.json
 
+# gherkin
+/**/*.feature.cs
+
 # temp folder content
 /src/frontend/builder-app/public/temp
 /tools/converter
+/src/modules/elements/Modules.Elements.Import
+/src/apps/Starlights.Application/*.http

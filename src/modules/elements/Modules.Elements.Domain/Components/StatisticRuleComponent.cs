@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Starlights.Modules.Elements.Domain.Components;
 
 public sealed class StatisticRuleComponent : ElementComponentBase
@@ -5,8 +7,8 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     public StatisticRuleComponent(ElementId owningElement, string name, string value, int levelRequirement)
         : base(owningElement)
     {
-        Name = name.Trim().ToLowerInvariant();
-        Value = value.Trim().ToLowerInvariant();
+        UpdateName(name);
+        UpdateValue(value);
         UpdateLevelRequirement(levelRequirement);
     }
 
@@ -41,24 +43,56 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     public string? Requirements { get; private set; }
 
     /// <summary>
-    /// Updates the name of the statistic. The name is trimmed and converted to lowercase.
+    /// Gets the minimum allowed value for this statistic rule, if any.
     /// </summary>
-    public void UpdateName(string name) => Name = name.Trim().ToLowerInvariant();
+    public int? Minimum { get; private set; }
 
     /// <summary>
-    /// Updates the value of the statistic. The value is trimmed and converted to lowercase.
+    /// Gets the maximum allowed value for this statistic rule, if any.
     /// </summary>
-    public void UpdateValue(string value) => Value = value.Trim().ToLowerInvariant();
+    public int? Maximum { get; private set; }
 
     /// <summary>
-    /// Updates the stacking bonus of the statistic. The value is trimmed and converted to lowercase.
+    /// Updates the name of the statistic. The value is normalized for statistic usage.
     /// </summary>
-    public void UpdateStackingBonus(string value) => StackingBonus = value.Trim().ToLowerInvariant();
+    [MemberNotNull(nameof(Name))]
+    public void UpdateName(string name)
+    {
+        Name = name.NormalizeStatistic();
+    }
+
+    /// <summary>
+    /// Updates the display name of the statistic.
+    /// </summary>
+    public void UpdateDisplayName(string? displayName)
+    {
+        DisplayName = string.IsNullOrWhiteSpace(displayName) ? null : displayName.Trim();
+    }
+
+    /// <summary>
+    /// Updates the value of the statistic. The value is normalized for statistic usage.
+    /// </summary>
+    [MemberNotNull(nameof(Value))]
+    public void UpdateValue(string value)
+    {
+        Value = value.IsNumeric() ? value.Trim(' ', '+') : value.NormalizeStatistic();
+    }
+
+    /// <summary>
+    /// Updates the stacking bonus of the statistic. The value is normalized for statistic usage.
+    /// </summary>
+    public void UpdateStackingBonus(string? value)
+    {
+        StackingBonus = string.IsNullOrWhiteSpace(value) ? null : value.NormalizeStatistic();
+    }
 
     /// <summary>
     /// Checks if the value of the statistic is a number.
     /// </summary>
-    public bool IsNumberValue() => int.TryParse(Value, out _);
+    public bool IsNumberValue()
+    {
+        return int.TryParse(Value, out _);
+    }
 
     /// <summary>
     /// Gets the value of the statistic as an integer.
@@ -66,12 +100,9 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     /// <exception cref="InvalidOperationException"></exception>
     public int GetValue()
     {
-        if (int.TryParse(Value, out var result))
-        {
-            return result;
-        }
-
-        throw new InvalidOperationException($"The value '{Value}' is not a valid integer.");
+        return int.TryParse(Value, out var result)
+            ? result
+            : throw new InvalidOperationException($"The value '{Value}' is not a valid integer.");
     }
 
     /// <summary>
@@ -89,8 +120,41 @@ public sealed class StatisticRuleComponent : ElementComponentBase
     }
 
     /// <summary>
+    /// Updates the minimum allowed value for this statistic rule.
+    /// </summary>
+    public void UpdateMinimum(int? minimum)
+    {
+        if (minimum is < 0)
+        {
+            throw new ArgumentException("Minimum cannot be negative.", nameof(minimum));
+        }
+
+        Minimum = minimum;
+    }
+
+    /// <summary>
+    /// Updates the maximum allowed value for this statistic rule.
+    /// </summary>
+    public void UpdateMaximum(int? maximum)
+    {
+        if (maximum is < 0)
+        {
+            throw new ArgumentException("Maximum cannot be negative.", nameof(maximum));
+        }
+
+        Maximum = maximum;
+    }
+
+    /// <summary>
+    /// Updates the requirements string for this statistic rule.
+    /// </summary>
+    public void UpdateRequirements(string? requirements)
+    {
+        Requirements = string.IsNullOrWhiteSpace(requirements) ? null : requirements.Trim();
+    }
+
+    /// <summary>
     /// Gets a value indicating whether this selection option has any requirements.
     /// </summary>
     public bool HasRequirements => LevelRequirement > 0 || !string.IsNullOrWhiteSpace(Requirements);
-
 }

@@ -1,5 +1,4 @@
 using AwesomeAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Starlights.Modules.Elements.Data;
 using Starlights.Modules.Elements.Domain;
 using Starlights.Modules.Elements.Domain.Components;
@@ -79,6 +78,55 @@ public class ElementComponentOrderingTests
         // Assert
         var ordered = element.GetComponents<IncludeRuleComponent>().ToList();
         ordered.Should().ContainInOrder(include1, include3, include2);
+        ordered.Select(c => c.OrderSequence).Should().ContainInOrder(0, 1, 2);
+    }
+
+    [TestMethod]
+    public void RemoveComponent_ShouldRemoveComponent_AndUpdateOrderSequence_AndOrder()
+    {
+        // Arrange
+        var element = Element.Create("Test Element", "TestType");
+        var include1 = element.AddComponent(new IncludeRuleComponent(element.Id, ElementId.New(), 1));
+        var include2 = element.AddComponent(new IncludeRuleComponent(element.Id, ElementId.New(), 2));
+        var include3 = element.AddComponent(new IncludeRuleComponent(element.Id, ElementId.New(), 3));
+
+        // Act
+        var removed = element.RemoveComponent<IncludeRuleComponent>(include2.Id);
+
+        // Assert
+        removed.Should().BeTrue();
+
+        var ordered = element.GetComponents<IncludeRuleComponent>().ToList();
+        ordered.Should().ContainInOrder(include1, include3);
+        ordered.Select(c => c.OrderSequence).Should().ContainInOrder(0, 1);
+
+        element.Components.OfType<IncludeRuleComponent>()
+            .Should()
+            .ContainInOrder(include1, include3);
+
+        var model = element.AsElementDataModel();
+        model.IncludeRules.Select(r => r.RuleId)
+            .Should()
+            .ContainInOrder(include1.Id, include3.Id);
+    }
+
+    [TestMethod]
+    public void RemoveComponent_WhenComponentDoesNotExist_ShouldReturnFalse_AndPreserveOrder()
+    {
+        // Arrange
+        var element = Element.Create("Test Element", "TestType");
+        var include1 = element.AddComponent(new IncludeRuleComponent(element.Id, ElementId.New(), 1));
+        var include2 = element.AddComponent(new IncludeRuleComponent(element.Id, ElementId.New(), 2));
+        var include3 = element.AddComponent(new IncludeRuleComponent(element.Id, ElementId.New(), 3));
+
+        // Act
+        var removed = element.RemoveComponent<IncludeRuleComponent>(ElementComponentId.New());
+
+        // Assert
+        removed.Should().BeFalse();
+
+        var ordered = element.GetComponents<IncludeRuleComponent>().ToList();
+        ordered.Should().ContainInOrder(include1, include2, include3);
         ordered.Select(c => c.OrderSequence).Should().ContainInOrder(0, 1, 2);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
 using AwesomeAssertions;
-using Starlights.Integration.Core;
-using Starlights.Integration.Core.Extensions;
+using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetRegistrations;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetSelectionRuleOptions;
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.GetSelectionRules;

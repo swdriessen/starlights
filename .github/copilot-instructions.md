@@ -7,9 +7,19 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 - **Backend**: .NET 10 Web API (C#) using FastEndpoints in a modular monolith architecture
 - **Frontend**: React 19 (TypeScript) with Vite, TanStack Query, React Router, Tailwind CSS, and Shadcn UI
 - **Data**: Entity Framework Core 10 with SQL Server
-- **Orchestration**: .NET Aspire 9.5 for local development and Azure deployment
-- **Testing**: MSTest for unit tests; AwesomeAssertions for assertions; Moq for mocking
+- **Orchestration**: .NET Aspire 13 (AppHost) for local orchestration
+- **Testing**: MSTest (Microsoft.Testing.Platform) + AwesomeAssertions + Moq; plus integration and acceptance test projects (Reqnroll)
 - **Observability**: Serilog for logging, OpenTelemetry for distributed tracing and metrics
+
+## Repository Layout (high level)
+
+- `src/apps/`: Deployable apps (e.g., the backend Web API)
+- `src/aspire/`: Aspire AppHost + ServiceDefaults
+- `src/frontend/`: npm workspaces (app + shared UI library)
+- `src/modules/`: Business modules (Characters, Elements)
+- `src/platform/`: Shared platform + reusable components
+- `src/tests/`: Integration and acceptance tests
+- `src/source-generators/`: Roslyn source generators + tests
 
 ## C# Practices
 
@@ -37,6 +47,8 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
   - `Domain`: Entities, value objects, aggregates, domain logic
   - `Data`: Repository interfaces and abstractions
   - `Data.EntityFramework`: EF Core configurations, DbContext, migrations
+  - `Data.EntityFramework.MigrationService`: Migration worker used by Aspire at startup
+  - `Data.EntityFramework.EventProcessing`: Outbox/event processing persistence and workers
   - `Endpoints`: FastEndpoints for API exposure
   - `Integration`: Public contracts for inter-module communication
 - Strict boundaries: modules interact via interfaces or domain events; avoid leaking internals.
@@ -46,21 +58,15 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 - Apply DDD concepts where beneficial (entities, aggregates, value objects).
 - Write integration tests for module interactions and endpoint behavior.
 
-## Aspire 9.5 (local + Azure)
+## Aspire 13 (local orchestration)
 
 - **Local Development**:
-  - Use Aspire AppHost to orchestrate all services; declare dependencies and env vars in the manifest.
-  - Use Aspire service discovery for resource connections (SQL Server, APIs).
+  - Aspire AppHost entrypoint is `src/aspire/Starlights.AppHost/AppHost.cs`.
+  - Use Aspire service discovery for resource connections (SQL Server, backend endpoints).
   - SQL Server container runs on static port `61070` for consistency.
-  - Migration workers run at startup to initialize databases.
-  - Monitor with Aspire dashboards; keep appsettings/secrets aligned across envs.
-  - Frontend configured via Aspire with automatic environment variable injection.
-- **Azure Deployment**:
-  - Use `azd` + Aspire; define IaC (Bicep) for all resources.
-  - Inject config via Aspire env vars and Azure Key Vault for secrets.
-  - Monitor with Azure Monitor, Application Insights, and Aspire dashboards; use health checks.
-  - Keep local/cloud manifests aligned; group services modularly.
-- **General**: Document manifests/configs; keep tools up to date; test end-to-end locally; integrate with CI/CD.
+  - Migration workers run at startup (in run mode) and the backend waits for completion.
+  - Frontend is started by Aspire as a JavaScript app; it can also be exposed via a Dev Tunnel (explicit start).
+  - Monitor via the Aspire dashboard (logs/metrics/traces).
 
 ## Entity Framework Core + SQL Server
 
@@ -106,18 +112,19 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 
 ## React/TypeScript Frontend
 
-- **Structure**: Organize by feature with clear separation:
-  - `src/pages`: Route-based page components
-  - `src/lib/api`: API client functions and TanStack Query hooks
-  - `src/components`: Reusable UI components (Shadcn-based)
-  - `src/lib/utils.ts`: Utility functions
+- **Monorepo**: Frontend lives in `src/frontend/` and uses npm workspaces.
+  - App: `src/frontend/builder-app/`
+  - Shared UI library: `src/frontend/libs/ui/` (Radix primitives + shadcn-style patterns)
+- **Structure (builder-app)**: Prefer feature folders under `src/` and keep API access centralized.
 - **State Management**: Use TanStack Query for server state; React hooks for local state.
 - **Routing**: Use React Router 7 with route-based code splitting.
-- **Styling**: Tailwind CSS 4 with utility-first approach; Shadcn UI for component library.
+- **Styling**: Tailwind CSS 4; shared UI components should be added to the `@starlights/ui` library when reusable.
 - **Forms**: React Hook Form + Zod for validation.
 - **API Integration**: Type-safe API calls; centralized error handling; loading states.
 - **TypeScript**: Strict mode enabled; proper typing for all components and functions.
-- **Environment**: Use `VITE_API_BASE` for API base URL (injected by Aspire in development).
+- **Environment**:
+  - Prefer `import.meta.env.VITE_API_BASE` for the API base URL.
+  - In Aspire-run development, the Vite config resolves the base URL from Aspire-injected service discovery env vars (e.g., `services__backend__https__0`).
 
 ## Unit Testing (MSTest + AwesomeAssertions + Moq)
 
@@ -146,7 +153,11 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
   - Use `WebApplicationFactory` pattern for endpoint testing
   - Test module interactions and boundary contracts
   - Verify database state changes where applicable
+- **Acceptance Tests**:
+  - Acceptance tests live under `src/tests/acceptance/` and use Reqnroll (BDD).
+  - Keep step definitions focused and reuse the integration harness where possible.
 - **Always build and run the full test suite before considering work complete**.
+  - Specifying a project for 'dotnet test' should be via '--project'.
 
 ## Repository-Specific Rules
 
@@ -155,6 +166,11 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 - **Domain Events**: Use the platform's domain event publisher for inter-module communication; avoid direct module-to-module references.
 - **Value Objects**: Implement as records with proper equality semantics; configure as owned entities or with value converters in EF Core.
 - **Aggregates**: Keep aggregate roots as entry points for all modifications; enforce invariants within the aggregate.
+
+## Source Generators
+
+- Source generators live under `src/source-generators/` and are built as analyzers.
+- When adding generator tests, reference the generator project as an analyzer (see `OutputItemType="Analyzer"` pattern in the generator test project).
 
 ## Code Generation Guidelines
 
@@ -179,7 +195,7 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 
 - [ ] Build succeeds locally with no warnings
 - [ ] All tests pass (`dotnet test`)
-- [ ] Code coverage meets minimum thresholds (configured in `.runsettings`)
+- [ ] Code coverage expectations met (configured in `.runsettings`)
 - [ ] Aspire manifests updated (local + Azure) and aligned
 - [ ] Secrets handled via Azure Key Vault (production) or Aspire service discovery (local)
 - [ ] EF Core migrations added/updated for schema changes

@@ -1,18 +1,19 @@
 ﻿using System.Net.Http.Json;
 using AwesomeAssertions;
 using Microsoft.AspNetCore.Http;
-using Starlights.Integration.Core;
+using Starlights.Integration.Extensions;
 
 namespace Starlights.Integration.Tests.Elements;
 
 [TestClass]
-public sealed class ElementsEndpointTests
+public sealed class ElementsEndpointTests : IntegrationTestBase
 {
-    private readonly IntegrationHost _integration;
+    private IntegrationHost _integration = default!;
 
-    public ElementsEndpointTests()
+    [TestInitialize]
+    public void Initialize()
     {
-        _integration = IntegrationHost.CreateBuilder()
+        _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
     }
 
@@ -24,7 +25,7 @@ public sealed class ElementsEndpointTests
         var client = _integration.CreateClient();
 
         // Act
-        var response = await client.GetAsync(url, CancellationToken.None);
+        var response = await client.GetAsync(url, _integration.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -37,10 +38,10 @@ public sealed class ElementsEndpointTests
         var client = _integration.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/elements/initialize", CancellationToken.None);
+        var response = await client.GetAsync("/api/elements/initialize", _integration.CancellationToken);
 
         // Assert
-        var json = await response.Content.ReadFromJsonAsync<object>(CancellationToken.None);
+        var json = await response.Content.ReadFromJsonAsync<object>(_integration.CancellationToken);
         json.Should().NotBeNull("expected response content to be deserializable");
     }
 }
