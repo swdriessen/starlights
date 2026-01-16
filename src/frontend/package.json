@@ -2,6 +2,8 @@
   "name": "starlights",
   "private": true,
   "workspaces": [
+    "apps/content-app",
+    "packages/content-api",
     "builder-app",
     "libs/ui"
   ],

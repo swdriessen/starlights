@@ -63,13 +63,13 @@
     <Project Path="src/platform/Starlights.Platform/Starlights.Platform.csproj" />
   </Folder>
   <Folder Name="/src/platform/components/">
-    <Project Path="src/platform/components/Starlights.Platform.Components.Data.EntityFramework.Tests/Starlights.Platform.Components.Data.EntityFramework.Tests.csproj" />
     <Project Path="src/platform/components/Starlights.Platform.Components.Data.EntityFramework/Starlights.Platform.Components.Data.EntityFramework.csproj" />
     <Project Path="src/platform/components/Starlights.Platform.Components.FastEndpoints/Starlights.Platform.Components.FastEndpoints.csproj" />
     <Project Path="src/platform/components/Starlights.Platform.Components.Serilog/Starlights.Platform.Components.Serilog.csproj" />
     <Project Path="src/platform/components/Starlights.Platform.Eventing.EventPublisher/Starlights.Platform.Eventing.EventPublisher.csproj" />
   </Folder>
   <Folder Name="/src/platform/tests/">
+    <Project Path="src/platform/components/Starlights.Platform.Components.Data.EntityFramework.Tests/Starlights.Platform.Components.Data.EntityFramework.Tests.csproj" />
     <Project Path="src/platform/Starlights.Platform.Tests/Starlights.Platform.Tests.csproj" />
   </Folder>
   <Folder Name="/src/source-generators/">

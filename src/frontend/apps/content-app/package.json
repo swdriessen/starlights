@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@starlights/content-api": "file:../../packages/content-api",
     "@base-ui/react": "^1.0.0",
     "@fontsource-variable/dm-sans": "^5.2.8",
     "@tailwindcss/vite": "^4.1.17",
