@@ -430,8 +430,11 @@ FodyWeavers.xsd
 # temp folder content
 /src/frontend/builder-app/public/temp
 /tools/converter
-/src/modules/elements/Modules.Elements.Import
-/src/apps/Starlights.Application/*.http
 
 # for hiding node_modules from vscode explorer (extension)
 /src/frontend/.vscode/settings.json
+
+# temp prevent local 
+/src/modules/elements/Modules.Elements.Import
+/src/apps/Starlights.Application/*.http
+/src/tests/integration/Starlights.Integration.Tests/Tests/Elements/Management/CompleteCreationTests.cs
