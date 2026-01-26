@@ -7,7 +7,7 @@
     <MicrosoftExtensionsVersion>10.0.1</MicrosoftExtensionsVersion>
     <EntityFrameworkCoreVersion>10.0.1</EntityFrameworkCoreVersion>
     <AspireVersion>13.0.2</AspireVersion>
-    <OpenTelemetryVersion>1.14.0</OpenTelemetryVersion>
+    <OpenTelemetryVersion>1.15.0</OpenTelemetryVersion>
   </PropertyGroup>
   <ItemGroup Label="Generic Packages">
     <PackageVersion Include="FastEndpoints" Version="7.1.1" />
