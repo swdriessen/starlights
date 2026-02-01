@@ -100,14 +100,6 @@ import {
   ChevronDownIcon,
   LightbulbIcon,
   CircleQuestionMarkIcon,
-  HdIcon,
-  CheckIcon,
-  BadgeIcon,
-  BadgePlusIcon,
-  BadgeCheckIcon,
-  ArrowUpRightIcon,
-  AppWindowIcon,
-  TextSelectIcon,
   IndentIcon,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -134,22 +126,324 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import TestComponent from "./test";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { cn } from "@/lib/utils";
- 
+
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import TableComponent from "./tabs";
 
-export function ComponentExample() {
+export function SpellComponentExample() {
+  const spelllevels = [
+    { label: "Cantrip", value: "0" },
+    { label: "1st", value: "1" },
+    { label: "2nd", value: "2" },
+    { label: "3rd", value: "3" },
+    { label: "4th", value: "4" },
+    { label: "5th", value: "5" },
+    { label: "6th", value: "6" },
+    { label: "7th", value: "7" },
+    { label: "8th", value: "8" },
+    { label: "9th", value: "9" },
+  ];
+
+  const schools = [
+    // { label: "x", value: null },
+    { label: "Abjuration", value: "abjuration" },
+    { label: "Conjuration", value: "conjuration" },
+    { label: "Divination", value: "divination" },
+    { label: "Enchantment", value: "enchantment" },
+    { label: "Evocation", value: "evocation" },
+    { label: "Illusion", value: "illusion" },
+    { label: "Necromancy", value: "necromancy" },
+    { label: "Transmutation", value: "transmutation" },
+  ];
+
+  const times = [
+    { label: "Action", value: "Action" },
+    { label: "Bonus Action", value: "Bonus Action" },
+    { label: "Reaction", value: "Reaction" },
+    { label: "1 Minute", value: "1 Minute" },
+    { label: "10 Minutes", value: "10 Minutes" },
+    { label: "1 Hour", value: "1 Hour" },
+    { label: "8 Hours", value: "8 Hours" },
+    { label: "12 Hours", value: "12 Hours" },
+    { label: "24 Hours", value: "24 Hours" },
+  ];
   return (
     <>
-      <div className="container mx-auto mt-12">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="col-span-1 flex flex-col gap-4">
-            <NameFieldGroup />
-            <RangeFieldGroup />
+      <div className="container mx-auto mt-12 mb-100">
+        <div className="mb-4">
+          <Card>
+            <CardContent className=" flex items-center justify-between gap-6">
+              <FieldTitle>Manage Spell</FieldTitle>
+              <div className="flex gap-2">
+                <Button
+                  variant="default"
+                  form="manage-spell"
+                >
+                  Save Changes
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-7 flex flex-col gap-4">
+            <Card>
+              <CardContent className=" flex flex-col gap-6">
+                {/* name */}
+                <FieldSet>
+                  <FieldGroup>
+                    <Field>
+                      <FieldLabel htmlFor="input-name">Name</FieldLabel>
+                      <Input
+                        id="input-name"
+                        placeholder="Fireball"
+                      />
+                      {/* <FieldDescription>The name of the spell.</FieldDescription> */}
+                    </Field>
+                  </FieldGroup>
+                </FieldSet>
+
+                {/* spell details */}
+                <FieldSet>
+                  <FieldGroup>
+                    <div className="grid grid-cols-12 gap-4">
+                      <Field className="col-span-4">
+                        <FieldLabel htmlFor="checkout-7j9-exp-month-ts6">Level</FieldLabel>
+                        <Select
+                          items={spelllevels}
+                          defaultValue={"1"}
+                        >
+                          <SelectTrigger id="checkout-7j9-exp-month-ts6">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {spelllevels.map((item) => (
+                                <SelectItem
+                                  key={item.value}
+                                  value={item.value}
+                                >
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </Field>
+
+                      <Field className="col-span-8">
+                        <FieldLabel htmlFor="checkout-7j9-exp-year-f59">
+                          School of Magic
+                          <InfoPopover description="These categories help describe spells but have no rules of their own, although some other rules refer to them." />
+                        </FieldLabel>
+                        <Select
+                          items={schools}
+                          defaultValue={"Abjuration"}
+                        >
+                          <SelectTrigger id="checkout-7j9-exp-year-f59">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {schools.map((item) => (
+                                <SelectItem
+                                  key={item.value}
+                                  value={item.value}
+                                >
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        {/* <FieldDescription>
+                        These categories help describe spells but have no rules of their own, although some other rules refer to them.
+                      </FieldDescription> */}
+                      </Field>
+                    </div>
+                  </FieldGroup>
+                </FieldSet>
+
+                {/* <FieldSeparator /> */}
+
+                {/* casting time */}
+                <FieldSet>
+                  {/* <FieldLegend>Casting Time</FieldLegend>
+                  <FieldDescription>The time required to cast the spell.</FieldDescription> */}
+                  <FieldGroup>
+                    <Field>
+                      <FieldLabel htmlFor="input-casting-time">
+                        Casting Time
+                        {/* <InfoPopover description="A spell costs a Magic action to cast, but some spells require a Bonus Action, a Reaction, or 1 minute or more." /> */}
+                      </FieldLabel>
+                      {/* <FieldDescription>
+                      A spell costs a Magic action to cast, but some spells require a Bonus Action, a Reaction, or 1 minute or more.
+                    </FieldDescription> */}
+
+                      <Autocomplete
+                        id="input-casting-time"
+                        items={times}
+                      >
+                        <AutocompleteInput placeholder="Action">
+                          <AutocompleteClear />
+                          <AutocompleteTrigger />
+                        </AutocompleteInput>
+                        <AutocompletePopup>
+                          <AutocompleteEmpty>No items found</AutocompleteEmpty>
+                          <AutocompleteList>
+                            {(item: { label: string; value: string }) => (
+                              <AutocompleteItem
+                                key={item.value}
+                                value={item.value}
+                              >
+                                {item.label}
+                              </AutocompleteItem>
+                            )}
+                          </AutocompleteList>
+                        </AutocompletePopup>
+                      </Autocomplete>
+
+                      {/* <FieldDescription>The time required to cast the spell.</FieldDescription> */}
+                    </Field>
+
+                    {/* <FieldSeparator /> */}
+                    <Field orientation="horizontal">
+                      <Checkbox id="is-ritual-spell" />
+                      <FieldContent>
+                        <FieldLabel
+                          htmlFor="is-ritual-spell"
+                          className="font-normal"
+                        >
+                          Ritual Spell
+                        </FieldLabel>
+                        <FieldDescription>Indicates whether the spell can be cast as a ritual.</FieldDescription>
+                      </FieldContent>
+                    </Field>
+                  </FieldGroup>
+                </FieldSet>
+
+                {/* <FieldSeparator /> */}
+
+                {/* range */}
+                <RangeFieldGroup />
+
+                {/* <FieldSeparator /> */}
+
+                {/* duration */}
+                <DurationExample />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className=" flex flex-col gap-4">
+                <SpellComponentsWithToggles />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className=" flex flex-col gap-4">
+                <DescriptionComp />
+              </CardContent>
+            </Card>
+            <div className="w-full">
+              <TableComponent />
+            </div>
           </div>
-          <div className="col-span-1">
-            <RangeFieldGroup />
+          <div className="col-span-5 flex flex-col gap-4">
+            {/* <ContributionsActivity /> */}
+            {/* <Card>
+              <CardContent className=" flex flex-col gap-4">
+                <SpellLevelExample />
+              </CardContent>
+            </Card> */}
+            <Card>
+              <CardHeader className="">
+                <CardTitle>Properties</CardTitle>
+                <CardDescription>Manage your spell properties.</CardDescription>
+              </CardHeader>
+              <CardContent className=" flex flex-col gap-4">
+                <FieldGroup>
+                  <FieldSet>
+                    <FieldLegend className="sr-only">Contributions & activity</FieldLegend>
+                    <FieldGroup className="gap-3">
+                      {/* <Field orientation="horizontal">
+                        <Checkbox id="private-profile" />
+                        <FieldContent>
+                          <FieldLabel
+                            htmlFor="private-profile"
+                            className="font-normal"
+                          >
+                            Make profile private and hide activity
+                          </FieldLabel>
+                          <FieldDescription>
+                            Enabling this will hide your contributions and activity from your GitHub profile and from social features like
+                            followers, stars, feeds, leaderboards and releases.
+                          </FieldDescription>
+                        </FieldContent>
+                      </Field> */}
+                      {/* <Field orientation="horizontal">
+                        <Checkbox
+                          id="private-contributions"
+                          defaultChecked
+                        />
+                        <FieldContent>
+                          <FieldLabel
+                            htmlFor="private-contributions"
+                            className="font-normal"
+                          >
+                            Include private contributions on my profile
+                          </FieldLabel>
+                          <FieldDescription>
+                            Your contribution graph, achievements, and activity overview will show your private contributions without
+                            revealing any repository or organization information. <a href="#read-more">Read more</a>.
+                          </FieldDescription>
+                        </FieldContent>
+                      </Field> */}
+
+                      <Field orientation="horizontal">
+                        <Checkbox id="is-ritual-spell" />
+                        <FieldContent>
+                          <FieldLabel
+                            htmlFor="is-ritual-spell"
+                            className="font-normal"
+                          >
+                            Ritual Spell
+                          </FieldLabel>
+                          <FieldDescription>Indicates whether the spell can be cast as a ritual.</FieldDescription>
+                        </FieldContent>
+                      </Field>
+
+                      <Field orientation="horizontal">
+                        <Checkbox id="is-concentration-spell" />
+                        <FieldContent>
+                          <FieldLabel
+                            htmlFor="is-concentration-spell"
+                            className="font-normal"
+                          >
+                            Concentration Spell
+                          </FieldLabel>
+                          <FieldDescription>Indicates whether the spell requires concentration.</FieldDescription>
+                        </FieldContent>
+                      </Field>
+                    </FieldGroup>
+                  </FieldSet>
+                </FieldGroup>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className=" flex flex-col gap-4">
+                <SpellComponentsWithToggles />
+              </CardContent>
+            </Card>
+            {/* <AssignClasses /> */}{" "}
           </div>
+
+          {/* <div className="col-span-12 flex flex-col gap-4">
+            <Card>
+              <CardContent className=" flex flex-col gap-4">
+                <DescriptionComp />
+              </CardContent>
+            </Card>
+          </div> */}
         </div>
       </div>
 
@@ -958,7 +1252,7 @@ function SpellComponentsWithChecks() {
             <FieldGroup>
               <FieldSet>
                 <FieldGroup>
-                  <Field className="">
+                  <Field>
                     <FieldContent>
                       <FieldLabel htmlFor="terms-1">Spell Components</FieldLabel>
                       <FieldDescription>
@@ -1019,94 +1313,78 @@ function SpellComponentsWithChecks() {
 
 function SpellComponentsWithToggles() {
   return (
-    <Example
-      title="Spell Components + Toggles"
-      className="items-center justify-center"
-    >
-      <Card
-        className="w-full max-w-md "
-        size="default"
-      >
-        {/* <CardHeader className="border-b">
-          <CardTitle>Spell Components</CardTitle>
-          <CardDescription>A spell's components are physical requirements the spellcaster must meet to cast the spell.</CardDescription>
-        </CardHeader> */}
+    <form id="spell-components-form">
+      <FieldGroup>
+        <FieldSet>
+          <FieldGroup>
+            <Field orientation="vertical">
+              <FieldContent>
+                <FieldLabel htmlFor="terms-1">Spell Components</FieldLabel>
+                <FieldDescription>
+                  A spell's components are physical requirements the spellcaster must meet to cast the spell.
+                </FieldDescription>
+              </FieldContent>
 
-        <CardContent>
-          <form id="spell-components-form">
-            <FieldGroup>
-              <FieldSet>
-                <FieldGroup>
-                  <Field className="">
-                    <FieldContent>
-                      <FieldLabel htmlFor="terms-1">Spell Components</FieldLabel>
-                      <FieldDescription>
-                        A spell's components are physical requirements the spellcaster must meet to cast the spell.
-                      </FieldDescription>
-                    </FieldContent>
+              <div className="flex items-center gap-2 mt-2">
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Toggle
+                        variant="outline"
+                        size="sm"
+                        className="data-pressed:bg-primary data-pressed:text-primary-foreground uppercase transition-colors"
+                      />
+                    }
+                  >
+                    V
+                  </TooltipTrigger>
+                  <TooltipContent sideOffset={10}>Verbal Component</TooltipContent>
+                </Tooltip>
 
-                    <div className="flex items-center gap-2 mt-2">
-                      <Tooltip>
-                        <TooltipTrigger
-                          render={
-                            <Toggle
-                              variant="outline"
-                              size="sm"
-                              className="data-pressed:bg-primary data-pressed:text-primary-foreground uppercase pt-0.5 transition-colors"
-                            />
-                          }
-                        >
-                          V
-                        </TooltipTrigger>
-                        <TooltipContent sideOffset={10}>Verbal Component</TooltipContent>
-                      </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Toggle
+                        variant="outline"
+                        size="sm"
+                        className="data-pressed:bg-primary data-pressed:text-primary-foreground uppercase transition-colors"
+                      />
+                    }
+                  >
+                    S
+                  </TooltipTrigger>
+                  <TooltipContent sideOffset={10}>Somatic Component</TooltipContent>
+                </Tooltip>
 
-                      <Tooltip>
-                        <TooltipTrigger
-                          render={
-                            <Toggle
-                              variant="outline"
-                              size="sm"
-                              className="data-pressed:bg-primary data-pressed:text-primary-foreground uppercase pt-0.5 transition-colors"
-                            />
-                          }
-                        >
-                          S
-                        </TooltipTrigger>
-                        <TooltipContent sideOffset={10}>Somatic Component</TooltipContent>
-                      </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Toggle
+                        variant="outline"
+                        size="sm"
+                        className="data-pressed:bg-primary data-pressed:text-primary-foreground uppercase transition-colors"
+                      />
+                    }
+                  >
+                    M
+                  </TooltipTrigger>
+                  <TooltipContent sideOffset={10}>Material Component</TooltipContent>
+                </Tooltip>
+              </div>
+            </Field>
 
-                      <Tooltip>
-                        <TooltipTrigger
-                          render={
-                            <Toggle
-                              variant="outline"
-                              size="sm"
-                              className="data-pressed:bg-primary data-pressed:text-primary-foreground uppercase pt-0.5 transition-colors"
-                            />
-                          }
-                        >
-                          M
-                        </TooltipTrigger>
-                        <TooltipContent sideOffset={10}>Material Component</TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </Field>
-
-                  <Field className="">
-                    <FieldLabel htmlFor="material-component-description">Material Component Description</FieldLabel>
-                    <Textarea
-                      id="material-component-description"
-                      placeholder="a bit of flour"
-                    />
-                  </Field>
-                </FieldGroup>
-              </FieldSet>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-    </Example>
+            <Field>
+              <FieldLabel htmlFor="material-component-description">Material Component Description</FieldLabel>
+              <Textarea
+                id="material-component-description"
+                placeholder="a bit of flour"
+                className="min-h-8 py-1.5"
+              />
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      </FieldGroup>
+    </form>
   );
 }
 
@@ -1148,44 +1426,36 @@ function SpellDescription({ name, level, school }: { name: string; level: number
 function DescriptionComp() {
   const [description, setDescription] = React.useState("test markdown");
   return (
-    <Example
-      title="Markdown Description"
-      className="items-center justify-center"
-    >
-      <Card
-        className="w-full max-w-md "
-        size="default"
-      >
-        {/* <CardHeader className="border-b">
+    <>
+      {/* <CardHeader className="border-b">
           <CardTitle>Spell Components</CardTitle>
           <CardDescription>A spell's components are physical requirements the spellcaster must meet to cast the spell.</CardDescription>
         </CardHeader> */}
 
-        <CardContent>
-          <form id="spell-components-form">
+      <form id="spell-components-form">
+        <FieldGroup>
+          <FieldSet>
             <FieldGroup>
-              <FieldSet>
-                <FieldGroup>
-                  {/* <Field className="">
+              {/* <Field className="">
                     <FieldContent>
                       <FieldLabel htmlFor="terms-1">Description</FieldLabel>
                       <FieldDescription>The description of the spell should only contain</FieldDescription>
                     </FieldContent>
                   </Field> */}
 
-                  <Field className="">
-                    <FieldLabel htmlFor="material-component-description">Description</FieldLabel>
-                    <Textarea
-                      id="material-component-description"
-                      className="min-h-50"
-                      placeholder="You create an acidic bubble at a point within range, where it explodes in a 5-foot-radius Sphere. Each creature in that Sphere must succeed on a Dexterity saving throw or take 1d6 Acid damage."
-                      onChange={(e) => {
-                        setDescription(e.target.value);
-                      }}
-                    />
-                  </Field>
+              <Field className="">
+                <FieldLabel htmlFor="material-component-description">Description</FieldLabel>
+                <Textarea
+                  id="material-component-description"
+                  className="min-h-50"
+                  placeholder="You create an acidic bubble at a point within range, where it explodes in a 5-foot-radius Sphere. Each creature in that Sphere must succeed on a Dexterity saving throw or take 1d6 Acid damage."
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                />
+              </Field>
 
-                  {/* <Field className="">
+              {/* <Field className="">
                     <FieldLabel htmlFor="material-component-description">
                       Using a Higher-Level Spell Slot
                     </FieldLabel>
@@ -1195,7 +1465,7 @@ function DescriptionComp() {
                     />
                   </Field> */}
 
-                  {/* <Field className="">
+              {/* <Field className="">
                     <FieldLabel htmlFor="material-component-description">
                       Cantrip Upgrade
                     </FieldLabel>
@@ -1204,12 +1474,22 @@ function DescriptionComp() {
                       placeholder="The damage increases by 1d6 when you reach levels 5 (2d6),11 (3d6), and 17 (4d6)."
                     />
                   </Field> */}
-                </FieldGroup>
-              </FieldSet>
             </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
+          </FieldSet>
+        </FieldGroup>
+      </form>
+    </>
+  );
+}
+
+function DescriptionCompPreview() {
+  const [description, setDescription] = React.useState("test markdown");
+  return (
+    <>
+      {/* <CardHeader className="border-b">
+          <CardTitle>Spell Components</CardTitle>
+          <CardDescription>A spell's components are physical requirements the spellcaster must meet to cast the spell.</CardDescription>
+        </CardHeader> */}
 
       <Card
         className="w-full max-w-md "
@@ -1251,10 +1531,9 @@ function DescriptionComp() {
           </div>
         </CardContent>
       </Card>
-    </Example>
+    </>
   );
 }
-
 function DescriptionWithChecks() {
   const [description, setDescription] = React.useState("");
   return (
@@ -1636,67 +1915,88 @@ function AssignLanguageOrigin() {
 
 function ContributionsActivity() {
   return (
-    <Example
-      title="Contributions Activity"
-      className="justify-center"
+    <Card
+      className="mx-auto w-full max-w-md"
+      size="default"
     >
-      <Card
-        className="mx-auto w-full max-w-md"
-        size="default"
-      >
-        <CardHeader>
-          <CardTitle>Contributions & Activity</CardTitle>
-          <CardDescription>Manage your contributions and activity visibility.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form id="contributions-activity">
-            <FieldGroup>
-              <FieldSet>
-                <FieldLegend className="sr-only">Contributions & activity</FieldLegend>
-                <FieldGroup className="gap-3">
-                  <Field orientation="horizontal">
-                    <Checkbox id="private-profile" />
-                    <FieldContent>
-                      <FieldLabel
-                        htmlFor="private-profile"
-                        className="font-normal"
-                      >
-                        Make profile private and hide activity
-                      </FieldLabel>
-                      <FieldDescription>
-                        Enabling this will hide your contributions and activity from your GitHub profile and from social features like
-                        followers, stars, feeds, leaderboards and releases.
-                      </FieldDescription>
-                    </FieldContent>
-                  </Field>
-                  <Field orientation="horizontal">
-                    <Checkbox
-                      id="private-contributions"
-                      defaultChecked
-                    />
-                    <FieldContent>
-                      <FieldLabel
-                        htmlFor="private-contributions"
-                        className="font-normal"
-                      >
-                        Include private contributions on my profile
-                      </FieldLabel>
-                      <FieldDescription>
-                        Your contribution graph, achievements, and activity overview will show your private contributions without revealing
-                        any repository or organization information. <a href="#read-more">Read more</a>.
-                      </FieldDescription>
-                    </FieldContent>
-                  </Field>
-                </FieldGroup>
-              </FieldSet>
-            </FieldGroup>
-          </form>
-        </CardContent>
-        <CardFooter>
-          <Button form="contributions-activity">Save Changes</Button>
-        </CardFooter>
-      </Card>
-    </Example>
+      <CardHeader>
+        <CardTitle>Properties</CardTitle>
+        <CardDescription>Manage your spell properties.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form id="contributions-activity">
+          <FieldGroup>
+            <FieldSet>
+              <FieldLegend className="sr-only">Contributions & activity</FieldLegend>
+              <FieldGroup className="gap-3">
+                {/* <Field orientation="horizontal">
+                  <Checkbox id="private-profile" />
+                  <FieldContent>
+                    <FieldLabel
+                      htmlFor="private-profile"
+                      className="font-normal"
+                    >
+                      Make profile private and hide activity
+                    </FieldLabel>
+                    <FieldDescription>
+                      Enabling this will hide your contributions and activity from your GitHub profile and from social features like
+                      followers, stars, feeds, leaderboards and releases.
+                    </FieldDescription>
+                  </FieldContent>
+                </Field>
+                <Field orientation="horizontal">
+                  <Checkbox
+                    id="private-contributions"
+                    defaultChecked
+                  />
+                  <FieldContent>
+                    <FieldLabel
+                      htmlFor="private-contributions"
+                      className="font-normal"
+                    >
+                      Include private contributions on my profile
+                    </FieldLabel>
+                    <FieldDescription>
+                      Your contribution graph, achievements, and activity overview will show your private contributions without revealing
+                      any repository or organization information. <a href="#read-more">Read more</a>.
+                    </FieldDescription>
+                  </FieldContent>
+                </Field> */}
+
+                <Field orientation="horizontal">
+                  <Checkbox id="is-concentration-spell" />
+                  <FieldContent>
+                    <FieldLabel
+                      htmlFor="is-concentration-spell"
+                      className="font-normal"
+                    >
+                      Concentration Spell
+                    </FieldLabel>
+                    <FieldDescription>Indicates whether the spell requires concentration.</FieldDescription>
+                  </FieldContent>
+                </Field>
+                {/* <FieldSeparator /> */}
+                <Field orientation="horizontal">
+                  <Checkbox id="is-ritual-spell" />
+                  <FieldContent>
+                    <FieldLabel
+                      htmlFor="is-ritual-spell"
+                      className="font-normal"
+                    >
+                      Ritual Spell
+                    </FieldLabel>
+                    <FieldDescription>Indicates whether the spell can be cast as a ritual.</FieldDescription>
+                  </FieldContent>
+                </Field>
+              </FieldGroup>
+            </FieldSet>
+          </FieldGroup>
+        </form>
+      </CardContent>
+      {/* <CardFooter>
+        <Button form="contributions-activity">Save Changes</Button>
+      </CardFooter> */}
+    </Card>
   );
 }
 
@@ -2029,15 +2329,15 @@ function SpellDetailsExample2() {
 function SpellLevelExample() {
   const spelllevels = [
     { label: "Cantrip", value: "0" },
-    { label: "1", value: "1" },
-    { label: "2", value: "2" },
-    { label: "3", value: "3" },
-    { label: "4", value: "4" },
-    { label: "5", value: "5" },
-    { label: "6", value: "6" },
-    { label: "7", value: "7" },
-    { label: "8", value: "8" },
-    { label: "9", value: "9" },
+    { label: "1st", value: "1" },
+    { label: "2nd", value: "2" },
+    { label: "3rd", value: "3" },
+    { label: "4th", value: "4" },
+    { label: "5th", value: "5" },
+    { label: "6th", value: "6" },
+    { label: "7th", value: "7" },
+    { label: "8th", value: "8" },
+    { label: "9th", value: "9" },
   ];
 
   const schools = [
@@ -2053,90 +2353,70 @@ function SpellLevelExample() {
   ];
 
   return (
-    <Example title="Spell Details Form">
-      <Card
-        className="w-full"
-        size="default"
-      >
-        {/* <CardHeader className="border-b">
-          <CardTitle>Spell Details</CardTitle>
-          <CardDescription>The classification of the spell within the magical schools.</CardDescription>
-          <CardAction>
-            <Tooltip>
-              <TooltipTrigger render={<Button variant="outline" size="icon-xs" />}>
-                <PlusIcon />
-              </TooltipTrigger>
-              <TooltipContent>Add School of Magic</TooltipContent>
-            </Tooltip>
-          </CardAction>
-        </CardHeader> */}
-        <CardContent>
-          <form>
-            <FieldGroup>
-              <FieldSet>
-                {/*  */}
-                <FieldGroup className="">
-                  <div className="grid grid-cols-3 gap-4">
-                    <Field className="col-span-2">
-                      <FieldLabel htmlFor="checkout-7j9-exp-year-f59">
-                        School of Magic
-                        <InfoPopover description="These categories help describe spells but have no rules of their own, although some other rules refer to them." />
-                      </FieldLabel>
-                      <Select
-                        items={schools}
-                        defaultValue={"Abjuration"}
-                      >
-                        <SelectTrigger id="checkout-7j9-exp-year-f59">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            {schools.map((item) => (
-                              <SelectItem
-                                key={item.value}
-                                value={item.value}
-                              >
-                                {item.label}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      {/* <FieldDescription>
+    <form>
+      <FieldGroup>
+        <FieldSet>
+          {/*  */}
+          <FieldGroup className="">
+            <div className="grid grid-cols-3 gap-4">
+              <Field className="col-span-1">
+                <FieldLabel htmlFor="checkout-7j9-exp-month-ts6">Level</FieldLabel>
+                <Select
+                  items={spelllevels}
+                  defaultValue={"1"}
+                >
+                  <SelectTrigger id="checkout-7j9-exp-month-ts6">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {spelllevels.map((item) => (
+                        <SelectItem
+                          key={item.value}
+                          value={item.value}
+                        >
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              <Field className="col-span-2">
+                <FieldLabel htmlFor="checkout-7j9-exp-year-f59">
+                  School of Magic
+                  <InfoPopover description="These categories help describe spells but have no rules of their own, although some other rules refer to them." />
+                </FieldLabel>
+                <Select
+                  items={schools}
+                  defaultValue={"Abjuration"}
+                >
+                  <SelectTrigger id="checkout-7j9-exp-year-f59">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {schools.map((item) => (
+                        <SelectItem
+                          key={item.value}
+                          value={item.value}
+                        >
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {/* <FieldDescription>
                         These categories help describe spells but have no rules of their own, although some other rules refer to them.
                       </FieldDescription> */}
-                    </Field>
-                    <Field className="col-span-1">
-                      <FieldLabel htmlFor="checkout-7j9-exp-month-ts6">Level</FieldLabel>
-                      <Select
-                        items={spelllevels}
-                        defaultValue={"1"}
-                      >
-                        <SelectTrigger id="checkout-7j9-exp-month-ts6">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            {spelllevels.map((item) => (
-                              <SelectItem
-                                key={item.value}
-                                value={item.value}
-                              >
-                                {item.label}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  </div>
-                </FieldGroup>
-              </FieldSet>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-    </Example>
+              </Field>
+            </div>
+          </FieldGroup>
+        </FieldSet>
+      </FieldGroup>
+    </form>
   );
 }
 
@@ -2175,80 +2455,64 @@ function CastingTimeExample() {
   ];
 
   return (
-    <Example
-      title="Casting Time"
-      className="items-center justify-center"
-    >
-      <Card
-        className="w-full max-w-md"
-        size="default"
-      >
-        {/* <CardHeader className="border-b">
-          <CardTitle>Casting Time</CardTitle>
-          <CardDescription>The time required to cast the spell.</CardDescription>
-        </CardHeader> */}
-        <CardContent>
-          <form>
-            <FieldGroup>
-              <FieldSet>
-                {/* <FieldLegend>Casting Time</FieldLegend>
+    <form>
+      <FieldGroup>
+        <FieldSet>
+          {/* <FieldLegend>Casting Time</FieldLegend>
                 <FieldDescription>The time required to cast the spell.</FieldDescription> */}
-                <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="input-casting-time">
-                      Casting Time
-                      {/* <InfoPopover description="A spell costs a Magic action to cast, but some spells require a Bonus Action, a Reaction, or 1 minute or more." /> */}
-                    </FieldLabel>
-                    {/* <FieldDescription>
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="input-casting-time">
+                Casting Time
+                {/* <InfoPopover description="A spell costs a Magic action to cast, but some spells require a Bonus Action, a Reaction, or 1 minute or more." /> */}
+              </FieldLabel>
+              {/* <FieldDescription>
                       A spell costs a Magic action to cast, but some spells require a Bonus Action, a Reaction, or 1 minute or more.
                     </FieldDescription> */}
 
-                    <Autocomplete
-                      id="input-casting-time"
-                      items={times}
-                    >
-                      <AutocompleteInput placeholder="Action">
-                        <AutocompleteClear />
-                        <AutocompleteTrigger />
-                      </AutocompleteInput>
-                      <AutocompletePopup>
-                        <AutocompleteEmpty>No items found</AutocompleteEmpty>
-                        <AutocompleteList>
-                          {(item: { label: string; value: string }) => (
-                            <AutocompleteItem
-                              key={item.value}
-                              value={item.value}
-                            >
-                              {item.label}
-                            </AutocompleteItem>
-                          )}
-                        </AutocompleteList>
-                      </AutocompletePopup>
-                    </Autocomplete>
-
-                    {/* <FieldDescription>The time required to cast the spell.</FieldDescription> */}
-                  </Field>
-
-                  {/* <FieldSeparator /> */}
-                  <Field orientation="horizontal">
-                    <Checkbox id="is-ritual-spell" />
-                    <FieldContent>
-                      <FieldLabel
-                        htmlFor="is-ritual-spell"
-                        className="font-normal"
+              <Autocomplete
+                id="input-casting-time"
+                items={times}
+              >
+                <AutocompleteInput placeholder="Action">
+                  <AutocompleteClear />
+                  <AutocompleteTrigger />
+                </AutocompleteInput>
+                <AutocompletePopup>
+                  <AutocompleteEmpty>No items found</AutocompleteEmpty>
+                  <AutocompleteList>
+                    {(item: { label: string; value: string }) => (
+                      <AutocompleteItem
+                        key={item.value}
+                        value={item.value}
                       >
-                        Ritual Spell
-                      </FieldLabel>
-                      <FieldDescription>Indicates whether the spell can be cast as a ritual.</FieldDescription>
-                    </FieldContent>
-                  </Field>
-                </FieldGroup>
-              </FieldSet>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-    </Example>
+                        {item.label}
+                      </AutocompleteItem>
+                    )}
+                  </AutocompleteList>
+                </AutocompletePopup>
+              </Autocomplete>
+
+              {/* <FieldDescription>The time required to cast the spell.</FieldDescription> */}
+            </Field>
+
+            {/* <FieldSeparator /> */}
+            <Field orientation="horizontal">
+              <Checkbox id="is-ritual-spell" />
+              <FieldContent>
+                <FieldLabel
+                  htmlFor="is-ritual-spell"
+                  className="font-normal"
+                >
+                  Ritual Spell
+                </FieldLabel>
+                <FieldDescription>Indicates whether the spell can be cast as a ritual.</FieldDescription>
+              </FieldContent>
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      </FieldGroup>
+    </form>
   );
 }
 
@@ -2442,80 +2706,64 @@ function DurationExample() {
   ];
 
   return (
-    <Example
-      title="Duration"
-      className="items-center justify-center"
-    >
-      <Card
-        className="w-full max-w-md"
-        size="default"
-      >
-        {/* <CardHeader className="border-b">
-          <CardTitle>Duration</CardTitle>
-          <CardDescription>The duration of the spell.</CardDescription>
-        </CardHeader> */}
-        <CardContent>
-          <form>
-            <FieldGroup>
-              <FieldSet>
-                {/* <FieldLegend>Duration</FieldLegend>
+    <form>
+      <FieldGroup>
+        <FieldSet>
+          {/* <FieldLegend>Duration</FieldLegend>
                 <FieldDescription>The duration of the spell.</FieldDescription> */}
-                <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="input-duration">
-                      Duration
-                      {/* <InfoPopover description="A spell costs a Magic action to cast, but some spells require a Bonus Action, a Reaction, or 1 minute or more." /> */}
-                    </FieldLabel>
-                    {/* <FieldDescription>
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="input-duration">
+                Duration
+                {/* <InfoPopover description="A spell costs a Magic action to cast, but some spells require a Bonus Action, a Reaction, or 1 minute or more." /> */}
+              </FieldLabel>
+              {/* <FieldDescription>
                       A spell costs a Magic action to cast, but some spells require a Bonus Action, a Reaction, or 1 minute or more.
                     </FieldDescription> */}
 
-                    <Autocomplete
-                      id="input-duration"
-                      items={duration}
-                    >
-                      <AutocompleteInput placeholder="Instantaneous">
-                        <AutocompleteClear />
-                        <AutocompleteTrigger />
-                      </AutocompleteInput>
-                      <AutocompletePopup>
-                        <AutocompleteEmpty>No items found</AutocompleteEmpty>
-                        <AutocompleteList>
-                          {(item: { label: string; value: string }) => (
-                            <AutocompleteItem
-                              key={item.value}
-                              value={item.value}
-                            >
-                              {item.label}
-                            </AutocompleteItem>
-                          )}
-                        </AutocompleteList>
-                      </AutocompletePopup>
-                    </Autocomplete>
-
-                    {/* <FieldDescription>The time required to cast the spell.</FieldDescription> */}
-                  </Field>
-
-                  {/* <FieldSeparator /> */}
-                  <Field orientation="horizontal">
-                    <Checkbox id="is-concentration-spell" />
-                    <FieldContent>
-                      <FieldLabel
-                        htmlFor="is-concentration-spell"
-                        className="font-normal"
+              <Autocomplete
+                id="input-duration"
+                items={duration}
+              >
+                <AutocompleteInput placeholder="Instantaneous">
+                  <AutocompleteClear />
+                  <AutocompleteTrigger />
+                </AutocompleteInput>
+                <AutocompletePopup>
+                  <AutocompleteEmpty>No items found</AutocompleteEmpty>
+                  <AutocompleteList>
+                    {(item: { label: string; value: string }) => (
+                      <AutocompleteItem
+                        key={item.value}
+                        value={item.value}
                       >
-                        Concentration Spell
-                      </FieldLabel>
-                      <FieldDescription>Indicates whether the spell requires concentration.</FieldDescription>
-                    </FieldContent>
-                  </Field>
-                </FieldGroup>
-              </FieldSet>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-    </Example>
+                        {item.label}
+                      </AutocompleteItem>
+                    )}
+                  </AutocompleteList>
+                </AutocompletePopup>
+              </Autocomplete>
+
+              {/* <FieldDescription>The time required to cast the spell.</FieldDescription> */}
+            </Field>
+
+            {/* <FieldSeparator /> */}
+            <Field orientation="horizontal">
+              <Checkbox id="is-concentration-spell" />
+              <FieldContent>
+                <FieldLabel
+                  htmlFor="is-concentration-spell"
+                  className="font-normal"
+                >
+                  Concentration Spell
+                </FieldLabel>
+                <FieldDescription>Indicates whether the spell requires concentration.</FieldDescription>
+              </FieldContent>
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      </FieldGroup>
+    </form>
   );
 }
 
@@ -2631,18 +2879,14 @@ function AssignClasses() {
   const anchor = useComboboxAnchor();
 
   return (
-    <Example
-      title="Tag Select"
-      className="items-center justify-center"
+    <Card
+      className="w-full"
+      size="default"
     >
-      <Card
-        className="w-full max-w-sm"
-        size="default"
-      >
-        <CardHeader className="border-b">
-          <CardTitle className="text-sm">Assign Classes</CardTitle>
-          <CardDescription className="text-sm">Select classes to assign to this element.</CardDescription>
-          {/* <CardAction>
+      <CardHeader className="border-b">
+        <CardTitle className="text-sm">Assign Classes</CardTitle>
+        <CardDescription className="text-sm">Select classes to assign to this element.</CardDescription>
+        {/* <CardAction>
             <Tooltip>
               <TooltipTrigger render={<Button variant="outline" size="icon-xs" />}>
                 <PlusIcon />
@@ -2650,53 +2894,52 @@ function AssignClasses() {
               <TooltipContent>Add class</TooltipContent>
             </Tooltip>
           </CardAction> */}
-        </CardHeader>
-        <CardContent>
-          <Combobox
-            multiple
-            autoHighlight
-            items={classes}
-            defaultValue={[classes[0]]}
-          >
-            <ComboboxChips ref={anchor}>
-              <ComboboxValue>
-                {(values) => (
-                  <React.Fragment>
-                    {values.map((username: string) => (
-                      <ComboboxChip key={username}>
-                        {/* <Avatar className="size-4">
+      </CardHeader>
+      <CardContent>
+        <Combobox
+          multiple
+          autoHighlight
+          items={classes}
+          defaultValue={[classes[0]]}
+        >
+          <ComboboxChips ref={anchor}>
+            <ComboboxValue>
+              {(values) => (
+                <React.Fragment>
+                  {values.map((username: string) => (
+                    <ComboboxChip key={username}>
+                      {/* <Avatar className="size-4">
                           <AvatarImage src={`https://github.com/${username}.png`} alt={username} />
                           <AvatarFallback>{username.charAt(0)}</AvatarFallback>
                         </Avatar> */}
-                        {username}
-                      </ComboboxChip>
-                    ))}
-                    <ComboboxChipsInput placeholder={values.length > 0 ? undefined : "Select a class..."} />
-                  </React.Fragment>
-                )}
-              </ComboboxValue>
-            </ComboboxChips>
-            <ComboboxContent anchor={anchor}>
-              <ComboboxEmpty>No classes found.</ComboboxEmpty>
-              <ComboboxList>
-                {(username) => (
-                  <ComboboxItem
-                    key={username}
-                    value={username}
-                  >
-                    {/* <Avatar className="size-5">
+                      {username}
+                    </ComboboxChip>
+                  ))}
+                  <ComboboxChipsInput placeholder={values.length > 0 ? undefined : "Select a class..."} />
+                </React.Fragment>
+              )}
+            </ComboboxValue>
+          </ComboboxChips>
+          <ComboboxContent anchor={anchor}>
+            <ComboboxEmpty>No classes found.</ComboboxEmpty>
+            <ComboboxList>
+              {(username) => (
+                <ComboboxItem
+                  key={username}
+                  value={username}
+                >
+                  {/* <Avatar className="size-5">
                       <AvatarImage src={`https://github.com/${username}.png`} alt={username} />
                       <AvatarFallback>{username.charAt(0)}</AvatarFallback>
                     </Avatar> */}
-                    {username}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
-        </CardContent>
-      </Card>
-    </Example>
+                  {username}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </CardContent>
+    </Card>
   );
 }
 
