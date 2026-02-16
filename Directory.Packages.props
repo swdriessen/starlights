@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <PropertyGroup Label="Package Versions">
-    <MicrosoftExtensionsVersion>10.0.2</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>10.0.3</MicrosoftExtensionsVersion>
     <EntityFrameworkCoreVersion>10.0.2</EntityFrameworkCoreVersion>
     <AspireVersion>13.1.0</AspireVersion>
     <OpenTelemetryVersion>1.15.0</OpenTelemetryVersion>
@@ -18,8 +18,8 @@
     <PackageVersion Include="Scalar.AspNetCore" Version="2.11.6" />
   </ItemGroup>
   <ItemGroup Label="Aspire">
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.3.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.3.0" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Javascript" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.DevTunnels" Version="$(AspireVersion)" />
