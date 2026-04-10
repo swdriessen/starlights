@@ -23,7 +23,7 @@ if (builder.ExecutionContext.IsRunMode)
 
     var characters = migrationResource.WithMigrationWorker<Projects.Modules_Characters_Data_EntityFramework_MigrationService>("characters-context")
         .WithReference(database)
-        .WaitFor(elements);
+        .WaitFor(database);
 
     // wait for the migration services to complete before starting the application
     application.WaitForCompletion(elements);
@@ -47,6 +47,13 @@ if (builder.ExecutionContext.IsRunMode)
         .WaitFor(application);
 
     builder.AddJavaScriptApp("react-content-manager", "../../frontend/apps/content-manager", "dev")
+        .WithEnvironment("BROWSER", "none")
+        .WithHttpEndpoint(env: "PORT")
+        .WithExternalHttpEndpoints()
+        .WithReference(application)
+        .WaitFor(application);
+
+    builder.AddJavaScriptApp("ruletset-manager", "../../frontend/apps/ruleset-manager", "dev")
         .WithEnvironment("BROWSER", "none")
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()

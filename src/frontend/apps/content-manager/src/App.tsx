@@ -1,4 +1,3 @@
-import { ComponentExample } from "@/components/component-example";
 import { SpellComponentExample } from "./components/spell-example";
 
 export function App() {
