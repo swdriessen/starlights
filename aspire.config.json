@@ -1,0 +1,5 @@
+{
+  "appHost": {
+    "path": "src/aspire/Starlights.AppHost/Starlights.AppHost.csproj"
+  }
+}

@@ -6,7 +6,7 @@
   <PropertyGroup Label="Package Versions">
     <MicrosoftExtensionsVersion>10.0.2</MicrosoftExtensionsVersion>
     <EntityFrameworkCoreVersion>10.0.2</EntityFrameworkCoreVersion>
-    <AspireVersion>13.1.0</AspireVersion>
+    <AspireVersion>13.2.2</AspireVersion>
     <OpenTelemetryVersion>1.15.0</OpenTelemetryVersion>
   </PropertyGroup>
   <ItemGroup Label="Generic Packages">
