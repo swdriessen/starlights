@@ -26,7 +26,7 @@ This project uses .NET Aspire for local orchestration. You can run it using Visu
 ### Using Visual Studio
 
 1. Open `Starlights.slnx` in Visual Studio.
-2. Ensure `Starlights.AppHost` is set as the startup project.
+2. Ensure `Starlights.AppHost` is set as the startup project with `https` as the launch profile.
 3. Press **F5** to start debugging.
 
 Once running, the Aspire Dashboard will launch automatically. From there, you can access the frontend application, backend API, and Scalar API documentation.
