@@ -1,25 +1,14 @@
 // "use client";
 
+import { AnvilIcon, BookOpen, Command, LifeBuoy, PencilRulerIcon, RouteIcon, Send, Settings2, SwordIcon, WandIcon } from "lucide-react";
 import * as React from "react";
-import {
-  AnvilIcon,
-  BookOpen,
-  Command,
-  LifeBuoy,
-  PencilRulerIcon,
-  RouteIcon,
-  Send,
-  Settings2,
-  SwordIcon,
-  WandIcon,
-} from "lucide-react";
 
 // import { NavMain } from "@/components/nav-main";
+import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-projects";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
-import { NavMain } from "./nav-main";
 
 const data = {
   user: {

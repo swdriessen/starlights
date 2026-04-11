@@ -92,8 +92,5 @@
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-win32-x64-msvc": "4.60.1"
   }
 }

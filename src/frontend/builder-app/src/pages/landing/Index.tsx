@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 import ProseSection from "@/components/prose-section";
+import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@starlights/ui/components/ui/carousel";
+import { Link } from "react-router-dom";
 
 function LandingTile({
   title,

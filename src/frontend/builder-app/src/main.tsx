@@ -1,23 +1,23 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "./components/theme-provider.tsx";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { LandingPage2 } from "./pages/landing/Index.tsx";
+import { ThemeProvider } from "./components/theme-provider.tsx";
+import "./index.css";
 import AboutPage from "./pages/about/Index.tsx";
 import CharactersPage from "./pages/characters/Index.tsx";
 import CharactersCreatePage from "./pages/characters/create/Index.tsx";
 import CharactersDetailsPage from "./pages/characters/details/Index.tsx";
-import "./index.css";
+import { LandingPage2 } from "./pages/landing/Index.tsx";
 // import "./styles/typography.css";
+import App, { AppWide } from "./App.tsx";
+import { CharacterDetailsPage } from "./pages/characters/builder/index.tsx";
 import { DevelopmentPage } from "./pages/development/Index.tsx";
 import { LibraryDevelopmentPage } from "./pages/development/library-page.tsx";
-import { CharacterDetailsPage } from "./pages/characters/builder/index.tsx";
-import App, { AppWide } from "./App.tsx";
-import CharactersLayout from "./pages/layouts/builder-layout.tsx";
-import BuilderAppLayout from "./pages/layouts/builder-app-layout.tsx";
 import BuilderAppLayout2 from "./pages/layouts/builder-app-layout-2.tsx";
+import BuilderAppLayout from "./pages/layouts/builder-app-layout.tsx";
+import CharactersLayout from "./pages/layouts/builder-layout.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -75,5 +75,5 @@ createRoot(document.getElementById("root")!).render(
         <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
-  </StrictMode>
+  </StrictMode>,
 );

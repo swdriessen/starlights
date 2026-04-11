@@ -1,11 +1,11 @@
-import React from "react";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "@starlights/ui/components/ui/sidebar";
 import { AppSidebar, RightAppSidebar } from "@starlights/ui/components/app-sidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@starlights/ui/components/ui/breadcrumb";
-import { Outlet } from "react-router-dom";
+import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "@starlights/ui/components/ui/sidebar";
 import { PanelRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 export function Page() {
   return (
