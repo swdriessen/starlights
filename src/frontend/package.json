@@ -12,14 +12,11 @@
     "preview": "npm run preview -w builder-app"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.18",
-    "lucide-react": "^0.561.0",
-    "tailwindcss": "^4.1.17"
+    "@tailwindcss/vite": "^4.2.2",
+    "lucide-react": "^1.8.0",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
-    "@types/node": "^24.10.8"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-win32-x64-msvc": "^4.53.3"
+    "@types/node": "^25.6.0"
   }
 }

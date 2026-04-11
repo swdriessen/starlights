@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { useParams } from "react-router-dom";
 
-function BuilderHeader({ id }: { id: string }) {
+export function BuilderHeader({ id }: { id: string }) {
   return (
     <>
       <div className="mt-12 px-4 container mx-auto ">

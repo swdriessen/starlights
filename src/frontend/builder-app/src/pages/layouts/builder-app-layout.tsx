@@ -1,13 +1,13 @@
-import React from "react";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "@starlights/ui/components/ui/sidebar";
 import { AppSidebar, RightAppSidebar } from "@starlights/ui/components/app-sidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@starlights/ui/components/ui/breadcrumb";
-import { Outlet } from "react-router-dom";
+import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "@starlights/ui/components/ui/sidebar";
 import { PanelRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React from "react";
+import { Outlet } from "react-router-dom";
 
-function Page() {
+export function Page() {
   return (
     <SidebarProvider className="">
       <AppSidebar className="" />
@@ -44,7 +44,7 @@ function Page() {
   );
 }
 
-function MobileSidebarController({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
+export function MobileSidebarController({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const { openMobile, setOpenMobile, isMobile } = useSidebar();
   const lastOpen = React.useRef<boolean | undefined>(undefined);
   const lastOpenMobile = React.useRef<boolean | undefined>(undefined);
