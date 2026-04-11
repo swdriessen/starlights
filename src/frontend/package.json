@@ -3,7 +3,9 @@
   "private": true,
   "workspaces": [
     "builder-app",
-    "libs/ui"
+    "libs/ui",
+    "packages/ui-framework",
+    "apps/content-manager"
   ],
   "scripts": {
     "dev": "npm run dev -w builder-app",
