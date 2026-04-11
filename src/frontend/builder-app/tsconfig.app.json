@@ -25,9 +25,10 @@
     "forceConsistentCasingInFileNames": true,
 
     // shadcn addition
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*", "../libs/ui/src/*"],
       "@starlights/ui": ["../libs/ui/src/index.ts"],
       "@starlights/ui/*": ["../libs/ui/src/*"],
       "@components/*": ["../libs/ui/src/components/*"],

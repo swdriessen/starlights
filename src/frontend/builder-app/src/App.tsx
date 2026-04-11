@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { Header, LandingBackground, LandingBackground3 } from "./pages/layouts/default-layout";
+import { Header, LandingBackground3 } from "./pages/layouts/default-layout";
 
 function App() {
   return (

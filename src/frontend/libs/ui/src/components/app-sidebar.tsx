@@ -4,19 +4,13 @@ import * as React from "react";
 import {
   AnvilIcon,
   BookOpen,
-  Bot,
   Command,
-  Frame,
   LifeBuoy,
-  Map,
   PencilRulerIcon,
-  PieChart,
   RouteIcon,
   Send,
   Settings2,
-  SquareTerminal,
   SwordIcon,
-  Wand2Icon,
   WandIcon,
 } from "lucide-react";
 

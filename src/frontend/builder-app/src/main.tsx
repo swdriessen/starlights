@@ -13,11 +13,9 @@ import "./index.css";
 // import "./styles/typography.css";
 import { DevelopmentPage } from "./pages/development/Index.tsx";
 import { LibraryDevelopmentPage } from "./pages/development/library-page.tsx";
-import BuilderPage, { CharacterDetailsPage } from "./pages/characters/builder/index.tsx";
+import { CharacterDetailsPage } from "./pages/characters/builder/index.tsx";
 import App, { AppWide } from "./App.tsx";
-import BuilderLayout from "./pages/layouts/builder-layout.tsx";
 import CharactersLayout from "./pages/layouts/builder-layout.tsx";
-import { AppSidebar } from "@starlights/ui/components/app-sidebar.tsx";
 import BuilderAppLayout from "./pages/layouts/builder-app-layout.tsx";
 import BuilderAppLayout2 from "./pages/layouts/builder-app-layout-2.tsx";
 

@@ -99,7 +99,7 @@ const tiles = [
   },
 ];
 
-function CarouselDemo() {
+export function CarouselDemo() {
   const images = [
     "/portraits/portrait-1.jpg",
     "/portraits/portrait-2.jpg",

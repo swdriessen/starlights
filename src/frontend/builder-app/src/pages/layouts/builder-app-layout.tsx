@@ -7,7 +7,7 @@ import { Outlet } from "react-router-dom";
 import { PanelRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-function Page() {
+export function Page() {
   return (
     <SidebarProvider className="">
       <AppSidebar className="" />
@@ -44,7 +44,7 @@ function Page() {
   );
 }
 
-function MobileSidebarController({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
+export function MobileSidebarController({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const { openMobile, setOpenMobile, isMobile } = useSidebar();
   const lastOpen = React.useRef<boolean | undefined>(undefined);
   const lastOpenMobile = React.useRef<boolean | undefined>(undefined);
