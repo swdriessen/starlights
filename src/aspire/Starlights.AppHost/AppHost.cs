@@ -38,6 +38,13 @@ if (builder.ExecutionContext.IsRunMode)
         .WithExternalHttpEndpoints()
         .WithReference(application)
         .WaitFor(application);
+
+    builder.AddJavaScriptApp("react-content-manager", "../../frontend/apps/content-manager", "dev")
+        .WithEnvironment("BROWSER", "none")
+        .WithHttpEndpoint(env: "PORT")
+        .WithExternalHttpEndpoints()
+        .WithReference(application)
+        .WaitFor(application);
 }
 
 if (builder.ExecutionContext.IsRunMode)
