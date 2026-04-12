@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "dev": "npm run dev -w builder-app",
-    "build": "npm run build -w builder-app",
+    "devcm": "npm run dev -w apps/content-manager",
+    "build": "npm run build -w builder-app && npm run build -w apps/content-manager",
     "lint": "npm run lint -w builder-app",
     "preview": "npm run preview -w builder-app"
   },
