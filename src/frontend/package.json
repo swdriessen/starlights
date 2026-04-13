@@ -5,12 +5,14 @@
     "builder-app",
     "libs/ui",
     "packages/ui-framework",
-    "apps/content-manager"
+    "apps/content-manager",
+    "apps/showcase"
   ],
   "scripts": {
     "dev": "npm run dev -w builder-app",
     "devcm": "npm run dev -w apps/content-manager",
-    "build": "npm run build -w packages/ui-framework && npm run build -w builder-app && npm run build -w apps/content-manager",
+    "showcase": "npm run dev -w apps/showcase",
+    "build": "npm run build -w packages/ui-framework && npm run build -w apps/showcase && npm run build -w builder-app && npm run build -w apps/showcase",
     "lint": "npm run lint -w builder-app",
     "preview": "npm run preview -w builder-app"
   },

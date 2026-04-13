@@ -32,14 +32,29 @@ if (builder.ExecutionContext.IsRunMode)
 
 if (builder.ExecutionContext.IsRunMode)
 {
-    builder.AddJavaScriptApp("react-builder-app", "../../frontend/builder-app", "dev")
+
+    builder.AddJavaScriptApp("app-landing", "../../frontend/apps/landing-page", "dev")
         .WithEnvironment("BROWSER", "none")
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()
         .WithReference(application)
         .WaitFor(application);
 
-    builder.AddJavaScriptApp("react-content-manager", "../../frontend/apps/content-manager", "dev")
+    builder.AddJavaScriptApp("app-character-builder", "../../frontend/builder-app", "dev")
+        .WithEnvironment("BROWSER", "none")
+        .WithHttpEndpoint(env: "PORT")
+        .WithExternalHttpEndpoints()
+        .WithReference(application)
+        .WaitFor(application);
+
+    builder.AddJavaScriptApp("app-content-manager", "../../frontend/apps/content-manager", "dev")
+        .WithEnvironment("BROWSER", "none")
+        .WithHttpEndpoint(env: "PORT")
+        .WithExternalHttpEndpoints()
+        .WithReference(application)
+        .WaitFor(application);
+
+    builder.AddJavaScriptApp("app-showcase", "../../frontend/apps/showcase", "dev")
         .WithEnvironment("BROWSER", "none")
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()
