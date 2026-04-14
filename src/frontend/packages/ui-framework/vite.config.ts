@@ -8,6 +8,7 @@ const externalDeps = [
   "react-dom",
   "react/jsx-runtime",
   "react/jsx-dev-runtime",
+  "recharts",
 ]
 
 const isExternalLibrary = (id: string) =>
