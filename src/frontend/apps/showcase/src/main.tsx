@@ -4,9 +4,12 @@ import { createRoot } from "react-dom/client"
 import { Separator, ThemeProvider } from "ui-framework"
 // import App from "./App.tsx"
 import "./index.css"
+import {
+  CharacterOverviewExample,
+  ExampleContainer,
+} from "./showcases/components/character-overview-example.tsx"
 import Preview02Example from "./showcases/preview-02/index.tsx"
 import PreviewExample from "./showcases/preview/index.tsx"
-import { CharacterOverviewExample } from "./showcases/wip/character-overview-example.tsx"
 import WipExample from "./showcases/wip/index.tsx"
 
 createRoot(document.getElementById("root")!).render(
@@ -14,10 +17,18 @@ createRoot(document.getElementById("root")!).render(
     <ThemeProvider>
       {/* <App /> */}
       <CharacterOverviewExample />
-      <WipExample />
-      <Separator className="my-8" />
-      <PreviewExample />
-      <Preview02Example />
+
+      <ExampleContainer title="Campaigns">
+        <WipExample />
+      </ExampleContainer>
+
+      <ExampleContainer title="Preview Examples">
+        <PreviewExample />
+      </ExampleContainer>
+
+      <ExampleContainer title="Preview02 Examples">
+        <Preview02Example />
+      </ExampleContainer>
     </ThemeProvider>
   </StrictMode>
 )

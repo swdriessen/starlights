@@ -1,13 +1,34 @@
 "use client"
 
-import { useState } from "react"
-import { CollectionItem } from "../components/characters-overview"
+import { type ReactNode, useState } from "react"
+import { CollectionContainer, CollectionItem } from "./characters-overview"
+
+type ExampleContainerProps = {
+  children: ReactNode
+  title: string
+}
+
+export function ExampleContainer({ children, title }: ExampleContainerProps) {
+  return (
+    <>
+      <h2 className="mx-10 mt-10 mb-2 text-sm font-semibold uppercase">
+        {title}
+      </h2>
+      <div className="relative mx-10 rounded-lg border border-dashed bg-muted p-10 dark:bg-background">
+        {children}
+      </div>
+    </>
+  )
+}
 
 export function CharacterOverviewExample() {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(
-    "catti-brie"
+    null
   )
-  const [heartedCharacters, setHeartedCharacters] = useState<string[]>([])
+  const [heartedCharacters, setHeartedCharacters] = useState<string[]>([
+    "catti-brie",
+    "bruenor",
+  ])
 
   const characters = [
     {
@@ -45,8 +66,8 @@ export function CharacterOverviewExample() {
   }
 
   return (
-    <div className="rounded-lg border border-dashed bg-muted p-10 dark:bg-background">
-      <div className="flex flex-wrap gap-8">
+    <ExampleContainer title="Character Collection">
+      <CollectionContainer>
         {characters.map((character) => (
           <CollectionItem
             key={character.id}
@@ -70,7 +91,7 @@ export function CharacterOverviewExample() {
             }}
           />
         ))}
-      </div>
-    </div>
+      </CollectionContainer>
+    </ExampleContainer>
   )
 }

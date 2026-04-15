@@ -1,5 +1,39 @@
-import { HeartIcon } from "lucide-react"
-import { Button } from "ui-framework"
+import {
+  AnvilIcon,
+  BookmarkPlusIcon,
+  BookOpenIcon,
+  ChevronUpIcon,
+  HeartIcon,
+  MoreHorizontalIcon,
+  PanelsLeftRightIcon,
+  PlayIcon,
+  SearchCheckIcon,
+  SheetIcon,
+  Trash2Icon,
+} from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  Button,
+  ButtonGroup,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "ui-framework"
 
 type CollectionItemProps = {
   id: string
@@ -12,6 +46,18 @@ type CollectionItemProps = {
   onHeartToggle: (id: string) => void
   onManage: (id: string) => void
   onDelete: (id: string) => void
+}
+
+export function CollectionContainer({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <>
+      <div className="flex flex-wrap gap-8">{children}</div>
+    </>
+  )
 }
 
 export function CollectionItem({
@@ -71,28 +117,121 @@ export function CollectionItem({
           <div
             className={`pointer-events-auto flex gap-2 overflow-hidden transition-all duration-300 ${isSelected ? "mt-2 max-h-10 opacity-100" : "mt-0 max-h-0 opacity-0 group-hover:mt-2 group-hover:max-h-10 group-hover:opacity-100"}`}
           >
-            <Button
-              size="sm"
-              variant="outline"
-              className="flex-1 border-zinc-600 bg-zinc-900/90 text-zinc-100 hover:bg-zinc-800/95 hover:text-zinc-50"
-              onClick={(event) => {
-                event.stopPropagation()
-                onManage(id)
-              }}
-            >
-              Manage
-            </Button>
-            <Button
-              size="sm"
-              variant="destructive"
-              className="flex-1 border-red-500 bg-red-600/95 text-white hover:bg-red-500"
-              onClick={(event) => {
-                event.stopPropagation()
-                onDelete(id)
-              }}
-            >
-              Delete
-            </Button>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 border-zinc-600 bg-zinc-900/90 text-zinc-100 hover:bg-zinc-800/95 hover:text-zinc-50"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onManage(id)
+                    }}
+                  />
+                }
+              >
+                Sheet
+              </TooltipTrigger>
+              <TooltipContent side="top">View Character Sheet</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    size="icon-sm"
+                    variant="outline"
+                    aria-label="Manage Build"
+                    className="border-zinc-600 bg-zinc-900/90 text-zinc-100 hover:bg-zinc-800/95 hover:text-zinc-50"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onManage(id)
+                    }}
+                  />
+                }
+              >
+                <AnvilIcon className="size-4" />
+              </TooltipTrigger>
+              <TooltipContent side="top">Manage Build</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    size="icon-sm"
+                    variant="destructive"
+                    aria-label="Delete Character"
+                    className="border-red-500 bg-red-600/95 text-white hover:bg-red-500"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onDelete(id)
+                    }}
+                  />
+                }
+              >
+                <Trash2Icon className="size-4" />
+              </TooltipTrigger>
+              <TooltipContent side="top">Delete Character</TooltipContent>
+            </Tooltip>
+
+            {/* <AlertDialog>
+              <AlertDialogTrigger render={<Button variant="outline" />}>
+                <span className="hidden md:block">Alert Dialog</span>
+                <span className="block md:hidden">Dialog</span>
+              </AlertDialogTrigger>
+              <AlertDialogContent size="sm">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Allow accessory to connect?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Do you want to allow the USB accessory to connect to this
+                    device and your data?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel variant="outline" size="default">
+                    Don&apos;t allow
+                  </AlertDialogCancel>
+                  <AlertDialogAction>Allow</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog> */}
+
+            {/* <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    className="border-zinc-600 bg-zinc-900/90 text-zinc-100 hover:bg-zinc-800/95 hover:text-zinc-50"
+                    size="icon-sm"
+                  />
+                }
+              >
+                <MoreHorizontalIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" side="top" className="w-40">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
+                  <DropdownMenuItem>Level Up</DropdownMenuItem>
+                  <DropdownMenuItem>Duplicate Character</DropdownMenuItem>
+                  <DropdownMenuItem>Change Group</DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Campaigns</DropdownMenuLabel>
+                  <DropdownMenuItem>Show Campaign</DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem variant="destructive">
+                    Delete Character
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu> */}
           </div>
         </div>
       </div>
