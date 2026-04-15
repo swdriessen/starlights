@@ -32,13 +32,12 @@ if (builder.ExecutionContext.IsRunMode)
 
 if (builder.ExecutionContext.IsRunMode)
 {
-
-    builder.AddJavaScriptApp("app-landing-page", "../../frontend/apps/landing", "dev")
-        .WithEnvironment("BROWSER", "none")
-        .WithHttpEndpoint(env: "PORT")
-        .WithExternalHttpEndpoints()
-        .WithReference(application)
-        .WaitFor(application);
+    //builder.AddJavaScriptApp("app-landing-page", "../../frontend/apps/landing", "dev")
+    //    .WithEnvironment("BROWSER", "none")
+    //    .WithHttpEndpoint(env: "PORT")
+    //    .WithExternalHttpEndpoints()
+    //    .WithReference(application)
+    //    .WaitFor(application);
 
     builder.AddJavaScriptApp("app-character-builder", "../../frontend/builder-app", "dev")
         .WithEnvironment("BROWSER", "none")

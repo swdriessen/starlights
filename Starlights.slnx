@@ -10,12 +10,12 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/" />
-  <Folder Name="/src/apps/">
-    <Project Path="src/apps/Starlights.Application/Starlights.Application.csproj" />
-  </Folder>
   <Folder Name="/src/aspire/">
     <Project Path="src/aspire/Starlights.AppHost/Starlights.AppHost.csproj" />
     <Project Path="src/aspire/Starlights.ServiceDefaults/Starlights.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/backend/">
+    <Project Path="src/apps/Starlights.Application/Starlights.Application.csproj" />
   </Folder>
   <Folder Name="/src/frontend/" />
   <Folder Name="/src/frontend/builder-app/">
@@ -77,7 +77,6 @@
     <Project Path="src/source-generators/Starlights.Platform.SourceGenerators.Tests/Starlights.Platform.SourceGenerators.Tests.csproj" />
     <Project Path="src/source-generators/Starlights.Platform.SourceGenerators/Starlights.Platform.SourceGenerators.csproj" />
   </Folder>
-  <Folder Name="/src/systems/" />
   <Folder Name="/tests/">
     <Project Path="src/tests/acceptance/Starlights.Integration.Acceptance.Tests/Starlights.Integration.Acceptance.Tests.csproj" Id="cd05f807-0896-429b-b647-4596724bf67a" />
     <Project Path="src/tests/integration/Starlights.Integration.Tests/Starlights.Integration.Tests.csproj" />
