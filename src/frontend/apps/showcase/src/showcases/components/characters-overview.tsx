@@ -1,39 +1,5 @@
-import {
-  AnvilIcon,
-  BookmarkPlusIcon,
-  BookOpenIcon,
-  ChevronUpIcon,
-  HeartIcon,
-  MoreHorizontalIcon,
-  PanelsLeftRightIcon,
-  PlayIcon,
-  SearchCheckIcon,
-  SheetIcon,
-  Trash2Icon,
-} from "lucide-react"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-  Button,
-  ButtonGroup,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "ui-framework"
+import { AnvilIcon, HeartIcon, Trash2Icon } from "lucide-react"
+import { Button, Tooltip, TooltipContent, TooltipTrigger } from "ui-framework"
 
 type CollectionItemProps = {
   id: string

@@ -10,28 +10,6 @@ import {
   CardTitle,
 } from "ui-framework/card"
 
-const usernames = [
-  "portrait-1.jpg",
-  "portrait-2.jpg",
-  "portrait-3.jpg",
-  "portrait-4.jpg",
-  "portrait-5.jpg",
-  "portrait-6.jpg",
-  "portrait-7.jpg",
-  "portrait-8.jpg",
-  "portrait-9.jpg",
-  "portrait-10.png",
-  "portrait-11.png",
-  "portrait-12.png",
-  "portrait-13.png",
-  "portrait-14.png",
-  "portrait-15.png",
-  "portrait-16.jpg",
-  "portrait-17.jpg",
-  "portrait-18.png",
-  "portrait-19.png",
-  "portrait-20.jpgs",
-]
 const players = [
   "portrait-1.jpg",
   "portrait-2.jpg",

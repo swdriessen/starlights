@@ -1,7 +1,7 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 
-import { Separator, ThemeProvider } from "ui-framework"
+import { ThemeProvider } from "ui-framework"
 // import App from "./App.tsx"
 import "./index.css"
 import {
