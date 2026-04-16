@@ -66,32 +66,30 @@ export function CharacterOverviewExample() {
   }
 
   return (
-    <ExampleContainer title="Character Collection">
-      <CollectionContainer>
-        {characters.map((character) => (
-          <CollectionItem
-            key={character.id}
-            id={character.id}
-            name={character.name}
-            build={character.build}
-            portrait={character.portrait}
-            isSelected={selectedCharacter === character.id}
-            isHearted={heartedCharacters.includes(character.id)}
-            onSelectedChange={(id, isSelected) =>
-              setSelectedCharacter(isSelected ? id : null)
-            }
-            onHeartToggle={(id) => {
-              toggleHeart(id)
-            }}
-            onManage={(id) => {
-              console.log(`Manage ${id}`)
-            }}
-            onDelete={(id) => {
-              console.log(`Delete ${id}`)
-            }}
-          />
-        ))}
-      </CollectionContainer>
-    </ExampleContainer>
+    <CollectionContainer>
+      {characters.map((character) => (
+        <CollectionItem
+          key={character.id}
+          id={character.id}
+          name={character.name}
+          build={character.build}
+          portrait={character.portrait}
+          isSelected={selectedCharacter === character.id}
+          isHearted={heartedCharacters.includes(character.id)}
+          onSelectedChange={(id, isSelected) =>
+            setSelectedCharacter(isSelected ? id : null)
+          }
+          onHeartToggle={(id) => {
+            toggleHeart(id)
+          }}
+          onManage={(id) => {
+            console.log(`Manage ${id}`)
+          }}
+          onDelete={(id) => {
+            console.log(`Delete ${id}`)
+          }}
+        />
+      ))}
+    </CollectionContainer>
   )
 }

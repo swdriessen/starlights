@@ -1,31 +1,31 @@
 "use client"
 
 import {
-  CharacterPortraitCampaignBrief,
-  CharacterPortraitCampaignQuestLog,
-  CharacterPortraitCampaignRoster,
-  CharacterPortraitStory,
-} from "./cards/character-portrait"
+  CampaignBrief,
+  CampaignBriefTopImage,
+  CampaignQuestLog,
+  CampaignQuestLogTopImage,
+  CampaignRoster,
+  CampaignRosterTopImage,
+} from "./cards/campaign-cards"
 
 export default function WipExample() {
   return (
-    <div className="3xl:[--gap:--spacing(12)] border-rounded m-10 overflow-x-auto overflow-y-hidden bg-muted contain-[paint] [--gap:--spacing(4)] md:[--gap:--spacing(10)] dark:bg-background">
-      <div className="flex w-full min-w-max justify-center">
-        <div
-          className="grid w-500 grid-cols-5 items-start gap-(--gap) bg-muted p-(--gap) dark:bg-background *:[div]:gap-(--gap)"
-          data-slot="capture-target"
-        >
-          <div className="flex flex-col p-px [contain-intrinsic-size:380px_1200px] [content-visibility:auto]">
-            <CharacterPortraitStory />
-            <CharacterPortraitCampaignBrief />
-          </div>
-
-          <div className="flex flex-col p-px [contain-intrinsic-size:380px_1200px] [content-visibility:auto]">
-            <CharacterPortraitCampaignRoster />
-            <CharacterPortraitCampaignQuestLog />
-          </div>
+    <>
+      <div className="flex border-spacing-4 flex-row flex-wrap gap-10">
+        <div className="flex w-88 flex-col gap-10">
+          <CampaignRoster />
+          <CampaignRosterTopImage />
+        </div>
+        <div className="flex w-88 flex-col gap-10">
+          <CampaignQuestLog />
+          <CampaignQuestLogTopImage />
+        </div>
+        <div className="flex w-88 flex-col gap-10">
+          <CampaignBrief />
+          <CampaignBriefTopImage />
         </div>
       </div>
-    </div>
+    </>
   )
 }

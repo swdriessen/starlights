@@ -16,9 +16,11 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
       {/* <App /> */}
-      <CharacterOverviewExample />
+      <ExampleContainer title="Character Collection Items">
+        <CharacterOverviewExample />
+      </ExampleContainer>
 
-      <ExampleContainer title="Campaigns">
+      <ExampleContainer title="Campaign Cards">
         <WipExample />
       </ExampleContainer>
 
@@ -26,7 +28,7 @@ createRoot(document.getElementById("root")!).render(
         <PreviewExample />
       </ExampleContainer>
 
-      <ExampleContainer title="Preview02 Examples">
+      <ExampleContainer title="Preview 2 Examples">
         <Preview02Example />
       </ExampleContainer>
     </ThemeProvider>
