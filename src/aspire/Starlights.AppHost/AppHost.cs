@@ -39,7 +39,7 @@ if (builder.ExecutionContext.IsRunMode)
     //    .WithReference(application)
     //    .WaitFor(application);
 
-    builder.AddJavaScriptApp("app-character-builder", "../../frontend/builder-app", "dev")
+    builder.AddJavaScriptApp("app-character-builder", "../../frontend/apps/builder-app", "dev")
         .WithEnvironment("BROWSER", "none")
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()
@@ -71,7 +71,7 @@ if (builder.ExecutionContext.IsRunMode)
         .WithAnonymousAccess()
         .WithExplicitStart();
 
-    var app = builder.AddJavaScriptApp("dev-tunnel-react-builder-app", "../../frontend/builder-app", "dev")
+    var app = builder.AddJavaScriptApp("dev-tunnel-react-builder-app", "../../frontend/apps/builder-app", "dev")
         .WithIconName("Cloud", IconVariant.Regular)
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()

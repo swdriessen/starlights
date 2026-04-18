@@ -25,9 +25,9 @@ export default defineConfig(({ mode }) => {
     resolve: {
       tsconfigPaths: true,
       alias: {
-        "@components": path.resolve(__dirname, "../packages/ui/src/components/ui"),
-        "@components/ui": path.resolve(__dirname, "../packages/ui/src/components/ui"),
-        "@starlights/ui": path.resolve(__dirname, "../packages/ui/src"),
+        "@components": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
+        "@components/ui": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
+        "@starlights/ui": path.resolve(__dirname, "../../packages/ui/src"),
       },
     },
     server: {

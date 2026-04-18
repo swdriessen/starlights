@@ -430,7 +430,7 @@ FodyWeavers.xsd
 /**/*.feature.cs
 
 # temp folder content
-/src/frontend/builder-app/public/temp
+/src/frontend/apps/builder-app/public/temp
 /tools/converter
 /src/modules/elements/Modules.Elements.Import
 /src/apps/Starlights.Application/*.http

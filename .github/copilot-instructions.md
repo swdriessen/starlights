@@ -113,7 +113,7 @@ These guidelines are tailored to this repository. They consolidate prior guidanc
 ## React/TypeScript Frontend
 
 - **Monorepo**: Frontend lives in `src/frontend/` and uses npm workspaces.
-  - App: `src/frontend/builder-app/`
+  - App: `src/frontend/apps/builder-app/`
   - Shared UI library: `src/frontend/libs/ui/` (Radix primitives + shadcn-style patterns)
 - **Structure (builder-app)**: Prefer feature folders under `src/` and keep API access centralized.
 - **State Management**: Use TanStack Query for server state; React hooks for local state.

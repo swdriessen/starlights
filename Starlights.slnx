@@ -18,8 +18,8 @@
     <Project Path="src/apps/Starlights.Application/Starlights.Application.csproj" />
   </Folder>
   <Folder Name="/src/frontend/" />
-  <Folder Name="/src/frontend/builder-app/">
-    <Project Path="src/frontend/builder-app/Starlights.Builder.React.esproj">
+  <Folder Name="/src/frontend/apps/builder-app/">
+    <Project Path="src/frontend/apps/builder-app/Starlights.Builder.React.esproj">
       <Build />
       <Deploy />
     </Project>
