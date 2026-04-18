@@ -28,11 +28,11 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*", "../libs/ui/src/*"],
-      "@starlights/ui": ["../libs/ui/src/index.ts"],
-      "@starlights/ui/*": ["../libs/ui/src/*"],
-      "@components/*": ["../libs/ui/src/components/*"],
-      "@components/ui/*": ["../libs/ui/src/components/ui*"]
+      "@/*": ["./src/*", "../packages/ui/src/*"],
+      "@starlights/ui": ["../packages/ui/src/index.ts"],
+      "@starlights/ui/*": ["../packages/ui/src/*"],
+      "@components/*": ["../packages/ui/src/components/*"],
+      "@components/ui/*": ["../packages/ui/src/components/ui*"]
     }
   },
   "include": ["src"]

@@ -1,5 +1,5 @@
 @import "@starlights/ui/styles.css";
-@source "../../libs/ui/src";
+@source "../../packages/ui/src";
 
 :root {
   --sidebar-width: 22rem;
@@ -31,7 +31,7 @@
 }
 
 @layer base {
-/*  button {
+  /*  button {
     cursor: pointer;
   }*/
   .heading-xl {

@@ -1,8 +1,8 @@
-import { defineConfig, loadEnv } from "vite";
-import { env as nodeEnv } from "process";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import tailwindcss from "@tailwindcss/vite";
+import { env as nodeEnv } from "process";
+import { defineConfig, loadEnv } from "vite";
 
 export default defineConfig(({ mode }) => {
   const viteEnv = loadEnv(mode, process.cwd(), "");
@@ -25,9 +25,9 @@ export default defineConfig(({ mode }) => {
     resolve: {
       tsconfigPaths: true,
       alias: {
-        "@components": path.resolve(__dirname, "../libs/ui/src/components/ui"),
-        "@components/ui": path.resolve(__dirname, "../libs/ui/src/components/ui"),
-        "@starlights/ui": path.resolve(__dirname, "../libs/ui/src"),
+        "@components": path.resolve(__dirname, "../packages/ui/src/components/ui"),
+        "@components/ui": path.resolve(__dirname, "../packages/ui/src/components/ui"),
+        "@starlights/ui": path.resolve(__dirname, "../packages/ui/src"),
       },
     },
     server: {

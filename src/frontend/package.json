@@ -3,7 +3,7 @@
   "private": true,
   "workspaces": [
     "builder-app",
-    "libs/ui",
+    "packages/ui",
     "packages/ui-framework",
     "apps/content-manager",
     "apps/showcase"
