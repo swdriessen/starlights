@@ -434,3 +434,5 @@ FodyWeavers.xsd
 /tools/converter
 /src/modules/elements/Modules.Elements.Import
 /src/apps/Starlights.Application/*.http
+
+/src/frontend/**/package-lock.json
