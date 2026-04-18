@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client"
 import { ThemeProvider } from "ui-framework"
 // import App from "./App.tsx"
 import "./index.css"
+import { AbilitiesExample } from "./showcases/components/abilities-example.tsx"
 import {
   CharacterOverviewExample,
   ExampleContainer,
@@ -16,6 +17,10 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
       {/* <App /> */}
+      <ExampleContainer title="Character Creation Components">
+        <AbilitiesExample />
+      </ExampleContainer>
+
       <ExampleContainer title="Character Collection Items">
         <CharacterOverviewExample />
       </ExampleContainer>

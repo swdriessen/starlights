@@ -1,4 +1,9 @@
-import { AnvilIcon, HeartIcon, Trash2Icon } from "lucide-react"
+import {
+  AnvilIcon,
+  HeartIcon,
+  SwordsIcon,
+  Trash2Icon,
+} from "lucide-react"
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from "ui-framework"
 
 type CollectionItemProps = {
@@ -97,6 +102,7 @@ export function CollectionItem({
                   />
                 }
               >
+                <SwordsIcon className="mr-1 size-4" />
                 Sheet
               </TooltipTrigger>
               <TooltipContent side="top">View Character Sheet</TooltipContent>
