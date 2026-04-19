@@ -26,16 +26,10 @@ updates:
       - "dependencies"
       - "nuget"
     groups:
-      microsoft-packages:
+      microsoft-stack:
         patterns:
           - "Microsoft.*"
           - "System.*"
-        update-types:
-          - "minor"
-          - "patch"
-      entityframework-packages:
-        patterns:
-          - "Microsoft.EntityFrameworkCore.*"
         update-types:
           - "minor"
           - "patch"
@@ -67,6 +61,13 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   # Enable version updates for npm workspaces
   - package-ecosystem: "npm"
