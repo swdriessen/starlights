@@ -100,7 +100,7 @@ function CharacterDetailsDrawer({ card }: { card: CharacterCard }) {
     <>
       <Drawer>
         <DrawerTrigger>
-          <Button size="icon" variant={"ghost"} className="absolute end-1 top-1 rounded-lg ">
+          <Button size="icon" variant={"ghost"} className="absolute inset-e-1 top-1 rounded-lg ">
             {/* <MoreVerticalIcon /> */}
             <MenuIcon />
             <span className="sr-only">Like</span>
@@ -113,7 +113,7 @@ function CharacterDetailsDrawer({ card }: { card: CharacterCard }) {
               <Card className="p-2 border-none">
                 <div className="flex items-center ">
                   <img src={card.portraitUrl} alt={card.name} className="size-14 rounded-lg object-cover border-2 border-double" />
-                  <div className="ms-3 flex-grow flex flex-col gap-1 justify-start items-start overflow-hidden text-left">
+                  <div className="ms-3 grow flex flex-col gap-1 justify-start items-start overflow-hidden text-left">
                     <DrawerTitle className="text-nowrap  w-full text-ellipsis overflow-hidden ">{card.name}</DrawerTitle>
                     <DrawerDescription className=" text-xs w-full text-ellipsis overflow-hidden">{`Level ${card.level} | ${card.build}`}</DrawerDescription>
                   </div>
@@ -213,7 +213,7 @@ function CharactersCollection() {
 
       {characterCards && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
-          {characterCards.characters.map((card) => (
+          {characterCards.characters.map((card: CharacterCard) => (
             <div key={card.characterId} className="group relative">
               <CharacterItem
                 key={card.characterId}
@@ -225,7 +225,7 @@ function CharactersCollection() {
               />
 
               {isMobile && (
-                <div className="absolute top-0 end-0">
+                <div className="absolute top-0 inset-e-0">
                   <CharacterDetailsDrawer card={card} />
                 </div>
               )}
@@ -236,7 +236,7 @@ function CharactersCollection() {
                     <Button
                       variant={"destructive"}
                       disabled={deleteCharacter.isPending}
-                      className="absolute end-3 top-3 rounded-lg size-6 hidden group-hover:flex opacity-100 hover:opacity-100"
+                      className="absolute inset-e-3 top-3 rounded-lg size-6 hidden group-hover:flex opacity-100 hover:opacity-100"
                     >
                       <Trash2Icon className="size-3.5" />
                       <span className="sr-only">Delete</span>

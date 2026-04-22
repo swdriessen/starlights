@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { CharacterPortraitOptions } from "@/lib/api/characters/queries";
+import type { CharacterPortraitOption, CharacterPortraitOptions } from "@/lib/api/characters/queries";
 
 export function CharacterPortraitOptionsSelect({
   characterPortraitOptions,
@@ -15,7 +15,7 @@ export function CharacterPortraitOptionsSelect({
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {characterPortraitOptions?.portraits.map((option) => (
+          {characterPortraitOptions?.portraits.map((option: CharacterPortraitOption) => (
             <SelectItem key={option.url} value={option.url}>
               {option.description}
             </SelectItem>
