@@ -2,6 +2,7 @@
   "name": "starlights",
   "private": true,
   "workspaces": [
+    "packages/api-client",
     "packages/ui",
     "packages/ui-framework",
     "apps/landing-page",
@@ -14,7 +15,7 @@
     "content": "npm run dev -w apps/content-manager",
     "landing": "npm run dev -w apps/landing-page",
     "showcase": "npm run dev -w apps/showcase",
-    "build:packages": "npm run build -w packages/ui-framework",
+    "build:packages": "npm run build -w packages/api-client && npm run build -w packages/ui-framework",
     "build:apps": "npm run build -w apps/builder-app && npm run build -w apps/showcase && npm run build -w apps/landing-page && npm run build -w apps/content-manager",
     "build": "npm run build:packages && npm run build:apps",
     "lint": "npm run lint -w apps/builder-app",
