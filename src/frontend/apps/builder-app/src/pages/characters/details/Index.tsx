@@ -10,8 +10,8 @@ import {
   useStatistics,
   useUnregisterSelectionMutation,
   useUpdateClassLevelMutation,
+  type CharacterClass,
 } from "@/lib/api/builder/registration-api";
-import type { CharacterClass } from "@/lib/api/builder/types";
 import {
   useAbilityScores,
   useCharacterDetails,
