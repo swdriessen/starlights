@@ -40,7 +40,7 @@ if (builder.ExecutionContext.IsRunMode)
         .WaitFor(application);
 
     builder.AddJavaScriptApp("app-character-builder", "../../frontend/apps/builder-app", "dev")
-        .WithEnvironment("BROWSER", "none")
+        //.WithEnvironment("BROWSER", "none")
         .WithHttpEndpoint(env: "PORT")
         .WithExternalHttpEndpoints()
         .WithReference(application)
