@@ -1,4 +1,4 @@
-// types for selection rules and their options
+// --- Selection rules ---
 
 export type SelectionRuleDataModel = {
   registrationId: string;
@@ -13,6 +13,8 @@ export type SelectionRuleOptionDataModel = {
   name: string;
 };
 
+// --- Registrations ---
+
 export type RegistrationModel = {
   registrationId: string;
   name: string;
@@ -23,6 +25,8 @@ export type RegistrationModel = {
   children?: RegistrationModel[];
 };
 
+// --- Classes ---
+
 export type CharacterClass = {
   characterClassId: string;
   registrationId: string;
@@ -30,6 +34,8 @@ export type CharacterClass = {
   level: number;
   isPrimary: boolean;
 };
+
+// --- Statistics ---
 
 export type StatisticValueDataModel = {
   source: string;
@@ -43,4 +49,24 @@ export type StatisticGroupDataModel = {
   totalValue: number;
   values: StatisticValueDataModel[];
   isFinalized: boolean;
+};
+
+// --- Mutations ---
+
+export type RegisterSelectionRequest = {
+  parentRegistration: string;
+  elementId: string;
+};
+
+export type RegisterSelectionResponse = {
+  registrationId: string;
+};
+
+export type UnregisterSelectionRequest = {
+  parentRegistration: string;
+  elementId: string;
+};
+
+export type UpdateClassLevelRequest = {
+  newLevel: number;
 };

@@ -16,6 +16,7 @@ permissions:
 
 env:
   DOTNET_VERSION: "10.0.x"
+  NODE_VERSION: "22.19.x"
 
 jobs:
   build-solution:
@@ -30,11 +31,26 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Install Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: src/frontend/package-lock.json
+
       - name: Restore Solution
         run: dotnet restore
 
       - name: Build Solution
         run: dotnet build --configuration Release --no-restore
+
+      - name: Install Frontend Dependencies
+        working-directory: src/frontend
+        run: npm ci
+
+      - name: Build Frontend
+        working-directory: src/frontend
+        run: npm run build
 
       - name: Run Unit Tests
         run: dotnet test --configuration Release --no-build

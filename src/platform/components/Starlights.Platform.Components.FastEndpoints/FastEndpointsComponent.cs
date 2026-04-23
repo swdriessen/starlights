@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Starlights.Platform.Hosting;
 
@@ -27,6 +28,10 @@ public sealed class FastEndpointsComponent : IPlatformServiceComponent, IPlatfor
             throw new InvalidOperationException("Host must be an IApplicationBuilder to use FastEndpoints.");
         }
 
-        app.UseFastEndpoints(options => options.Endpoints.RoutePrefix = "api");
+        app.UseFastEndpoints(options =>
+        {
+            options.Endpoints.RoutePrefix = "api";
+            options.Endpoints.Configurator = ep => ep.Options(b => b.AddEndpointFilter<OperationCancelledFilter>());
+        });
     }
 }

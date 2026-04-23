@@ -1,4 +1,4 @@
-import { useCharacterCreationOptions, useCharacterPortraitOptions, useCreateCharacter } from "@/lib/api/characters/queries";
+import { useCharacterCreationOptions, useCharacterPortraitOptions, useCreateCharacter, type CharacterPortraitOption } from "@/lib/api/characters/queries";
 import { CharacterCreationOptionsSelect } from "./character-creation-options-select";
 import { useMemo } from "react";
 import { CheckIcon, OctagonAlertIcon } from "lucide-react";
@@ -135,7 +135,7 @@ function CharacterCreation() {
               {portraitsIsError && <PortraitsError errorMessage={portraitsError.message} />}
               <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-12 gap-2">
                 {portraits &&
-                  portraits.portraits.map((portrait, index) => (
+                  portraits.portraits.map((portrait: CharacterPortraitOption, index: number) => (
                     <div
                       className={cn("overflow-hidden rounded relative hover:ring-2 hover:ring-tertiary transition-all", {
                         "ring-2 ring-tertiary": selectedPortrait === portrait.url,

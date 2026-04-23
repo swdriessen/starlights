@@ -1,120 +1,106 @@
 import { useMutation, useQuery, useQueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
-import { fetchJson, postJson } from "@/lib/api";
-import type { CharacterClass, RegistrationModel, SelectionRuleDataModel, SelectionRuleOptionDataModel, StatisticGroupDataModel } from "./types";
+import {
+  builderQueryKeys,
+  builderQueryOptions,
+  characterQueryKeys,
+  registerSelection,
+  unregisterSelection,
+  updateClassLevel,
+  type CharacterClass,
+  type CharacterClassesResponse,
+  type GetSelectionRuleOptionsResponse,
+  type GetSelectionRulesResponse,
+  type RegisterSelectionRequest,
+  type RegisterSelectionResponse,
+  type RegistrationModel,
+  type RegistrationModels,
+  type SelectionRuleDataModel,
+  type SelectionRuleOptionDataModel,
+  type StatisticGroupDataModel,
+  type StatisticValueDataModel,
+  type StatisticsResponse,
+  type UnregisterSelectionRequest,
+  type UpdateClassLevelRequest,
+} from "@starlights/api-client";
+import { apiClient } from "@/lib/api-client";
 
-// get selection rules
-type GetSelectionRulesResponse = { rules: SelectionRuleDataModel[] };
+export type {
+  CharacterClass,
+  CharacterClassesResponse,
+  GetSelectionRuleOptionsResponse,
+  GetSelectionRulesResponse,
+  RegisterSelectionRequest,
+  RegisterSelectionResponse,
+  RegistrationModel,
+  RegistrationModels,
+  SelectionRuleDataModel,
+  SelectionRuleOptionDataModel,
+  StatisticGroupDataModel,
+  StatisticValueDataModel,
+  StatisticsResponse,
+  UnregisterSelectionRequest,
+  UpdateClassLevelRequest,
+};
+
+const opts = builderQueryOptions(apiClient);
 
 export function useSelectionRuleDataModels(characterId: string, type: string): UseQueryResult<GetSelectionRulesResponse, Error> {
-  return useQuery<GetSelectionRulesResponse, Error>({
-    queryKey: ["character-selection-rules", characterId, type],
-    queryFn: () => fetchJson<GetSelectionRulesResponse>(`/api/characters/${characterId}/builder/selection-rules?type=${type}`),
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-  });
+  return useQuery({ ...opts.selectionRules(characterId, type), staleTime: 0, refetchOnWindowFocus: true });
 }
-
-// get selection rule options
-type GetSelectionRuleOptionsResponse = { options: SelectionRuleOptionDataModel[] };
 
 export function useSelectionRuleOptionModels(characterId: string, selectionRuleId: string): UseQueryResult<GetSelectionRuleOptionsResponse, Error> {
-  return useQuery<GetSelectionRuleOptionsResponse, Error>({
-    queryKey: ["character-selection-rule-options", characterId, selectionRuleId],
-    queryFn: () => fetchJson<GetSelectionRuleOptionsResponse>(`/api/characters/${characterId}/builder/selection-rules/${selectionRuleId}/options`),
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-  });
+  return useQuery({ ...opts.selectionRuleOptions(characterId, selectionRuleId), staleTime: 0, refetchOnWindowFocus: true });
 }
-
-// register selection
-
-export type RegisterSelectionRequest = { parentRegistration: string; elementId: string };
-export type RegisterSelectionResponse = { registrationId: string };
 
 export function useRegisterSelectionMutation(
   characterId: string,
-  selectionRuleId: string
+  selectionRuleId: string,
 ): UseMutationResult<RegisterSelectionResponse, Error, RegisterSelectionRequest> {
   const queryClient = useQueryClient();
-
   return useMutation<RegisterSelectionResponse, Error, RegisterSelectionRequest>({
-    mutationFn: (payload) =>
-      postJson<RegisterSelectionRequest, RegisterSelectionResponse>(
-        `/api/characters/${characterId}/builder/selection-rules/${selectionRuleId}/register`,
-        payload
-      ),
+    mutationFn: (payload) => registerSelection(apiClient, characterId, selectionRuleId, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["character-selection-rules", characterId, selectionRuleId] });
-      queryClient.invalidateQueries({ queryKey: ["character-registrations", characterId] });
-      queryClient.invalidateQueries({ queryKey: ["character-classes", characterId] });
-      queryClient.invalidateQueries({ queryKey: ["character-details", characterId] });
+      queryClient.invalidateQueries({ queryKey: builderQueryKeys.selectionRules(characterId, selectionRuleId) });
+      queryClient.invalidateQueries({ queryKey: builderQueryKeys.registrations(characterId) });
+      queryClient.invalidateQueries({ queryKey: builderQueryKeys.classes(characterId) });
+      queryClient.invalidateQueries({ queryKey: characterQueryKeys.detail(characterId) });
     },
   });
 }
-
-// unregister selection
-
-export type UnregisterSelectionRequest = { parentRegistration: string; elementId: string };
 
 export function useUnregisterSelectionMutation(characterId: string, selectionRuleId: string): UseMutationResult<void, Error, UnregisterSelectionRequest> {
   const queryClient = useQueryClient();
-
   return useMutation<void, Error, UnregisterSelectionRequest>({
-    mutationFn: (payload) =>
-      postJson<UnregisterSelectionRequest, void>(`/api/characters/${characterId}/builder/selection-rules/${selectionRuleId}/unregister`, payload),
+    mutationFn: (payload) => unregisterSelection(apiClient, characterId, selectionRuleId, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["character-selection-rules", characterId, selectionRuleId] });
-      queryClient.invalidateQueries({ queryKey: ["character-registrations", characterId] });
-      queryClient.invalidateQueries({ queryKey: ["character-classes", characterId] });
-      queryClient.invalidateQueries({ queryKey: ["character-details", characterId] });
+      queryClient.invalidateQueries({ queryKey: builderQueryKeys.selectionRules(characterId, selectionRuleId) });
+      queryClient.invalidateQueries({ queryKey: builderQueryKeys.registrations(characterId) });
+      queryClient.invalidateQueries({ queryKey: builderQueryKeys.classes(characterId) });
+      queryClient.invalidateQueries({ queryKey: characterQueryKeys.detail(characterId) });
     },
   });
 }
 
-// get registrations
-export type RegistrationModels = { registrations: RegistrationModel[] };
-
 export function useRegistrationModels(characterId: string): UseQueryResult<RegistrationModels, Error> {
-  return useQuery<RegistrationModels, Error>({
-    queryKey: ["character-registrations", characterId],
-    queryFn: () => fetchJson<RegistrationModels>(`/api/characters/${characterId}/registrations`),
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-  });
+  return useQuery({ ...opts.registrations(characterId), staleTime: 0, refetchOnWindowFocus: true });
 }
 
-// get statistics
-export type StatisticsResponse = { statistics: StatisticGroupDataModel[] };
 export function useStatistics(characterId: string): UseQueryResult<StatisticsResponse, Error> {
-  return useQuery<StatisticsResponse, Error>({
-    queryKey: ["character-statistics", characterId],
-    queryFn: () => fetchJson<StatisticsResponse>(`/api/characters/${characterId}/statistics`),
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-  });
+  return useQuery({ ...opts.statistics(characterId), staleTime: 0, refetchOnWindowFocus: true });
 }
 
-// get character classes
-export type CharacterClassesResponse = { classes: CharacterClass[] };
 export function useCharacterClasses(characterId: string): UseQueryResult<CharacterClassesResponse, Error> {
-  return useQuery<CharacterClassesResponse, Error>({
-    queryKey: ["character-classes", characterId],
-    queryFn: () => fetchJson<CharacterClassesResponse>(`/api/characters/${characterId}/classes`),
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-  });
+  return useQuery({ ...opts.classes(characterId), staleTime: 0, refetchOnWindowFocus: true });
 }
 
-// update class level
-export type UpdateClassLevelRequest = { newLevel: number };
 export function useUpdateClassLevelMutation(characterId: string, characterClassId: string): UseMutationResult<void, Error, UpdateClassLevelRequest> {
   const queryClient = useQueryClient();
   return useMutation<void, Error, UpdateClassLevelRequest>({
-    mutationFn: (payload) => postJson<UpdateClassLevelRequest, void>(`/api/characters/${characterId}/classes/${characterClassId}/level`, payload),
+    mutationFn: (payload) => updateClassLevel(apiClient, characterId, characterClassId, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["character-registrations", characterId] });
-      queryClient.invalidateQueries({ queryKey: ["character-classes", characterId] });
-      queryClient.invalidateQueries({ queryKey: ["character-details", characterId] });
+      queryClient.invalidateQueries({ queryKey: builderQueryKeys.registrations(characterId) });
+      queryClient.invalidateQueries({ queryKey: builderQueryKeys.classes(characterId) });
+      queryClient.invalidateQueries({ queryKey: characterQueryKeys.detail(characterId) });
     },
   });
 }

@@ -10,8 +10,12 @@ import {
   useStatistics,
   useUnregisterSelectionMutation,
   useUpdateClassLevelMutation,
+  type CharacterClass,
+  type SelectionRuleDataModel,
+  type SelectionRuleOptionDataModel,
+  type StatisticGroupDataModel,
+  type StatisticValueDataModel,
 } from "@/lib/api/builder/registration-api";
-import type { CharacterClass } from "@/lib/api/builder/types";
 import {
   useAbilityScores,
   useCharacterDetails,
@@ -19,6 +23,9 @@ import {
   useSkills,
   useUpdateAdditionalAbilityScore,
   useUpdateBaseAbilityScore,
+  type AbilityScore,
+  type SavingThrow,
+  type Skill,
 } from "@/lib/api/characters/queries";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { JSX } from "react";
@@ -47,7 +54,7 @@ function AbilitiesComponent({ id: characterId }: { id: string }) {
                 </tr>
               </thead>
               <tbody>
-                {abilityScores.abilityScores.map((ability) => (
+                {abilityScores.abilityScores.map((ability: AbilityScore) => (
                   <tr key={ability.abilityScoreId} className="">
                     <td className="px-2 py-1 border-b ">
                       <span className="flex items-center gap-1 ">{ability.name}</span>
@@ -159,7 +166,7 @@ function SavingThrowsComponent({ characterId }: { characterId: string }) {
               </tr>
             </thead>
             <tbody>
-              {savingThrowsData.savingThrows.map((save) => (
+              {savingThrowsData.savingThrows.map((save: SavingThrow) => (
                 <tr key={save.savingThrowId}>
                   <td className="px-2 py-1 border-b ">
                     <span className="flex items-center gap-1 ">
@@ -197,7 +204,7 @@ function SkillsComponent({ characterId }: { characterId: string }) {
               </tr>
             </thead>
             <tbody>
-              {skillsData.skills.map((skill) => (
+              {skillsData.skills.map((skill: Skill) => (
                 <tr key={skill.skillId}>
                   <td className="px-2 py-1 border-b text-left">
                     <span className="flex items-center gap-1 text-sm">
@@ -246,7 +253,7 @@ function SelectionRulesSectionOptionsComponent({
         <>
           <div className="border border-dashed rounded p-4 my-2">
             <ul>
-              {optionsData.options.map((option) => (
+              {optionsData.options.map((option: SelectionRuleOptionDataModel) => (
                 <li key={option.elementId}>
                   {option.name} | ID: {option.elementId} |{" "}
                   <Button
@@ -292,7 +299,7 @@ function SelectionRulesSectionComponent({
       {selectionRulesData && (
         <div className="overflow-x-auto  text-sm w-full">
           <h4>{type} Selection Rules</h4>
-          {selectionRulesData.rules.map((rule) => (
+          {selectionRulesData.rules.map((rule: SelectionRuleDataModel) => (
             // 1 component per rule with its options and registration button
 
             <div key={rule.registrationSelectionRuleId}>
@@ -329,7 +336,7 @@ function CharacterClassesComponent({ characterId }: { characterId: string }) {
     <div>
       <h4>Character Classes</h4>
       <ul>
-        {characterClassesData?.classes.map((characterClass) => (
+        {characterClassesData?.classes.map((characterClass: CharacterClass) => (
           <li key={characterClass.characterClassId}>
             <CharacterClassComponent characterId={characterId} characterClass={characterClass} />
           </li>
@@ -465,14 +472,14 @@ export default function CharactersDetailsPage() {
                               </tr>
                             </thead>
                             <tbody>
-                              {statisticsData.statistics.map((group) => (
+                              {statisticsData.statistics.map((group: StatisticGroupDataModel) => (
                                 <tr key={group.groupName}>
                                   <td className="px-2 py-1 border-b text-left font-semibold">{group.groupName}</td>
                                   <td className="px-2 py-1 border-b">{group.totalValue}</td>
                                   <td className="px-2 py-1 border-b">{group.isFinalized ? "Yes" : "No"}</td>
                                   <td className="px-2 py-1 border-b text-left">
                                     <div className="space-y-1">
-                                      {group.values.map((value, index) => (
+                                      {group.values.map((value: StatisticValueDataModel, index: number) => (
                                         <div key={`${value.source}-${index}`} className="text-xs">
                                           <span className="text-muted-foreground">{value.displayName || value.source}:</span>{" "}
                                           <span className="font-medium">{value.value}</span>

@@ -19,7 +19,7 @@ This project uses .NET Aspire for local orchestration. You can run it using Visu
 ### Prerequisites
 
 - .NET 10 SDK
-- Node.js 20+
+- Node.js 20.19+
 - Docker Desktop (or compatible container runtime)
 - Visual Studio (recent version) or Visual Studio Code
 

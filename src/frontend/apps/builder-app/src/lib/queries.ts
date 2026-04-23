@@ -1,12 +1,15 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import { fetchJson } from "./api";
+import { platformQueryOptions, type Status } from "@starlights/api-client";
+import { apiClient } from "./api-client";
 
-export type Status = { message: string; timestamp: string };
+export type { Status };
+
+const opts = platformQueryOptions(apiClient);
 
 export function usePlatformStatus(keyExtra?: unknown): UseQueryResult<Status, Error> {
-  return useQuery<Status, Error>({
-    queryKey: ["platform", "status", keyExtra].filter((x) => x !== undefined),
-    queryFn: () => fetchJson<Status>("/api/platform/status"),
+  return useQuery({
+    ...opts.status(),
+    queryKey: keyExtra !== undefined ? [...opts.status().queryKey, keyExtra] : opts.status().queryKey,
     staleTime: 1_000,
     refetchOnWindowFocus: true,
   });

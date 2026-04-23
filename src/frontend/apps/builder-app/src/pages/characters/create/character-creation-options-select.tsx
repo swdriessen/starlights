@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { CharacterCreationOptions } from "@/lib/api/characters/queries";
+import type { CharacterCreationOption, CharacterCreationOptions } from "@/lib/api/characters/queries";
 import { useEffect } from "react";
 
 export function CharacterCreationOptionsSelect({
@@ -24,7 +24,7 @@ export function CharacterCreationOptionsSelect({
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {characterCreationOptions?.options.map((option) => (
+            {characterCreationOptions?.options.map((option: CharacterCreationOption) => (
               <SelectItem key={option.id} value={option.id}>
                 {option.name}
               </SelectItem>
