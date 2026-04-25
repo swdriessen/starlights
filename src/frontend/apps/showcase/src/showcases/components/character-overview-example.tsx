@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useState } from "react"
-import { CollectionContainer, CollectionItem } from "./characters-overview"
+import { CharacterGrid, CharacterGridItem } from "ui-framework"
 
 type ExampleContainerProps = {
   children: ReactNode
@@ -66,9 +66,9 @@ export function CharacterOverviewExample() {
   }
 
   return (
-    <CollectionContainer>
+    <CharacterGrid>
       {characters.map((character) => (
-        <CollectionItem
+        <CharacterGridItem
           key={character.id}
           id={character.id}
           name={character.name}
@@ -82,6 +82,9 @@ export function CharacterOverviewExample() {
           onHeartToggle={(id) => {
             toggleHeart(id)
           }}
+          onViewSheet={(id) => {
+            console.log(`View sheet for ${id}`)
+          }}
           onManage={(id) => {
             console.log(`Manage ${id}`)
           }}
@@ -90,6 +93,6 @@ export function CharacterOverviewExample() {
           }}
         />
       ))}
-    </CollectionContainer>
+    </CharacterGrid>
   )
 }

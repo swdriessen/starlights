@@ -1,12 +1,26 @@
-import {
-  AnvilIcon,
-  HeartIcon,
-  SwordsIcon,
-  Trash2Icon,
-} from "lucide-react"
-import { Button, Tooltip, TooltipContent, TooltipTrigger } from "ui-framework"
+import { AnvilIcon, HeartIcon, SwordsIcon, Trash2Icon } from "lucide-react"
 
-type CollectionItemProps = {
+import { useEffect, useRef } from "react"
+import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
+import {
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialog,
+} from "@/components/ui/alert-dialog"
+
+type CharacterGridItemProps = {
   id: string
   name: string
   build: string
@@ -16,22 +30,21 @@ type CollectionItemProps = {
   isHearted: boolean
   onHeartToggle: (id: string) => void
   onManage: (id: string) => void
+  onViewSheet: (id: string) => void
   onDelete: (id: string) => void
 }
 
-export function CollectionContainer({
+export function CharacterGrid({
   children,
+  className,
 }: {
   children: React.ReactNode
+  className?: string
 }) {
-  return (
-    <>
-      <div className="flex flex-wrap gap-8">{children}</div>
-    </>
-  )
+  return <div className={cn("flex flex-wrap gap-8", className)}>{children}</div>
 }
 
-export function CollectionItem({
+export function CharacterGridItem({
   id,
   name,
   build,
@@ -41,15 +54,40 @@ export function CollectionItem({
   isHearted,
   onHeartToggle,
   onManage,
+  onViewSheet,
   onDelete,
-}: CollectionItemProps) {
+}: CharacterGridItemProps) {
+  const rootRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!isSelected) return
+
+    function handleOutside(e: Event) {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        onSelectedChange(id, false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutside)
+    document.addEventListener("touchstart", handleOutside)
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutside)
+      document.removeEventListener("touchstart", handleOutside)
+    }
+  }, [isSelected, id, onSelectedChange])
+
   return (
-    <div className="w-52 max-w-full min-w-50 rounded-[14px] bg-linear-to-b from-border via-border/80 to-border/60 p-0.5 shadow-md">
-      <div className="group relative overflow-hidden rounded-xl border border-border bg-card ring-2 ring-border/60 transition-shadow hover:shadow-md">
+    // rounded-[14px] bg-linear-to-b from-border via-border/80 to-border/60
+    <div ref={rootRef} className="w-52 max-w-full min-w-50 p-0.5">
+      <div className="group relative overflow-hidden rounded-xl border-4 border-double border-border bg-card ring-border/60 transition-shadow hover:shadow-lg">
         <button
           type="button"
           className="block w-full cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600/90"
           aria-pressed={isSelected}
+          aria-label={
+            isSelected ? `Hide actions for ${name}` : `Show actions for ${name}`
+          }
           onClick={() => onSelectedChange(id, !isSelected)}
         >
           <img
@@ -97,7 +135,7 @@ export function CollectionItem({
                     className="flex-1 border-zinc-600 bg-zinc-900/90 text-zinc-100 hover:bg-zinc-800/95 hover:text-zinc-50"
                     onClick={(event) => {
                       event.stopPropagation()
-                      onManage(id)
+                      onViewSheet(id)
                     }}
                   />
                 }
@@ -128,82 +166,51 @@ export function CollectionItem({
               <TooltipContent side="top">Manage Build</TooltipContent>
             </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    size="icon-sm"
-                    variant="destructive"
-                    aria-label="Delete Character"
-                    className="border-red-500 bg-red-600/95 text-white hover:bg-red-500"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      onDelete(id)
-                    }}
-                  />
-                }
-              >
-                <Trash2Icon className="size-4" />
-              </TooltipTrigger>
-              <TooltipContent side="top">Delete Character</TooltipContent>
-            </Tooltip>
+            <AlertDialog>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <AlertDialogTrigger
+                      render={
+                        <Button
+                          size="icon-sm"
+                          variant="destructive"
+                          aria-label="Delete Character"
+                          className="border-red-500 bg-red-600/95 text-white hover:bg-red-500"
+                        />
+                      }
+                    />
+                  }
+                >
+                  <Trash2Icon className="size-4" />
+                </TooltipTrigger>
+                <TooltipContent side="top">Delete Character</TooltipContent>
+              </Tooltip>
 
-            {/* <AlertDialog>
-              <AlertDialogTrigger render={<Button variant="outline" />}>
-                <span className="hidden md:block">Alert Dialog</span>
-                <span className="block md:hidden">Dialog</span>
-              </AlertDialogTrigger>
-              <AlertDialogContent size="sm">
+              <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Allow accessory to connect?
-                  </AlertDialogTitle>
+                  <AlertDialogTitle>Delete Character</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Do you want to allow the USB accessory to connect to this
-                    device and your data?
+                    Are you sure you want to delete <strong>{name}</strong>?
+                    This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel variant="outline" size="default">
-                    Don&apos;t allow
+                    Cancel
                   </AlertDialogCancel>
-                  <AlertDialogAction>Allow</AlertDialogAction>
+                  <AlertDialogAction
+                    variant="destructive"
+                    size="default"
+                    onClick={() => {
+                      onDelete(id)
+                    }}
+                  >
+                    Delete
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
-            </AlertDialog> */}
-
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button
-                    variant="outline"
-                    className="border-zinc-600 bg-zinc-900/90 text-zinc-100 hover:bg-zinc-800/95 hover:text-zinc-50"
-                    size="icon-sm"
-                  />
-                }
-              >
-                <MoreHorizontalIcon />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" side="top" className="w-40">
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>Level Up</DropdownMenuItem>
-                  <DropdownMenuItem>Duplicate Character</DropdownMenuItem>
-                  <DropdownMenuItem>Change Group</DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>Campaigns</DropdownMenuLabel>
-                  <DropdownMenuItem>Show Campaign</DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem variant="destructive">
-                    Delete Character
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
+            </AlertDialog>
           </div>
         </div>
       </div>
