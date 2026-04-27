@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <PropertyGroup Label="Package Versions">
-    <MicrosoftExtensionsVersion>10.0.6</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>10.0.7</MicrosoftExtensionsVersion>
     <EntityFrameworkCoreVersion>10.0.5</EntityFrameworkCoreVersion>
     <AspireVersion>13.2.3</AspireVersion>
   </PropertyGroup>
