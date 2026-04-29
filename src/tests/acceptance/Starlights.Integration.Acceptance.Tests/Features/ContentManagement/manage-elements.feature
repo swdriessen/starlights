@@ -89,7 +89,7 @@ Rule: A content creator can add labels to an element to allow more granular sele
     Scenario: label a tool proficiency as a musical instrument
         Given an element exists with the name "Tool Proficiency (Pan Flute)"
         When the content creator adds the "Musical Instrument" label to the "Tool Proficiency (Pan Flute)" element
-        Then the element "Tool Proficiency (Pan Flute)" should contain a "Musical Instrument" label
+        Then the "Tool Proficiency (Pan Flute)" element should contain a "Musical Instrument" label
 
     Scenario: label an element with multiple labels
         Given an element exists with the name "Fireball"
@@ -97,7 +97,7 @@ Rule: A content creator can add labels to an element to allow more granular sele
             | label     |
             | Fire      |
             | Evocation |
-        Then the element "Fireball" should contain the following labels:
+        Then the "Fireball" element should contain the following labels:
             | label     |
             | Fire      |
             | Evocation |
@@ -115,7 +115,7 @@ Rule: A content creator can add labels to an element to allow more granular sele
             | Martial |
             | Origin  |
             |       4 |
-        Then the element "Wrongfully Labeled" should contain the following labels:
+        Then the "Wrongfully Labeled" element should contain the following labels:
             | label   |
             | Simple  |
             | Martial |
