@@ -18,6 +18,7 @@
     <Project Path="src/apps/Starlights.Application/Starlights.Application.csproj" />
   </Folder>
   <Folder Name="/src/frontend/" />
+  <Folder Name="/src/frontend/apps/" />
   <Folder Name="/src/frontend/apps/builder-app/">
     <Project Path="src/frontend/apps/builder-app/Starlights.Builder.React.esproj">
       <Build />
@@ -82,6 +83,7 @@
     <Project Path="src/tests/integration/Starlights.Integration.Tests/Starlights.Integration.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/harness/">
+    <Project Path="src/tests/integration/Starlights.Integration.Harness.Drivers.Characters/Starlights.Integration.Harness.Drivers.Characters.csproj" />
     <Project Path="src/tests/integration/Starlights.Integration.Harness.Drivers/Starlights.Integration.Harness.Drivers.csproj" Id="e045bdfd-4a12-4764-bd44-58c5b7ff9040" />
     <Project Path="src/tests/integration/Starlights.Integration.Harness/Starlights.Integration.Harness.csproj" />
   </Folder>

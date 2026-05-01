@@ -1,6 +1,8 @@
-﻿namespace Starlights.Integration.Drivers.Elements;
+﻿using Starlights.Integration.Extensions;
 
-internal class ElementsInitializationDriver : IDriver
+namespace Starlights.Integration.Drivers;
+
+public class ElementsInitializationDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsEndpointDriver _endpointDriver;
@@ -11,8 +13,8 @@ internal class ElementsInitializationDriver : IDriver
         _endpointDriver = endpointDriver;
     }
 
-    public Task InitializeElementsAsync(CancellationToken cancellation)
+    public Task InitializeElementsAsync()
     {
-        return _endpointDriver.InitializeElementsAsync(cancellation);
+        return _endpointDriver.InitializeElementsAsync(_integration.CancellationToken);
     }
 }

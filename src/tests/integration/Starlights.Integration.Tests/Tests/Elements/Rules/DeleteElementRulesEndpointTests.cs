@@ -1,12 +1,12 @@
 using System.Net;
 using AwesomeAssertions;
-using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Statistics.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Selections.GetById;
+using Starlights.Integration.Drivers;
 
 namespace Starlights.Integration.Tests.Elements.Rules;
 

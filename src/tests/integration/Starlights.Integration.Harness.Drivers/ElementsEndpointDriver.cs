@@ -6,7 +6,7 @@ using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Creat
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.GetList;
 using Starlights.Modules.Elements.Endpoints.ContentManagement.Types.Spells.Update;
 
-namespace Starlights.Integration.Drivers.Elements;
+namespace Starlights.Integration.Drivers;
 
 public class ElementsEndpointDriver : IDriver
 {

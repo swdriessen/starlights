@@ -1,10 +1,10 @@
 using System.Net;
 using AwesomeAssertions;
 using Starlights.Integration.Extensions;
-using Starlights.Integration.Drivers.Elements;
 using Starlights.Integration.Drivers.Elements.Endpoints;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Create;
 using Starlights.Modules.Elements.Endpoints.Content.Rules.Includes.Update;
+using Starlights.Integration.Drivers;
 
 namespace Starlights.Integration.Tests.Elements.Rules.Includes;
 
