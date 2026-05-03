@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using Starlights.Integration.Extensions;
-using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Platform.Eventing;
 
 namespace Starlights.Integration.Eventing;
@@ -8,27 +8,30 @@ namespace Starlights.Integration.Eventing;
 public sealed class ElementsEventObserverCollection
 {
     private readonly ILogger<ElementsEventObserverCollection> _logger;
-    private readonly IIntegrationHost _integration;
     private readonly CancellationToken _cancellationToken;
+    private readonly ConcurrentDictionary<Type, IEventObserver> _observers = [];
 
     public ElementsEventObserverCollection(ILogger<ElementsEventObserverCollection> logger, IIntegrationHost integration)
     {
         _logger = logger;
-        _integration = integration;
-        _cancellationToken = _integration.CancellationToken;
-
-        ElementCreated = new(_cancellationToken);
+        _cancellationToken = integration.CancellationToken;
     }
 
-    public EventObserverT<ElementCreatedEvent> ElementCreated { get; }
-
-    private EventObserverT<T> Event<T>() where T : IDomainEvent
+    public EventObserverT<T> Event<T>() where T : IDomainEvent
     {
-        return typeof(T) switch
+        var observer = _observers.GetOrAdd(typeof(T), _ => new EventObserverT<T>(_cancellationToken));
+        if (observer is EventObserverT<T> typedObserver)
         {
-            _ when typeof(T) == typeof(ElementCreatedEvent) => (EventObserverT<T>)(object)ElementCreated,
-            _ => throw new NotSupportedException($"No event listener registered for event type {typeof(T).FullName}.")
-        };
+            return typedObserver;
+        }
+
+        throw new InvalidOperationException($"Observer type mismatch for event type {typeof(T).FullName}.");
+    }
+
+    public Task HandleAsync<T>(T domainEvent) where T : IDomainEvent
+    {
+        ArgumentNullException.ThrowIfNull(domainEvent);
+        return Event<T>().HandleAsync(domainEvent);
     }
 
     /// <summary>
@@ -63,9 +66,7 @@ public sealed class ElementsEventObserverCollection
     /// </summary>
     public void ClearInvocations<T>() where T : IDomainEvent
     {
-        var e = Event<T>();
-        e.Mock.Invocations.Clear();
-        e.Events.Clear();
+        Event<T>().ClearInvocations();
     }
 
     /// <summary>
@@ -73,6 +74,9 @@ public sealed class ElementsEventObserverCollection
     /// </summary>
     public void ClearInvocations()
     {
-        ClearInvocations<ElementCreatedEvent>();
+        foreach (var observer in _observers.Values)
+        {
+            observer.ClearInvocations();
+        }
     }
 }

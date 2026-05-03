@@ -15,6 +15,6 @@ internal sealed class ElementsIntegrationEventHandler :
 
     public Task HandleAsync(ElementCreatedEvent domainEvent)
     {
-        return _observers.ElementCreated.Mock.Object.HandleAsync(domainEvent);
+        return _observers.HandleAsync(domainEvent);
     }
 }
