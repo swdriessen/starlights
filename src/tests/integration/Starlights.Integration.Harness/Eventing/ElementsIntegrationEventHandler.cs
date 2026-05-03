@@ -6,9 +6,9 @@ namespace Starlights.Integration.Eventing;
 internal sealed class ElementsIntegrationEventHandler :
     IDomainEventHandler<ElementCreatedEvent>
 {
-    private readonly ElementsEventObserverCollection _observers;
+    private readonly EventObserverCollection _observers;
 
-    public ElementsIntegrationEventHandler(ElementsEventObserverCollection observers)
+    public ElementsIntegrationEventHandler(EventObserverCollection observers)
     {
         _observers = observers;
     }

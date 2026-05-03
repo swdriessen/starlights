@@ -20,7 +20,7 @@ public sealed class ManageClassesDriver : IDriver
     private readonly ManageClassesEndpointDriver _classesApi;
     private readonly ManageClassFeaturesEndpointDriver _classFeaturesApi;
     private readonly ManageSubClassesEndpointDriver _subClassesApi;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
 
     public ManageClassesDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
     {
@@ -31,7 +31,7 @@ public sealed class ManageClassesDriver : IDriver
         _classFeaturesApi = _integration.GetDriver<ManageClassFeaturesEndpointDriver>();
         _subClassesApi = _integration.GetDriver<ManageSubClassesEndpointDriver>();
 
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateClassAsync(CreateClassProperties properties)

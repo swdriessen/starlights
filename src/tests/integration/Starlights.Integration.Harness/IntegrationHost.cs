@@ -53,8 +53,6 @@ public class IntegrationHost : IIntegrationHost, IDisposable
                     services.AddSingleton<EventObserverCollection>();
                     services.AddDomainEventHandlersFrom(typeof(IntegrationHost).Assembly);
 
-                    services.AddSingleton<ElementsEventObserverCollection>();
-
 
 
                     // auto register all IDriver implementations

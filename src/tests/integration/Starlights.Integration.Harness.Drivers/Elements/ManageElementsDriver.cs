@@ -23,7 +23,7 @@ public sealed class ManageElementsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
     private readonly ManageElementsEndpointDriver _api;
     private readonly ManageElementRulesEndpointDriver _rulesApi;
     private readonly ManageElementLabelsEndpointDriver _labelsApi;
@@ -40,7 +40,7 @@ public sealed class ManageElementsDriver : IDriver
         _api = endpointDriver;
         _rulesApi = rulesEndpointDriver;
         _labelsApi = labelsEndpointDriver;
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateElement(CreateProperties properties, bool storeAsLastCreated = true)

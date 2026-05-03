@@ -14,7 +14,7 @@ public sealed class ManageSkillsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
     private readonly ManageSkillsEndpointDriver _skillsEndpoint;
 
     public ManageSkillsDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
@@ -23,7 +23,7 @@ public sealed class ManageSkillsDriver : IDriver
         _driverContext = driverContext;
 
         _skillsEndpoint = _integration.GetDriver<ManageSkillsEndpointDriver>();
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateSkillAsync(CreateProperties properties)

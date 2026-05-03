@@ -14,7 +14,7 @@ public class ManageFeatsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
     private readonly ManageFeatsEndpointDriver _api;
 
     public ManageFeatsDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageFeatsEndpointDriver endpointDriver)
@@ -22,7 +22,7 @@ public class ManageFeatsDriver : IDriver
         _integration = integration;
         _driverContext = driverContext;
         _api = endpointDriver;
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateFeat(CreateProperties properties)

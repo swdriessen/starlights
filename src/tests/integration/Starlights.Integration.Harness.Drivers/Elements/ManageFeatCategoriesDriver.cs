@@ -14,7 +14,7 @@ public sealed class ManageFeatCategoriesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
     private readonly ManageFeatCategoriesEndpointDriver _api;
 
     public ManageFeatCategoriesDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageFeatCategoriesEndpointDriver endpointDriver)
@@ -22,7 +22,7 @@ public sealed class ManageFeatCategoriesDriver : IDriver
         _integration = integration;
         _driverContext = driverContext;
         _api = endpointDriver;
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateFeatCategory(string name, string? description = null)
