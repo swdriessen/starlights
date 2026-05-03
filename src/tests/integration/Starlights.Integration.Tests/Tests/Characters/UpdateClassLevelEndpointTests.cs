@@ -1,6 +1,5 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.CharacterCreation;
-using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Domain.Progression.Eventing;
 
@@ -10,7 +9,6 @@ namespace Starlights.Integration.Tests.Characters;
 public sealed class UpdateClassLevelEndpointTests : IntegrationTestBase
 {
     private IntegrationHost _integration = default!;
-    private EventObserverCollection _events = default!;
     private RegistrationDriver _registrationDriver = default!;
     private CharacterManagementDriver _characterManagementDriver = default!;
 
@@ -20,7 +18,6 @@ public sealed class UpdateClassLevelEndpointTests : IntegrationTestBase
         _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
 
-        _events = _integration.GetEventObserverCollection();
         _registrationDriver = _integration.GetDriver<RegistrationDriver>();
         _characterManagementDriver = _integration.GetDriver<CharacterManagementDriver>();
 
@@ -69,12 +66,12 @@ public sealed class UpdateClassLevelEndpointTests : IntegrationTestBase
         // Arrange
         await _registrationDriver.RegisterClass("Barbarian");
         await _characterManagementDriver.LevelUp("Barbarian", 3);
-        await _events.EnsureObservation<CharacterLevelChangedEvent>();
+        await _integration.Events.EnsureObservation<CharacterLevelChangedEvent>();
 
 
         // Act
         await _characterManagementDriver.LevelUp("Barbarian", 2);
-        await _events.EnsureObservation<CharacterLevelChangedEvent>();
+        await _integration.Events.EnsureObservation<CharacterLevelChangedEvent>();
 
         // Assert
         var updatedBarbarian = await _characterManagementDriver.GetClassByName("Barbarian");

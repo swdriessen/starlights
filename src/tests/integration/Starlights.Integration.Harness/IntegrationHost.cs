@@ -26,7 +26,11 @@ public class IntegrationHost : IIntegrationHost, IDisposable
         Action<IServiceCollection>? configureServices = null)
     {
         var options = new IntegrationHostOptions();
+
         configureOptions?.Invoke(options);
+        configureProperties?.Invoke(Properties);
+
+        Properties["IntegrationHostOptions"] = options;
 
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
@@ -58,6 +62,7 @@ public class IntegrationHost : IIntegrationHost, IDisposable
 
                     // drivers need the instance of this host
                     services.AddSingleton<IIntegrationHost>(this);
+                    services.AddSingleton(new IntegrationTestContext((TestContext)Properties["TestContext"], options.Timeout));
 
                     if (options.UseConsoleActivityProcessor) // show instrumentation in the console logging
                     {
@@ -69,9 +74,7 @@ public class IntegrationHost : IIntegrationHost, IDisposable
                 });
             });
 
-        configureProperties?.Invoke(Properties);
 
-        Properties["IntegrationHostOptions"] = options;
 
         Services = _factory.Services.CreateScope().ServiceProvider;
     }

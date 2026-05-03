@@ -1,6 +1,5 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers.CharacterCreation;
-using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 
@@ -10,7 +9,6 @@ namespace Starlights.Integration.Tests.Characters.Statistics;
 public sealed class GetStatisticsEndpointTests : IntegrationTestBase
 {
     private IntegrationHost _integration = default!;
-    private EventObserverCollection _events = default!;
     private RegistrationDriver _registration = default!;
     private CharacterManagementDriver _characterManagementDriver = default!;
 
@@ -20,7 +18,6 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
         _integration = IntegrationHost.CreateDefaultBuilder(this)
             .Build();
 
-        _events = _integration.GetEventObserverCollection();
         _registration = _integration.GetDriver<RegistrationDriver>();
         _characterManagementDriver = _integration.GetDriver<CharacterManagementDriver>();
 
@@ -100,7 +97,7 @@ public sealed class GetStatisticsEndpointTests : IntegrationTestBase
         // Arrange
         await _registration.RegisterClass("Barbarian");
         await _characterManagementDriver.LevelUp("Barbarian", level);
-        await _events.EnsureObservation<RegistrationStatisticRuleCreatedEvent>(e => e.Name == "proficiency" && e.Value == $"{expectedProficiencyValue}");
+        await _integration.Events.EnsureObservation<RegistrationStatisticRuleCreatedEvent>(e => e.Name == "proficiency" && e.Value == $"{expectedProficiencyValue}");
 
         // Act
         var statistics = await _registration.GetStatistics();

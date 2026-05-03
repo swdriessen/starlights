@@ -9,11 +9,11 @@ using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
 
 namespace Starlights.Integration.Drivers.Characters.Endpoints;
 
-public sealed class CharacterCreationEndpointDriver : IDriver
+public sealed class CharactersEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
 
-    public CharacterCreationEndpointDriver(IIntegrationHost integration)
+    public CharactersEndpointDriver(IIntegrationHost integration)
     {
         _integration = integration;
     }

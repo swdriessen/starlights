@@ -1,6 +1,5 @@
 ﻿using AwesomeAssertions;
 using Starlights.Integration.Constants;
-using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Domain.Classes.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
@@ -13,15 +12,12 @@ namespace Starlights.Integration.Drivers.CharacterCreation;
 internal sealed class RegistrationDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
-    private readonly EventObserverCollection _events;
     private readonly RegistrationEndpointDriver _api;
 
     public RegistrationDriver(IIntegrationHost integration, RegistrationEndpointDriver api)
     {
         _integration = integration;
         _api = api;
-
-        _events = _integration.GetEventObserverCollection();
     }
 
     public async Task<List<RegistrationDataModel>> GetRegistrations()
@@ -85,7 +81,7 @@ internal sealed class RegistrationDriver : IDriver
         var response = await _api.RegisterSelectionRuleAsync(rule.RegistrationId, rule.RegistrationSelectionRuleId, option.ElementId);
         response.RegistrationId.Should().NotBe(Guid.Empty, "Expected a valid registration ID to be returned.");
 
-        await _events.EnsureObservation<RegistrationCreatedEvent>(x => x.RegistrationId == response.RegistrationId);
+        await _integration.Events.EnsureObservation<RegistrationCreatedEvent>(x => x.RegistrationId == response.RegistrationId);
 
         return response.RegistrationId;
     }
@@ -102,7 +98,7 @@ internal sealed class RegistrationDriver : IDriver
         var classRule = await GetSingleSelectionRule(SelectionRuleTypes.Class);
         var classOption = await GetSelectionRuleOption(classRule.RegistrationSelectionRuleId, className);
         var registrationId = await RegisterSelectionRule(classRule, classOption);
-        await _events.EnsureObservation<CharacterClassCreatedEvent>();
+        await _integration.Events.EnsureObservation<CharacterClassCreatedEvent>();
         return (classRule, classOption, registrationId);
     }
 
@@ -111,7 +107,7 @@ internal sealed class RegistrationDriver : IDriver
         var classRule = await GetSingleSelectionRule(SelectionRuleTypes.Class);
         var classOption = await GetSelectionRuleOption(classRule.RegistrationSelectionRuleId, className);
         await UnregisterSelectionRule(classRule, classOption);
-        await _events.EnsureObservation<CharacterClassRemovedEvent>();
+        await _integration.Events.EnsureObservation<CharacterClassRemovedEvent>();
     }
 
     public async Task<(SelectionRuleDataModel Rule, SelectionRuleOptionModel Option, Guid RegistrationId)> RegisterSubClass(string name)
@@ -119,7 +115,7 @@ internal sealed class RegistrationDriver : IDriver
         var classRule = await GetSingleSelectionRule(SelectionRuleTypes.SubClass);
         var classOption = await GetSelectionRuleOption(classRule.RegistrationSelectionRuleId, name);
         var registrationId = await RegisterSelectionRule(classRule, classOption);
-        await _events.EnsureObservation<RegistrationCreatedEvent>(x => x.RegistrationId == registrationId); // wait for the registration event
+        await _integration.Events.EnsureObservation<RegistrationCreatedEvent>(x => x.RegistrationId == registrationId); // wait for the registration event
         return (classRule, classOption, registrationId);
     }
     #endregion

@@ -1,9 +1,23 @@
-﻿namespace Starlights.Integration.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Starlights.Integration.Extensions;
 
 public static class TestContextExtensions
 {
+    extension(IntegrationTestContext context)
+    {
+
+    }
+
+
     extension(IIntegrationHost host)
     {
+        /// <summary>
+        /// Retrieves the current integration test context associated with the specified integration host.
+        /// </summary>
+        public IntegrationTestContext IntegrationContext => host.Services.GetRequiredService<IntegrationTestContext>();
+
+
         /// <summary>
         /// Retrieves the current test context associated with the specified integration host.
         /// </summary>
@@ -18,7 +32,7 @@ public static class TestContextExtensions
         /// allowing for cooperative cancellation of asynchronous operations during test execution.
         /// </remarks>
         /// <exception cref="InvalidOperationException">Thrown if the integration host does not contain a test context in its properties.</exception>
-        public CancellationToken CancellationToken => host.TestContext.CancellationToken;
+        public CancellationToken CancellationToken => host.IntegrationContext.CancellationToken;
 
         /// <summary>
         /// Writes the specified message to the test output associated with the integration host.

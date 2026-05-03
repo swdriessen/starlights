@@ -2,13 +2,13 @@
 using Starlights.Integration.Drivers.Characters.Endpoints;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 
-namespace Starlights.Integration.Drivers.Characters;
+namespace Starlights.Integration.Drivers.Characters.Manage;
 
 public sealed class CharacterCreationOptionsDriver : IDriver
 {
-    private readonly CharacterCreationEndpointDriver _api;
+    private readonly CharactersEndpointDriver _api;
 
-    public CharacterCreationOptionsDriver(CharacterCreationEndpointDriver api)
+    public CharacterCreationOptionsDriver(CharactersEndpointDriver api)
     {
         _api = api;
     }

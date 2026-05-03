@@ -8,41 +8,47 @@ using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
 using Starlights.Modules.Characters.Domain.Skills.Eventing;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
+using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 
-namespace Starlights.Integration.Drivers.Characters;
+namespace Starlights.Integration.Drivers.Characters.Manage;
 
-public sealed class CharacterCreationDriver : IDriver
+public sealed class CharacterManagementDriver : IDriver
 {
-    private readonly IIntegrationHost _integration;
-    private readonly CharacterCreationEndpointDriver _api;
-    private readonly CharacterCreationOptionsDriver _creationOptionsDriver;
+    private readonly IIntegrationHost _host;
+    private readonly CharactersEndpointDriver _api;
     private readonly CharactersDriverContext _context;
     private readonly EventObserverCollection _events;
 
-    public CharacterCreationDriver(IIntegrationHost integration,
-        CharacterCreationEndpointDriver api,
-        CharacterCreationOptionsDriver creationOptionsDriver,
-        CharactersDriverContext context,
-        EventObserverCollection events)
+    public CharacterManagementDriver(IIntegrationHost host, CharactersEndpointDriver api, CharactersDriverContext context, EventObserverCollection events)
     {
-        _integration = integration;
+        _host = host;
         _api = api;
-        _creationOptionsDriver = creationOptionsDriver;
         _context = context;
         _events = events;
     }
 
-    private Task WaitForCharacterCreatedAsync()
+    public async Task<List<CharacterCreationOption>> GetCharacterCreationOptionsAsync()
     {
-        List<Task> observations = [
-            _events.EnsureObservation<CharacterCreatedEvent>(),
-            _events.EnsureObservation<AbilityScoreCreatedEvent>(),
-            _events.EnsureObservation<SavingThrowCreatedEvent>(),
-            _events.EnsureObservation<SkillCreatedEvent>(),
-            _events.EnsureObservation<RegistrationSelectionRuleCreatedEvent>(e => e.ElementType == "Class")
-        ];
-        return Task.WhenAll(observations);
+        var response = await _api.GetCharacterCreationOptionsAsync();
+        response.Options.Should().NotBeEmpty("There should be at least one character creation option available.");
+        return response.Options;
     }
+
+    public async Task<CharacterCreationOption> GetDefaultCharacterCreationOptionAsync()
+    {
+        var options = await GetCharacterCreationOptionsAsync();
+        var defaultOption = options.SingleOrDefault(o => o.Name == "Default Character");
+        defaultOption.Should().NotBeNull("Default Character option should be present in the options.");
+        return defaultOption;
+    }
+
+
+
+
+
+
+
+
 
 
     public async Task<Guid> CreateCharacterAsync(string name = "Integration Character")
@@ -58,16 +64,25 @@ public sealed class CharacterCreationDriver : IDriver
         ];
 
         // default character creation option
-        var option = await _creationOptionsDriver.GetDefaultCharacterCreationOptionAsync();
+        var option = await GetDefaultCharacterCreationOptionAsync();
 
         // create character
+
+        var ct = _host.CancellationToken;
+
+        var cts = _host.IntegrationContext.CancellationToken;
+
+
 
         var id = await _api.CreateCharacterAsync(option.Id, name, "/portrait.image");
 
         id.Should().NotBe(Guid.Empty, "Character creation should return a valid Id.");
 
-        _integration.SetCharacterIdentifier(id);
+        _host.SetCharacterIdentifier(id);
         _context.WithCharacter(id, name);
+
+        await _host.Events.EnsureObservation<CharacterCreatedEvent>();
+
 
         await Task.WhenAll(observations);
 
@@ -92,4 +107,13 @@ public sealed class CharacterCreationDriver : IDriver
     {
         await _api.DeleteCharacterAsync(characterId);
     }
+
+
+
+
+
+
+
+
+
 }

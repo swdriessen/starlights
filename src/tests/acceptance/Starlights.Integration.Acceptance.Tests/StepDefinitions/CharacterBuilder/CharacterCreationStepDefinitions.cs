@@ -1,6 +1,6 @@
 using AwesomeAssertions;
 using Starlights.Integration.Drivers;
-using Starlights.Integration.Drivers.Characters;
+using Starlights.Integration.Drivers.Characters.Manage;
 
 namespace Starlights.Integration.Acceptance.Tests.StepDefinitions.CharacterBuilder;
 
@@ -9,13 +9,13 @@ public class CharacterCreationStepDefinitions
 {
     private readonly IIntegrationHost _host;
     private readonly ScenarioContext _scenarioContext;
-    private readonly CharacterCreationDriver _characters;
+    private readonly CharacterManagementDriver _characters;
 
     public CharacterCreationStepDefinitions(IIntegrationHost host, ScenarioContext scenarioContext)
     {
         _host = host;
         _scenarioContext = scenarioContext;
-        _characters = _host.GetDriver<CharacterCreationDriver>();
+        _characters = _host.GetDriver<CharacterManagementDriver>();
     }
 
     [Given(@"the ""([^""]*)"" ruleset exists")]

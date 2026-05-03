@@ -118,6 +118,7 @@ public sealed class EventObserverCollection
         ClearInvocations<CharacterClassCreatedEvent>();
         ClearInvocations<CharacterClassRemovedEvent>();
         ClearInvocations<RegistrationSelectionRuleCreatedEvent>();
+        ClearInvocations<RegistrationStatisticRuleCreatedEvent>();
         ClearInvocations<RegistrationCreatedEvent>();
         ClearInvocations<CharacterLevelChangedEvent>();
         ClearInvocations<RegistrationProcessedEvent>();
@@ -127,6 +128,8 @@ public sealed class EventObserverCollection
 public class EventObserverT<T> where T : IDomainEvent
 {
     private readonly CancellationToken _cancellationToken;
+    private readonly object _gate = new();
+    private readonly List<WaitRegistration> _waitRegistrations = [];
 
     public Mock<IDomainEventHandler<T>> Mock { get; } = new();
     public List<T> Events { get; } = [];
@@ -134,7 +137,7 @@ public class EventObserverT<T> where T : IDomainEvent
     public EventObserverT(CancellationToken cancellationToken)
     {
         Mock.Setup(m => m.HandleAsync(It.IsAny<T>()))
-            .Callback<T>(Events.Add)
+            .Callback<T>(OnEvent)
             .Returns(Task.CompletedTask);
 
         _cancellationToken = cancellationToken;
@@ -147,44 +150,82 @@ public class EventObserverT<T> where T : IDomainEvent
 
     public Task WaitForEvent(Predicate<T>? predicate = null, int count = 1)
     {
-        Trace.WriteLine($"[TRC] waiting for event {typeof(T).Name} .... current invocations: {Mock.Invocations.Count}");
-        var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-        var callCount = 0;
-
-        Mock.Setup(m => m.HandleAsync(It.IsAny<T>()))
-            .Callback<T>(evt =>
-            {
-                Events.Add(evt);
-                if (predicate == null || predicate(evt))
-                {
-                    if (Interlocked.Increment(ref callCount) >= count)
-                    {
-                        tcs.TrySetResult(true);
-                    }
-                }
-            })
-            .Returns(Task.CompletedTask);
-
-        // check if the task condition is already completed before the wait
-        if (Mock.Invocations.Count > 0)
+        if (count <= 0)
         {
-            // check if any of the invocations match the predicate
-            if (Mock.Invocations.Any(inv => inv.Arguments[0] is T evt && (predicate == null || predicate(evt))))
+            throw new ArgumentOutOfRangeException(nameof(count), count, "Count must be greater than zero.");
+        }
+
+        Trace.WriteLine($"[TRC] waiting for event {typeof(T).Name} .... current invocations: {Mock.Invocations.Count}");
+        lock (_gate)
+        {
+            var matchedExisting = Events.Count(evt => predicate == null || predicate(evt));
+            if (matchedExisting >= count)
             {
-                if (Interlocked.Increment(ref callCount) >= count)
+                return Task.CompletedTask;
+            }
+
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var registration = new WaitRegistration(predicate, count, matchedExisting, tcs);
+
+            registration.CancellationRegistration = _cancellationToken.Register(static state =>
+            {
+                var wait = (WaitRegistration)state!;
+                wait.TaskSource.TrySetCanceled();
+                Trace.WriteLine($"[TRC] waiting for event {typeof(T).Name} was cancelled due to test timeout");
+            }, registration);
+
+            tcs.Task.ContinueWith(
+                _ => RemoveWaitRegistration(registration),
+                CancellationToken.None,
+                TaskContinuationOptions.ExecuteSynchronously,
+                TaskScheduler.Default);
+
+            _waitRegistrations.Add(registration);
+            return tcs.Task;
+        }
+    }
+
+    private void OnEvent(T domainEvent)
+    {
+        lock (_gate)
+        {
+            Events.Add(domainEvent);
+
+            if (_waitRegistrations.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var wait in _waitRegistrations)
+            {
+                if (wait.Predicate is null || wait.Predicate(domainEvent))
                 {
-                    tcs.TrySetResult(true);
+                    wait.MatchedCount++;
+                    if (wait.MatchedCount >= wait.ExpectedCount)
+                    {
+                        wait.TaskSource.TrySetResult(true);
+                    }
                 }
             }
         }
+    }
 
-        _cancellationToken.Register(() =>
+    private void RemoveWaitRegistration(WaitRegistration registration)
+    {
+        lock (_gate)
         {
-            tcs.TrySetCanceled(_cancellationToken);
-            Trace.WriteLine($"[TRC] waiting for event {typeof(T).Name} was cancelled due to test timeout");
-        });
+            _waitRegistrations.Remove(registration);
+        }
 
-        return tcs.Task;
+        registration.CancellationRegistration.Dispose();
+    }
+
+    private sealed class WaitRegistration(Predicate<T>? predicate, int expectedCount, int matchedCount, TaskCompletionSource<bool> taskSource)
+    {
+        public Predicate<T>? Predicate { get; } = predicate;
+        public int ExpectedCount { get; } = expectedCount;
+        public int MatchedCount { get; set; } = matchedCount;
+        public TaskCompletionSource<bool> TaskSource { get; } = taskSource;
+        public CancellationTokenRegistration CancellationRegistration { get; set; }
     }
 }

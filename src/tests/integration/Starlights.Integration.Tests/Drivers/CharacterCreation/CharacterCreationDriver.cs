@@ -35,12 +35,12 @@ internal sealed class CharacterCreationDriver : IDriver
         // at some point we will have a specific event to indicate the character is fully set up
         // until then, we wait for at least one ability, saving throw, and skill to be created
         List<Task> observations = [
-            _events.EnsureObservation<CharacterCreatedEvent>(),
+                  _events.EnsureObservation<CharacterCreatedEvent>(),
             _events.EnsureObservation<AbilityScoreCreatedEvent>(),
             _events.EnsureObservation<SavingThrowCreatedEvent>(),
             _events.EnsureObservation<SkillCreatedEvent>(),
             _events.EnsureObservation<RegistrationSelectionRuleCreatedEvent>(e => e.ElementType == SelectionRuleTypes.Class)
-        ];
+              ];
 
         // default character creation option
         var option = await _creationOptionsDriver.GetDefaultCharacterCreationOptionAsync();

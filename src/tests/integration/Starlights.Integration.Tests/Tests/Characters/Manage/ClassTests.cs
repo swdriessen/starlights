@@ -1,6 +1,5 @@
 ﻿using AwesomeAssertions;
 using Starlights.Integration.Drivers.CharacterCreation;
-using Starlights.Integration.Eventing;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Domain.Progression.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
@@ -12,7 +11,6 @@ namespace Starlights.Integration.Tests.Characters.Manage;
 public sealed class ClassTests : IntegrationTestBase
 {
     private IntegrationHost _integration = default!;
-    private EventObserverCollection _events = default!;
     private CharacterCreationDriver _characterCreationDriver = default!;
     private CharacterManagementDriver _characterManagementDriver = default!;
     private RegistrationDriver _registrationDriver = default!;
@@ -25,7 +23,6 @@ public sealed class ClassTests : IntegrationTestBase
 
         await _integration.InitializeElements();
 
-        _events = _integration.GetEventObserverCollection();
         _characterCreationDriver = _integration.GetDriver<CharacterCreationDriver>();
         _characterManagementDriver = _integration.GetDriver<CharacterManagementDriver>();
         _registrationDriver = _integration.GetDriver<RegistrationDriver>();
@@ -72,7 +69,7 @@ public sealed class ClassTests : IntegrationTestBase
         // Arrange
         await _registrationDriver.RegisterClass("Barbarian");
         await _characterManagementDriver.LevelUp("Barbarian", 3);
-        await _events.EnsureObservation<RegistrationSelectionRuleCreatedEvent>(e => e.ElementType == ElementTypeConstants.SubClass);
+        await _integration.Events.EnsureObservation<RegistrationSelectionRuleCreatedEvent>(e => e.ElementType == ElementTypeConstants.SubClass);
 
         // Act
         var selectionRule = await _registrationDriver.GetSingleSelectionRule("SubClass");
@@ -92,7 +89,7 @@ public sealed class ClassTests : IntegrationTestBase
         var expectedRegistrations = await _registrationDriver.GetRegistrations();
         await _registrationDriver.RegisterClass("Barbarian");
         await _characterManagementDriver.LevelUp("Barbarian", 3);
-        await _events.EnsureObservation<RegistrationSelectionRuleCreatedEvent>(e => e.ElementType == ElementTypeConstants.SubClass);
+        await _integration.Events.EnsureObservation<RegistrationSelectionRuleCreatedEvent>(e => e.ElementType == ElementTypeConstants.SubClass);
         await _registrationDriver.RegisterSubClass("Barbarian SubClass 1");
 
         // Act
@@ -125,16 +122,16 @@ public sealed class ClassTests : IntegrationTestBase
     {
         // Arrange
         await _registrationDriver.RegisterClass("Barbarian");
-        await _events.EnsureObservation<RegistrationProcessedEvent>(x => x.ElementType == "Class Feature");
+        await _integration.Events.EnsureObservation<RegistrationProcessedEvent>(x => x.ElementType == "Class Feature");
         var expectedRegistrations = await _registrationDriver.GetRegistrations();
         await _characterManagementDriver.LevelUp("Barbarian", 3);
-        await _events.EnsureObservation<RegistrationSelectionRuleCreatedEvent>(e => e.ElementType == ElementTypeConstants.SubClass);
+        await _integration.Events.EnsureObservation<RegistrationSelectionRuleCreatedEvent>(e => e.ElementType == ElementTypeConstants.SubClass);
         await _registrationDriver.RegisterSubClass("Barbarian SubClass 1");
-        _events.ClearInvocations();
+        _integration.Events.ClearInvocations();
 
         // Act
         await _characterManagementDriver.LevelUp("Barbarian", 1); // Level down to 1
-        await _events.EnsureObservation<CharacterLevelChangedEvent>(e => e.NewLevel == 1);
+        await _integration.Events.EnsureObservation<CharacterLevelChangedEvent>(e => e.NewLevel == 1);
 
         // Assert
         var actualRegistrations = await _registrationDriver.GetRegistrations();
