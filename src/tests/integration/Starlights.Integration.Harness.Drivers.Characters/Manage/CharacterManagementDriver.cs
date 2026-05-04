@@ -67,22 +67,12 @@ public sealed class CharacterManagementDriver : IDriver
         var option = await GetDefaultCharacterCreationOptionAsync();
 
         // create character
-
-        var ct = _host.CancellationToken;
-
-        var cts = _host.IntegrationContext.CancellationToken;
-
-
-
         var id = await _api.CreateCharacterAsync(option.Id, name, "/portrait.image");
 
         id.Should().NotBe(Guid.Empty, "Character creation should return a valid Id.");
 
         _host.SetCharacterIdentifier(id);
         _context.WithCharacter(id, name);
-
-        await _host.Events.EnsureObservation<CharacterCreatedEvent>();
-
 
         await Task.WhenAll(observations);
 

@@ -17,7 +17,7 @@ public sealed class EventObserverCollection
         _cancellationToken = integration.CancellationToken;
     }
 
-    public EventObserver<T> Event<T>() where T : IDomainEvent
+    private EventObserver<T> Event<T>() where T : IDomainEvent
     {
         var observer = _observers.GetOrAdd(typeof(T), _ => CreateObserver<T>());
         if (observer is EventObserver<T> typedObserver)
@@ -53,7 +53,7 @@ public sealed class EventObserverCollection
         }
         catch (TaskCanceledException)
         {
-            var observed = Event<T>().Events.Count;
+            var observed = Event<T>().MatchedCount(predicate);
 
             var message = observed == 0
                 ? $"No {typeof(T).Name} events were observed within the test timeout."
@@ -74,7 +74,7 @@ public sealed class EventObserverCollection
     }
 
     /// <summary>
-    /// Clears all recorded invocations for character-related events within the current context.
+    /// Clears all recorded invocations for all observed event types within the current context.
     /// </summary>
     public void ClearInvocations()
     {

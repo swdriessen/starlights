@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using AwesomeAssertions;
+using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacterDetails;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
@@ -24,10 +25,10 @@ public sealed class CharactersEndpointDriver : IDriver
 
         var payload = new CreateCharacterRequest(creationOption, name, portraitPath);
 
-        var response = await api.PostAsJsonAsync("/api/characters", payload);
+        var response = await api.PostAsJsonAsync("/api/characters", payload, _integration.CancellationToken);
         response.StatusCode.Should().Be(HttpStatusCode.Created, "Character creation should return HTTP 201 Created.");
 
-        var data = await response.Content.ReadFromJsonAsync<CreateCharacterResponse>();
+        var data = await response.Content.ReadFromJsonAsync<CreateCharacterResponse>(_integration.CancellationToken);
         data.Should().NotBeNull("Expected response content to be deserializable.");
 
         return data.Id;
@@ -39,7 +40,7 @@ public sealed class CharactersEndpointDriver : IDriver
 
         var url = $"/api/characters/{characterId}";
 
-        var response = await api.DeleteAsync(url);
+        var response = await api.DeleteAsync(url, _integration.CancellationToken);
         response.StatusCode.Should().Be(HttpStatusCode.NoContent, "Character deletion should return HTTP 204 No Content.");
     }
 
@@ -49,7 +50,7 @@ public sealed class CharactersEndpointDriver : IDriver
 
         var url = $"/api/characters";
 
-        var response = await api.GetAsync(url);
+        var response = await api.GetAsync(url, _integration.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         var data = await response.Content.ReadFromJsonAsync<GetCharactersResponse>();
@@ -64,7 +65,7 @@ public sealed class CharactersEndpointDriver : IDriver
 
         using var api = _integration.CreateClient();
 
-        var response = await api.GetAsync(url);
+        var response = await api.GetAsync(url, _integration.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         var data = await response.Content.ReadFromJsonAsync<GetCharacterDetailsResponse>();
@@ -80,10 +81,10 @@ public sealed class CharactersEndpointDriver : IDriver
     {
         using var api = _integration.CreateClient();
 
-        var response = await api.GetAsync("/api/characters/creation-options");
+        var response = await api.GetAsync("/api/characters/creation-options", _integration.CancellationToken);
         response.EnsureSuccessStatusCode();
 
-        var data = await response.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>();
+        var data = await response.Content.ReadFromJsonAsync<GetCharacterCreationOptionsResponse>(_integration.CancellationToken);
         data.Should().NotBeNull("Expected response content to be deserializable.");
 
         return data;
@@ -93,10 +94,10 @@ public sealed class CharactersEndpointDriver : IDriver
     {
         using var api = _integration.CreateClient();
 
-        var response = await api.GetAsync("/api/characters/portrait-options");
+        var response = await api.GetAsync("/api/characters/portrait-options", _integration.CancellationToken);
         response.EnsureSuccessStatusCode();
 
-        var data = await response.Content.ReadFromJsonAsync<GetCharacterPortraitOptionsResponse>();
+        var data = await response.Content.ReadFromJsonAsync<GetCharacterPortraitOptionsResponse>(_integration.CancellationToken);
         data.Should().NotBeNull("Expected response content to be deserializable.");
 
         return data;

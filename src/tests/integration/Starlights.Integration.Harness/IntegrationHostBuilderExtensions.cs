@@ -4,22 +4,43 @@ namespace Starlights.Integration;
 
 public static class IntegrationHostBuilderExtensions
 {
-    /// <summary>
-    /// Adds the specified <see cref="TestContext"/> to the integration host builder for use during test execution.
-    /// The <see cref="TestContext"/> is only available after the class constructor has run.
-    /// Therefore, this method should be called in the initializer of the test class.
-    /// </summary>
-    /// <remarks>This method enables test-specific services or configuration to be accessed during integration
-    /// testing by attaching the provided <see cref="TestContext"/> to the builder's properties.</remarks>
-    public static IntegrationHostBuilder WithTestContext(this IntegrationHostBuilder builder, TestContext testContext)
+    public static IntegrationHostBuilder WithDrivers<T>(this IntegrationHostBuilder builder)
     {
-        builder.Properties["TestContext"] = testContext;
+        var assemblies = new List<Assembly>();
+
+        if (builder.Properties.TryGetValue("driver", out var storedAssemblies))
+        {
+            assemblies = (List<Assembly>)storedAssemblies;
+        }
+
+        var type = typeof(T);
+        assemblies.Add(type.Assembly);
+
+        builder.Properties["driver"] = assemblies;
+
+        builder.ConfigureOptions(o => o.DriverAssemblies = [.. assemblies]);
         return builder;
     }
 
     public static IntegrationHostBuilder WithDriverAssemblies(this IntegrationHostBuilder builder, params Assembly[] assemblies)
     {
         builder.ConfigureOptions(o => o.DriverAssemblies = assemblies);
+        return builder;
+    }
+
+    public static IntegrationHostBuilder WithDriverAssembly(this IntegrationHostBuilder builder, Assembly assembly)
+    {
+        builder.ConfigureOptions(o =>
+        {
+            if (o.DriverAssemblies == null)
+            {
+                o.DriverAssemblies = new[] { assembly };
+            }
+            else
+            {
+                o.DriverAssemblies = o.DriverAssemblies.Append(assembly).ToArray();
+            }
+        });
         return builder;
     }
 

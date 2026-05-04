@@ -1,14 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using OpenTelemetry.Trace;
 using Starlights.Application;
-using Starlights.Integration.Eventing;
-using Starlights.Integration.Extensions;
-using Starlights.Platform.Eventing.EventPublisher;
 
 namespace Starlights.Integration;
 
@@ -18,69 +10,31 @@ namespace Starlights.Integration;
 public class IntegrationHost : IIntegrationHost, IDisposable
 {
     private readonly WebApplicationFactory<Program> _factory;
+    private readonly IServiceScope _scope;
     private bool _disposedValue;
 
-    public IntegrationHost(
-        Action<Dictionary<string, object>>? configureProperties = null,
-        Action<IntegrationHostOptions>? configureOptions = null,
-        Action<IServiceCollection>? configureServices = null)
+    internal IntegrationHost(WebApplicationFactory<Program> factory, Dictionary<string, object> properties)
     {
-        var options = new IntegrationHostOptions();
-
-        configureOptions?.Invoke(options);
-        configureProperties?.Invoke(Properties);
-
-        Properties["IntegrationHostOptions"] = options;
-
-        _factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder =>
-            {
-                // allow separation from Development using appsettings.Integration.json
-                builder.UseEnvironment("Integration");
-
-                // custom integration environment configuration
-                builder.UseSetting("INTEGRATION_ENVIRONMENT_UNIQUE_NAME", options.UniqueIntegrationIdentifier);
-
-                // preserve the execution context to ensure that the test server can handle async operations correctly
-                builder.UseTestServer(options => options.PreserveExecutionContext = true);
-
-                // configure additional services for integration tests
-                builder.ConfigureTestServices(services =>
-                {
-                    services.Configure<HostOptions>(options => options.ShutdownTimeout = TimeSpan.FromMilliseconds(250));
-
-                    // able to listen and wait for domain events
-                    services.AddSingleton<EventObserverCollection>();
-                    services.AddDomainEventHandlersFrom(typeof(IntegrationHost).Assembly);
-
-
-
-                    // auto register all IDriver implementations
-                    services.RegisterDrivers(options.DriverAssemblies ?? [typeof(IntegrationHost).Assembly]);
-
-                    // drivers need the instance of this host
-                    services.AddSingleton<IIntegrationHost>(this);
-                    services.AddSingleton(new IntegrationTestContext((TestContext)Properties["TestContext"], options.Timeout));
-
-                    if (options.UseConsoleActivityProcessor) // show instrumentation in the console logging
-                    {
-                        services.AddOpenTelemetry()
-                            .WithTracing(tracing => tracing.AddProcessor<CustomConsoleActivityProcessor>());
-                    }
-
-                    configureServices?.Invoke(services);
-                });
-            });
-
-
-
-        Services = _factory.Services.CreateScope().ServiceProvider;
+        _factory = factory;
+        Properties = properties;
+        _scope = _factory.Services.CreateScope();
+        Services = _scope.ServiceProvider;
     }
 
-    public Dictionary<string, object> Properties { get; } = [];
+    /// <summary>
+    /// Gets a dictionary of properties associated with this host, allowing for storage and retrieval of arbitrary data during integration tests.
+    /// </summary>
+    public Dictionary<string, object> Properties { get; }
 
+    /// <summary>
+    /// Gets the services available in this host, allowing for dependency resolution of application services during integration tests.
+    /// </summary>
     public IServiceProvider Services { get; }
 
+    /// <summary>
+    /// Creates a new HTTP client for making requests to the application, allowing for end-to-end testing of API endpoints and application behavior during integration tests.
+    /// </summary>
+    /// <returns>A new <see cref="HttpClient"/> instance for making requests to the application.</returns>
     public HttpClient CreateClient()
     {
         return _factory.CreateClient();
@@ -92,6 +46,7 @@ public class IntegrationHost : IIntegrationHost, IDisposable
         {
             if (disposing)
             {
+                _scope.Dispose();
                 _factory.Dispose();
             }
 
@@ -106,8 +61,9 @@ public class IntegrationHost : IIntegrationHost, IDisposable
     }
 
     /// <summary>
-    /// Creates a new instance of the <see cref="IntegrationHostBuilder"/>.
+    /// Creates a new instance of the <see cref="IntegrationHostBuilder"/> class, which can be used to configure and build an <see cref="IntegrationHost"/> for running integration tests against the Starlights application.
     /// </summary>
+    /// <returns>A new <see cref="IntegrationHostBuilder"/> instance for configuring and building an <see cref="IntegrationHost"/>.</returns>
     public static IntegrationHostBuilder CreateBuilder()
     {
         return new();

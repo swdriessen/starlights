@@ -5,6 +5,7 @@ using Starlights.Modules.Characters.Domain.Progression.Eventing;
 using Starlights.Modules.Characters.Domain.Registrations.Eventing;
 using Starlights.Modules.Characters.Domain.SavingThrows.Eventing;
 using Starlights.Modules.Characters.Domain.Skills.Eventing;
+using Starlights.Modules.Elements.Domain.Eventing;
 using Starlights.Platform.Eventing;
 
 namespace Starlights.Integration.Eventing;
@@ -20,7 +21,8 @@ internal sealed class IntegrationEventHandler :
     IDomainEventHandler<RegistrationCreatedEvent>,
     IDomainEventHandler<CharacterLevelChangedEvent>,
     IDomainEventHandler<CharacterClassRemovedEvent>,
-    IDomainEventHandler<RegistrationProcessedEvent>
+    IDomainEventHandler<RegistrationProcessedEvent>,
+    IDomainEventHandler<ElementCreatedEvent>
 {
     private readonly EventObserverCollection _observers;
 
@@ -63,6 +65,7 @@ internal sealed class IntegrationEventHandler :
     {
         return _observers.HandleAsync(domainEvent);
     }
+
     public Task HandleAsync(RegistrationStatisticRuleCreatedEvent domainEvent)
     {
         return _observers.HandleAsync(domainEvent);
@@ -77,7 +80,13 @@ internal sealed class IntegrationEventHandler :
     {
         return _observers.HandleAsync(domainEvent);
     }
+
     public Task HandleAsync(RegistrationProcessedEvent domainEvent)
+    {
+        return _observers.HandleAsync(domainEvent);
+    }
+
+    public Task HandleAsync(ElementCreatedEvent domainEvent)
     {
         return _observers.HandleAsync(domainEvent);
     }

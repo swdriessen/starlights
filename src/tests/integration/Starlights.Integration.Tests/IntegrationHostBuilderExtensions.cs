@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 using Starlights.Integration.Drivers;
 using Starlights.Integration.Drivers.Elements;
+using Starlights.Integration.Extensions;
 
 namespace Starlights.Integration;
 
@@ -20,7 +20,7 @@ public static class IntegrationHostBuilderExtensions
             return new IntegrationHostBuilder()
                 .WithDriverAssemblies(Assembly.GetExecutingAssembly(), typeof(ManageSpellsDriver).Assembly)
                 .WithTestContext(testBase.TestContext)
-                .ConfigureServices(services => services.AddSingleton(new ElementsDriverContext()));
+                .WithDriverContext<ElementsDriverContext>();
         }
     }
 }

@@ -16,7 +16,7 @@ public static class DriverExtensions
     /// <summary>
     /// Registers all implementations of the <see cref="IDriver"/> interface from the specified assemblies as singleton services.
     /// </summary>
-    public static void RegisterDrivers(this IServiceCollection services, params Assembly[] assemblies)
+    internal static void RegisterDrivers(this IServiceCollection services, params Assembly[] assemblies)
     {
         ArgumentNullException.ThrowIfNull(services);
 
