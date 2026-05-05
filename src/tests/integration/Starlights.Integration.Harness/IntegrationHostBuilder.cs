@@ -47,10 +47,10 @@ public class IntegrationHostBuilder
     /// <summary>
     /// Adds a driver context to the integration host by registering the assembly containing the specified type and adding the type itself as a singleton service.
     /// </summary>
-    public IntegrationHostBuilder WithDriverContext<TDriverContext>() where TDriverContext : class
+    public IntegrationHostBuilder RegisterDriverContext<T>() where T : class
     {
-        return this.WithDriverAssembly(typeof(TDriverContext).Assembly)
-            .ConfigureServices(services => services.AddSingleton<TDriverContext>());
+        return this.WithDriverAssembly(typeof(T).Assembly)
+            .ConfigureServices(services => services.AddSingleton<T>());
     }
 
     /// <summary>

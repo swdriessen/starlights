@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Starlights.Integration.Extensions;
 
@@ -14,13 +15,21 @@ public static class TestContextExtensions
         /// <returns>The updated integration host builder.</returns>
         public IntegrationHostBuilder WithTestContext(TestContext testContext, TimeSpan testTimeout = default)
         {
-            builder.ConfigureOptions(o => o.TestTimeout = testTimeout == default ? TimeSpan.FromSeconds(10) : testTimeout);
+            if (testTimeout != default)
+            {
+                builder.ConfigureOptions(options => options.TestTimeout = testTimeout);
+            }
+
             builder.ConfigureServices((services) =>
             {
                 services.AddSingleton(serviceProvider =>
                 {
-                    var configuredOptions = serviceProvider.GetRequiredService<IntegrationHostOptions>();
-                    return new IntegrationTestContext(testContext, configuredOptions.TestTimeout);
+                    var options = serviceProvider.GetRequiredService<IntegrationHostOptions>();
+
+                    // if a debugger is attached, we want to use an "infinite" timeout to avoid timeouts while stepping through code
+                    var timeout = Debugger.IsAttached ? TimeSpan.FromDays(1) : options.TestTimeout;
+
+                    return new IntegrationTestContext(testContext, timeout);
                 });
             });
 

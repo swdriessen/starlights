@@ -8,6 +8,7 @@ public sealed class IntegrationTestContext : IDisposable
     public IntegrationTestContext(TestContext testContext, TimeSpan testTimeout)
     {
         TestContext = testContext;
+        TestContext.WriteLine($"Initializing IntegrationTestContext with a timeout of {testTimeout.TotalSeconds} seconds.");
 
         _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(TestContext.CancellationToken);
         _cancellationSource.CancelAfter(testTimeout);

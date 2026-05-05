@@ -19,8 +19,8 @@ public class IntegrationHostBuilderHooks
 
         _builder = IntegrationHost.CreateBuilder()
             .WithTestContext(testContext)
-            .WithDriverContext<ElementsDriverContext>()
-            .WithDriverContext<CharactersDriverContext>();
+            .RegisterDriverContext<ElementsDriverContext>()
+            .RegisterDriverContext<CharactersDriverContext>();
     }
 
     [BeforeScenario]

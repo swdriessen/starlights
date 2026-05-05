@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
-using Starlights.Integration.Extensions;
 using Starlights.Platform.Eventing;
 
 namespace Starlights.Integration.Eventing;
@@ -8,13 +7,13 @@ namespace Starlights.Integration.Eventing;
 public sealed class EventObserverCollection
 {
     private readonly ILogger<EventObserverCollection> _logger;
-    private readonly CancellationToken _cancellationToken;
+    private readonly IntegrationTestContext _testContext;
     private readonly ConcurrentDictionary<Type, IEventObserver> _observers = new();
 
-    public EventObserverCollection(ILogger<EventObserverCollection> logger, IIntegrationHost integration)
+    public EventObserverCollection(ILogger<EventObserverCollection> logger, IntegrationTestContext testContext)
     {
         _logger = logger;
-        _cancellationToken = integration.CancellationToken;
+        _testContext = testContext;
     }
 
     private EventObserver<T> Event<T>() where T : IDomainEvent
@@ -30,13 +29,12 @@ public sealed class EventObserverCollection
 
     public Task HandleAsync<T>(T domainEvent) where T : IDomainEvent
     {
-        ArgumentNullException.ThrowIfNull(domainEvent);
         return Event<T>().HandleAsync(domainEvent);
     }
 
     private EventObserver<T> CreateObserver<T>() where T : IDomainEvent
     {
-        return new(_cancellationToken);
+        return new(_testContext.CancellationToken);
     }
 
     /// <summary>

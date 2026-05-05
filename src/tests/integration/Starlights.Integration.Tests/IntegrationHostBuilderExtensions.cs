@@ -20,7 +20,7 @@ public static class IntegrationHostBuilderExtensions
             return new IntegrationHostBuilder()
                 .WithDriverAssemblies(Assembly.GetExecutingAssembly(), typeof(ManageSpellsDriver).Assembly)
                 .WithTestContext(testBase.TestContext)
-                .WithDriverContext<ElementsDriverContext>();
+                .RegisterDriverContext<ElementsDriverContext>();
         }
     }
 }
