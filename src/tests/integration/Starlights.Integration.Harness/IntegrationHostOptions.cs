@@ -22,5 +22,10 @@ public class IntegrationHostOptions
     /// <summary>
     /// Gets or sets the assemblies to scan for <see cref="IDriver"/> implementations.
     /// </summary>
-    public Assembly[]? DriverAssemblies { get; set; }
+    public Assembly[] DriverAssemblies { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the assemblies to scan for domain event handlers. By default, it includes the assembly containing the <see cref="IntegrationHost"/> class.
+    /// </summary>
+    public Assembly[] EventHandlerAssemblies { get; set; } = [typeof(IntegrationHost).Assembly];
 }

@@ -57,13 +57,8 @@ public static class TestContextExtensions
         public IntegrationTestContext IntegrationContext => host.Services.GetRequiredService<IntegrationTestContext>();
 
         /// <summary>
-        /// Gets the cancellation token associated with the current test context.
+        /// Gets a cancellation token that is linked to the test context's cancellation token, allowing for cooperative cancellation of asynchronous operations during test execution.
         /// </summary>
-        /// <remarks>
-        /// Use this cancellation token which reflects the lifecycle of the current test, 
-        /// allowing for cooperative cancellation of asynchronous operations during test execution.
-        /// </remarks>
-        [Obsolete("Use the CancellationToken property on the IntegrationTestContext instead.")]
         public CancellationToken CancellationToken => host.IntegrationContext.CancellationToken;
 
         /// <summary>

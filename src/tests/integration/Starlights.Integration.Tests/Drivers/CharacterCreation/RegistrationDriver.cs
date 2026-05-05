@@ -94,7 +94,7 @@ internal sealed class RegistrationDriver : IDriver
     #region Potential Extension Methods
     public async Task<(SelectionRuleDataModel Rule, SelectionRuleOptionModel Option, Guid RegistrationId)> RegisterClass(string className)
     {
-        _integration.WriteLine($"Registering class '{className}'...");
+        _integration.IntegrationContext.WriteLine($"Registering class '{className}'...");
         var classRule = await GetSingleSelectionRule(SelectionRuleTypes.Class);
         var classOption = await GetSelectionRuleOption(classRule.RegistrationSelectionRuleId, className);
         var registrationId = await RegisterSelectionRule(classRule, classOption);

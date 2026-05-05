@@ -215,7 +215,7 @@ public sealed class ManageElementsDriver : IDriver
             RequirementsExpression: properties.RequirementsExpression,
             DisplayName: properties.DisplayName);
 
-        _integration.WriteLine($"Creating include rule for ElementId={elementId} with IncludedElementId={properties.IncludedElementId}");
+        _integration.IntegrationContext.WriteLine($"Creating include rule for ElementId={elementId} with IncludedElementId={properties.IncludedElementId}");
         var response = await _rulesApi.CreateIncludeRuleAsync(elementId, request);
 
         response.ElementId.Should().Be(elementId);
@@ -229,7 +229,7 @@ public sealed class ManageElementsDriver : IDriver
 
     public async Task<IReadOnlyList<GetIncludeRulesResponse.IncludeRuleItem>> GetIncludeRules(Guid elementId)
     {
-        _integration.WriteLine($"Getting include rules for ElementId={elementId}");
+        _integration.IntegrationContext.WriteLine($"Getting include rules for ElementId={elementId}");
         using var client = _integration.CreateClient();
         var response = await client.GetFromJsonAsync<GetIncludeRulesResponse>($"/api/elements/{elementId}/rules/includes");
         response.Should().NotBeNull();
@@ -239,7 +239,7 @@ public sealed class ManageElementsDriver : IDriver
 
     public async Task<GetIncludeRuleResponse> GetIncludeRuleById(Guid elementId, Guid ruleId)
     {
-        _integration.WriteLine($"Getting include rule by ID: ElementId={elementId}, RuleId={ruleId}");
+        _integration.IntegrationContext.WriteLine($"Getting include rule by ID: ElementId={elementId}, RuleId={ruleId}");
         using var client = _integration.CreateClient();
         var response = await client.GetFromJsonAsync<GetIncludeRuleResponse>($"/api/elements/{elementId}/rules/includes/{ruleId}");
         response.Should().NotBeNull();

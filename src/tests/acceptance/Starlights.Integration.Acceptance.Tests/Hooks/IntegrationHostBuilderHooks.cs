@@ -30,6 +30,7 @@ public class IntegrationHostBuilderHooks
 
         // inject the host and driver context into the scenario container to ease dependency resolution
         _scenarioContext.ScenarioContainer.RegisterInstanceAs<IIntegrationHost>(_host);
+        _scenarioContext.ScenarioContainer.RegisterInstanceAs(_host.Services.GetRequiredService<IntegrationTestContext>());
         _scenarioContext.ScenarioContainer.RegisterInstanceAs(_host.Services.GetRequiredService<ElementsDriverContext>());
         _scenarioContext.ScenarioContainer.RegisterInstanceAs(_host.Services.GetRequiredService<CharactersDriverContext>());
     }

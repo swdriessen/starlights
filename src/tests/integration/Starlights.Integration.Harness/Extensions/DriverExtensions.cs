@@ -5,41 +5,56 @@ namespace Starlights.Integration.Extensions;
 
 public static class DriverExtensions
 {
-    /// <summary>
-    /// Retrieves a required service of the specified type from the integration host's service provider.
-    /// </summary>
-    public static TDriver GetDriver<TDriver>(this IIntegrationHost host) where TDriver : notnull
+    extension(IIntegrationHost host)
     {
-        return host.Services.GetRequiredService<TDriver>();
-    }
-
-    /// <summary>
-    /// Registers all implementations of the <see cref="IDriver"/> interface from the specified assemblies as singleton services.
-    /// </summary>
-    internal static void RegisterDrivers(this IServiceCollection services, params Assembly[] assemblies)
-    {
-        ArgumentNullException.ThrowIfNull(services);
-
-        assemblies = assemblies is { Length: > 0 }
-            ? assemblies
-            : throw new ArgumentException("At least one assembly must be provided.", nameof(assemblies));
-
-        var driverInterface = typeof(IDriver);
-
-        foreach (var driverType in assemblies
-                     .SelectMany(a => a.DefinedTypes)
-                     .Where(t => !t.IsAbstract && !t.IsInterface && driverInterface.IsAssignableFrom(t))
-                     .Select(t => t.AsType()))
+        /// <summary>
+        /// Retrieves a required service of the specified type from the integration host's service provider.
+        /// </summary>
+        public TDriver GetDriver<TDriver>() where TDriver : notnull
         {
-            services.AddSingleton(driverType);
+            return host.Services.GetRequiredService<TDriver>();
         }
     }
 
-    /// <summary>
-    /// Registers all implementations of the <see cref="IDriver"/> interface from the calling assembly as singleton services.
-    /// </summary>
-    public static void RegisterDrivers(this IServiceCollection services)
+    extension(IntegrationHostBuilder builder)
     {
-        services.RegisterDrivers(Assembly.GetCallingAssembly());
+        /// <summary>
+        /// Adds the specified assemblies to the list of driver assemblies in the integration host options, allowing the host to discover and register drivers from those assemblies.
+        /// </summary>
+        public IntegrationHostBuilder WithDriverAssemblies(params Assembly[] assemblies)
+        {
+            return builder.ConfigureOptions(o => o.DriverAssemblies = [.. o.DriverAssemblies.Concat(assemblies).Distinct()]);
+        }
+    }
+
+    extension(IServiceCollection services)
+    {
+        /// <summary>
+        /// Registers all implementations of the <see cref="IDriver"/> interface from the specified assemblies as singleton services.
+        /// </summary>
+        internal void RegisterDrivers(params Assembly[] assemblies)
+        {
+            assemblies = assemblies is { Length: > 0 }
+                ? assemblies
+                : throw new ArgumentException("At least one assembly must be provided.", nameof(assemblies));
+
+            var driverInterface = typeof(IDriver);
+
+            foreach (var driverType in assemblies
+                         .SelectMany(a => a.DefinedTypes)
+                         .Where(t => !t.IsAbstract && !t.IsInterface && driverInterface.IsAssignableFrom(t))
+                         .Select(t => t.AsType()))
+            {
+                services.AddSingleton(driverType);
+            }
+        }
+
+        /// <summary>
+        /// Registers all implementations of the <see cref="IDriver"/> interface from the calling assembly as singleton services.
+        /// </summary>
+        public void RegisterDrivers()
+        {
+            services.RegisterDrivers(Assembly.GetCallingAssembly());
+        }
     }
 }

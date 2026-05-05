@@ -19,11 +19,6 @@ public class IntegrationHostBuilder
     private readonly List<Action<IServiceCollection>> _configureServices = [];
     private readonly List<Action<IntegrationHostOptions>> _configureOptionsCollection = [];
 
-    public IntegrationHostBuilder()
-    {
-
-    }
-
     /// <summary>
     /// Gets a collection of custom properties associated with the current instance.
     /// </summary>
@@ -49,7 +44,7 @@ public class IntegrationHostBuilder
     /// </summary>
     public IntegrationHostBuilder RegisterDriverContext<T>() where T : class
     {
-        return this.WithDriverAssembly(typeof(T).Assembly)
+        return this.WithDriverAssemblies(typeof(T).Assembly)
             .ConfigureServices(services => services.AddSingleton<T>());
     }
 
@@ -72,14 +67,6 @@ public class IntegrationHostBuilder
             properties[key] = value;
         }
 
-        var optionsSnapshot = new IntegrationHostOptions
-        {
-            TestTimeout = options.TestTimeout,
-            UseConsoleActivityProcessor = options.UseConsoleActivityProcessor,
-            UniqueIntegrationIdentifier = options.UniqueIntegrationIdentifier,
-            DriverAssemblies = options.DriverAssemblies
-        };
-
         var hostAccessor = new IntegrationHostAccessor();
 
         var factory = new WebApplicationFactory<Program>()
@@ -89,7 +76,7 @@ public class IntegrationHostBuilder
                 builder.UseEnvironment("Integration");
 
                 // custom integration environment configuration
-                builder.UseSetting("INTEGRATION_ENVIRONMENT_UNIQUE_NAME", optionsSnapshot.UniqueIntegrationIdentifier);
+                builder.UseSetting("INTEGRATION_ENVIRONMENT_UNIQUE_NAME", options.UniqueIntegrationIdentifier);
 
                 // preserve the execution context to ensure that the test server can handle async operations correctly
                 builder.UseTestServer(testServerOptions => testServerOptions.PreserveExecutionContext = true);
@@ -99,21 +86,18 @@ public class IntegrationHostBuilder
                 {
                     services.Configure<HostOptions>(hostOptions => hostOptions.ShutdownTimeout = TimeSpan.FromMilliseconds(250));
 
-                    services.AddSingleton(optionsSnapshot);
+                    services.AddSingleton(options);
 
                     // able to listen and wait for domain events
                     services.AddSingleton<EventObserverCollection>();
-                    services.AddDomainEventHandlersFrom(typeof(IntegrationHost).Assembly);
+                    services.AddDomainEventHandlersFrom(options.EventHandlerAssemblies);
 
                     // auto register all IDriver implementations
-                    services.RegisterDrivers(optionsSnapshot.DriverAssemblies ?? [typeof(IntegrationHost).Assembly]);
-
-                    // integration test context to manage cancellation and test-specific data
-                    //services.AddSingleton(new IntegrationTestContext(testContext, optionsSnapshot.TestTimeout));
+                    services.RegisterDrivers(options.DriverAssemblies);
 
                     services.AddSingleton(_ => hostAccessor.Host ?? throw new InvalidOperationException("IntegrationHost is not initialized."));
 
-                    if (optionsSnapshot.UseConsoleActivityProcessor) // show instrumentation in the console logging
+                    if (options.UseConsoleActivityProcessor) // show instrumentation in the console logging
                     {
                         services.AddOpenTelemetry()
                             .WithTracing(tracing => tracing.AddProcessor<CustomConsoleActivityProcessor>());
