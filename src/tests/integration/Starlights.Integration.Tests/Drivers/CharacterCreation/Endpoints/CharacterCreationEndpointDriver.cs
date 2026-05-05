@@ -7,7 +7,7 @@ using Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 using Starlights.Modules.Characters.Endpoints.Generation.PortraitOptions;
 
-namespace Starlights.Integration.Drivers.CharacterCreation;
+namespace Starlights.Integration.Drivers.CharacterCreation.Endpoints;
 
 internal sealed class CharacterCreationEndpointDriver : IDriver
 {

@@ -95,7 +95,7 @@ public class CharacterCreationStepDefinitions
 
         foreach (var name in names)
         {
-            _host.WriteLine(name);
+            _host.IntegrationContext.WriteLine(name);
             await _characters.CreateCharacterAsync(name);
         }
     }

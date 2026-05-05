@@ -19,6 +19,9 @@ public sealed class CharactersEndpointDriver : IDriver
         _host = host;
     }
 
+    /// <summary>
+    /// Creates a new character using the specified creation option, name, and optional portrait path.
+    /// </summary>
     public async Task<Guid> CreateCharacterAsync(Guid creationOption, string name, string? portraitPath)
     {
         using var api = _host.CreateClient();
@@ -34,6 +37,9 @@ public sealed class CharactersEndpointDriver : IDriver
         return data.Id;
     }
 
+    /// <summary>
+    /// Deletes the character with the specified identifier.
+    /// </summary>
     public async Task DeleteCharacterAsync(Guid characterId)
     {
         using var api = _host.CreateClient();
@@ -44,6 +50,9 @@ public sealed class CharactersEndpointDriver : IDriver
         response.StatusCode.Should().Be(HttpStatusCode.NoContent, "Character deletion should return HTTP 204 No Content.");
     }
 
+    /// <summary>
+    /// Retrieves a list of all characters associated with the current user.
+    /// </summary>
     public async Task<GetCharactersResponse> GetCharactersAsync()
     {
         using var api = _host.CreateClient();
@@ -59,6 +68,9 @@ public sealed class CharactersEndpointDriver : IDriver
         return data;
     }
 
+    /// <summary>
+    /// Retrieves the details of a specific character by its ID.
+    /// </summary>
     public async Task<GetCharacterDetailsResponse> GetCharacterAsync(Guid characterId)
     {
         var url = $"/api/characters/{characterId}";
@@ -90,6 +102,9 @@ public sealed class CharactersEndpointDriver : IDriver
         return data;
     }
 
+    /// <summary>
+    /// Retrieves the available options for character portrait generation.
+    /// </summary>
     public async Task<GetCharacterPortraitOptionsResponse> GetCharacterPortraitOptionsAsync()
     {
         using var api = _host.CreateClient();

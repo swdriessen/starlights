@@ -4,7 +4,7 @@ using Starlights.Modules.Characters.Endpoints.Characters.GetCharacterClasses;
 using Starlights.Modules.Characters.Endpoints.Characters.LevelUp;
 using Starlights.Modules.Characters.Endpoints.CharacterSheet.GetFeatures;
 
-namespace Starlights.Integration.Drivers.CharacterCreation;
+namespace Starlights.Integration.Drivers.CharacterCreation.Endpoints;
 
 internal sealed class CharacterManagementEndpointDriver : IDriver
 {

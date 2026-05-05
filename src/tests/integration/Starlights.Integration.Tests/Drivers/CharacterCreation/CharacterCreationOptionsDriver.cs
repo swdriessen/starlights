@@ -1,4 +1,5 @@
 ﻿using AwesomeAssertions;
+using Starlights.Integration.Drivers.CharacterCreation.Endpoints;
 using Starlights.Modules.Characters.Endpoints.Generation.CreationOptions;
 
 namespace Starlights.Integration.Drivers.CharacterCreation;

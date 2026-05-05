@@ -8,7 +8,7 @@ using Starlights.Modules.Characters.Endpoints.Generation.Registrations.RegisterS
 using Starlights.Modules.Characters.Endpoints.Generation.Registrations.UnregisterSelectionRule;
 using Starlights.Modules.Characters.Endpoints.Generation.Statistics.GetStatistics;
 
-namespace Starlights.Integration.Drivers.CharacterCreation;
+namespace Starlights.Integration.Drivers.CharacterCreation.Endpoints;
 
 internal sealed class RegistrationEndpointDriver : IDriver
 {

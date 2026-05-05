@@ -50,7 +50,9 @@ public sealed class CharacterManagementDriver : IDriver
 
 
 
-
+    /// <summary>
+    /// Creates a new character with the specified name (or a default name if not provided). Waits for the necessary events to confirm that the character has been fully set up, including the creation of at least one ability, saving throw, skill, and registration selection rule. Asserts that the character creation returns a valid Id and that the expected events are observed. Returns the Id of the created character.
+    /// </summary>
     public async Task<Guid> CreateCharacterAsync(string name = "Integration Character")
     {
         // at some point we will have a specific event to indicate the character is fully set up
@@ -79,6 +81,9 @@ public sealed class CharacterManagementDriver : IDriver
         return id;
     }
 
+    /// <summary>
+    /// Retrieves the list of characters for the current user. Asserts that the list is not null.
+    /// </summary>
     public async Task<List<CharacterDetailsDataModel>> GetCharacters()
     {
         var response = await _api.GetCharactersAsync();
@@ -86,6 +91,9 @@ public sealed class CharacterManagementDriver : IDriver
         return response.Characters;
     }
 
+    /// <summary>
+    /// Retrieves the details of a specific character by its Id. Asserts that the character is not null.
+    /// </summary>
     public async Task<CharacterDetailsDataModel> GetCharacter(Guid characterId)
     {
         var response = await _api.GetCharacterAsync(characterId);
@@ -93,17 +101,11 @@ public sealed class CharacterManagementDriver : IDriver
         return response.Character;
     }
 
+    /// <summary>
+    /// Deletes the character with the specified identifier.
+    /// </summary>
     public async Task DeleteCharacter(Guid characterId)
     {
         await _api.DeleteCharacterAsync(characterId);
     }
-
-
-
-
-
-
-
-
-
 }

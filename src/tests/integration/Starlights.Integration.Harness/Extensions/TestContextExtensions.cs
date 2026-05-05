@@ -62,18 +62,9 @@ public static class TestContextExtensions
         public CancellationToken CancellationToken => host.IntegrationContext.CancellationToken;
 
         /// <summary>
-        /// Writes the specified message to the test output associated with the integration host.
+        /// Stores a value of the specified type in the integration host's properties dictionary, using either the provided key or the full name of the type as the key. This allows for sharing data across different parts of the integration test by storing it with a specific key or type and retrieving it later using the same key or type.
         /// </summary>
-        /// <param name="message">The message to write to the test output.</param>
-        [Obsolete("Use the WriteLine method on the IntegrationTestContext instead.")]
-        public void WriteLine(string message)
-        {
-            host.IntegrationContext.TestContext.WriteLine(message);
-        }
-
-        /// <summary>
-        /// Sets a value in the scenario context.
-        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
         public void Set<T>(T value, string? key = null) where T : notnull
         {
             ArgumentNullException.ThrowIfNull(value);
@@ -85,8 +76,10 @@ public static class TestContextExtensions
         }
 
         /// <summary>
-        /// Gets a value from the scenario context.
+        /// Retrieves a value of the specified type from the integration host's properties dictionary, using either the provided key or the full name of the type as the key. If the key is not found in the dictionary, an exception is thrown. This allows for sharing data across different parts of the integration test by storing it with a specific key or type and retrieving it later using the same key or type.
         /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="KeyNotFoundException"></exception>
         public T Get<T>(string? key = null)
         {
             var actualKey = key ?? typeof(T).FullName

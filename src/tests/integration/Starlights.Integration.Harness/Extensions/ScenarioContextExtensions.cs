@@ -12,6 +12,7 @@ public static class ScenarioContextExtensions
 {
     public const string CurrentCharacterIdentifierKey = "CURRENT-CHARACTER-ID";
 
+    [Obsolete("switch to characters context")]
     public static Guid GetCharacterIdentifier(this IIntegrationHost host)
     {
         return host.Properties.TryGetValue(CurrentCharacterIdentifierKey, out var value) && value is Guid characterId
@@ -19,6 +20,7 @@ public static class ScenarioContextExtensions
             : throw new InvalidOperationException($"Character identifier '{CurrentCharacterIdentifierKey}' not found in context properties. Ensure the character has been created and the context is initialized properly.");
     }
 
+    [Obsolete("switch to characters context")]
     public static void SetCharacterIdentifier(this IIntegrationHost host, Guid characterId)
     {
         host.Properties[CurrentCharacterIdentifierKey] = characterId;
