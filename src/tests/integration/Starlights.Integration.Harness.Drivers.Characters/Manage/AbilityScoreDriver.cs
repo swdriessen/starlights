@@ -4,7 +4,7 @@ using Starlights.Modules.Characters.Endpoints.Models;
 
 namespace Starlights.Integration.Drivers.Characters.Manage;
 
-internal sealed class AbilityScoreDriver : IDriver
+public sealed class AbilityScoreDriver : IDriver
 {
     private readonly IIntegrationHost _host;
     private readonly AbilityScoresEndpointDriver _api;
@@ -34,5 +34,11 @@ internal sealed class AbilityScoreDriver : IDriver
     public async Task UpdateAbilityScoreBase(Guid abilityScoreId, int newBaseValue)
     {
         await _api.UpdateBaseScoreAsync(_context.CurrentCharacter.Id, abilityScoreId, newBaseValue);
+    }
+
+    public async Task UpdateAbilityScoreBase(string name, int newBaseValue)
+    {
+        var abilityScore = await GetAbilityScore(name);
+        await _api.UpdateBaseScoreAsync(_context.CurrentCharacter.Id, abilityScore.AbilityScoreId, newBaseValue);
     }
 }

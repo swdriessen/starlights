@@ -6,7 +6,7 @@ using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.UpdateBas
 
 namespace Starlights.Integration.Drivers.Characters.Endpoints;
 
-internal sealed class AbilityScoresEndpointDriver : IDriver
+public sealed class AbilityScoresEndpointDriver : IDriver
 {
     private readonly IIntegrationHost _host;
     private readonly IntegrationTestContext _context;
