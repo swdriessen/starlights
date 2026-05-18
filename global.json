@@ -4,7 +4,7 @@
     "rollForward": "latestMinor"
   },
   "msbuild-sdks": {
-    "MSTest.Sdk": "4.2.2"
+    "MSTest.Sdk": "4.2.3"
   },
   "test": {
     "runner": "Microsoft.Testing.Platform"
