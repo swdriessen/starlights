@@ -15,7 +15,7 @@ public class ManageSpellsDriver : IDriver
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
     private readonly ManageSpellsEndpointDriver _api;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
 
     public ManageSpellsDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageSpellsEndpointDriver endpointDriver)
     {
@@ -23,7 +23,7 @@ public class ManageSpellsDriver : IDriver
         _driverContext = driverContext;
         _api = endpointDriver;
 
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateSpell(CreateProperties properties)

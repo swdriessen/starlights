@@ -15,7 +15,7 @@ public sealed class ManageAbilityScoresDriver : IDriver
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
     private readonly ManageAbilityScoresEndpointDriver _api;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
 
     public ManageAbilityScoresDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
     {
@@ -23,7 +23,7 @@ public sealed class ManageAbilityScoresDriver : IDriver
         _driverContext = driverContext;
 
         _api = _integration.GetDriver<ManageAbilityScoresEndpointDriver>();
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateAbilityScoreAsync(CreateProperties properties)

@@ -54,4 +54,17 @@ public static class DomainEventHandlerRegistrationExtensions
             _ = method.Invoke(null, new object[] { services })!;
         }
     }
+
+    /// <summary>
+    /// Scans the given assemblies for IDomainEventHandler{TEvent} implementations and registers them using the wrapper pattern.
+    /// </summary>
+    public static IServiceCollection AddDomainEventHandlersFrom(this IServiceCollection services, params Assembly[] assemblies)
+    {
+        foreach (var assembly in assemblies)
+        {
+            services.AddDomainEventHandlersFrom(assembly);
+        }
+
+        return services;
+    }
 }

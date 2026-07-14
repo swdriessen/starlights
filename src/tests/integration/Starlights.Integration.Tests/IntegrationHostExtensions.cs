@@ -1,4 +1,4 @@
-﻿using Starlights.Integration.Drivers.Elements;
+﻿using Starlights.Integration.Drivers;
 using Starlights.Integration.Extensions;
 
 namespace Starlights.Integration;
@@ -13,6 +13,6 @@ public static class IntegrationHostExtensions
 
     public static Task InitializeElements(this IIntegrationHost host)
     {
-        return host.GetDriver<ElementsInitializationDriver>().InitializeElementsAsync(CancellationToken.None);
+        return host.GetDriver<ElementsInitializationDriver>().InitializeElementsAsync();
     }
 }

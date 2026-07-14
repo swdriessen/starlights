@@ -5,7 +5,7 @@ using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.GetAbilit
 using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.UpdateAdditionalScore;
 using Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.UpdateBaseScore;
 
-namespace Starlights.Integration.Drivers.CharacterCreation;
+namespace Starlights.Integration.Drivers.CharacterCreation.Endpoints;
 
 internal sealed class AbilityScoresEndpointDriver : IDriver
 {

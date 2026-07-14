@@ -3,7 +3,7 @@ using AwesomeAssertions;
 using Starlights.Integration.Extensions;
 using Starlights.Modules.Characters.Endpoints.Characters.SavingThrows.GetSavingThrows;
 
-namespace Starlights.Integration.Drivers.CharacterCreation;
+namespace Starlights.Integration.Drivers.CharacterCreation.Endpoints;
 
 internal sealed class SavingThrowEndpointDriver : IDriver
 {

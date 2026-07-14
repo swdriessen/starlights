@@ -14,7 +14,7 @@ public sealed class ManageLanguagesDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
     private readonly ManageLanguagesEndpointDriver _api;
 
     public ManageLanguagesDriver(IIntegrationHost integration, ElementsDriverContext driverContext, ManageLanguagesEndpointDriver endpointDriver)
@@ -22,7 +22,7 @@ public sealed class ManageLanguagesDriver : IDriver
         _integration = integration;
         _driverContext = driverContext;
         _api = endpointDriver;
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateLanguage(string name, string kind, string? origin, string? description)

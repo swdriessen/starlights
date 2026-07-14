@@ -16,17 +16,17 @@
     "landing": "npm run dev -w apps/landing-page",
     "showcase": "npm run dev -w apps/showcase",
     "build:packages": "npm run build -w packages/api-client && npm run build -w packages/ui-framework",
-    "build:apps": "npm run build -w apps/builder-app && npm run build -w apps/showcase && npm run build -w apps/landing-page && npm run build -w apps/content-manager",
-    "build": "npm run build:packages && npm run build:apps",
+    "build:apps": "npm run build:packages && npm run build -w apps/builder-app && npm run build -w apps/showcase && npm run build -w apps/landing-page && npm run build -w apps/content-manager",
+    "build": "npm run build:apps",
     "lint": "npm run lint -w apps/builder-app",
     "preview": "npm run preview -w apps/builder-app"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.2",
-    "lucide-react": "^1.8.0",
-    "tailwindcss": "^4.2.2"
+    "@tailwindcss/vite": "^4.3.2",
+    "lucide-react": "^1.24.0",
+    "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
-    "@types/node": "^25.6.0"
+    "@types/node": "^26.1.1"
   }
 }

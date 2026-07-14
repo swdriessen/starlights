@@ -2,7 +2,7 @@
 
 namespace Starlights.Modules.Characters.Endpoints.Characters.AbilityScores.GetAbilities;
 
-internal sealed class GetAbilityScoresResponse
+public sealed class GetAbilityScoresResponse
 {
     public List<AbilityScoreDataModel> AbilityScores { get; set; } = [];
 }

@@ -14,7 +14,7 @@ public sealed class ManageSavingThrowsDriver : IDriver
 {
     private readonly IIntegrationHost _integration;
     private readonly ElementsDriverContext _driverContext;
-    private readonly ElementsEventObserverCollection _events;
+    private readonly EventObserverCollection _events;
     private readonly ManageSavingThrowsEndpointDriver _endpoints;
 
     public ManageSavingThrowsDriver(IIntegrationHost integration, ElementsDriverContext driverContext)
@@ -22,7 +22,7 @@ public sealed class ManageSavingThrowsDriver : IDriver
         _integration = integration;
         _driverContext = driverContext;
         _endpoints = _integration.GetDriver<ManageSavingThrowsEndpointDriver>();
-        _events = _integration.GetElementsEventObserverCollection();
+        _events = _integration.Events;
     }
 
     public async Task<Guid> CreateSavingThrowAsync(CreateProperties properties)

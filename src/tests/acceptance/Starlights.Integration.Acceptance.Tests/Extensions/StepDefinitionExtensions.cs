@@ -1,4 +1,4 @@
-﻿using Starlights.Integration.Extensions;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Starlights.Integration.Acceptance.Tests.Extensions;
 
@@ -12,7 +12,13 @@ internal static class StepDefinitionExtensions
         /// <param name="message">The message to write to the test output.</param>
         internal void WriteStepNotImplemented(string? message = null)
         {
-            host.TestContext.WriteLine($"-> warn: this step is skipped, because it is not implemented{(string.IsNullOrWhiteSpace(message) ? string.Empty : $": {message}")}");
+            host.IntegrationContext.WriteLine($"-> warn: this step is skipped, because it is not implemented{(string.IsNullOrWhiteSpace(message) ? string.Empty : $": {message}")}");
+        }
+
+        [DoesNotReturn]
+        internal void ThrowStepNotImplemented()
+        {
+            throw new NotImplementedException("this step is not implemented yet");
         }
     }
 }
