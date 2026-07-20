@@ -22,8 +22,8 @@
     "preview": "npm run preview -w apps/builder-app"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.3.2",
-    "lucide-react": "^1.24.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "lucide-react": "^1.25.0",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
