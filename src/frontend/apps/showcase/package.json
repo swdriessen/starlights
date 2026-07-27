@@ -15,7 +15,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-qr-code": "^2.2.0",
-    "recharts": "^3.9.2",
+    "recharts": "^3.10.1",
     "ui-framework": "*"
   },
   "devDependencies": {
