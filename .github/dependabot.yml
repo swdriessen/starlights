@@ -105,8 +105,7 @@ updates:
           - "@vitejs/*"
           - "typescript"
           - "@types/node"
-          - "eslint*"
-          - "@eslint/*"
+          - "oxlint*"
         update-types:
           - "minor"
           - "patch"

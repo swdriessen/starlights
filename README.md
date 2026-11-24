@@ -51,6 +51,14 @@ This will start the AppHost, which orchestrates:
 
 Before using the application, initialize the sample data. In the Aspire Dashboard, locate the backend API resource and run the database initialization/seed action named **Initialize Database**.
 
+### Frontend Dependencies
+
+Install frontend dependencies from `src/frontend` using `npm ci`; the root lockfile covers all npm workspaces. Run `npm run build` there to build the shared packages and applications.
+
+The frontend uses TypeScript 7 and Oxlint. Run `npm run lint` from `src/frontend` to lint every application and shared package, or use `npm run lint -w <workspace>` for one workspace. All workspaces use the shared `src/frontend/.oxlintrc.json` configuration.
+
+Oxlint's native rules cover JavaScript/TypeScript checks, Rules of Hooks, Hook dependencies, and Fast Refresh exports. React Compiler-specific diagnostics from eslint-plugin-react-hooks are not included; this setup does not use ESLint or JavaScript lint plugins.
+
 ## Running Tests
 
 You can run the automated test suite using Visual Studio or the command line.

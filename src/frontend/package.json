@@ -18,15 +18,16 @@
     "build:packages": "npm run build -w packages/api-client && npm run build -w packages/ui-framework",
     "build:apps": "npm run build:packages && npm run build -w apps/builder-app && npm run build -w apps/showcase && npm run build -w apps/landing-page && npm run build -w apps/content-manager",
     "build": "npm run build:apps",
-    "lint": "npm run lint -w apps/builder-app",
+    "lint": "oxlint apps packages",
     "preview": "npm run preview -w apps/builder-app"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.3.2",
-    "lucide-react": "^1.24.0",
-    "tailwindcss": "^4.3.2"
+    "@tailwindcss/vite": "^4.3.5",
+    "lucide-react": "^1.79.0",
+    "tailwindcss": "^4.3.5"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1"
+    "@types/node": "^26.6.7",
+    "oxlint": "^1.95.0"
   }
 }

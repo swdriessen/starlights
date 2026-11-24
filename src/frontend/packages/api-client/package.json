@@ -19,15 +19,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -p tsconfig.build.json",
-    "lint": "eslint .",
+    "lint": "oxlint --config ../../.oxlintrc.json .",
     "preview": "vite preview"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0"
   },
   "devDependencies": {
-    "@tanstack/react-query": "^5.101.2",
+    "@tanstack/react-query": "^5.108.4",
     "typescript": "~7.0.2",
-    "vite": "^8.1.4"
+    "vite": "^8.3.8"
   }
 }

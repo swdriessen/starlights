@@ -124,8 +124,12 @@ export function PieChartCard() {
               />
             </Pie>
             <ChartLegend
-              content={<ChartLegendContent nameKey="browser" />}
-              className="translate-y-2"
+              content={
+                <ChartLegendContent
+                  nameKey="browser"
+                  className="translate-y-2"
+                />
+              }
             />
           </PieChart>
         </ChartContainer>
