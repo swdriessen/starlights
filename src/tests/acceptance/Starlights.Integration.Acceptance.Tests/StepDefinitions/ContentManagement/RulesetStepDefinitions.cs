@@ -18,7 +18,8 @@ public class RulesetStepDefinitions
     public async Task GivenTheCoreRulesetIsInitializedAsync()
     {
         using var client = _host.CreateClient();
-        _ = await client.GetAsync("/api/elements/initialize", _context.CancellationToken);
+        using var response = await client.PostAsync("/api/elements/initialize", null, _context.CancellationToken);
+        response.EnsureSuccessStatusCode();
     }
 
     [Given("I am authenticated as a content creator")]

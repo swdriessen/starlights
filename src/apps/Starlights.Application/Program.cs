@@ -1,4 +1,6 @@
 using Scalar.AspNetCore;
+using Starlights.Modules.Identity;
+using Starlights.Modules.Identity.Accounts;
 using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
 using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
@@ -16,28 +18,27 @@ namespace Starlights.Application;
 
 public sealed class Program
 {
-    public static void Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        var accountCommand = args is ["accounts", ..];
+        var builder = WebApplication.CreateBuilder(accountCommand ? [] : args);
         builder.AddServiceDefaults();
 
+        builder.AddIdentityModule();
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
+        builder.Services.AddValidation();
+        builder.Services.AddProblemDetails();
+
+        if (accountCommand)
+        {
+            await using var operatorHost = builder.Build();
+            return await AccountCommands.RunAsync(operatorHost.Services, args[1..]);
+        }
 
         builder.Services.AddCors(options =>
         {
-            options.AddDefaultPolicy(builder =>
-            {
-                builder
-                    .SetIsOriginAllowed(_ =>
-                    {
-                        // Allow all origins for development purposes
-                        return true;
-                    })
-                    .AllowAnyHeader()
-                    .AllowCredentials()
-                    .AllowAnyMethod();
-            });
+            options.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod());
         });
 
         // add the platform services and its modules
@@ -63,6 +64,11 @@ public sealed class Program
 
         var app = builder.Build();
 
+        app.UseExceptionHandler();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseIdentityApiProtection();
+        app.MapIdentity();
         app.MapDefaultEndpoints();
 
         if (app.Environment.IsDevelopment())
@@ -87,8 +93,7 @@ public sealed class Program
         app.UseCors();
 
         app.UseHttpsRedirection();
-        app.UseAuthorization();
-
-        app.Run();
+        await app.RunAsync();
+        return 0;
     }
 }

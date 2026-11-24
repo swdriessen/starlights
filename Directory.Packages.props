@@ -33,6 +33,8 @@
 	</ItemGroup>
 	<ItemGroup Label="Microsoft Extensions">
 		<PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftExtensionsVersion)" />
+		<PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(MicrosoftExtensionsVersion)" />
+		<PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="$(MicrosoftExtensionsVersion)" />
 		<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsVersion)" />
 		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
 		<PackageVersion Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsVersion)" />
@@ -48,6 +50,7 @@
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EntityFrameworkCoreVersion)" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EntityFrameworkCoreVersion)" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkCoreVersion)" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EntityFrameworkCoreVersion)" />
 	</ItemGroup>
 	<ItemGroup Label="Test Projects">

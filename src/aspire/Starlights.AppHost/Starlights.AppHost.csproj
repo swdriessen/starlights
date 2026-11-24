@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\identity\Modules.Identity.MigrationService\Modules.Identity.MigrationService.csproj" />
     <ProjectReference Include="..\..\apps\Starlights.Application\Starlights.Application.csproj" />
     <ProjectReference Include="..\..\frontend\apps\builder-app\Starlights.Builder.React.esproj" />
     <ProjectReference Include="..\..\modules\characters\Modules.Characters.Data.EntityFramework.MigrationService\Modules.Characters.Data.EntityFramework.MigrationService.csproj" />

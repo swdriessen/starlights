@@ -47,7 +47,7 @@ public class UnregisterSelectionRuleEndpoint : Endpoint<UnregisterSelectionRuleR
 
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
         var parentRegistration = await registrations.GetRegistrationAsync(new(req.ParentRegistration));
-        if (parentRegistration is null)
+        if (parentRegistration is null || parentRegistration.CharacterId != character.Id)
         {
             AddError($"The parent registration '{req.ParentRegistration}' does not exist.");
             await Send.NotFoundAsync(cancellation: ct);
@@ -71,7 +71,7 @@ public class UnregisterSelectionRuleEndpoint : Endpoint<UnregisterSelectionRuleR
 
         // Retrieve the registration that is currently selected by the rule.
         var selectionRegistration = await registrations.GetRegistrationAsync(selectionRule.SelectionRegistrationId!.Value);
-        if (selectionRegistration is null)
+        if (selectionRegistration is null || selectionRegistration.CharacterId != character.Id)
         {
             // Inconsistent state: rule points to non-existing registration.
             AddError($"The selected registration '{selectionRule.SelectionRegistrationId}' no longer exists.");

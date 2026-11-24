@@ -19,10 +19,13 @@ internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformAp
     {
         builder.Services.AddScoped<ICharactersRepository, CharactersRepository>();
         builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
+        builder.Services.AddScoped<ICharacterOwnership, CharacterOwnership>();
+        builder.Services.AddSingleton<CharacterOwnershipInterceptor>();
 
         builder.Services.AddSingleton<PersistenceCharactersContextFactory>();
-        builder.Services.AddDbContextFactory<CharactersContext>(options =>
+        builder.Services.AddDbContextFactory<CharactersContext>((services, options) =>
         {
+            options.AddInterceptors(services.GetRequiredService<CharacterOwnershipInterceptor>());
             if (builder.Environment.IsIntegration())
             {
                 string uniqueIdentifier = Guid.NewGuid().ToString("N");

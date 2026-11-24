@@ -25,7 +25,7 @@ public sealed class ElementsEndpointTests : IntegrationTestBase
         var client = _integration.CreateClient();
 
         // Act
-        var response = await client.GetAsync(url, _integration.CancellationToken);
+        var response = await client.PostAsync(url, null, _integration.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -38,7 +38,7 @@ public sealed class ElementsEndpointTests : IntegrationTestBase
         var client = _integration.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/elements/initialize", _integration.CancellationToken);
+        var response = await client.PostAsync("/api/elements/initialize", null, _integration.CancellationToken);
 
         // Assert
         var json = await response.Content.ReadFromJsonAsync<object>(_integration.CancellationToken);

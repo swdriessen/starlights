@@ -1,11 +1,18 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using OpenTelemetry.Trace;
 using Starlights.Application;
 using Starlights.Integration.Eventing;
+using Starlights.Integration.Authentication;
+using Starlights.Modules.Identity.Data;
+using Starlights.Platform.Hosting;
 using Starlights.Integration.Extensions;
 using Starlights.Platform.Eventing.EventPublisher;
 
@@ -84,6 +91,17 @@ public class IntegrationHostBuilder
                 // configure additional services for integration tests
                 builder.ConfigureTestServices(services =>
                 {
+                    services.RemoveAll<DbContextOptions<IdentityContext>>();
+                    services.RemoveAll<IDbContextOptionsConfiguration<IdentityContext>>();
+                    services.AddDbContext<IdentityContext>(db => db.UseInMemoryDatabase($"identity-{options.UniqueIntegrationIdentifier}"));
+                    services.RemoveAll<ICurrentUser>();
+                    services.AddSingleton<ICurrentUser, IntegrationCurrentUser>();
+                    services.AddAuthentication(authentication =>
+                    {
+                        authentication.DefaultAuthenticateScheme = "IntegrationTests";
+                        authentication.DefaultChallengeScheme = "IntegrationTests";
+                    }).AddScheme<AuthenticationSchemeOptions, IntegrationAuthenticationHandler>("IntegrationTests", _ => { });
+
                     services.Configure<HostOptions>(hostOptions => hostOptions.ShutdownTimeout = TimeSpan.FromMilliseconds(250));
 
                     services.AddSingleton(options);

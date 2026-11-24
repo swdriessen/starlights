@@ -9,7 +9,6 @@ var application = builder.AddProject<Projects.Starlights_Application>("backend")
     .WithUrls(context => context.Urls.ForEach(url => url.DisplayLocation = UrlDisplayLocation.DetailsOnly))
     .WithScalarCommand()
     .WithScalarUrl()
-    .WithInitializeDatabaseCommand()
     .WithReference(database)
     .WaitFor(database);
 
@@ -17,9 +16,13 @@ if (builder.ExecutionContext.IsRunMode)
 {
     var migrationResource = builder.AddMigrationsResource("migrations");
 
-    var elements = migrationResource.WithMigrationWorker<Projects.Modules_Elements_Data_EntityFramework_MigrationService>("elements-context")
+    var identity = migrationResource.WithMigrationWorker<Projects.Modules_Identity_MigrationService>("identity-context")
         .WithReference(database)
         .WaitFor(database);
+
+    var elements = migrationResource.WithMigrationWorker<Projects.Modules_Elements_Data_EntityFramework_MigrationService>("elements-context")
+        .WithReference(database)
+        .WaitForCompletion(identity);
 
     var characters = migrationResource.WithMigrationWorker<Projects.Modules_Characters_Data_EntityFramework_MigrationService>("characters-context")
         .WithReference(database)
@@ -28,6 +31,7 @@ if (builder.ExecutionContext.IsRunMode)
     // wait for the migration services to complete before starting the application
     application.WaitForCompletion(elements);
     application.WaitForCompletion(characters);
+    application.WaitForCompletion(identity);
 }
 
 if (builder.ExecutionContext.IsRunMode)

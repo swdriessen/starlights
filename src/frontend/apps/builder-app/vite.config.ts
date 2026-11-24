@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
 
   const apiHttps = viteEnv.VITE_API_HTTPS || nodeEnv.services__backend__https__0 || "N/A";
   const apiHttp = viteEnv.VITE_API_HTTP || nodeEnv.services__backend__http__0 || "N/A";
-  const apiBase = viteEnv.VITE_API_BASE || nodeEnv.services__backend__https__0 || nodeEnv.services__backend__http__0 || "N/A";
+  const apiBase = viteEnv.VITE_API_BASE || nodeEnv.services__backend__http__0 || nodeEnv.services__backend__https__0 || "http://localhost:5240";
 
   console.log("===== RESOLVED ENVIRONMENT =====");
   console.log("NODE_ENV =", nodeEnv.NODE_ENV);
@@ -33,11 +33,18 @@ export default defineConfig(({ mode }) => {
     server: {
       port: parseInt(nodeEnv.PORT || "55052"),
       open: true,
+      proxy: {
+        "/api": {
+          target: apiBase,
+          changeOrigin: false,
+          secure: !["localhost", "127.0.0.1", "[::1]"].includes(new URL(apiBase).hostname),
+        },
+      },
     },
     define: {
       "import.meta.env.VITE_API_HTTPS": JSON.stringify(apiHttps),
       "import.meta.env.VITE_API_HTTP": JSON.stringify(apiHttp),
-      "import.meta.env.VITE_API_BASE": JSON.stringify(apiBase),
+      "import.meta.env.VITE_API_BASE": JSON.stringify(""),
     },
   };
 });

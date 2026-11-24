@@ -8,7 +8,9 @@ export interface ClientConfig {
    * Optional callback returning headers to merge into every request.
    * Use this to inject Authorization tokens or other shared headers.
    */
-  getHeaders?: () => Record<string, string>;
+  getHeaders?: (method: string) => Record<string, string> | Promise<Record<string, string>>;
+  /** Notifies the application when an existing session is rejected. */
+  onUnauthorized?: () => void;
 }
 
 export interface RequestOptions {

@@ -11,6 +11,8 @@ public class CharacterTypeConfiguration : IEntityTypeConfiguration<Character>
         builder.ToTable("character");
 
         builder.HasKey(e => e.Id);
+        builder.Property<Guid>("OwnerId").HasColumnName("owner_id");
+        builder.HasIndex("OwnerId");
 
         builder.Property(e => e.Id)
             .HasColumnName("id")

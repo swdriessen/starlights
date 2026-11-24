@@ -14,9 +14,9 @@ export function createHttpClient(config: ClientConfig): HttpClient {
     return path.startsWith("http") ? path : `${config.baseUrl}${path}`;
   }
 
-  function mergeHeaders(extra?: Record<string, string>): Record<string, string> {
+  async function mergeHeaders(method: string, extra?: Record<string, string>): Promise<Record<string, string>> {
     return {
-      ...(config.getHeaders?.() ?? {}),
+      ...(await config.getHeaders?.(method) ?? {}),
       ...(extra ?? {}),
     };
   }
@@ -24,6 +24,7 @@ export function createHttpClient(config: ClientConfig): HttpClient {
   async function handleResponse<T>(res: Response, expectedStatus?: number): Promise<T> {
     const isOk = expectedStatus != null ? res.status === expectedStatus : res.ok;
     if (!isOk) {
+      if (res.status === 401) config.onUnauthorized?.();
       throw await parseApiError(res);
     }
     // 204 No Content or explicitly empty body
@@ -43,45 +44,50 @@ export function createHttpClient(config: ClientConfig): HttpClient {
   }
 
   return {
-    get<T>(path: string, options?: RequestOptions): Promise<T> {
+    async get<T>(path: string, options?: RequestOptions): Promise<T> {
       return fetch(buildUrl(path), {
         method: "GET",
-        headers: mergeHeaders(options?.headers),
+        credentials: "same-origin",
+        headers: await mergeHeaders("GET", options?.headers),
         signal: options?.signal,
       }).then((res) => handleResponse<T>(res, options?.expectedStatus));
     },
 
-    post<TReq, TRes>(path: string, payload: TReq, options?: RequestOptions): Promise<TRes> {
+    async post<TReq, TRes>(path: string, payload: TReq, options?: RequestOptions): Promise<TRes> {
       return fetch(buildUrl(path), {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...mergeHeaders(options?.headers) },
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", ...await mergeHeaders("POST", options?.headers) },
         body: JSON.stringify(payload),
         signal: options?.signal,
       }).then((res) => handleResponse<TRes>(res, options?.expectedStatus));
     },
 
-    put<TReq, TRes>(path: string, payload: TReq, options?: RequestOptions): Promise<TRes> {
+    async put<TReq, TRes>(path: string, payload: TReq, options?: RequestOptions): Promise<TRes> {
       return fetch(buildUrl(path), {
         method: "PUT",
-        headers: { "Content-Type": "application/json", ...mergeHeaders(options?.headers) },
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", ...await mergeHeaders("PUT", options?.headers) },
         body: JSON.stringify(payload),
         signal: options?.signal,
       }).then((res) => handleResponse<TRes>(res, options?.expectedStatus));
     },
 
-    patch<TReq, TRes>(path: string, payload: TReq, options?: RequestOptions): Promise<TRes> {
+    async patch<TReq, TRes>(path: string, payload: TReq, options?: RequestOptions): Promise<TRes> {
       return fetch(buildUrl(path), {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", ...mergeHeaders(options?.headers) },
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", ...await mergeHeaders("PATCH", options?.headers) },
         body: JSON.stringify(payload),
         signal: options?.signal,
       }).then((res) => handleResponse<TRes>(res, options?.expectedStatus));
     },
 
-    delete<T = void>(path: string, options?: RequestOptions): Promise<T> {
+    async delete<T = void>(path: string, options?: RequestOptions): Promise<T> {
       return fetch(buildUrl(path), {
         method: "DELETE",
-        headers: mergeHeaders(options?.headers),
+        credentials: "same-origin",
+        headers: await mergeHeaders("DELETE", options?.headers),
         signal: options?.signal,
       }).then((res) => handleResponse<T>(res, options?.expectedStatus));
     },

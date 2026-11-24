@@ -2,10 +2,11 @@
 using Starlights.Modules.Characters.Data.EntityFramework.Querying;
 using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Platform.Components.Data.EntityFramework;
+using Starlights.Platform.Hosting;
 
 namespace Starlights.Modules.Characters.Data.EntityFramework;
 
-internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepository
+internal class CharactersRepository(ICurrentUser currentUser) : RepositoryBase<Character>, ICharactersRepository
 {
     public void Add(Character character) => Entities.Add(character);
 
@@ -31,7 +32,10 @@ internal class CharactersRepository : RepositoryBase<Character>, ICharactersRepo
 
     public async Task<IEnumerable<Character>> GetCharactersAsync()
     {
+        var userId = currentUser.UserId
+            ?? throw new InvalidOperationException("Listing Characters requires an authenticated owner.");
         return await Entities
+            .Where(character => EF.Property<Guid>(character, "OwnerId") == userId)
             .IncludeAggregateGraph()
             .AsSplitQuery()
             .ToListAsync();

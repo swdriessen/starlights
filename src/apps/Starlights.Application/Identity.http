@@ -1,0 +1,33 @@
+@baseUrl = https://localhost:7246
+
+### Obtain an anonymous antiforgery token; retain the response cookie.
+# @name anonymousToken
+GET {{baseUrl}}/api/identity/antiforgery
+
+### Sign in using operator-provisioned credentials supplied outside source control.
+POST {{baseUrl}}/api/identity/sign-in
+Content-Type: application/json
+X-CSRF-TOKEN: {{anonymousToken.response.body.$.requestToken}}
+
+{
+  "username": "{{$processEnv STARLIGHTS_USERNAME}}",
+  "password": "{{$processEnv STARLIGHTS_PASSWORD}}"
+}
+
+### Inspect the signed-in account; returns 401 without a valid session.
+GET {{baseUrl}}/api/identity/session
+
+### Refresh the token after signing in because antiforgery tokens are identity-bound.
+# @name authenticatedToken
+GET {{baseUrl}}/api/identity/antiforgery
+
+### Optional: initialize retained sample content as an authenticated, antiforgery-protected write.
+POST {{baseUrl}}/api/elements/initialize
+X-CSRF-TOKEN: {{authenticatedToken.response.body.$.requestToken}}
+
+### End only this session.
+POST {{baseUrl}}/api/identity/sign-out
+X-CSRF-TOKEN: {{authenticatedToken.response.body.$.requestToken}}
+
+### A write without antiforgery is rejected (400 when authenticated, 401 otherwise).
+POST {{baseUrl}}/api/identity/sign-out

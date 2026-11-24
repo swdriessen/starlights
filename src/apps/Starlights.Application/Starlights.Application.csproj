@@ -6,6 +6,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\modules\identity\Modules.Identity\Modules.Identity.csproj" />
 		<ProjectReference Include="..\..\aspire\Starlights.ServiceDefaults\Starlights.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\..\modules\characters\Modules.Characters.Data.EntityFramework.EventProcessing\Modules.Characters.Data.EntityFramework.EventProcessing.csproj" />
 		<ProjectReference Include="..\..\modules\characters\Modules.Characters.Data.EntityFramework\Modules.Characters.Data.EntityFramework.csproj" />

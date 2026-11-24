@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Starlights.Application;
+using Starlights.Integration.Authentication;
 
 namespace Starlights.Integration;
 
@@ -37,7 +38,9 @@ public class IntegrationHost : IIntegrationHost, IDisposable
     /// <returns>A new <see cref="HttpClient"/> instance for making requests to the application.</returns>
     public HttpClient CreateClient()
     {
-        return _factory.CreateClient();
+        var address = new Uri("https://localhost");
+        var tokensClient = _factory.CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = address, HandleCookies = false });
+        return _factory.CreateDefaultClient(address, new IntegrationAntiforgeryHandler(tokensClient));
     }
 
     protected virtual void Dispose(bool disposing)

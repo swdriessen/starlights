@@ -47,7 +47,7 @@ public class RegisterSelectionRuleEndpoint : Endpoint<RegisterSelectionRuleReque
 
         var registrations = _persistence.GetRepository<IRegistrationRepository>();
         var parentRegistration = await registrations.GetRegistrationAsync(new(req.ParentRegistration));
-        if (parentRegistration is null)
+        if (parentRegistration is null || parentRegistration.CharacterId != character.Id)
         {
             AddError($"The parent registration '{req.ParentRegistration}' does not exist.");
             await Send.NotFoundAsync(cancellation: ct);

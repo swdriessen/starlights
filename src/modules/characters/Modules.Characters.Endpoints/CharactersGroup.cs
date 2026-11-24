@@ -12,6 +12,7 @@ public class CharactersGroup : Group
         {
             ep.Description(d => d.WithTags("Characters"));
             ep.Options(o => o.RequireCors());
+            ep.Options(o => o.AddEndpointFilter<CharacterOwnershipFilter>());
         });
     }
 }

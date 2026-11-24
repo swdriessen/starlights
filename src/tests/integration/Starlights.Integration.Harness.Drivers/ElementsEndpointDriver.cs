@@ -21,7 +21,7 @@ public class ElementsEndpointDriver : IDriver
     {
         using var client = _integration.CreateClient();
 
-        var response = await client.GetAsync("/api/elements/initialize", cancellation);
+        var response = await client.PostAsync("/api/elements/initialize", null, cancellation);
         response.EnsureSuccessStatusCode();
 
         response.Content.ReadFromJsonAsync<object>(cancellation)

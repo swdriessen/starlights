@@ -57,6 +57,13 @@
   <Folder Name="/src/modules/elements/tests/">
     <Project Path="src/modules/elements/Modules.Elements.Tests/Modules.Elements.Tests.csproj" />
   </Folder>
+  <Folder Name="/src/modules/identity/">
+    <Project Path="src/modules/identity/Modules.Identity.MigrationService/Modules.Identity.MigrationService.csproj" />
+    <Project Path="src/modules/identity/Modules.Identity/Modules.Identity.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/identity/tests/">
+    <Project Path="src/modules/identity/Modules.Identity.Tests/Modules.Identity.Tests.csproj" />
+  </Folder>
   <Folder Name="/src/platform/">
     <Project Path="src/platform/Starlights.Platform.Data/Starlights.Platform.Data.csproj" />
     <Project Path="src/platform/Starlights.Platform.Hosting.Abstractions/Starlights.Platform.Hosting.Abstractions.csproj" />

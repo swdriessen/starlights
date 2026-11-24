@@ -18,6 +18,7 @@ import { LibraryDevelopmentPage } from "./pages/development/library-page.tsx";
 import BuilderAppLayout2 from "./pages/layouts/builder-app-layout-2.tsx";
 import BuilderAppLayout from "./pages/layouts/builder-app-layout.tsx";
 import CharactersLayout from "./pages/layouts/builder-layout.tsx";
+import { AuthGate } from "./features/identity/auth-gate.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,7 +30,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const router = createBrowserRouter([
+const router = createBrowserRouter([{ element: <AuthGate />, children: [
   {
     path: "/app",
     element: <BuilderAppLayout />,
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
     element: <CharactersLayout />,
     children: [{ index: true, element: <CharacterDetailsPage /> }],
   },
-]);
+]}]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

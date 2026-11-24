@@ -1,6 +1,6 @@
 # Character-building application specification
 
-Status: agreed target direction for refactoring this repository in place. This specification describes intended behavior, not current implementation. The checkout targets .NET 11 and uses React/Vite; authentication, generated API-client and private blob-storage work remains to be done. The framework migration alone does not complete F00. Items explicitly marked as working directions, open or deferred remain unsettled or outside the initial scope as stated.
+Status: agreed target direction for refactoring this repository in place. This specification describes intended behavior, not proof of completion. The checkout targets .NET 11 and uses React/Vite; the first Identity increment, same-origin API access and generated API contracts are implemented. Private blob storage and remaining F00 checks are still open. Neither the framework migration nor sign-in alone completes F00. Items explicitly marked as working directions, open or deferred remain unsettled or outside the initial scope as stated.
 See [CONTENT-AND-COMPUTATION.md](./CONTENT-AND-COMPUTATION.md) for content structure, validation and evaluation contracts; [CHARACTER-RULES.md](./CHARACTER-RULES.md) for character, spell and equipment mechanics; [GLOSSARY.md](../GLOSSARY.md) for domain language; and [BEHAVIOR.md](./BEHAVIOR.md) for acceptance examples.
 
 ## Product direction

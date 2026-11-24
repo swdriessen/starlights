@@ -1,4 +1,6 @@
 // --- HTTP Client ---
+export { createApiClient } from "./client/generated-client";
+export type { paths, components, operations } from "./generated/schema";
 export { createHttpClient } from "./client/http-client.ts";
 export { ApiError } from "./client/api-error.ts";
 export type { ClientConfig, RequestOptions } from "./client/types.ts";

@@ -18,8 +18,7 @@ public class InitializationEndpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Get("/initialize");
-        AllowAnonymous();
+        Post("/initialize");
         Group<ElementsGroup>();
     }
 
