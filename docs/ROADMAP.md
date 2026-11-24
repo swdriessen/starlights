@@ -1,6 +1,6 @@
-# Implementation epic and feature slices
+# Roadmap: epic and feature slices
 
-Status: proposed delivery sequence for the agreed first release. F00 through F03 are implemented locally; the broader Character-building epic and later feature slices remain open. This roadmap organizes the requirements; it does not settle contracts marked open in the specification or add deferred capabilities to the release.
+Status: target delivery sequence for refactoring this repository toward the agreed first release. The imported claim that F00-F03 are implemented is not verified for this checkout: it still targets .NET 10, has no Identity/owner-isolation foundation, and its React builder route is a placeholder. Existing character and content code is partial implementation input, not completion evidence. Reassess each slice against its acceptance criteria before marking it done.
 
 ## Epic: build a dependable SRD character from concept to sheet
 
@@ -12,19 +12,21 @@ The epic is complete only when the release gates below are met. Completing the f
 
 ## How to use this roadmap
 
-- Each numbered slice normally delivers user-visible behavior through content, domain behavior, persistence, application workflow, UI and tests as needed. F00 is an explicitly agreed, bounded exception: a runnable skeleton for the developer to validate the solution structure. It is not a phase for building all future infrastructure. Avoid separate "build the engine," "build the database" and "build the UI" phases thereafter.
+- Each numbered slice normally delivers user-visible behavior through content, domain behavior, persistence, application workflow, UI and tests as needed. F00 is the bounded platform foundation for the existing application: it upgrades and secures the current API/React/Aspire setup without redesigning the Character domain or building a general rules engine. Avoid separate "build the engine," "build the database" and "build the UI" phases thereafter.
 - Numbers indicate a suggested sequence, not a requirement to finish every lower number first. The listed dependencies are prerequisites; independent features may proceed separately once their prerequisites are satisfied.
 - These are high-level feature slices, not estimates or sprint-sized tickets. Before starting a large class/progression feature, refine it into smaller end-to-end stories with concrete content and independently checked expected results. Keep the parent feature open until its full scope works.
 - Before implementing a slice, resolve only the open contracts it needs and add its observable examples to [BEHAVIOR.md](./BEHAVIOR.md). Consult [the content contracts](./CONTENT-AND-COMPUTATION.md), [character mechanics](./CHARACTER-RULES.md) and [the JSON baseline](./CONTENT-EXAMPLE.md) rather than inventing a parallel specification.
 - Carry forward earlier features and regression checks. New content is not considered supported if its required decisions or persistent sheet effects are missing.
 - Accessibility, authorization, diagnostics, safe rendering and persistence correctness apply from the first feature that uses them. Later features extend those guarantees; they are not permission to postpone them.
 - Preserve [domain-first composition and independent Ruleset modules](./SPECIFICATION.md#domain-composition-and-ruleset-modules). Add the smallest typed contracts needed for the slice; persistence adapts to the domain. Do not construct a speculative framework for all future games.
+- Implement slices with [command/query separation](./SPECIFICATION.md#feature-workflows-and-cqrs), sharing commands only where their domain semantics match across Rulesets.
+- Use Minimal APIs for new and replaced HTTP features. Existing FastEndpoints routes may remain temporarily during migration, with equivalent security, validation and OpenAPI coverage; retire FastEndpoints once the retained routes have been migrated.
 
 ## Milestones
 
 | Milestone                             | Demonstrable result                                                                                                                           |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| M0: Structure validated               | F00 starts with real dependencies, passes its smoke checks and receives explicit developer approval of the solution structure.                |
+| M0: Platform foundation verified      | F00 upgrades the existing app to the agreed stack and verifies authentication, ownership, generated API contracts and private local storage. |
 | M1: First usable character            | F01's reference character can be built, saved and reopened with verified results.                                                             |
 | M2: Everyday building                 | Reliable editing, ability methods, origin choices, advancement and ordinary equipment work through F02-F06.                                   |
 | M3: Full class journeys               | F07-F12 complete all SRD class progressions and multiclass creation, including direct creation at higher levels.                              |
@@ -35,43 +37,45 @@ Milestones summarize outcomes, not additional implementation layers. Some M4 fea
 
 ## Feature slices
 
-### F00: Run and inspect the application skeleton
+### F00: Establish the platform foundation
 
-**User story:** As the developer, I want a runnable application skeleton with the agreed module structure and real local dependencies, so that I can validate the setup before building the Character domain.
+**User story:** As the developer, I want the existing application to run on the agreed .NET 11 and React/Vite stack with secure identity, a generated TypeScript API client and private local storage, so that Character work starts on a dependable foundation.
 
-**Scope:** the agreed .NET/Blazor/Fluent UI solution structure; clean-architecture dependency direction and content/character ownership; Aspire and Service Defaults; SQL Server, migrations and the blob emulator; configured Identity accounts; sign-in/sign-out and an authenticated landing page; a minimal Ruleset-module registration seam; diagnostics and focused smoke checks.
+**Scope:** upgrade the current .NET 10 API to .NET 11; retain React/Vite/Shadcn, Aspire and SQL Server; establish feature-organized Minimal API endpoints for the foundation and migrate existing FastEndpoints routes as needed without duplicate routes; generate the TypeScript API client and contract types from OpenAPI; establish the identity module and configure ASP.NET Core Identity cookie authentication and antiforgery; provide secure operator-only account provisioning; enforce owner-only access through identifier-based module contracts; add Azure Blob Storage with a local emulator and API-mediated authorization; route local browser `/api` requests through Vite; and retain the developer tunnel only as an explicit, authenticated development option. Resetting the existing development database is allowed. Do not redesign Character/Element aggregates or build a general calculation engine in F00.
 
-**Done when:** browser acceptance verifies authenticated access and account persistence across restart; narrow checks verify dependency direction, independent/unambiguous Ruleset registrations and real emulator write/read/delete. The developer explicitly approves the actual solution structure before F01 starts. No dummy Character aggregate, generic repository framework, calculation engine or speculative component framework is needed.
+**Done when:** focused browser/API checks verify operator-provisioned sign-in and sign-out, owner isolation, antiforgery on writes, account persistence across restart, repeatable OpenAPI client generation covering retained routes, and private blob read/write/delete through authorized API paths. Foundation endpoints use Minimal APIs; remaining legacy routes are not left unsecured or registered twice. Aspire starts SQL Server and the local blob emulator; migration/startup failures remain visible. F00 stays domain-light and introduces no dummy Character aggregate, generic repository framework or speculative component framework.
 
 **Depends on:** none.
 
-**Detailed specification:** [F00 application skeleton](./F00-SPECIFICATION.md). This is a structure-validation checkpoint, not a substitute for F01's first real character.
+**Detailed contract:** [Application architecture](./SPECIFICATION.md#application-architecture) and the [local/private-network requirements](./SPECIFICATION.md#first-release).
 
 ### F01: Build, save and reopen the reference character
 
 **User story:** As a player, I want to build a level-1 Human Fighter with the Soldier background and reopen it later, so that I can trust the builder with a real character.
 
-**Scope:** use the approved F00 application and configured sign-in; load the initial local SRD content; initialize the Character through the selected Ruleset; record the reference choices; separately claim class and background equipment; equip the character; save and display its calculated sheet.
+**Scope:** use the completed F00 application and configured sign-in; load the bundled, versioned SRD 5.2.1 JSON pack; initialize the Character through the selected Ruleset; record the reference Choices; separately claim class and background equipment; equip the character; save and display its calculated sheet.
 
 **Done when:** the [reference journey and expected values](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier) pass through the browser with real content and durable storage, including save/reopen and application restart. Identity, grants, choices and possessions are not hardcoded to this one character. Private access and visible save/calculation failures work for this journey.
 
-**Depends on:** F00, including its explicit structure-review approval.
+**Depends on:** F00.
 
-**Detailed specification:** [F01 reference character](./F01-SPECIFICATION.md). The F00 structure approval prerequisite has been satisfied.
+**Acceptance evidence:** [the reference journey and expected values](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier). A separate slice document will be created only when this feature is ready to refine.
 
-Resolve the minimum aggregate, initialization, content-format, evaluation and Character persistence contracts as part of F01; they are not moved into F00.
+Resolve the minimum aggregate, initialization, content-format, evaluation and Character persistence contracts as part of F01; they are not moved into F00. Preserve the shared Character root, validated Ruleset-owned composition, pinned content and aggregate-wide Unit of Work described in the specification. Exercise domain invariants without EF and verify persisted aggregate state survives reopening.
+
+**First increment after F00:** a signed-in player creates a named Character for `DND5E5` using the bundled, pinned SRD pack. The Ruleset initializes its required composition and the application persists it atomically; the player can list and reopen it, with its incomplete build clearly indicated. Exercise this through the real UI, API and persistence. Introduce the minimal test-only `TEST` Ruleset in this increment to verify Ruleset selection and initialization without accidental DND5E5 coupling, including independent and coexistence registration. It is not a playable game or a speculative framework. Add Choices, possessions and sheet calculations in subsequent end-to-end increments; this first increment does not claim to produce a complete sheet or finish F01.
 
 ### F02: Revise a character without losing work
 
 **User story:** As a player, I want edits, interruptions and concurrent tabs to have predictable outcomes, so that my latest decisions are not silently lost.
 
-**Scope:** autosave and calculation status; stale-response protection; conflicting-edit detection; temporary disconnection handling; accepted work surviving browser closure; recovery or explicit failure after server interruption; automatic updates in a second sheet tab.
+**Scope:** autosave and calculation status; stale-response protection; conflicting-edit detection; temporary disconnection handling; accepted work surviving browser closure; recovery or explicit failure after server interruption; authenticated SignalR notifications for status and cross-tab revision changes. HTTP/OpenAPI remains authoritative for edits and reads; reconnecting clients refetch the latest saved revision.
 
 **Done when:** focused browser/integration scenarios demonstrate retained unsaved input, no silent overwrite, explicit pending/result/failure, and no lost accepted operation. Rejected edits leave authoritative state unchanged.
 
 **Depends on:** F01.
 
-**Detailed specification:** [Revise a character without losing work](./F02-SPECIFICATION.md).
+**Acceptance examples:** [reliable Character edits](./BEHAVIOR.md#reliable-character-edits).
 
 ### F03: Choose how to generate ability scores
 
@@ -83,7 +87,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F01.
 
-**Detailed specification:** [Ability Score generation](./F03-SPECIFICATION.md).
+**Acceptance examples:** [ability-score generation](./BEHAVIOR.md#choose-an-ability-score-generation-method).
 
 ### F04: Choose an origin and navigate the build
 
@@ -95,7 +99,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F01.
 
-**Detailed specification:** [Choose an origin and navigate the build](./F04-SPECIFICATION.md).
+**Acceptance examples:** [guided Character building](./BEHAVIOR.md#guided-character-building).
 
 ### F05: Advance a Fighter and revisit earlier decisions
 
@@ -107,7 +111,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F02, F03, F04.
 
-**Detailed specification:** [Advance a Fighter and revisit earlier decisions](./F05-SPECIFICATION.md).
+**Acceptance examples:** [retaining temporarily unavailable Choices](./BEHAVIOR.md#preserve-a-temporarily-unavailable-choice) and [recalculating after removing the first class](./BEHAVIOR.md#recalculate-after-removing-the-first-class).
 
 ### F06: Manage ordinary possessions and equipment
 
@@ -249,7 +253,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F02, F04, F15.
 
-**Decision gate:** resolve the required fix/version/compatibility and replacement/append contracts before implementing those parts. This slice does not introduce player imports, marketplace workflows or a multiple-pack selection UI into the first release; eventual capabilities remain scoped by [SPECIFICATION.md](./SPECIFICATION.md#content-distribution).
+**Decision gate:** resolve fix classification, migration and compatibility details and the replacement/append contracts before implementing those parts. Eligible fixes automatically migrate a Character's pinned version as described in the specification. This slice does not introduce player imports, marketplace workflows or a multiple-pack selection UI into the first release; eventual capabilities remain scoped by [SPECIFICATION.md](./SPECIFICATION.md#content-distribution).
 
 ### F20: Operate the builder safely on a private network
 
@@ -274,8 +278,9 @@ Before calling the epic complete:
 5. **Dependable state:** save/reopen, restart, conflicts, temporary disconnects, accepted-work recovery and idempotent equipment claims retain their agreed behavior across the combined product.
 6. **Usable output:** on-screen and PDF sheets distinguish missing decisions, unresolved calculations and local presentation problems, retain source inspection, and do not silently omit long-character entries.
 7. **Accessible browser experience:** keyboard navigation, labels, meaningful status announcements, light/dark themes and large-choice search work across the initial desktop experience. Chrome and Edge remain targets; initial Chromium automation does not claim installed-browser verification, which remains deferred.
-8. **Operational readiness:** F20's documented restore has been exercised; accounts and assets remain isolated; HTTPS is configured for other-device access; startup preserves existing data and exposes failures.
+8. **Operational readiness:** F20's documented restore has been exercised; accounts and assets remain isolated; HTTPS is configured for other-device access; normal post-initialization migrations preserve user data and startup exposes failures. The existing development database may be reset during F00.
 9. **Scope honesty:** situational reminders are not advertised as executed actions, and unsupported options or mechanics are not presented as complete. Explicitly open contracts needed by shipped features have been resolved and documented.
+10. **HTTP migration:** retained API routes use Minimal APIs, with FastEndpoints registrations and dependencies removed. Security, request validation, OpenAPI and endpoint integration checks remain effective.
 
 ## Later product epics
 
@@ -283,8 +288,10 @@ These are directions, not scheduled first-release slices or newly approved requi
 
 - Content-authoring and private homebrew workflows, including eventual legacy Aurora XML conversion.
 - Additional supported Rulesets, using independent modules; Daggerheart remains an example rather than a committed next game.
+- Per-Character Requirement Overrides, such as a DM-permitted exception to a prerequisite; authority and lifecycle are deferred.
 - Play-time resources, rests, effects and other explicitly selected gameplay assistance.
 - Campaigns, companions and broader TTRPG management.
+- Real-time campaign/room broadcasts and DM-triggered notifications, using SignalR after campaign membership and broadcast authorization are designed. These are not part of the first release.
 - Marketplace and standalone compendium experiences, only after their separate scope and design are agreed.
 
 Other deferred items, including editable character transfer, duplication, offline editing and alternate sheet templates, retain their status in [SPECIFICATION.md](./SPECIFICATION.md). None is a hidden completion condition for this epic.

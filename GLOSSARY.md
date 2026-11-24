@@ -20,7 +20,10 @@ The particular Grant or decision through which an Element Occurrence entered a C
 A declarative instruction carried by an Element that affects a Character.
 
 **Requirement**:
-A condition that must hold for a Rule, option or benefit to apply.
+A condition that normally must hold for a Rule, option or benefit to apply.
+
+**Requirement Override**:
+An explicit exception allowing a particular Character to use an option or benefit despite an unmet Requirement.
 
 **Grant**:
 A Rule that gives a Character something, such as an Element or a feature.
@@ -90,7 +93,7 @@ A recorded Choice whose decision is currently unavailable. It is retained withou
 _Avoid_: Orphaned choice, inactive choice
 
 **Invalid Choice**:
-A recorded answer that fails the applicable rules of an available decision. It remains player intent but is not a valid basis for the resulting capability.
+A recorded answer that fails the applicable rules of an available decision. It remains player intent but is not a valid basis for the resulting capability unless an applicable exception permits it.
 
 **Class Level**:
 In D&D character building, the number of levels a Character has in one class.

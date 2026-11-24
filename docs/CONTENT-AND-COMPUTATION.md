@@ -22,7 +22,10 @@ These are requirements for the new application, carried forward from applicable 
 ### Composable Element properties
 
 - Elements combine shared identity, descriptions and Rules with the specific properties their supported game concepts require. Use a generic composition mechanism rather than requiring every Element to carry every possible game's fields or deriving an inheritance hierarchy for every combination.
+- Represent supported concepts as reusable typed composition parts, assembled into an Element's validated collection. For example, a weapon definition can combine a weapon profile and cost; other definitions can reuse a part where its meaning and invariants match. Character Ruleset compositions likewise support validated collections of typed parts, but Character state and shared Element definitions remain distinct.
 - Trusted application modules provide focused parsers, validators and typed access for supported property contracts. Callers consume the typed model rather than repeatedly interpreting raw JSON or relying on display-name conventions. A generic container does not make arbitrary fields mechanically supported: required fields, types, multiplicity, compatibility and references must be validated for each supported contract. Unsupported required contracts are explicit errors.
+- Multiplicity is specified per contract and Ruleset rather than globally: one contract may permit a single instance, another multiple instances. Adding content or homebrew using supported mechanics is data-only; genuinely new mechanics require trusted, explicitly registered application code. Existing content must not be changed merely to add unrelated content.
+- Here a typed composition part is an architectural building block, not a new game-domain Capability declaration subsystem. It does not imply a common EF base class, a particular JSON representation, or that every part has domain identity.
 - Content supplies the actual game definitions and values. For example, a spell can compose level, school, casting-time, duration, range, component, ritual and concentration properties; an item can compose cost, weight and equipment properties. Properties are distinct from Rules: descriptive metadata alone does not grant a benefit, establish eligibility or execute an action.
 - Registered property contracts expose explicitly supported values and facts to matching, Requirements, calculations and presentation where applicable. Access retains definition and occurrence/item context; a field's existence does not automatically make it a Character statistic. Missing required data and invalid references remain explicit issues rather than guessed values.
 - Element and Character composition follow [the domain-first aggregate and Ruleset-module requirements](./SPECIFICATION.md#domain-composition-and-ruleset-modules). Domain meaning and aggregate invariants drive the model; EF Core does not dictate its composition. The selected Ruleset's initialization establishes its required Character parts without forcing unrelated games into D&D state.
@@ -31,14 +34,16 @@ These are requirements for the new application, carried forward from applicable 
 
 ### Descriptions and sheet presentation
 
-The F01 implementation uses a versioned `starlights-content/1` subset of these
-contracts. It validates local pack identities, Grants, Selections, supported
-numeric Rules and the typed properties needed by the reference build. Its
-sheet values support numeric literals, supported statistic names, literal text
-and Element-name references; its entries support base fields and unconditional
+The first Character slice is intended to implement a versioned
+`starlights-content/1` subset of these contracts. That subset is not yet
+implemented in the current checkout. It is expected to validate local pack
+identities, Grants, Selections, supported numeric Rules and the typed
+properties needed by the reference build. Its initial sheet values are
+expected to support numeric literals, supported statistic names, literal text
+and Element-name references; entries begin with base fields and unconditional
 visibility. Conditional variants, broader expressions and contextual bindings
-are not implemented and are rejected rather than silently ignored. The broader
-first-release requirements below remain requirements for later slices.
+remain later-slice requirements and must be rejected rather than silently
+ignored when unsupported.
 
 - An Element can provide a full description for building and detail views and multiple separately authored concise sheet entries. Each entry can have its own name/label and description, so one feature can expose several small reminders without creating separate mechanical Elements. Concise descriptions are shared by the on-screen sheet and PDF; they are not automatically summarized or truncated from the full description.
 - A sheet entry uses its authored sheet label, otherwise the Element name. If no concise sheet description is provided, show only that label rather than substituting the full description. The full description remains available in the detail view.
@@ -120,6 +125,7 @@ These stages describe responsibilities, not prescribed class names or APIs. Call
 ## Requirements and independent qualification
 
 - A Requirement evaluates to satisfied, not satisfied or unresolved. Negating unresolved remains unresolved. A known false member settles an `all` condition; a known true member settles an `any` condition. Retain relevant diagnostics even when another member settles the condition.
+- When a per-Character Requirement Override is supported, preserve the actual unmet Requirement and show the override as evidence rather than reporting the Requirement as naturally satisfied. An allowed selection may contribute its benefits; authorization, lifecycle and the detailed qualification contract remain open.
 - Element, option, group and individual Rule Requirements gate only their declared scope. A failed benefit does not delete possessions or disable unrelated benefits sharing an Element or item.
 - Evaluate a conditional decision against independent evidence excluding its own conditional outputs and their dependent Grant paths. Independent unconditional contributions, including those from the same occurrence or physical item, may qualify it.
 - Retain all candidates and their origins, including suppressed and tied contributions. Recombine surviving independent candidates under their declared policy for qualification; do not subtract a contribution from an already flattened final total.
@@ -157,4 +163,4 @@ These stages describe responsibilities, not prescribed class names or APIs. Call
 
 Use the observable cases in [BEHAVIOR.md](./BEHAVIOR.md), supplemented by focused tests for each supported contract and independently sourced SRD expectations. The specification does not claim that Aurora Next's prototype or its proof already implements this application.
 
-The older Aurora Next phase/priority scheduling and shared-occurrence defaults are superseded by these contracts. Later product decisions in [SPECIFICATION.md](./SPECIFICATION.md), including automatic compatible pack dependencies and the working fix-update direction, take precedence over older exact-pin and manual-dependency policies. Preserve explicitly open algorithms and formats as open; do not infer them from an experimental implementation.
+The older Aurora Next phase/priority scheduling and shared-occurrence defaults are superseded by these contracts. Later product decisions in [SPECIFICATION.md](./SPECIFICATION.md), including pinned Character content versions, automatic migration to eligible fixes and automatic compatible pack dependencies, take precedence over conflicting older policies. Preserve explicitly open algorithms and formats as open; do not infer them from an experimental implementation.

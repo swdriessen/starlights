@@ -1,0 +1,99 @@
+{
+  "version": 2,
+  "skills": {
+    "aspnet-minimal-api-openapi": {
+      "source": "github/awesome-copilot",
+      "commit": "f10fdb8b2660ce85c98f220b2f1ca24653768a5c",
+      "sourceType": "github",
+      "skillPath": "skills/aspnet-minimal-api-openapi/SKILL.md",
+      "computedHash": "046814e982ba781acc4f79664082c2f25913e70872381f7d4d41b2ef52f0584a",
+      "installMode": "copy"
+    },
+    "csharp-expert": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet/skills/csharp-expert/SKILL.md",
+      "computedHash": "81c33ee4d5d24c6a32c312deb434027e488512ba93162d9278c69f7b863c5a4d",
+      "installMode": "copy"
+    },
+    "csharp-refactoring": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet/skills/csharp-refactoring/SKILL.md",
+      "computedHash": "32a0247c73bc42649c6de7fd54ac0f7b4dadc4f6d0968b155a12aec58f669dfc",
+      "installMode": "copy"
+    },
+    "dotnet-breaking-changes": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet/skills/dotnet-breaking-changes/SKILL.md",
+      "computedHash": "539da90a5bb4b20a77a14966cedd730acb81551aabe1c7609b13ddccf7ad10ea",
+      "installMode": "copy"
+    },
+    "dotnet-webapi": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-aspnetcore/skills/dotnet-webapi/SKILL.md",
+      "computedHash": "2aedc615b14b3027800a556a4bf0c28f28f21b09ffc7a546c3865f08a26b79b0",
+      "installMode": "copy"
+    },
+    "migrate-dotnet10-to-dotnet11": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-upgrade/skills/migrate-dotnet10-to-dotnet11/SKILL.md",
+      "computedHash": "969efcd511c55d4cbb2a14136fa0a0d50e1e6ac39a4a346a8482a2df141147e2",
+      "installMode": "copy"
+    },
+    "migrate-radix-to-base": {
+      "source": "shadcn-ui/ui",
+      "commit": "055aa6b7837b1808456a24beb4c97a677864aa82",
+      "sourceType": "github",
+      "skillPath": "skills/migrate-radix-to-base/SKILL.md",
+      "computedHash": "7644de21e9aa533904def58c30f809ae6574c3cabc6396ab8b03dee751e8ffbe"
+    },
+    "msbuild": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet/skills/msbuild/SKILL.md",
+      "computedHash": "a52a3e2e83f1afe3114e731fc72011fecbc89ba7748f5c6080b909094973d806",
+      "installMode": "copy"
+    },
+    "optimizing-ef-core-queries": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-data/skills/optimizing-ef-core-queries/SKILL.md",
+      "computedHash": "14bd45305955f1592917ad2ef1e3791c65bf50dd5c654b03cb6342cd6ddfbaba",
+      "installMode": "copy"
+    },
+    "run-tests": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-test/skills/run-tests/SKILL.md",
+      "computedHash": "ae1fc27bdc724c82e84871ed3dbbd2a08491a6898b1024fb67f6b463067ec058",
+      "installMode": "copy"
+    },
+    "shadcn": {
+      "source": "shadcn-ui/ui",
+      "commit": "055aa6b7837b1808456a24beb4c97a677864aa82",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "388962d16c7a4f13aaeee0d8f128e50a87df8553d42ef7988c39c0e1c74a40e8"
+    },
+    "writing-mstest-tests": {
+      "source": "dotnet/skills",
+      "commit": "44ba81ca86469011fc57e7c1c778e55da6d86520",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-test/skills/writing-mstest-tests/SKILL.md",
+      "computedHash": "4524803ba6159e0b882a14fb7d217651e7f5652586bb62475bd97aece3ea9c61",
+      "installMode": "copy"
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 These agreed examples complement the [specification](./SPECIFICATION.md). They are not yet executable tests.
 
-For the preceding application-skeleton checkpoint, use [F00's agreed acceptance evidence](./F00-SPECIFICATION.md#acceptance-evidence). The Character-building examples below do not require Character functionality to be added to F00.
+The [F00 platform foundation](./ROADMAP.md#f00-establish-the-platform-foundation) is verified before the Character-building slices below. These examples do not require Character functionality to be added to F00.
 
 ## Reliable Character edits
 
