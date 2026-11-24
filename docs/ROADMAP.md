@@ -1,6 +1,6 @@
 # Roadmap: epic and feature slices
 
-Status: target delivery sequence for refactoring this repository toward the agreed first release. The imported claim that F00-F03 are implemented is not verified for this checkout: it still targets .NET 10, has no Identity/owner-isolation foundation, and its React builder route is a placeholder. Existing character and content code is partial implementation input, not completion evidence. Reassess each slice against its acceptance criteria before marking it done.
+Status: target delivery sequence for refactoring this repository toward the agreed first release. The imported claim that F00-F03 are implemented is not verified for this checkout: the .NET 11 migration portion of F00 is complete, but there is no Identity/owner-isolation foundation, and the React builder route is a placeholder. Existing character and content code is partial implementation input, not completion evidence. Reassess each slice against its acceptance criteria before marking it done.
 
 ## Epic: build a dependable SRD character from concept to sheet
 
@@ -40,6 +40,8 @@ Milestones summarize outcomes, not additional implementation layers. Some M4 fea
 ### F00: Establish the platform foundation
 
 **User story:** As the developer, I want the existing application to run on the agreed .NET 11 and React/Vite stack with secure identity, a generated TypeScript API client and private local storage, so that Character work starts on a dependable foundation.
+
+**Progress:** the .NET 10 to .NET 11 framework migration is complete, including SDK/CI configuration, EF Core design-time references and OpenAPI dependency compatibility. A clean solution build, the full existing test suite, local API health/Scalar/OpenAPI checks and SQL migration script generation pass. Existing test skips and unrelated build/dependency warnings remain; this does not establish SQL Server/Aspire startup or complete F00. Identity and the remaining foundation capabilities are next.
 
 **Scope:** upgrade the current .NET 10 API to .NET 11; retain React/Vite/Shadcn, Aspire and SQL Server; establish feature-organized Minimal API endpoints for the foundation and migrate existing FastEndpoints routes as needed without duplicate routes; generate the TypeScript API client and contract types from OpenAPI; establish Identity (`Modules.Identity`) with ASP.NET Core Identity cookie authentication and antiforgery; provide secure local operator commands to create accounts, reset passwords and disable/re-enable accounts; enforce owner-only access through GUID-based module contracts; add Azure Blob Storage with a local emulator and API-mediated authorization; route local browser `/api` requests through Vite; and retain the developer tunnel only as an explicit, authenticated development option. Resetting the existing development database is allowed. Do not redesign Character/Element aggregates or build a general calculation engine in F00.
 

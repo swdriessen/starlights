@@ -4,8 +4,8 @@
 		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 	</PropertyGroup>
 	<PropertyGroup Label="Package Versions">
-		<MicrosoftExtensionsVersion>10.0.9</MicrosoftExtensionsVersion>
-		<EntityFrameworkCoreVersion>10.0.9</EntityFrameworkCoreVersion>
+		<MicrosoftExtensionsVersion>11.0.0</MicrosoftExtensionsVersion>
+		<EntityFrameworkCoreVersion>11.0.0</EntityFrameworkCoreVersion>
 		<AspireVersion>13.4.6</AspireVersion>
 	</PropertyGroup>
 	<ItemGroup>
@@ -17,7 +17,7 @@
 		<PackageVersion Include="Scalar.AspNetCore" Version="2.16.11" />
 	</ItemGroup>
 	<ItemGroup Label="Pinned Vulnerable Transitive Dependencies">
-		<PackageVersion Include="Microsoft.OpenApi" Version="2.7.5" />
+		<PackageVersion Include="Microsoft.OpenApi" Version="3.11.0" />
 	</ItemGroup>
 	<ItemGroup Label="Aspire">
 		<PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.7.0" />
@@ -45,6 +45,7 @@
 	</ItemGroup>
 	<ItemGroup Label="Entity Framework">
 		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkCoreVersion)" />
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EntityFrameworkCoreVersion)" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EntityFrameworkCoreVersion)" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EntityFrameworkCoreVersion)" />
