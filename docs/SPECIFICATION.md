@@ -31,7 +31,7 @@ See [CONTENT-AND-COMPUTATION.md](./CONTENT-AND-COMPUTATION.md) for content struc
 - The character builder remains one application, organized as a modular monolith using clean architecture and domain projects. Evolve the existing Starlights modules without treating their current persistence model as the domain contract.
 - Keep content resolution and character building as distinct capabilities with an explicit boundary. A user's permission to access content is separate from the Content Set and Source filters chosen for a character.
 - Each domain module owns its data and exposes it through explicit contracts; modules do not directly modify each other's tables. They may share a SQL Server instance.
-- A separate identity module owns user accounts and authentication. Other modules reference an owner by a stable identifier through an appropriate contract, not by holding the identity module's user entity or depending on ASP.NET Core Identity types. Whether a domain-specific Player ID is distinct from a User ID, and any mapping between them, remains open.
+- The dedicated Identity module (`Modules.Identity`) owns accounts, credentials, authentication, account-role assignments and shared access infrastructure. Resource modules own resource-specific authorization decisions; see [Identity and access](#identity-and-access) for the agreed F00 contract.
 - Use a domain-driven Character aggregate and composable Element definitions, with validated typed composition and Ruleset-specific behavior rather than a universal D&D-shaped model. Apply [the domain composition and Ruleset-module requirements](#domain-composition-and-ruleset-modules); introduce only the smallest concrete contracts needed by each feature.
 - Target .NET 11 for the refactored application. The current checkout still targets .NET 10; the upgrade is part of F00, not a claim about the current build.
 - Use a React/Vite frontend with the repository's Shadcn-based UI and a C# ASP.NET Core API. Generate the TypeScript API client and contract types from OpenAPI; the React UI itself remains application code, not generated from the API schema.
@@ -44,7 +44,7 @@ See [CONTENT-AND-COMPUTATION.md](./CONTENT-AND-COMPUTATION.md) for content struc
 - Use Azure Blob Storage for uploaded portraits, with a local emulator orchestrated by Aspire for development. Keep blobs private and mediate browser reads and writes through the API, which enforces ownership.
 - Uploaded portraits are reusable user-owned assets. Deleting a Character does not delete its portrait; deleting a portrait is blocked while one of that user's Characters references it.
 - Document operator-managed backup and restore for the database and uploaded portraits to recover from server-wide data loss. Before release, verify the documented procedure by restoring a saved character and its uploaded portrait. An in-app backup or recovery interface is not required initially.
-- Use ASP.NET Core Identity with cookie authentication and antiforgery validation for state-changing requests. Accounts are operator-provisioned through a secure command; there is no public self-registration or user-management UI initially, and credentials stay outside source control.
+- Use ASP.NET Core Identity with cookie authentication and antiforgery validation for state-changing requests. F00 uses operator-provisioned username/password accounts without public registration, account-management HTTP endpoints or an administration UI; credentials stay outside source control.
 - Enforce owner-only access to Characters and portraits, including on list and detail endpoints. Administrators do not receive an application-level override to view or edit private Character data by default.
 - Require HTTPS for access from other devices on the private network; plain HTTP is permitted for localhost development. Document certificate setup for the operator.
 - Restrict direct SQL Server and portrait-storage access to the application and authorized operators, rather than exposing it to all devices on the private network.
@@ -54,6 +54,21 @@ See [CONTENT-AND-COMPUTATION.md](./CONTENT-AND-COMPUTATION.md) for content struc
 - Retain authoritative character choices, possessions, other character-owned facts, content/version information and update policy; derive sheet values from those facts and the applicable rules. Any saved sheet cache must be rebuildable and not a competing source of truth.
 - Handle build edits and their resulting calculations through a direct asynchronous application workflow, not a required background event chain. Once the server has accepted an edit, closing the browser must not interrupt its processing; pending status, result or failure must be visible when the player returns.
 - Detect work interrupted by an application restart and either recover it or visibly report the failure; accepted edits must not silently disappear.
+
+### Identity and access
+
+- Name the module Identity, following the `Modules.Identity` naming convention. Use standard ASP.NET Core Identity role support and ASP.NET Core named policies and authorization handlers, not a custom configurable permission engine.
+- Identity owns accounts, credentials, authentication, account-role assignments and shared authorization integration. Other modules register their own resource-specific policies and handlers and supply their own resource facts. Identity does not query their tables or depend on their domain models, Rulesets or game rules.
+- Keep account entities and ASP.NET Core Identity types inside Identity. Other modules obtain the authenticated user's stable GUID through an appropriate trusted contract, never a caller-supplied owner identifier.
+- Characters and private assets use Owner / `OwnerId`, not `PlayerId`; the owner identifier is the user's GUID. There is no separate Player entity in F00. A DM may own a Character played by another person; ownership does not identify who plays it. Character transfer remains future work.
+- A user keeps the same GUID across username or authentication-method changes. Future external sign-in and multiple linked provider accounts belong to the same local account; they do not replace its identity or its resource ownership. GitHub sign-in, Patreon linking, account-linking workflows and removing local passwords are outside F00.
+- Resource modules enforce ownership and resource-specific permissions using shared authentication and authorization integration. A broad capability such as deleting Characters does not itself bypass ownership. F00 introduces no administrator ownership bypass.
+- Application security roles are distinct from roles described by game content. Future module-defined permissions or resource policies may explicitly connect game facts to appropriately scoped access; content or Ruleset roles never automatically become account roles. F00 does not implement Ruleset-created security roles, a role-management UI or an editable permission matrix.
+- F00 accounts require a unique username and password, without a required email address, real name or profile. Provide a local operator command to create accounts, reset passwords and disable/re-enable accounts. Password entry must not expose credentials in command arguments or ordinary logs. Password recovery is operator-mediated, without an email recovery flow.
+- Operator access is an operational privilege, not an automatic application Admin role or permission to inspect private resources. Do not expose public registration or account-administration HTTP endpoints or UI in F00.
+- Browser authentication uses a session cookie with an eight-hour inactivity timeout and no remember-me option. Do not promise that closing the browser signs the user out: browsers may restore sessions.
+- Ordinary application restarts preserve otherwise-valid sessions, requiring durable authentication keys and revocation state. Sign-out ends the current session. Password reset or account disabling invalidates all of that account's sessions by their next API request, not after a periodic grace period; re-enabling does not restore revoked sessions. Signing out does not roll back an already accepted operation or erase previously downloaded data.
+- Validate antiforgery tokens on state-changing browser requests. APIs return 401 for unauthenticated access, 404 for absent or another owner's private resources, and 403 for denied capabilities where the requester may know the resource exists. Lists exclude other owners' private resources. Return HTTP errors rather than HTML login redirects; React handles sign-in navigation.
 
 ### Domain composition and Ruleset modules
 
@@ -198,10 +213,10 @@ The following applicable Aurora Next agreements are carried forward as design re
 - Show accessible options that fail character prerequisites as unavailable, with an explanation; prevent selecting them in the first release.
 - Defer editing underlying feature definitions; this does not prevent editing character choices or equipment.
 - Preserve a Choice that becomes unavailable without applying its effects, explain its status, and revalidate it if the decision becomes available again. Preserve invalid answers without treating them as a valid basis for capabilities.
-- Support separate users with private character collections. Operators create accounts through a secure command; public self-registration and an in-app user-management interface are not required initially.
-- Provide sign-out so another predefined user can sign in on the same browser without gaining access to the previous user's private characters or uploaded portraits.
-- Keep account credentials out of source code and supply them through local secrets or protected deployment configuration.
-- Do not allow other accounts, including the initial admin account, to view or edit a player's private characters through the application by default.
+- Support separate users with private character collections. Follow the [Identity and access contract](#identity-and-access) for operator-provisioned username/password accounts, session behavior and module-owned authorization.
+- Provide sign-out so another provisioned user can sign in on the same browser without gaining application access to the previous user's private characters or uploaded portraits.
+- Keep account credentials out of source code, command arguments and ordinary logs; use protected password entry for operator account commands.
+- Do not allow other accounts, including accounts with application roles or operator access, to view or edit an owner's private characters through the application by default.
 - Ruleset software can ship with the application initially; independently installable runtime plugins are not required.
 
 ## Content distribution

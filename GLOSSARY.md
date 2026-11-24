@@ -63,6 +63,10 @@ A declared content operation that adds to an existing Element without replacing 
 **Character**:
 A player's character, with recorded choices and possessions whose capabilities follow the applicable Ruleset and content. A Character can be incomplete.
 
+**Owner**:
+The account that manages a saved Character or private uploaded asset. A Character's Owner need not be the person who plays it.
+_Avoid_: Player (when referring to ownership)
+
 **Character Sheet**:
 A view of a Character's build, possessions and capabilities.
 

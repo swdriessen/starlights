@@ -4,6 +4,65 @@ These agreed examples complement the [specification](./SPECIFICATION.md). They a
 
 The [F00 platform foundation](./ROADMAP.md#f00-establish-the-platform-foundation) is verified before the Character-building slices below. These examples do not require Character functionality to be added to F00.
 
+## F00: Identity and access
+
+These examples exercise the [Identity and access contract](./SPECIFICATION.md#identity-and-access). Use private assets for resource-isolation checks in F00; Character slices carry the same guarantees forward.
+
+**Given** an operator has local account-management access  
+**When** the operator provisions two accounts using protected password entry  
+**Then** each account has a distinct, stable user GUID and can sign in with its username and password without an email address or profile  
+**And** passwords are not exposed in command arguments or ordinary logs  
+**And** no public registration or account-administration HTTP endpoints or UI are exposed
+
+**Given** a user signs in through the real browser application  
+**When** the browser calls an authenticated API through the generated client and same-origin `/api` path  
+**Then** the request is authenticated using the account's cookie session  
+**And** a state-changing request without a valid antiforgery token is rejected without changing authoritative state
+
+**Given** an account and an otherwise-valid browser session exist  
+**When** the application restarts  
+**Then** the account retains its user GUID and credentials  
+**And** the existing session remains valid without another sign-in
+
+**Given** a browser session has had no activity for eight hours  
+**When** it next requests an authenticated API  
+**Then** it receives 401 and the UI requires sign-in again  
+**And** no remember-me option extends that session
+
+**Given** a user has sessions in two browsers  
+**When** the user signs out in one browser  
+**Then** that session can no longer make authenticated requests  
+**And** the other session remains valid subject to its normal expiry  
+**And** another account can sign in without gaining application access to the previous owner's private resources
+
+**Given** a user has multiple active sessions  
+**When** the operator resets that user's password  
+**Then** every existing session receives 401 on its next authenticated API request without a revocation grace period  
+**And** the old password no longer signs in  
+**And** the new password can establish a new session without changing the user GUID or ownership
+
+**Given** a user has active sessions  
+**When** the operator disables that account  
+**Then** every existing session receives 401 on its next authenticated API request  
+**And** the disabled account cannot sign in  
+**When** the operator re-enables it  
+**Then** a new sign-in is possible but previously revoked sessions remain invalid
+
+**Given** an API request has no valid authenticated session  
+**When** it requests a protected resource  
+**Then** the API returns 401 rather than an HTML login redirect
+
+**Given** one account owns a private uploaded asset  
+**When** another account lists assets or requests that asset for reading, modification or deletion  
+**Then** the list excludes the first account's asset and identifier-based requests return 404, just as for an absent asset  
+**And** the asset remains unchanged  
+**And** application roles or operator access do not grant an ownership bypass
+
+**Given** a module-defined policy requires a capability for a resource whose existence the requester may know  
+**When** an authenticated user without that capability requests the protected operation  
+**Then** the API returns 403 rather than an HTML redirect  
+**And** the policy uses module-owned resource facts without requiring Identity to know that module's domain model
+
 ## Reliable Character edits
 
 **Given** two tabs show the same saved Character revision  
