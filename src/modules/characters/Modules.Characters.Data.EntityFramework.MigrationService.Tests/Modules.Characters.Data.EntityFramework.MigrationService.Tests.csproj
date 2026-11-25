@@ -1,0 +1,5 @@
+<Project Sdk="MSTest.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.Characters.Data.EntityFramework.MigrationService\Modules.Characters.Data.EntityFramework.MigrationService.csproj" />
+  </ItemGroup>
+</Project>

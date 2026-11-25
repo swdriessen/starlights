@@ -9,10 +9,12 @@
     <PackageReference Include="Aspire.Hosting.DevTunnels" />
     <PackageReference Include="Aspire.Hosting.JavaScript" />
     <PackageReference Include="Aspire.Hosting.SqlServer" />
+    <PackageReference Include="Aspire.Hosting.Azure.Storage" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\modules\identity\Modules.Identity.MigrationService\Modules.Identity.MigrationService.csproj" />
+    <ProjectReference Include="..\..\modules\file-management\Modules.FileManagement.MigrationService\Modules.FileManagement.MigrationService.csproj" />
     <ProjectReference Include="..\..\apps\Starlights.Application\Starlights.Application.csproj" />
     <ProjectReference Include="..\..\frontend\apps\builder-app\Starlights.Builder.React.esproj" />
     <ProjectReference Include="..\..\modules\characters\Modules.Characters.Data.EntityFramework.MigrationService\Modules.Characters.Data.EntityFramework.MigrationService.csproj" />

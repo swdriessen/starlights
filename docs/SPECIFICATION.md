@@ -70,6 +70,16 @@ See [CONTENT-AND-COMPUTATION.md](./CONTENT-AND-COMPUTATION.md) for content struc
 - Ordinary application restarts preserve otherwise-valid sessions, requiring durable authentication keys and revocation state. Sign-out ends the current session. Password reset or account disabling invalidates all of that account's sessions by their next API request, not after a periodic grace period; re-enabling does not restore revoked sessions. Signing out does not roll back an already accepted operation or erase previously downloaded data.
 - Validate antiforgery tokens on state-changing browser requests. APIs return 401 for unauthenticated access, 404 for absent or another owner's private resources, and 403 for denied capabilities where the requester may know the resource exists. Lists exclude other owners' private resources. Return HTTP errors rather than HTML login redirects; React handles sign-in navigation.
 
+### Private file management
+
+- Name the module `Modules.FileManagement`. It owns private uploaded files, their stable identifiers, owner identifiers, metadata, stored bytes and lifecycle. Azure Blob Storage is its storage implementation, with Azurite for local development; it is not the module's business interface.
+- Files are private to their authenticated owner. Other modules reference file identifiers and own their use as portraits, campaign media, session-note attachments or homebrew content. FileManagement does not interpret campaign notes, game rules or homebrew semantics.
+- File contents are immutable. Replacing a file creates a new identifier; a consuming feature explicitly changes its reference. Preserve original bytes after validation, including embedded metadata. Derived or sanitized images are separate future files, not silent replacements.
+- Record the actual stored byte size and owner for each file. Storage quotas are a future capability; F00 does not introduce quota configuration or enforcement.
+- The first increment is a private image library: upload, paginated list, view and delete through authenticated Minimal APIs and the generated client. Initially accept PNG, JPEG and WebP only, up to 5 MiB and 4096 pixels per side. Validate actual decoded content and reject animated images, SVG, malformed images and oversized uploads.
+- File-operation failures must be visible. Interrupted deletions remain visible and retryable, and files pending deletion cannot serve content.
+- Character assignment, preventing deletion of referenced files, campaign integration, broader file types, sharing and public links are deferred. Do not expose assignment of library file identifiers through the retained arbitrary portrait-URL field before reference validation and deletion protection are implemented together.
+
 ### Domain composition and Ruleset modules
 
 - Use one shared Character aggregate root for common Character state, such as identity, ownership and the selected Ruleset, plus exactly one composition owned by that Ruleset. Do not put every Ruleset's fields on the shared root. The composition may contain a collection of reusable typed parts rather than a fixed property for every possible part.

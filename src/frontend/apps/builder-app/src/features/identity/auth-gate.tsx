@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
 import { getSession, sessionKey, signOut, type Session } from "./session-api";
@@ -49,7 +49,8 @@ function SignedIn({ session, onSignedOut }: { session: Session; onSignedOut: () 
   }, [privateQueries]);
 
   return <QueryClientProvider client={privateQueries}>
-    <div className="flex items-center justify-end gap-4 border-b px-4 py-2">
+    <div className="flex flex-wrap items-center justify-end gap-4 border-b px-4 py-2">
+      <Link to="/files" className="text-sm underline underline-offset-4">Private files</Link>
       <span className="text-sm">Signed in as {session.username}</span>
       <Button variant="outline" size="sm" onClick={() => mutation.mutate()} disabled={mutation.isPending}>
         {mutation.isPending ? "Signing out..." : "Sign out"}

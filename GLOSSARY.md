@@ -67,6 +67,9 @@ A player's character, with recorded choices and possessions whose capabilities f
 The account that manages a saved Character or private uploaded asset. A Character's Owner need not be the person who plays it.
 _Avoid_: Player (when referring to ownership)
 
+**Private File**:
+An uploaded file owned by one account, with a stable identity and unchanged original contents. A portrait, campaign attachment or homebrew document can refer to a Private File without changing its ownership.
+
 **Character Sheet**:
 A view of a Character's build, possessions and capabilities.
 

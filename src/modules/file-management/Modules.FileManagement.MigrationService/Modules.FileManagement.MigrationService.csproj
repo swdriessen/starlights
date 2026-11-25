@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.FileManagement\Modules.FileManagement.csproj" />
+    <ProjectReference Include="..\..\..\aspire\Starlights.ServiceDefaults\Starlights.ServiceDefaults.csproj" />
+  </ItemGroup>
+</Project>

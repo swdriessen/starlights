@@ -51,7 +51,9 @@ This will start the AppHost, which orchestrates:
 
 ### Initial Setup
 
-Aspire applies the Identity, Elements and Characters migrations before starting the API. Provision an account before opening the builder; there is no public registration or account-administration API.
+Aspire applies the Identity, FileManagement, Elements and Characters migrations before starting the API. Provision an account before opening the builder; there is no public registration or account-administration API.
+
+The Characters migration host explicitly runs without an authenticated user. It can construct the ownership-aware persistence services for schema migration without impersonating an account or bypassing ownership checks for Character operations.
 
 From a private operator terminal, supply the SQL Server connection string for the same database used by Aspire through `ConnectionStrings__starlights-db` (or an operator-managed configuration provider). Do not commit credentials or pass passwords as command arguments:
 
@@ -87,9 +89,23 @@ With the development API running, regenerate the typed client contracts from `sr
 npm run generate -w @starlights/api-client -- http://localhost:5240/openapi/v1.json
 ```
 
-Use the API's actual HTTP address when Aspire assigns a different port. Generation covers the new Identity and retained legacy routes; the typed client is used by sign-in/session/sign-out, while retained consumers use the secured legacy adapter. The pinned generator runs with its own TypeScript 5 peer via `npm exec`, isolated from the application's TypeScript 7. Commit regenerated contracts alongside endpoint changes. [Identity.http](src/apps/Starlights.Application/Identity.http) demonstrates token, sign-in, session and sign-out requests.
+Use the API's actual HTTP address when Aspire assigns a different port. Generation covers Identity, FileManagement and retained legacy routes; the typed client is used by authentication and the private file library, while retained consumers use the secured legacy adapter. The pinned generator runs with its own TypeScript 5 peer via `npm exec`, isolated from the application's TypeScript 7. Commit regenerated contracts alongside endpoint changes. [Identity.http](src/apps/Starlights.Application/Identity.http) demonstrates token, sign-in, session and sign-out requests.
 
-Identity and generated contracts are the first F00 increment, not completion of the platform foundation. Private blob storage/emulator integration and its owner-isolation checks remain next; the target Character-builder journey is still later work.
+### Private File Library
+
+Open **Private files** in the signed-in account bar, or navigate to `/files`. Upload, list, view and permanently delete your own PNG, JPEG and WebP images. Images must be at most 5 MiB and 4096 pixels per side; animated images, SVG and malformed content are rejected. Originals, including embedded metadata, are preserved rather than sanitized or re-encoded. Uploading again creates a new file identifier.
+
+`Modules.FileManagement` owns SQL metadata in `file_management` and private blob content. Aspire supplies the `files` storage connection, starts a persistent Azurite emulator and waits for the FileManagement migration worker. The emulator skips API-version-header checks because the current Azure SDK is newer than its supported version list; this setting applies only to local emulation. The worker creates the `private-files` container without public access and fails startup if an existing container is public.
+
+Outside Aspire, supply both `ConnectionStrings__starlights-db` and `ConnectionStrings__files` privately to the FileManagement migration worker and API. Run `Modules.FileManagement.MigrationService` before starting the API. Keep storage credentials and service endpoints out of frontend configuration and source control. Browsers receive only authenticated same-origin `/api/files/{id}/content` addresses, never blob URLs or SAS tokens.
+
+The upload transport is JSON with `fileName` and base64 `contentBase64`. The decoded limit remains 5 MiB; the HTTP body limit is 8 MiB to accommodate base64 and JSON overhead. Lists are owner-filtered, stably ordered and bounded to 50 entries per page. [Files.http](src/apps/Starlights.Application/Files.http) demonstrates the Minimal API requests.
+
+Deletion first records its intent in SQL, then removes the blob and metadata. An interrupted deletion remains visible as pending, cannot serve content and can be retried after reconnecting or restarting. Failed upload metadata writes trigger blob cleanup; if cleanup also fails, both errors and the opaque file identifier are logged for operator recovery. Check these explicit errors rather than assuming a failed request completed.
+
+This is a standalone private image library. Character assignment and protection against deleting referenced files are deferred together; do not inject these identifiers into the retained portrait-URL field. Quotas, sharing and additional file formats remain future work.
+
+Identity and private storage are F00 increments, not completion of the platform foundation. See the [roadmap](docs/ROADMAP.md#f00-establish-the-platform-foundation) for verification status and remaining local/private-network checks. The target Character-builder journey is still later work.
 
 ## Running Tests
 
@@ -115,6 +131,7 @@ The project follows a **Modular Monolith** architecture, organized by business c
 - **Elements Module**: Manages game data (classes, abilities, features, rules).
 - **Characters Module**: Handles character creation and management.
 - **Identity Module**: Owns local accounts, credentials, durable cookie sessions and shared authenticated-user integration.
+- **FileManagement Module**: Owns private file identifiers, owner-filtered metadata and immutable blob content; consumers own the meaning of file references.
 - **Platform Layer**: Provides shared infrastructure (hosting, logging, data, eventing).
 
 Each module is self-contained with its own domain logic, data persistence, and API endpoints.

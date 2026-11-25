@@ -63,6 +63,34 @@ These examples exercise the [Identity and access contract](./SPECIFICATION.md#id
 **Then** the API returns 403 rather than an HTML redirect  
 **And** the policy uses module-owned resource facts without requiring Identity to know that module's domain model
 
+## F00: Private file library
+
+**Given** two provisioned accounts  
+**When** one uploads a supported image through the private library  
+**Then** its file identifier is stable and its stored bytes match the original upload  
+**And** only that account can list, inspect, read or delete it  
+**And** another account receives 404 for identifier-based access without a storage URL being disclosed
+
+**Given** an authenticated upload  
+**When** the image is malformed, animated, not PNG/JPEG/WebP, larger than 5 MiB or wider or taller than 4096 pixels  
+**Then** the upload fails visibly without creating a usable file
+
+**Given** a valid static image exactly 5 MiB in size or 4096 pixels per side  
+**When** its owner uploads it  
+**Then** the boundary value is accepted and its original contents and metadata are preserved
+
+**Given** an uploaded private image  
+**When** the application and local storage emulator restart using their existing persistent volumes  
+**Then** the file metadata and original contents remain available to its owner
+
+**Given** deletion of an owned file is interrupted by a storage or database failure  
+**Then** the failure is visible and the file remains listed as pending deletion without readable content  
+**When** the owner retries deletion, including after an application restart  
+**Then** deletion can finish without exposing the file or requiring its original bytes
+
+**Given** a user replaces an image in a future consuming feature  
+**Then** the replacement receives a new file identifier and existing references are not silently changed
+
 ## Reliable Character edits
 
 **Given** two tabs show the same saved Character revision  

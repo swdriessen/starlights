@@ -1,0 +1,29 @@
+@baseUrl = https://localhost:7246
+
+### First sign in using Identity.http and retain its session cookie.
+# @name fileToken
+GET {{baseUrl}}/api/identity/antiforgery
+
+### Upload original image bytes encoded as base64, supplied outside source control.
+# @name uploadedFile
+POST {{baseUrl}}/api/files
+Content-Type: application/json
+X-CSRF-TOKEN: {{fileToken.response.body.$.requestToken}}
+
+{
+  "fileName": "portrait.png",
+  "contentBase64": "{{$processEnv STARLIGHTS_FILE_BASE64}}"
+}
+
+### List the first owner-filtered page. Follow nextOffset when present.
+GET {{baseUrl}}/api/files?offset=0
+
+### Inspect an owned file; another account receives 404.
+GET {{baseUrl}}/api/files/{{uploadedFile.response.body.$.id}}
+
+### Read original bytes through the authorized API, not a blob endpoint.
+GET {{baseUrl}}/api/files/{{uploadedFile.response.body.$.id}}/content
+
+### Permanently delete the file. Retry if an interrupted deletion remains pending.
+DELETE {{baseUrl}}/api/files/{{uploadedFile.response.body.$.id}}
+X-CSRF-TOKEN: {{fileToken.response.body.$.requestToken}}

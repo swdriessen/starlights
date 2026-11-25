@@ -30,7 +30,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const router = createBrowserRouter([{ element: <AuthGate />, children: [
+const router = createBrowserRouter([{ element: <AuthGate />, hydrateFallbackElement: <main className="container mx-auto p-8" role="status">Loading Starlights...</main>, children: [
   {
     path: "/app",
     element: <BuilderAppLayout />,
@@ -47,6 +47,7 @@ const router = createBrowserRouter([{ element: <AuthGate />, children: [
     children: [
       { index: true, element: <LandingPage2 /> },
       { path: "about", element: <AboutPage /> },
+      { path: "files", lazy: async () => ({ Component: (await import("./features/file-management/private-files-page")).PrivateFilesPage }) },
       { path: "development", element: <DevelopmentPage /> },
       { path: "lib", element: <LibraryDevelopmentPage /> },
     ],

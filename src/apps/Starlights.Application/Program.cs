@@ -1,5 +1,6 @@
 using Scalar.AspNetCore;
 using Starlights.Modules.Identity;
+using Starlights.Modules.FileManagement;
 using Starlights.Modules.Identity.Accounts;
 using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
@@ -40,6 +41,7 @@ public sealed class Program
         {
             options.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod());
         });
+        builder.AddFileManagementModule();
 
         // add the platform services and its modules
         builder.AddStarlightsPlatform(options =>
@@ -69,6 +71,7 @@ public sealed class Program
         app.UseAuthorization();
         app.UseIdentityApiProtection();
         app.MapIdentity();
+        app.MapFileManagement();
         app.MapDefaultEndpoints();
 
         if (app.Environment.IsDevelopment())

@@ -27,6 +27,7 @@
   </Folder>
   <Folder Name="/src/modules/" />
   <Folder Name="/src/modules/characters/">
+    <Project Path="src/modules/characters/Modules.Characters.Data.EntityFramework.MigrationService.Tests/Modules.Characters.Data.EntityFramework.MigrationService.Tests.csproj" />
     <Project Path="src/modules/characters/Modules.Characters.Data.EntityFramework/Modules.Characters.Data.EntityFramework.csproj" />
     <Project Path="src/modules/characters/Modules.Characters.Data/Modules.Characters.Data.csproj" />
     <Project Path="src/modules/characters/Modules.Characters.Domain/Modules.Characters.Domain.csproj" />
@@ -56,6 +57,11 @@
   </Folder>
   <Folder Name="/src/modules/elements/tests/">
     <Project Path="src/modules/elements/Modules.Elements.Tests/Modules.Elements.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/file-management/">
+    <Project Path="src/modules/file-management/Modules.FileManagement.MigrationService/Modules.FileManagement.MigrationService.csproj" />
+    <Project Path="src/modules/file-management/Modules.FileManagement.Tests/Modules.FileManagement.Tests.csproj" />
+    <Project Path="src/modules/file-management/Modules.FileManagement/Modules.FileManagement.csproj" />
   </Folder>
   <Folder Name="/src/modules/identity/">
     <Project Path="src/modules/identity/Modules.Identity.MigrationService/Modules.Identity.MigrationService.csproj" />

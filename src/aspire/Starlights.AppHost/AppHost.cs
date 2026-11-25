@@ -12,6 +12,11 @@ var application = builder.AddProject<Projects.Starlights_Application>("backend")
     .WithReference(database)
     .WaitFor(database);
 
+var files = builder.AddAzureStorage("file-storage")
+    .RunAsEmulator(emulator => emulator.WithDataVolume().WithArgs("--skipApiVersionCheck"))
+    .AddBlobs("files");
+application.WithReference(files).WaitFor(files);
+
 if (builder.ExecutionContext.IsRunMode)
 {
     var migrationResource = builder.AddMigrationsResource("migrations");
@@ -19,6 +24,13 @@ if (builder.ExecutionContext.IsRunMode)
     var identity = migrationResource.WithMigrationWorker<Projects.Modules_Identity_MigrationService>("identity-context")
         .WithReference(database)
         .WaitFor(database);
+
+    var fileManagement = migrationResource.WithMigrationWorker<Projects.Modules_FileManagement_MigrationService>("file-management-context")
+        .WithReference(database)
+        .WithReference(files)
+        .WaitForCompletion(identity)
+        .WaitFor(files);
+    application.WaitForCompletion(fileManagement);
 
     var elements = migrationResource.WithMigrationWorker<Projects.Modules_Elements_Data_EntityFramework_MigrationService>("elements-context")
         .WithReference(database)
