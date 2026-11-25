@@ -69,7 +69,7 @@ Milestones summarize outcomes, not additional implementation layers. Some M4 fea
 
 **Depends on:** F00.
 
-**Acceptance evidence:** [the reference journey and expected values](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier). The first increment is refined in [F01.1: create, list and reopen](./F01-01-CREATE-LIST-REOPEN.md), with [observable creation and reopening examples](./BEHAVIOR.md#f011-create-list-and-reopen-a-character). Refinement is not implementation or completion evidence.
+**Acceptance evidence:** [the reference journey and expected values](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier). The first increment is implemented against [F01.1: create, list and reopen](./F01-01-CREATE-LIST-REOPEN.md), with [observable creation and reopening examples](./BEHAVIOR.md#f011-create-list-and-reopen-a-character). Its [executed checks and remaining gates](../progress/f01-first-slice.md) do not close SQL Server restart verification, F00, F01 or M1.
 
 Resolve the minimum aggregate, initialization, content-format, evaluation and Character persistence contracts as part of F01; they are not moved into F00. Preserve the shared Character root, validated Ruleset-owned composition, pinned content and aggregate-wide Unit of Work described in the specification. Exercise domain invariants without EF and verify persisted aggregate state survives reopening.
 

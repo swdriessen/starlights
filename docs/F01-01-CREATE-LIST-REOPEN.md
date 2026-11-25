@@ -1,7 +1,9 @@
 # F01.1: Create, list and reopen a named Character
 
-Status: refined delivery contract; not implemented or completion evidence. This
-is the first increment of [F01](./ROADMAP.md#f01-build-save-and-reopen-the-reference-character),
+Status: implemented; acceptance remains blocked on SQL Server migration/restart
+and F00 topology verification. Executed checks and workflow learnings are in
+[the implementation progress record](../progress/f01-first-slice.md). This is
+the first increment of [F01](./ROADMAP.md#f01-build-save-and-reopen-the-reference-character),
 not the complete Human Fighter/Soldier checkpoint.
 
 ## Outcome and prerequisite
