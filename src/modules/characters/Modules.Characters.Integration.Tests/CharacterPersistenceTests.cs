@@ -31,7 +31,7 @@ public sealed class CharacterPersistenceTests(TestContext testContext)
             .UseSqlite($"Data Source={Path.Combine(_directory, "characters.db")};Pooling=False")
             .AddInterceptors(_failure).Options;
         await using var context = new CharactersContext(_options);
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.EnsureCreatedAsync(testContext.CancellationToken);
     }
 
     [TestCleanup]

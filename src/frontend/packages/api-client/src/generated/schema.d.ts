@@ -128,6 +128,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/characters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List a page of the authenticated owner's Characters. */
+        get: operations["ListCharacters"];
+        put?: never;
+        /**
+         * Create and durably initialize an owned Character.
+         * @description Commits the selected Ruleset's initial composition and exact content binding atomically. No sheet is calculated.
+         */
+        post: operations["CreateCharacter"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/characters/{characterId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reopen an owned Character without reinitializing its saved state. */
+        get: operations["GetCharacter"];
+        put?: never;
+        post?: never;
+        delete: operations["StarlightsModulesCharactersEndpointsCharactersDeleteCharacterDeleteCharacterEndpoint"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/characters/rulesets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List supported content-defined Character creation options. */
+        get: operations["GetCharacterRulesets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/characters/{characterId}/statistics": {
         parameters: {
             query?: never;
@@ -299,38 +354,6 @@ export interface paths {
         put?: never;
         post: operations["StarlightsModulesCharactersEndpointsCharactersLevelUpUpdateClassLevelEndpoint"];
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/characters": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["StarlightsModulesCharactersEndpointsCharactersGetCharactersGetCharactersEndpoint"];
-        put?: never;
-        post: operations["StarlightsModulesCharactersEndpointsCharactersCreateCharacterCreateCharacterEndpoint"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/characters/{characterId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["StarlightsModulesCharactersEndpointsCharactersGetCharacterDetailsGetCharacterDetailsEndpoint"];
-        put?: never;
-        post?: never;
-        delete: operations["StarlightsModulesCharactersEndpointsCharactersDeleteCharacterDeleteCharacterEndpoint"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1232,6 +1255,11 @@ export interface components {
             level?: number | string;
             isPrimary?: boolean;
         };
+        CharacterContentResponse: {
+            packId: string;
+            packVersion: string;
+            characterElementId: string;
+        };
         CharacterCreationOption: {
             /** Format: uuid */
             id?: string;
@@ -1246,6 +1274,9 @@ export interface components {
             /** Format: int32 */
             level?: null | number | string;
             build?: null | string;
+            rulesetId?: null | string;
+            status?: string;
+            content?: null | components["schemas"]["CharacterContentResponse"];
         };
         CharacterPortraitOption: {
             url: string;
@@ -1280,9 +1311,13 @@ export interface components {
             id: string;
         };
         CreateCharacterRequest: {
+            name?: null | string;
+            rulesetId?: null | string;
+            packId?: null | string;
+            packVersion?: null | string;
+            characterElementId?: null | string;
             /** Format: uuid */
-            characterCreationOptionId: string;
-            name: string;
+            characterCreationOptionId?: null | string;
             portraitUrl?: null | string;
         };
         CreateCharacterResponse: {
@@ -1571,6 +1606,8 @@ export interface components {
         };
         GetCharactersResponse: {
             characters?: components["schemas"]["CharacterDetailsDataModel"][];
+            /** Format: int32 */
+            nextOffset?: null | number | string;
         };
         GetClassByIdRequest: {
             /** Format: uuid */
@@ -1802,6 +1839,12 @@ export interface components {
             /** Format: uuid */
             elementId?: string;
             ruleIds: string[];
+        };
+        RulesetOptionResponse: {
+            rulesetId: string;
+            name: string;
+            packName: string;
+            content: components["schemas"]["CharacterContentResponse"];
         };
         SavingThrowDataModel: {
             /** Format: uuid */
@@ -2440,6 +2483,156 @@ export interface operations {
             };
         };
     };
+    ListCharacters: {
+        parameters: {
+            query?: {
+                offset?: number | string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetCharactersResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreateCharacter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCharacterRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateCharacterResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetCharacter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetCharacterDetailsResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StarlightsModulesCharactersEndpointsCharactersDeleteCharacterDeleteCharacterEndpoint: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetCharacterRulesets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulesetOptionResponse"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     StarlightsModulesCharactersEndpointsGenerationStatisticsGetStatisticsGetStatisticsEndpoint: {
         parameters: {
             query?: never;
@@ -2673,88 +2866,6 @@ export interface operations {
                 "application/json": components["schemas"]["UpdateClassLevelRequest"];
             };
         };
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StarlightsModulesCharactersEndpointsCharactersGetCharactersGetCharactersEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetCharactersResponse"];
-                };
-            };
-        };
-    };
-    StarlightsModulesCharactersEndpointsCharactersCreateCharacterCreateCharacterEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCharacterRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateCharacterResponse"];
-                };
-            };
-        };
-    };
-    StarlightsModulesCharactersEndpointsCharactersGetCharacterDetailsGetCharacterDetailsEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetCharacterDetailsResponse"];
-                };
-            };
-        };
-    };
-    StarlightsModulesCharactersEndpointsCharactersDeleteCharacterDeleteCharacterEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             /** @description No Content */
             204: {

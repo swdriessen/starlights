@@ -4,7 +4,10 @@ using Starlights.Modules.FileManagement;
 using Starlights.Modules.Identity.Accounts;
 using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
-using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
+using Starlights.Modules.Characters.Endpoints;
+using Starlights.Modules.Characters.Building;
+using Starlights.Modules.Characters.Domain.Building;
+using Starlights.RuleSets.DND5E5;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
@@ -42,13 +45,23 @@ public sealed class Program
             options.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod());
         });
         builder.AddFileManagementModule();
+        builder.Services.AddSingleton<ICharacterRuleset, DndRuleset>();
+        builder.Services.AddSingleton<CharacterRulesets>();
+        builder.Services.AddSingleton(services =>
+        {
+            var catalog = new CharacterContentCatalog();
+            catalog.AddEmbeddedPack(typeof(DndRuleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1.json",
+                services.GetRequiredService<CharacterRulesets>());
+            return catalog;
+        });
+        builder.Services.AddCharacterWorkflows();
 
         // add the platform services and its modules
         builder.AddStarlightsPlatform(options =>
         {
             // characters module
             options.AdditionalAssemblies.Add(typeof(CharactersContext).Assembly);
-            options.AdditionalAssemblies.Add(typeof(CreateCharacterEndpoint).Assembly);
+            options.AdditionalAssemblies.Add(typeof(CharacterEndpoints).Assembly);
             options.AdditionalAssemblies.Add(typeof(RegistrationProcessor).Assembly);
             options.AddEventProcessingComponent();
 
@@ -72,9 +85,11 @@ public sealed class Program
         app.UseIdentityApiProtection();
         app.MapIdentity();
         app.MapFileManagement();
+        app.MapCharacters();
+        _ = app.Services.GetRequiredService<CharacterContentCatalog>();
         app.MapDefaultEndpoints();
 
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() || app.Environment.IsIntegration())
         {
             app.MapOpenApi();
             app.MapScalarApiReference(options =>

@@ -1,6 +1,10 @@
 ﻿namespace Starlights.Modules.Characters.Endpoints.Characters.GetCharacters;
 
-public sealed class GetCharactersResponse
+/// <summary>A bounded page of the owner's saved Characters.</summary>
+public sealed record GetCharactersResponse
 {
-    public List<CharacterDetailsDataModel> Characters { get; set; } = [];
+    /// <summary>Gets saved Character summaries.</summary>
+    public List<CharacterDetailsDataModel> Characters { get; init; } = [];
+    /// <summary>Gets the next page offset, or null at the end of the collection.</summary>
+    public int? NextOffset { get; init; }
 }

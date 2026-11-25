@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />
     <InternalsVisibleTo Include="Modules.Identity.Tests" />
+    <InternalsVisibleTo Include="Modules.Characters.Integration.Tests" />
     <InternalsVisibleTo Include="Starlights.Integration.Harness" />
   </ItemGroup>
 </Project>

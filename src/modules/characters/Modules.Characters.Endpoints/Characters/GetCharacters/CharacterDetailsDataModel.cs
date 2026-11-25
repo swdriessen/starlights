@@ -10,4 +10,10 @@ public record CharacterDetailsDataModel
     public string? PortraitUrl { get; set; }
     public int? Level { get; set; }
     public string? Build { get; set; }
+    /// <summary>Gets the selected Ruleset, absent only on explicitly retained legacy data.</summary>
+    public string? RulesetId { get; init; }
+    /// <summary>Gets incomplete or legacy status, never inferred sheet readiness.</summary>
+    public string Status { get; init; } = "legacy";
+    /// <summary>Gets the exact saved content binding for an initialized build.</summary>
+    public CharacterContentResponse? Content { get; init; }
 }

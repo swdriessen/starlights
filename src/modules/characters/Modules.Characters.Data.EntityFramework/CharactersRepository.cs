@@ -36,6 +36,7 @@ internal class CharactersRepository(ICurrentUser currentUser) : RepositoryBase<C
             ?? throw new InvalidOperationException("Listing Characters requires an authenticated owner.");
         return await Entities
             .Where(character => EF.Property<Guid>(character, "OwnerId") == userId)
+            .Where(character => character.RulesetId == null)
             .IncludeAggregateGraph()
             .AsSplitQuery()
             .ToListAsync();

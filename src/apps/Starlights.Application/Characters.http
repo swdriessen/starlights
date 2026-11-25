@@ -1,0 +1,27 @@
+@baseUrl = http://localhost:5240
+@characterId = 00000000-0000-0000-0000-000000000000
+
+### Sign in using Identity.http first. Copy the authenticated antiforgery token.
+GET {{baseUrl}}/api/identity/antiforgery
+
+### Available bundled creation options
+GET {{baseUrl}}/api/characters/rulesets
+
+### Create an incomplete, durably initialized Character
+POST {{baseUrl}}/api/characters
+Content-Type: application/json
+X-CSRF-TOKEN: {{antiforgeryToken}}
+
+{
+  "name": "Mira",
+  "rulesetId": "DND5E5",
+  "packId": "srd-5.2.1",
+  "packVersion": "0.1.0",
+  "characterElementId": "srd521:character:default"
+}
+
+### Owner-only collection
+GET {{baseUrl}}/api/characters?offset=0
+
+### Reopen; absent or another owner's identifier returns 404
+GET {{baseUrl}}/api/characters/{{characterId}}

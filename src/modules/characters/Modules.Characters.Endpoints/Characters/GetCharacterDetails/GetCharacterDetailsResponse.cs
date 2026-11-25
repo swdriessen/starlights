@@ -2,7 +2,8 @@
 
 namespace Starlights.Modules.Characters.Endpoints.Characters.GetCharacterDetails;
 
-public sealed class GetCharacterDetailsResponse
+/// <summary>An owner-authorized saved Character overview.</summary>
+public sealed record GetCharacterDetailsResponse
 {
     public required CharacterDetailsDataModel Character { get; init; }
 }
