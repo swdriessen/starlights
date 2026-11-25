@@ -6,12 +6,10 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@starlights/ui-framework/theme-provider";
 import "./index.css";
 import AboutPage from "./pages/about/Index.tsx";
-import CharactersPage from "./pages/characters/Index.tsx";
-import CharactersCreatePage from "./pages/characters/create/Index.tsx";
-import CharactersDetailsPage from "./pages/characters/details/Index.tsx";
 import { LandingPage2 } from "./pages/landing/Index.tsx";
 // import "./styles/typography.css";
-import App, { AppWide } from "./App.tsx";
+import App from "./App.tsx";
+import { CharacterWorkspace } from "./features/characters/character-workspace.tsx";
 import { CharacterDetailsPage } from "./pages/characters/builder/index.tsx";
 import { DevelopmentPage } from "./pages/development/Index.tsx";
 import { LibraryDevelopmentPage } from "./pages/development/library-page.tsx";
@@ -54,11 +52,11 @@ const router = createBrowserRouter([{ element: <AuthGate />, hydrateFallbackElem
   },
   {
     path: "/characters",
-    element: <AppWide />,
+    element: <CharacterWorkspace />,
     children: [
-      { index: true, element: <CharactersPage /> },
-      { path: ":id", element: <CharactersDetailsPage /> },
-      { path: "create", element: <CharactersCreatePage /> },
+      { index: true, lazy: async () => ({ Component: (await import("./features/characters/character-collection-page")).CharacterCollectionPage }) },
+      { path: ":id", lazy: async () => ({ Component: (await import("./features/characters/character-overview-page")).CharacterOverviewPage }) },
+      { path: "create", lazy: async () => ({ Component: (await import("./features/characters/create-character-page")).CreateCharacterPage }) },
     ],
   },
   {
