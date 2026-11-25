@@ -27,12 +27,8 @@
     // shadcn addition
     "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": ["./src/*", "../../packages/ui/src/*"],
-      "@starlights/ui": ["../../packages/ui/src/index.ts"],
-      "@starlights/ui/*": ["../../packages/ui/src/*"],
+      "@/*": ["./src/*"],
       "@starlights/api-client": ["../../packages/api-client/src/index.ts"],
-      "@components/*": ["../../packages/ui/src/components/*"],
-      "@components/ui/*": ["../../packages/ui/src/components/ui*"]
     }
   },
   "include": ["src"]

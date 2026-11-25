@@ -1,4 +1,4 @@
-import { Button } from "@starlights/ui";
+import { Button } from "@starlights/ui-framework/button";
 
 export function LibraryDevelopmentPage() {
   return (

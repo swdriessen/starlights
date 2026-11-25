@@ -2,18 +2,18 @@ import { useCharacterCreationOptions, useCharacterPortraitOptions, useCreateChar
 import { CharacterCreationOptionsSelect } from "./character-creation-options-select";
 import { useMemo } from "react";
 import { CheckIcon, OctagonAlertIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@starlights/ui-framework/input";
+import { Button } from "@starlights/ui-framework/button";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet } from "@/components/ui/field";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Spinner } from "@/components/ui/spinner";
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia } from "@/components/ui/empty";
+import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet } from "@starlights/ui-framework/field";
+import { ScrollArea } from "@starlights/ui-framework/scroll-area";
+import { Spinner } from "@starlights/ui-framework/spinner";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia } from "@starlights/ui-framework/empty";
 import { cn } from "@/lib/utils";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@starlights/ui-framework/card";
 import { CardWrapper } from "../components/card-wrapper";
 
 function PortraitsLoading() {
@@ -105,7 +105,7 @@ function CharacterCreation() {
                 <>
                   <CharacterCreationOptionsSelect
                     characterCreationOptions={options}
-                    onValueChange={(v) => setValue("CharacterCreationOptionId", v, { shouldValidate: false })}
+                    onValueChange={(v) => setValue("CharacterCreationOptionId", v ?? "", { shouldValidate: false })}
                   />
                   {errors.CharacterCreationOptionId && <p className="text-sm text-destructive-600 mt-1">{errors.CharacterCreationOptionId.message}</p>}
                 </>

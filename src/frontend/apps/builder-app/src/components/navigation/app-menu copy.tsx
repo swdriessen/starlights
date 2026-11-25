@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { BellIcon } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@starlights/ui-framework/badge";
+import { Button } from "@starlights/ui-framework/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@starlights/ui-framework/popover";
 
 const initialNotifications = [
   {
@@ -91,11 +91,9 @@ export default function AppMenuComponent3() {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button size="icon" variant="outline" className="relative" aria-label="Open notifications">
-          <BellIcon size={16} aria-hidden="true" />
-          {unreadCount > 0 && <Badge className="absolute -top-2 left-full min-w-5 -translate-x-1/2 px-1">{unreadCount > 99 ? "99+" : unreadCount}</Badge>}
-        </Button>
+      <PopoverTrigger render={<Button size="icon" variant="outline" className="relative" aria-label="Open notifications" />}>
+        <BellIcon size={16} aria-hidden="true" />
+        {unreadCount > 0 && <Badge className="absolute -top-2 left-full min-w-5 -translate-x-1/2 px-1">{unreadCount > 99 ? "99+" : unreadCount}</Badge>}
       </PopoverTrigger>
       <PopoverContent className="w-80 p-1">
         <div className="flex items-baseline justify-between gap-4 px-3 py-2">

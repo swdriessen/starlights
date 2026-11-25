@@ -1,6 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@starlights/ui-framework/badge";
+import { Separator } from "@starlights/ui-framework/separator";
 import { cn } from "@/lib/utils";
 import {
   AnvilIcon,
@@ -26,7 +25,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+} from "@starlights/ui-framework/navigation-menu";
 import { Outlet } from "react-router-dom";
 import { ModeToggle } from "@/components/mode-toggle";
 import { GitHubIconButton } from "@/components/navigation/github-icon-button";
@@ -150,7 +149,6 @@ function SizeIndicatorBadge({ className, ...props }: React.HTMLAttributes<HTMLDi
 }
 
 export function MainNavigation() {
-  const isMobile = useIsMobile();
   return (
     <>
       <nav className="flex items-center justify-between h-16 ">
@@ -162,48 +160,36 @@ export function MainNavigation() {
           </Link>
 
           <div className="hidden md:flex items-center justify-start gap-2 ms-4">
-            <NavigationMenu viewport={isMobile} className="z-10 ">
+            <NavigationMenu className="z-10 ">
               <NavigationMenuList className="hidden md:flex">
                 <NavigationMenuItem className="hidden md:block ">
                   <NavigationMenuTrigger className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>Collections</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[300px] gap-1">
                       <li>
-                        <NavigationMenuLink asChild>
+                        <NavigationMenuLink render={<Link to="/characters" />} className="flex flex-row items-center gap-3 font-overpass leading-snug">
+                          <CrownIcon size={16} className="size-9 rounded-sm p-2 stroke-starlights-indigo-600" />
                           <div>
-                            <Link to="/characters" className="flex flex-row items-center gap-3 font-overpass leading-snug">
-                              <CrownIcon size={16} className=" size-9 rounded-sm p-2 stroke-starlights-indigo-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Character Collection</div>
-                                <div className="text-muted-foreground text-xs">The characters in your collection.</div>
-                              </div>
-                            </Link>
+                            <div className="font-medium mt-0.5">Character Collection</div>
+                            <div className="text-muted-foreground text-xs">The characters in your collection.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className="opacity-50 pointer-events-none">
-                            <Link to="/campaigns" className="flex flex-row items-center gap-3 font-overpass leading-snug ">
-                              <MapIcon size={16} className=" size-9 rounded-sm p-2 stroke-starlights-indigo-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Campaigns</div>
-                                <div className="text-muted-foreground text-xs ">Manage your character's adventures.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/campaigns" />} className="pointer-events-none flex flex-row items-center gap-3 font-overpass leading-snug opacity-50">
+                          <MapIcon size={16} className="size-9 rounded-sm p-2 stroke-starlights-indigo-600" />
+                          <div>
+                            <div className="font-medium mt-0.5">Campaigns</div>
+                            <div className="text-muted-foreground text-xs">Manage your character's adventures.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className="opacity-50 pointer-events-none">
-                            <Link to="/campaigns" className="flex flex-row items-center gap-3 font-overpass leading-snug ">
-                              <LibraryBigIcon size={16} className=" size-9 rounded-sm p-2 stroke-starlights-indigo-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Compendium</div>
-                                <div className="text-muted-foreground text-xs ">A searchable archive of player options.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/campaigns" />} className="pointer-events-none flex flex-row items-center gap-3 font-overpass leading-snug opacity-50">
+                          <LibraryBigIcon size={16} className="size-9 rounded-sm p-2 stroke-starlights-indigo-600" />
+                          <div>
+                            <div className="font-medium mt-0.5">Compendium</div>
+                            <div className="text-muted-foreground text-xs">A searchable archive of player options.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
@@ -211,15 +197,11 @@ export function MainNavigation() {
                         <Separator className="mx-3 max-w-[276px]" />
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className="opacity-50 pointer-events-none">
-                            <Link to="/homebrew" className="flex flex-row items-center gap-3 font-overpass leading-snug ">
-                              <Icon iconNode={cauldron} size={16} className=" size-9 rounded-sm p-2 stroke-starlights-purple-600"></Icon>
-                              <div>
-                                <div className="font-medium mt-0.5">Homebrew Content</div>
-                                <div className="text-muted-foreground text-xs ">Create and manage your custom content.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/homebrew" />} className="pointer-events-none flex flex-row items-center gap-3 font-overpass leading-snug opacity-50">
+                          <Icon iconNode={cauldron} size={16} className="size-9 rounded-sm p-2 stroke-starlights-purple-600" />
+                          <div>
+                            <div className="font-medium mt-0.5">Homebrew Content</div>
+                            <div className="text-muted-foreground text-xs">Create and manage your custom content.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
@@ -232,67 +214,47 @@ export function MainNavigation() {
                   <NavigationMenuContent>
                     <ul className="grid w-[300px] gap-1">
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className=" ">
-                            <Link to="/characters" className="flex flex-row items-center gap-3 font-overpass leading-snug ">
-                              <RouteIcon size={16} className=" size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Start Page</div>
-                                <div className="text-muted-foreground text-xs">Your journey starts here.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/characters" />} className="flex flex-row items-center gap-3 font-overpass leading-snug">
+                          <RouteIcon size={16} className="size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
+                          <div>
+                            <div className="font-medium mt-0.5">Start Page</div>
+                            <div className="text-muted-foreground text-xs">Your journey starts here.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className=" ">
-                            <Link to="/characters/12345/builder/class-options" className="flex flex-row items-center gap-3 font-overpass leading-snug ">
-                              <AnvilIcon size={16} className=" size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Build Options</div>
-                                <div className="text-muted-foreground text-xs ">Choose your build options.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/characters/12345/builder/class-options" />} className="flex flex-row items-center gap-3 font-overpass leading-snug">
+                          <AnvilIcon size={16} className="size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
+                          <div>
+                            <div className="font-medium mt-0.5">Build Options</div>
+                            <div className="text-muted-foreground text-xs">Choose your build options.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className="opacity-50 pointer-events-none">
-                            <Link to="/characters/12345/builder/spellcasting" className="flex flex-row items-center gap-3 font-overpass leading-snug ">
-                              <WandIcon size={16} className=" size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
-                              <div>
-                                <div className="font-medium mt-0.5 upper">Spellcasting Options</div>
-                                <div className="text-muted-foreground text-xs ">Choose your spellcasting options.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/characters/12345/builder/spellcasting" />} className="pointer-events-none flex flex-row items-center gap-3 font-overpass leading-snug opacity-50">
+                          <WandIcon size={16} className="size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
+                          <div>
+                            <div className="font-medium mt-0.5 upper">Spellcasting Options</div>
+                            <div className="text-muted-foreground text-xs">Choose your spellcasting options.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className="opacity-50 pointer-events-none">
-                            <Link to="/characters/12345/builder/equipment" className="flex flex-row items-center gap-3 font-overpass leading-snug">
-                              <SwordIcon size={16} className=" size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Equipment</div>
-                                <div className="text-muted-foreground text-xs ">Choose your equipment.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/characters/12345/builder/equipment" />} className="pointer-events-none flex flex-row items-center gap-3 font-overpass leading-snug opacity-50">
+                          <SwordIcon size={16} className="size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
+                          <div>
+                            <div className="font-medium mt-0.5">Equipment</div>
+                            <div className="text-muted-foreground text-xs">Choose your equipment.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className=" ">
-                            <Link to="/characters/12345/builder/manage" className="flex flex-row items-center gap-3 font-overpass leading-snug">
-                              <PencilRulerIcon size={16} className=" size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Manage Character</div>
-                                <div className="text-muted-foreground text-xs ">Manage your character details.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/characters/12345/builder/manage" />} className="flex flex-row items-center gap-3 font-overpass leading-snug">
+                          <PencilRulerIcon size={16} className="size-9 rounded-sm p-2 stroke-yellow-500 dark:stroke-yellow-600" />
+                          <div>
+                            <div className="font-medium mt-0.5">Manage Character</div>
+                            <div className="text-muted-foreground text-xs">Manage your character details.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
@@ -305,28 +267,20 @@ export function MainNavigation() {
                   <NavigationMenuContent>
                     <ul className="grid w-[300px] gap-1">
                       <li>
-                        <NavigationMenuLink asChild>
-                          <div className="">
-                            <Link to="/development" className="flex flex-row items-center gap-3 font-overpass leading-snug">
-                              <CodeIcon size={16} className=" size-9 rounded-sm p-2 stroke-starlights-purple-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Development</div>
-                                <div className="text-muted-foreground text-xs">Lorem ipsum dolor sit amet consectetur.</div>
-                              </div>
-                            </Link>
+                        <NavigationMenuLink render={<Link to="/development" />} className="flex flex-row items-center gap-3 font-overpass leading-snug">
+                          <CodeIcon size={16} className="size-9 rounded-sm p-2 stroke-starlights-purple-600" />
+                          <div>
+                            <div className="font-medium mt-0.5">Development</div>
+                            <div className="text-muted-foreground text-xs">Lorem ipsum dolor sit amet consectetur.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
+                        <NavigationMenuLink render={<Link to="/lib" />} className="flex flex-row items-center gap-3 font-overpass leading-snug">
+                          <LibraryIcon size={16} className="size-9 rounded-sm p-2 stroke-starlights-purple-600" />
                           <div>
-                            <Link to="/lib" className="flex flex-row items-center gap-3 font-overpass leading-snug">
-                              <LibraryIcon size={16} className=" size-9 rounded-sm p-2 stroke-starlights-purple-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Library Page</div>
-                                <div className="text-muted-foreground text-xs ">Lorem ipsum dolor sit amet.</div>
-                              </div>
-                            </Link>
+                            <div className="font-medium mt-0.5">Library Page</div>
+                            <div className="text-muted-foreground text-xs">Lorem ipsum dolor sit amet.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>
@@ -334,15 +288,11 @@ export function MainNavigation() {
                         <Separator className="mx-3 max-w-[276px]" />
                       </li>
                       <li>
-                        <NavigationMenuLink asChild>
+                        <NavigationMenuLink render={<Link to="/app2" />} className="flex flex-row items-center gap-3 font-overpass leading-snug">
+                          <LibraryIcon size={16} className="size-9 rounded-sm p-2 stroke-starlights-purple-600" />
                           <div>
-                            <Link to="/app2" className="flex flex-row items-center gap-3 font-overpass leading-snug">
-                              <LibraryIcon size={16} className=" size-9 rounded-sm p-2 stroke-starlights-purple-600" />
-                              <div>
-                                <div className="font-medium mt-0.5">Builder Layout Demo Page</div>
-                                <div className="text-muted-foreground text-xs ">Lorem ipsum dolor sit amet.</div>
-                              </div>
-                            </Link>
+                            <div className="font-medium mt-0.5">Builder Layout Demo Page</div>
+                            <div className="text-muted-foreground text-xs">Lorem ipsum dolor sit amet.</div>
                           </div>
                         </NavigationMenuLink>
                       </li>

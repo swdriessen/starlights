@@ -1,9 +1,9 @@
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@starlights/ui-framework/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { ThemeProvider } from "./components/theme-provider.tsx";
+import { ThemeProvider } from "@starlights/ui-framework/theme-provider";
 import "./index.css";
 import AboutPage from "./pages/about/Index.tsx";
 import CharactersPage from "./pages/characters/Index.tsx";

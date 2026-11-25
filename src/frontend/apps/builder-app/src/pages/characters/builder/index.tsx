@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@starlights/ui-framework/card";
 import { useParams } from "react-router-dom";
 
 export function BuilderHeader({ id }: { id: string }) {

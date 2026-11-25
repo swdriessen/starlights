@@ -1,6 +1,6 @@
 import { MoonStarIcon, Sun } from "lucide-react";
-import { Toggle } from "@/components/ui/toggle";
-import { useTheme } from "@/components/theme-provider";
+import { Toggle } from "@starlights/ui-framework/toggle";
+import { useTheme } from "@starlights/ui-framework/theme-provider";
 
 export function ModeToggle() {
   const { theme, setTheme } = useTheme();
@@ -10,7 +10,7 @@ export function ModeToggle() {
       <Toggle
         size="sm"
         variant="default"
-        className="group hover:bg-accent/50 data-[state=on]:hover:bg-accent data-[state=on]:bg-transparent"
+        className="group hover:bg-accent/50 data-pressed:hover:bg-accent data-pressed:bg-transparent"
         onPressedChange={() => {
           setTheme(theme === "dark" ? "light" : "dark");
         }}

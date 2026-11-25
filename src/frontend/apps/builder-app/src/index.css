@@ -1,5 +1,9 @@
-@import "@starlights/ui/styles.css";
-@source "../../../packages/ui/src";
+@import "@starlights/ui-framework/styles.source.css";
+@plugin "@tailwindcss/typography";
+@import "./styles/colors.css";
+@import "./styles/typography.css";
+@import "./styles/shadows.css";
+@source "../../../packages/ui-framework/src";
 
 :root {
   --sidebar-width: 22rem;

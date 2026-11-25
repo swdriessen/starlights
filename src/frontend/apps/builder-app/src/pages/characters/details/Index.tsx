@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@starlights/ui-framework/button";
+import { Separator } from "@starlights/ui-framework/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@starlights/ui-framework/tabs";
 import {
   useCharacterClasses,
   useRegisterSelectionMutation,
@@ -31,7 +31,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import type { JSX } from "react";
 import { useParams } from "react-router-dom";
 import { CardWrapper } from "../components/card-wrapper";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@starlights/ui-framework/card";
 
 function AbilitiesComponent({ id: characterId }: { id: string }) {
   const { data: abilityScores } = useAbilityScores(characterId);

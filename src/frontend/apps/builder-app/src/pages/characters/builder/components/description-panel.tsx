@@ -1,6 +1,6 @@
 import DescriptionProseSection from "@/components/description-section";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@starlights/ui-framework/scroll-area";
+import { Separator } from "@starlights/ui-framework/separator";
 import { cn } from "@/lib/utils";
 
 function DescriptionPanel({ id, className }: { id: string; className?: string }) {

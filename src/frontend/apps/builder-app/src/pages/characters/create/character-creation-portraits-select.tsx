@@ -1,4 +1,4 @@
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@starlights/ui-framework/select";
 import type { CharacterPortraitOption, CharacterPortraitOptions } from "@/lib/api/characters/queries";
 
 export function CharacterPortraitOptionsSelect({
@@ -6,7 +6,7 @@ export function CharacterPortraitOptionsSelect({
   onValueChange,
 }: {
   characterPortraitOptions: CharacterPortraitOptions | undefined;
-  onValueChange?: (value: string) => void;
+  onValueChange?: (value: string | null) => void;
 }) {
   return (
     <Select onValueChange={onValueChange}>

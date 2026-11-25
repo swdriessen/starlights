@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@starlights/ui-framework/card";
 
 // Starlights color palettes configuration
 const starlightsColors = [

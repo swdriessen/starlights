@@ -438,3 +438,4 @@ FodyWeavers.xsd
 !/src/apps/Starlights.Application/Files.http
 
 /src/frontend/**/package-lock.json
+/src/frontend/**/.migration

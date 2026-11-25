@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { FieldError } from "@/components/ui/field";
+import { Button } from "@starlights/ui-framework/button";
+import { FieldError } from "@starlights/ui-framework/field";
 import { getSession, sessionKey, signOut, type Session } from "./session-api";
 import { SignInPage } from "./sign-in-page";
 

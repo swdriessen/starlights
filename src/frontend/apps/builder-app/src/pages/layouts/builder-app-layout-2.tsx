@@ -1,7 +1,7 @@
 import { MainNavigation } from "./default-layout";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@starlights/ui";
+import { Avatar, AvatarFallback, AvatarImage } from "@starlights/ui-framework/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@starlights/ui-framework/tabs";
+import { Button } from "@starlights/ui-framework/button";
 
 export function LandingBackground2() {
   return (
@@ -110,28 +110,28 @@ function Page() {
           <Tabs defaultValue="a" className="mb-0 pb-0 ">
             <div className="flex flex-row justify-between items-end ">
               <TabsList className="bg-transparent ">
-                <TabsTrigger value="a" className="data-[state=active]:bg-accent data-[state=active]:shadow-sm border-none  font-overpass  pt-1.75">
+                <TabsTrigger value="a" className="data-active:bg-accent data-active:shadow-sm border-none font-overpass pt-1.75">
                   Class Options
                 </TabsTrigger>
-                <TabsTrigger value="b" className="data-[state=active]:bg-accent data-[state=active]:shadow-sm border-none  font-overpass  pt-1.75">
+                <TabsTrigger value="b" className="data-active:bg-accent data-active:shadow-sm border-none font-overpass pt-1.75">
                   Character Origin
                 </TabsTrigger>
-                <TabsTrigger value="c" className="data-[state=active]:bg-accent data-[state=active]:shadow-sm border-none  font-overpass  pt-1.75">
+                <TabsTrigger value="c" className="data-active:bg-accent data-active:shadow-sm border-none font-overpass pt-1.75">
                   Ability Scores
                 </TabsTrigger>
-                <TabsTrigger value="d" className="data-[state=active]:bg-accent data-[state=active]:shadow-sm border-none  font-overpass  pt-1.75">
+                <TabsTrigger value="d" className="data-active:bg-accent data-active:shadow-sm border-none font-overpass pt-1.75">
                   Languages & Proficiencies
                 </TabsTrigger>
-                <TabsTrigger value="e" className="data-[state=active]:bg-accent data-[state=active]:shadow-sm border-none  font-overpass  pt-1.75">
+                <TabsTrigger value="e" className="data-active:bg-accent data-active:shadow-sm border-none font-overpass pt-1.75">
                   Feats
                 </TabsTrigger>
-                {/* <TabsTrigger value="spellcasting" className="data-[state=active]:bg-accent data-[state=active]:shadow-sm border-none  font-overpass  pt-1.75">
+                {/* <TabsTrigger value="spellcasting" className="data-active:bg-accent data-active:shadow-sm border-none font-overpass pt-1.75">
                   Spellcasting
                 </TabsTrigger> */}
-                {/* <TabsTrigger value="equipment" className="data-[state=active]:bg-accent data-[state=active]:shadow-sm border-none  font-overpass  pt-1.75">
+                {/* <TabsTrigger value="equipment" className="data-active:bg-accent data-active:shadow-sm border-none font-overpass pt-1.75">
                   Equipment
                 </TabsTrigger> */}
-                {/* <TabsTrigger value="manage" className="data-[state=active]:bg-accent data-[state=active]:shadow-sm border-none  font-overpass  pt-1.75">
+                {/* <TabsTrigger value="manage" className="data-active:bg-accent data-active:shadow-sm border-none font-overpass pt-1.75">
                   Manage
                 </TabsTrigger> */}
               </TabsList>

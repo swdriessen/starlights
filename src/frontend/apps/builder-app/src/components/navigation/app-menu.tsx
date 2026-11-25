@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { GripIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@starlights/ui-framework/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@starlights/ui-framework/popover";
 
 const initialNotifications = [
   {
@@ -89,15 +89,13 @@ export default function AppMenuComponent() {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button size="icon-sm" variant="ghost" className="relative" aria-label="Open notifications">
-          <GripIcon size={16} aria-hidden="true" />
-          {/* {unreadCount > 0 && (
+      <PopoverTrigger render={<Button size="icon-sm" variant="ghost" className="relative" aria-label="Open notifications" />}>
+        <GripIcon size={16} aria-hidden="true" />
+        {/* {unreadCount > 0 && (
             <Badge variant="default" className="absolute -top-2 left-full min-w-5 -translate-x-1/2 px-1 bg-starlights-yellow-600 text-black">
               {unreadCount > 99 ? "99+" : unreadCount}
             </Badge>
           )} */}
-        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-1" align="end">
         <div className="flex items-baseline justify-between gap-4 px-3 py-2">

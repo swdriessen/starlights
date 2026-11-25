@@ -9,10 +9,8 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@/*": ["./src/*", "../../packages/ui/src/*"],
-      "@starlights/api-client": ["../../packages/api-client/src/index.ts"],
-      "@starlights/ui": ["../../packages/ui/src/index.ts"],
-      "@starlights/ui/*": ["../../packages/ui/src/*"]
+      "@/*": ["./src/*"],
+      "@starlights/api-client": ["../../packages/api-client/src/index.ts"]
     }
   }
 }

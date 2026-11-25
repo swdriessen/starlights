@@ -1,8 +1,8 @@
 import { useCharacterCards, useDeleteCharacter, type CharacterCard } from "@/lib/api/characters/queries";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button, buttonVariants } from "@starlights/ui-framework/button";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@starlights/ui-framework/card";
 import { AnvilIcon, FileSpreadsheetIcon, MenuIcon, PlusIcon, SwordsIcon, Trash2Icon } from "lucide-react";
 import {
   AlertDialog,
@@ -14,13 +14,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+} from "@starlights/ui-framework/alert-dialog";
+import { Badge } from "@starlights/ui-framework/badge";
+import { Separator } from "@starlights/ui-framework/separator";
+import { ButtonGroup } from "@starlights/ui-framework/button-group";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@starlights/ui-framework/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@starlights/ui-framework/empty";
 
 import { CardWrapper } from "./components/card-wrapper";
 
@@ -131,13 +131,11 @@ function CharacterDetailsDrawer({ card }: { card: CharacterCard }) {
                     <span className="text-xs text-center">Sheet</span>
                   </Button>
                   <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant={"destructive"} size={"icon"} disabled={deleteCharacter.isPending} className="">
-                        <Trash2Icon />
-                        {/* Delete
-                        <span className="sr-only">Delete</span> */}
-                        {/* <span className="text-xs text-center">Delete</span> */}
-                      </Button>
+                    <AlertDialogTrigger render={<Button variant={"destructive"} size={"icon"} disabled={deleteCharacter.isPending} className="" />}>
+                      <Trash2Icon />
+                      {/* Delete
+                      <span className="sr-only">Delete</span> */}
+                      {/* <span className="text-xs text-center">Delete</span> */}
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
@@ -232,15 +230,17 @@ function CharactersCollection() {
 
               {isMobile ? null : (
                 <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant={"destructive"}
-                      disabled={deleteCharacter.isPending}
-                      className="absolute inset-e-3 top-3 rounded-lg size-6 hidden group-hover:flex opacity-100 hover:opacity-100"
-                    >
-                      <Trash2Icon className="size-3.5" />
-                      <span className="sr-only">Delete</span>
-                    </Button>
+                  <AlertDialogTrigger
+                    render={
+                      <Button
+                        variant={"destructive"}
+                        disabled={deleteCharacter.isPending}
+                        className="absolute inset-e-3 top-3 rounded-lg size-6 hidden group-hover:flex opacity-100 hover:opacity-100"
+                      />
+                    }
+                  >
+                    <Trash2Icon className="size-3.5" />
+                    <span className="sr-only">Delete</span>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
@@ -290,22 +290,6 @@ export default function CharactersPage() {
                       New Character
                     </Link>
                   </Button>
-                  {/* <Separator orientation="vertical" />
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="default" size="icon-sm" aria-label="More Options" disabled>
-                        <MoreHorizontalIcon />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem>
-                          <PlusIcon />
-                          New Group
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu> */}
                 </ButtonGroup>
               </CardAction>
             </CardHeader>

@@ -1,6 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
 import { env as nodeEnv } from "process";
 import { defineConfig, loadEnv } from "vite";
 
@@ -24,11 +23,6 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss()],
     resolve: {
       tsconfigPaths: true,
-      alias: {
-        "@components": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
-        "@components/ui": path.resolve(__dirname, "../../packages/ui/src/components/ui"),
-        "@starlights/ui": path.resolve(__dirname, "../../packages/ui/src"),
-      },
     },
     server: {
       port: parseInt(nodeEnv.PORT || "55052"),

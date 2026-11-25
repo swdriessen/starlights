@@ -3,12 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from "@starlights/ui-framework/alert-dialog";
+import { Button, buttonVariants } from "@starlights/ui-framework/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@starlights/ui-framework/card";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@starlights/ui-framework/empty";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@starlights/ui-framework/field";
+import { Input } from "@starlights/ui-framework/input";
 import { deleteFile, filesKey, listFiles, uploadFile, type PrivateFile } from "./files-api";
 
 export function PrivateFilesPage() {
@@ -120,9 +120,9 @@ function PrivateFileCard({ file, busy, onDelete }: { file: PrivateFile; busy: bo
           : <img src={file.contentUrl} alt={file.fileName} className="aspect-square w-full object-contain" loading="lazy" onError={() => setPreviewFailed(true)} />}
     </CardContent>
     <CardFooter className="mt-auto flex-wrap gap-3">
-      {!file.isDeleting && <Button variant="outline" asChild><a href={file.contentUrl} target="_blank" rel="noopener noreferrer">View original</a></Button>}
+      {!file.isDeleting && <a className={buttonVariants({ variant: "outline" })} href={file.contentUrl} target="_blank" rel="noopener noreferrer">View original</a>}
       <AlertDialog>
-        <AlertDialogTrigger asChild><Button variant="destructive" disabled={busy}>{file.isDeleting ? "Retry deletion" : "Delete"}</Button></AlertDialogTrigger>
+        <AlertDialogTrigger render={<Button variant="destructive" disabled={busy} />}>{file.isDeleting ? "Retry deletion" : "Delete"}</AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this private file?</AlertDialogTitle>

@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { AppSidebar, RightAppSidebar } from "@starlights/ui/components/app-sidebar";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@starlights/ui/components/ui/breadcrumb";
-import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "@starlights/ui/components/ui/sidebar";
+import { Button } from "@starlights/ui-framework/button";
+import { Separator } from "@starlights/ui-framework/separator";
+import { AppSidebar, RightAppSidebar } from "../../components/navigation/app-sidebar";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@starlights/ui-framework/breadcrumb";
+import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "@starlights/ui-framework/sidebar";
 import { PanelRight } from "lucide-react";
 import React from "react";
 import { Outlet } from "react-router-dom";

@@ -14,7 +14,7 @@
 - Prefer immutable values, explicit access modifiers, nullable reference types, async I/O and constructor injection. Trust non-nullable DI parameters; add null checks only where runtime input requires them.
 - Use explicit EF Core configurations for mapped entities and migrations for schema changes. Follow the relevant module's existing mapping and migration layout.
 - Use ASP.NET Core Minimal APIs organized by feature, with request validation, authentication, ownership and authorization at the appropriate boundary. Allow anonymous access only when specifically required. Migrate existing FastEndpoints endpoints according to the roadmap.
-- For frontend work, use the existing npm workspaces, feature folders, TanStack Query and shared UI packages. Follow the specification's same-origin `/api` direction and generate API types from OpenAPI when that workflow is introduced.
+- For frontend work, use the existing npm workspaces, feature folders, TanStack Query and shared UI packages. Follow the specification's same-origin `/api` direction and generate API types from OpenAPI when that workflow is introduced. For UI reuse and app-versus-package placement, follow [frontend guidance](src/frontend/AGENTS.md).
 - Instrument endpoint actions, domain operations and persistence with structured Serilog logs and correlated OpenTelemetry traces, including relevant outcomes and failures. Instrument domain operations at an appropriate boundary without coupling the domain model to telemetry infrastructure. Exclude credentials, private character content and other sensitive data from logs and traces.
 - When changing source generators, retain analyzer references in generator tests.
 

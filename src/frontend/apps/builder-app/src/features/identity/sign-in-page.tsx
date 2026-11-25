@@ -3,10 +3,10 @@ import { ApiError } from "@starlights/api-client";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Button } from "@starlights/ui-framework/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@starlights/ui-framework/card";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@starlights/ui-framework/field";
+import { Input } from "@starlights/ui-framework/input";
 import { signIn, type Session } from "./session-api";
 
 const schema = z.object({

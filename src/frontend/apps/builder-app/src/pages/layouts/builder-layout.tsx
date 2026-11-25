@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
 import { Header, LandingBackground } from "./default-layout";
 import DescriptionPanel from "../characters/builder/components/description-panel";
-import { Button } from "@starlights/ui";
+import { Button } from "@starlights/ui-framework/button";
 import { ChevronLeftIcon, ChevronRightIcon, MoreVerticalIcon, SwordsIcon } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@starlights/ui-framework/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@starlights/ui-framework/tabs";
 import DescriptionProseSection from "@/components/description-section";
 
 function DescriptionSidebar() {
@@ -16,13 +16,13 @@ function DescriptionSidebar() {
             <TabsList className="bg-transparent ">
               <TabsTrigger
                 value="description"
-                className="data-[state=active]:bg-muted data-[state=active]:shadow-none border-none uppercase tracking-widest font-overpass text-xs pt-1.75"
+                className="data-active:bg-muted data-active:shadow-none border-none uppercase tracking-widest font-overpass text-xs pt-1.75"
               >
                 Information
               </TabsTrigger>
               {/* <TabsTrigger
                 value="rules"
-                className="data-[state=active]:bg-muted data-[state=active]:shadow-none border-none uppercase tracking-widest font-overpass text-xs pt-1.25"
+                className="data-active:bg-muted data-active:shadow-none border-none uppercase tracking-widest font-overpass text-xs pt-1.25"
               >
                 Images
               </TabsTrigger> */}

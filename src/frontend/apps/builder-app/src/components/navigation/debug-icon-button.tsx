@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@starlights/ui-framework/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,16 +11,14 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@starlights/ui-framework/dropdown-menu";
 import { GripIcon } from "lucide-react";
 
 export function AppDropdownMenu() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm">
-          <GripIcon size={16} />
-        </Button>
+      <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" />}>
+        <GripIcon size={16} />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-56" align="end">
         <DropdownMenuGroup>
