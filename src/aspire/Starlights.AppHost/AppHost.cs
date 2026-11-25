@@ -1,3 +1,8 @@
+if (args is ["--demo-account-terminal"])
+{
+    return await DemoAccountCommandExtensions.RunTerminalAsync();
+}
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var database = builder.AddSqlServer("sql-server", port: 61070) // static port for now, easier to view database in SSMS
@@ -24,6 +29,8 @@ if (builder.ExecutionContext.IsRunMode)
     var identity = migrationResource.WithMigrationWorker<Projects.Modules_Identity_MigrationService>("identity-context")
         .WithReference(database)
         .WaitFor(database);
+
+    application.WithDemoAccountCommand(builder.Configuration, database.Resource);
 
     var fileManagement = migrationResource.WithMigrationWorker<Projects.Modules_FileManagement_MigrationService>("file-management-context")
         .WithReference(database)
@@ -100,3 +107,4 @@ if (builder.ExecutionContext.IsRunMode)
 }
 
 builder.Build().Run();
+return 0;

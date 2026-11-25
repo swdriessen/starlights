@@ -58,6 +58,27 @@ Aspire applies the Identity, FileManagement, Elements and Characters migrations 
 
 The Characters migration host explicitly runs without an authenticated user. It can construct the ownership-aware persistence services for schema migration without impersonating an account or bypassing ownership checks for Character operations.
 
+For local development, configure the demo password once in the AppHost's user secrets.
+From the repository root in PowerShell, enter the desired password at the masked prompt:
+
+```powershell
+$password = Read-Host "Demo password" -AsSecureString
+$plainText = [System.Net.NetworkCredential]::new("", $password).Password
+@{ "DemoAccount:Password" = $plainText } | ConvertTo-Json -Compress | dotnet user-secrets set --project src\aspire\Starlights.AppHost
+Remove-Variable password, plainText
+```
+
+Start or restart the AppHost, wait for **backend** to run, then select its
+**Create demo account** dashboard command. The username is `demo`. The command
+automates the existing operator command in a private terminal and reports success
+only when creation is confirmed; it is unavailable when publishing. The password
+must meet the Identity password policy. If `demo` already exists, creation fails
+without changing it. Changing the secret does not update an existing account's
+password; use the operator password-reset command below if needed.
+After a timeout or cancellation, check whether the account exists before retrying.
+User secrets are local development storage, not encrypted; protect access to the
+machine and dashboard. Passwords are not placed in command arguments.
+
 From a private operator terminal, supply the SQL Server connection string for the same database used by Aspire through `ConnectionStrings__starlights-db` (or an operator-managed configuration provider). Do not commit credentials or pass passwords as command arguments:
 
 ```powershell
@@ -84,7 +105,7 @@ The frontend uses TypeScript 7 and Oxlint. Run `npm run lint` from `src/frontend
 
 Oxlint's native rules cover JavaScript/TypeScript checks, Rules of Hooks, Hook dependencies, and Fast Refresh exports. React Compiler-specific diagnostics from eslint-plugin-react-hooks are not included; this setup does not use ESLint or JavaScript lint plugins.
 
-Browser API calls use relative `/api` paths, same-origin cookies and fresh antiforgery tokens for writes. Vite resolves its backend proxy from `VITE_API_BASE` or Aspire service discovery; the standalone fallback is `http://localhost:5240`. Production hosting must expose UI and API under one HTTPS origin. Only loopback development may use plain HTTP.
+Browser API calls use relative `/api` paths, same-origin cookies and fresh antiforgery tokens for writes. Vite resolves its backend proxy from `VITE_API_BASE` or Aspire service discovery, preferring HTTPS when available; the standalone fallback is `http://localhost:5240`. If a standalone backend redirects HTTP to HTTPS, set `VITE_API_BASE` to its HTTPS URL instead. Production hosting must expose UI and API under one HTTPS origin. Only loopback development may use plain HTTP.
 
 With the development API running, regenerate the typed client contracts from `src/frontend`:
 
