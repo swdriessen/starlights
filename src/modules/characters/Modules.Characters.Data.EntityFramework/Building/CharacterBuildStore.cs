@@ -69,7 +69,7 @@ internal sealed class CharacterBuildStore(
         await using var context = await factory.CreateDbContextAsync(cancellationToken);
         return await context.Set<Character>().AsNoTracking()
             .Where(character => character.OwnerId == ownerId)
-            .OrderBy(character => character.Id).Skip(offset).Take(51)
+            .OrderBy(character => (Guid)character.Id).Skip(offset).Take(51)
             .Select(character => new CharacterHeader(character.Id.Value, character.Name, character.RulesetId))
             .ToListAsync(cancellationToken);
     }

@@ -3,8 +3,12 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using AwesomeAssertions;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Starlights.Modules.Characters.Data.EntityFramework;
+using Starlights.Modules.Characters.Data.EntityFramework.Building;
 using Starlights.Modules.Characters.Domain.Building;
+using Starlights.Modules.Characters.Domain.Characters;
 using Starlights.Modules.Characters.Endpoints.Building;
 using Starlights.Modules.Characters.Endpoints.Characters.CreateCharacter;
 using Starlights.Modules.Characters.Endpoints.Characters.GetCharacterDetails;
@@ -126,6 +130,64 @@ public sealed class CharacterEndpointsTests(TestContext testContext)
         legacyDelete.StatusCode.Should().Be(HttpStatusCode.Conflict);
         using var legacyRead = await owner.GetAsync($"/api/characters/{id}/classes", testContext.CancellationToken);
         legacyRead.StatusCode.Should().Be(HttpStatusCode.Conflict);
+    }
+
+    [TestMethod]
+    [DataRow("missing-state")]
+    [DataRow("missing-content")]
+    [DataRow("missing-ruleset")]
+    public async Task Reopen_UnavailableSavedStateFailsWithoutRepair(string failure)
+    {
+        using var browser = await SignIn("owner");
+        var id = await Create(browser, new() { RulesetId = "DND5E5", Name = "Private Character" });
+        var factory = _factory.Services.GetRequiredService<IDbContextFactory<CharactersContext>>();
+        await using (var context = await factory.CreateDbContextAsync(testContext.CancellationToken))
+        {
+            var state = await context.Set<CharacterBuildRecord>().SingleAsync(testContext.CancellationToken);
+            if (failure == "missing-state") context.Remove(state);
+            else if (failure == "missing-content") state.PackVersion = "9.9.9";
+            else
+            {
+                var root = await context.Set<Character>().SingleAsync(testContext.CancellationToken);
+                context.Entry(root).Property(character => character.RulesetId).CurrentValue = "MISSING";
+            }
+            await context.SaveChangesAsync(testContext.CancellationToken);
+        }
+        using var response = await browser.GetAsync($"/api/characters/{id}", testContext.CancellationToken);
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        (await response.Content.ReadAsStringAsync(testContext.CancellationToken)).Should().NotContain("Private Character");
+        await using var unchanged = await factory.CreateDbContextAsync(testContext.CancellationToken);
+        var persisted = await unchanged.Set<Character>().SingleAsync(testContext.CancellationToken);
+        persisted.Name.Should().Be("Private Character");
+        persisted.RulesetId.Should().Be(failure == "missing-ruleset" ? "MISSING" : "DND5E5");
+        var stored = await unchanged.Set<CharacterBuildRecord>().SingleOrDefaultAsync(testContext.CancellationToken);
+        if (failure == "missing-state") stored.Should().BeNull();
+        else stored!.PackVersion.Should().Be(failure == "missing-content" ? "9.9.9" : "0.1.0");
+    }
+
+    [TestMethod]
+    public async Task Collection_PagesWithoutDuplicates_AndRejectsInvalidOffsets()
+    {
+        using var browser = await SignIn("owner");
+        var created = new List<Guid>();
+        for (var index = 0; index < 51; index++)
+            created.Add(await Create(browser, new() { RulesetId = "DND5E5", Name = "Mira" }));
+        var first = await browser.GetFromJsonAsync<GetCharactersResponse>("/api/characters", testContext.CancellationToken);
+        first!.Characters.Should().HaveCount(50);
+        first.NextOffset.Should().Be(50);
+        var second = await browser.GetFromJsonAsync<GetCharactersResponse>("/api/characters?offset=50", testContext.CancellationToken);
+        second!.Characters.Should().ContainSingle();
+        second.NextOffset.Should().BeNull();
+        first.Characters.Concat(second.Characters).Select(character => character.CharacterId)
+            .Should().OnlyHaveUniqueItems().And.BeEquivalentTo(created);
+        var repeated = await browser.GetFromJsonAsync<GetCharactersResponse>("/api/characters", testContext.CancellationToken);
+        repeated!.Characters.Select(character => character.CharacterId)
+            .Should().Equal(first.Characters.Select(character => character.CharacterId));
+        foreach (var offset in new[] { "-1", "2147483647", "invalid" })
+        {
+            using var invalid = await browser.GetAsync($"/api/characters?offset={offset}", testContext.CancellationToken);
+            invalid.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
     }
 
     [TestMethod]
