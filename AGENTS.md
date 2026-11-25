@@ -22,6 +22,7 @@
 
 - Add focused tests for changed behavior and its important error and edge cases. Use MSTest, AwesomeAssertions and Moq for .NET tests; use endpoint integration tests rather than endpoint unit tests. Use Reqnroll and C# Playwright for selected end-to-end journeys.
 - For code changes, build and run the full .NET test suite before completion. Use `--project` when selecting a project with `dotnet test`. Run applicable frontend build and lint scripts for frontend changes; report any validation that cannot be run.
+- **Browser verification:** Prefer VS Code's integrated browser for running, exploring, debugging, and verifying the application. Exercise affected user journeys and inspect relevant console/network failures rather than relying solely on builds or API calls. Use another browser or headless tooling when necessary, and explain any limitation. Browser checks complement automated tests.
 - Follow existing test and project patterns, preserve unrelated changes, and update directly affected documentation.
 
 ## Commits
