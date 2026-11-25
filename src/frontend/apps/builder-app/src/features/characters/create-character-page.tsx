@@ -44,10 +44,10 @@ function CreationForm({ options }: { options: RulesetOption[] }) {
   const mutation = useMutation({
     mutationFn: createCharacter,
     retry: false,
-    onSuccess: (id) => {
+    onSettled: () => {
       void client.invalidateQueries({ queryKey: charactersKey });
-      navigate(`/characters/${id}`);
     },
+    onSuccess: (id) => navigate(`/characters/${id}`),
   });
   const invalidName = Boolean(form.formState.errors.name);
   const rejected = mutation.error instanceof ApiError && mutation.error.status === 400;
