@@ -12,9 +12,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ui-framework": "*",
+    "@fontsource-variable/alegreya": "^5.3.0",
+    "@fontsource-variable/cinzel": "^5.3.0",
+    "@fontsource-variable/cormorant-garamond": "^5.3.0",
+    "@fontsource-variable/eb-garamond": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/oswald": "^5.3.0",
+    "@fontsource/cinzel-decorative": "^5.3.0",
+    "@fontsource/uncial-antiqua": "^5.3.0",
+    "lucide-react": "^1.80.0",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "ui-framework": "*"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.5",

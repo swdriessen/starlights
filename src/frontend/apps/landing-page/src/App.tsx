@@ -1,14 +1,20 @@
+import { BuilderSection } from "./components/builder-section"
+import { Hero } from "./components/hero"
+import { FollowSection, SiteFooter } from "./components/site-footer"
+import { SiteHeader } from "./components/site-header"
+import { SkySection } from "./components/sky-section"
+
 export function App() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Landing Page</h1>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+    <div className="landing">
+      <SiteHeader />
+      <main>
+        <Hero />
+        <BuilderSection />
+        <SkySection />
+        <FollowSection />
+      </main>
+      <SiteFooter />
     </div>
   )
 }

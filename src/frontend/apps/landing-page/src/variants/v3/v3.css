@@ -1,0 +1,65 @@
+@import "@fontsource-variable/cinzel";
+@import "@fontsource-variable/cormorant-garamond";
+@import "@fontsource-variable/cormorant-garamond/wght-italic.css";
+@import "../motion.css";
+
+/* v3 Moonlit: green-black night, silver light, one thread of pale gold. */
+.v3 {
+  --l-sky: oklch(0.16 0.014 165);
+  --l-deep: oklch(0.125 0.012 165);
+  --l-plate: oklch(0.2 0.016 165);
+  --l-ink: oklch(0.93 0.015 150);
+  --l-mute: oklch(0.74 0.025 160);
+  --l-rule: oklch(0.9 0.04 150 / 0.16);
+  --l-gold: oklch(0.84 0.08 95);
+  --l-cool: oklch(0.8 0.05 190);
+  --l-dots: 0.85;
+  --v3-silver: oklch(0.85 0.02 200);
+
+  background: var(--l-sky);
+  color: var(--l-ink);
+  min-height: 100svh;
+  font-family: "Cormorant Garamond Variable", Georgia, serif;
+  font-size: 1.25rem;
+}
+
+.v3 .display {
+  font-family: "Cinzel Variable", "Cormorant Garamond Variable", serif;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+.v3 .eyebrow {
+  font-family: "Cinzel Variable", serif;
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.v3 .arch {
+  border-radius: 999px 999px 0 0 / 55% 55% 0 0;
+}
+
+.v3 .btn-moon {
+  border: 1px solid var(--l-gold);
+  color: var(--l-gold);
+  letter-spacing: 0.2em;
+  transition:
+    background-color 300ms,
+    color 300ms;
+}
+
+.v3 .btn-moon:hover {
+  background: var(--l-gold);
+  color: oklch(0.15 0.014 165);
+}
+
+.v3 .leaf-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--l-gold), transparent);
+  opacity: 0.6;
+}

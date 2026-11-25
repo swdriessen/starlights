@@ -1,0 +1,172 @@
+/*
+ * Motion helpers shared by the landing variants (v1 to v4).
+ * Each variant root carries its own class so these never leak into other apps.
+ * Keyframes (landing-*) are defined once in ../index.css.
+ */
+:is(.v1, .v2, .v3, .v4, .v5) .rise {
+  animation: landing-rise 800ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .settle {
+  animation: landing-settle 1400ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 800ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms),
+    transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms);
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .twinkle {
+  animation: landing-twinkle var(--t, 5s) ease-in-out var(--d, 0s) infinite;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .halo {
+  animation: landing-halo 3.2s ease-out infinite;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .breathe {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: landing-breathe 4.5s ease-in-out infinite;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .flicker {
+  animation: landing-flicker 5s steps(1, end) infinite;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .orbit {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: landing-spin 16s linear infinite;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1500ms cubic-bezier(0.4, 0, 0.2, 1) var(--d, 0ms);
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) [data-visible="true"] .chart-line {
+  stroke-dashoffset: 0;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .chart-fade {
+  opacity: 0;
+  transition: opacity 1600ms ease var(--d, 0ms);
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) [data-visible="true"] .chart-fade {
+  opacity: 1;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) [data-dim="true"] {
+  opacity: 0.16 !important;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) .dimmable {
+  transition: opacity 400ms ease;
+}
+
+:is(.v1, .v2, .v3, .v4, .v5) a:focus-visible,
+:is(.v1, .v2, .v3, .v4, .v5) button:focus-visible {
+  outline: 2px solid var(--l-gold);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+/* Slow drift for the armillary's outer ring. */
+:is(.v1, .v2, .v3, .v4, .v5) .spin-slow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: landing-spin 240s linear infinite;
+}
+
+/* Rising embers for the Hearth hero. */
+@keyframes variant-ember {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--o, 0.9);
+  }
+  100% {
+    transform: translate3d(var(--dx, 30px), -420px, 0) scale(0.3);
+    opacity: 0;
+  }
+}
+
+.v2 .ember {
+  position: absolute;
+  bottom: 0;
+  border-radius: 999px;
+  background: oklch(0.8 0.17 62);
+  box-shadow: 0 0 6px 1px oklch(0.75 0.17 55 / 0.8);
+  animation: variant-ember var(--t, 9s) ease-out var(--d, 0s) infinite;
+}
+
+/* Falling stardust for the Eclipse hero: specks the size of embers, drifting down. */
+@keyframes variant-dust {
+  0% {
+    transform: translate3d(0, -4vh, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--o, 0.9);
+  }
+  88% {
+    opacity: var(--o, 0.9);
+  }
+  100% {
+    transform: translate3d(var(--dx, 24px), 105svh, 0);
+    opacity: 0;
+  }
+}
+
+.v4 .dust {
+  position: absolute;
+  top: 0;
+  border-radius: 999px;
+  background: var(--c, oklch(0.95 0.03 90));
+  box-shadow: 0 0 6px 1px color-mix(in oklch, var(--c, oklch(0.95 0.03 90)) 70%, transparent);
+  animation: variant-dust var(--t, 14s) linear var(--d, 0s) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.v1, .v2, .v3, .v4, .v5) .rise,
+  :is(.v1, .v2, .v3, .v4, .v5) .settle,
+  :is(.v1, .v2, .v3, .v4, .v5) .twinkle,
+  :is(.v1, .v2, .v3, .v4, .v5) .halo,
+  :is(.v1, .v2, .v3, .v4, .v5) .breathe,
+  :is(.v1, .v2, .v3, .v4, .v5) .flicker,
+  :is(.v1, .v2, .v3, .v4, .v5) .orbit,
+  :is(.v1, .v2, .v3, .v4, .v5) .spin-slow {
+    animation: none;
+  }
+
+  .v2 .ember,
+  .v4 .dust {
+    display: none;
+  }
+
+  :is(.v1, .v2, .v3, .v4, .v5) .reveal,
+  :is(.v1, .v2, .v3, .v4, .v5) .chart-fade {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  :is(.v1, .v2, .v3, .v4, .v5) .chart-line {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+}

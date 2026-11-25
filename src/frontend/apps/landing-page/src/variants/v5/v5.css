@@ -1,0 +1,30 @@
+/* v5 builder mockup: app-shell details on top of the shared v4 tokens (see ../v4/v4.css). */
+.v5 {
+  /* App chrome never needs the landing-page smooth scrolling. */
+  scroll-behavior: auto;
+}
+
+.v5 ::selection {
+  background: color-mix(in oklch, var(--l-gold) 35%, transparent);
+}
+
+.v5 select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23999' stroke-width='1.6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
+}
+
+.v5 .on-dark {
+  --l-ink: oklch(0.94 0.008 280);
+}
+
+/* Quiet scrollbars for the three independently scrolling columns. */
+@media (min-width: 1024px) {
+  .v5 main,
+  .v5 aside {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--l-ink) 22%, transparent) transparent;
+  }
+}

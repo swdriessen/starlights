@@ -1,0 +1,64 @@
+@import "@fontsource/uncial-antiqua/400.css";
+@import "@fontsource-variable/alegreya";
+@import "@fontsource-variable/alegreya/wght-italic.css";
+@import "../motion.css";
+
+/* v2 Hearth: warm near-black browns lit by a single ember orange. */
+.v2 {
+  --l-sky: oklch(0.165 0.014 50);
+  --l-deep: oklch(0.13 0.012 50);
+  --l-plate: oklch(0.215 0.02 52);
+  --l-ink: oklch(0.93 0.03 85);
+  --l-mute: oklch(0.74 0.04 72);
+  --l-rule: oklch(0.9 0.05 70 / 0.14);
+  --l-gold: oklch(0.77 0.14 62);
+  --l-cool: oklch(0.72 0.05 200);
+  --l-dots: 0.7;
+
+  background: var(--l-sky);
+  color: var(--l-ink);
+  min-height: 100svh;
+  font-family: "Alegreya Variable", Georgia, serif;
+  font-size: 1.1875rem;
+}
+
+.v2 .display {
+  font-family: "Uncial Antiqua", "Alegreya Variable", serif;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+}
+
+.v2 .eyebrow {
+  font-size: 0.75rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.v2 .btn-ember {
+  background: var(--l-gold);
+  color: oklch(0.18 0.02 50);
+  font-weight: 700;
+  box-shadow: 0 10px 30px -12px oklch(0.7 0.16 55 / 0.7);
+  transition:
+    filter 200ms,
+    transform 200ms;
+}
+
+.v2 .btn-ember:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.v2 .notice {
+  transition:
+    transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 400ms;
+}
+
+.v2 .notice:hover {
+  transform: rotate(0deg) translateY(-6px) !important;
+  box-shadow: 0 30px 50px -24px oklch(0.7 0.16 55 / 0.35);
+}

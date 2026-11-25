@@ -1,0 +1,101 @@
+@import "../motion.css";
+
+/*
+ * v4 Eclipse: the Starlights landing-page design. See docs/UI-DESIGN.md.
+ * Calm charcoal with a breath of indigo and one pale moon-gold accent; Oswald caps over Geist.
+ * Light theme = the same page printed on cool paper. Dark is the home theme.
+ */
+:is(.v4, .v5) {
+  /* Light */
+  --l-sky: oklch(0.975 0.004 285);
+  --l-deep: oklch(0.945 0.007 285);
+  --l-plate: oklch(0.99 0.003 285);
+  --l-ink: oklch(0.22 0.014 285);
+  --l-mute: oklch(0.45 0.02 285);
+  --l-rule: oklch(0.22 0.014 285 / 0.13);
+  --l-gold: oklch(0.52 0.1 80);
+  --l-on-gold: oklch(0.985 0.004 90);
+  --l-cool: oklch(0.45 0.1 285);
+  --l-dots: 0.3;
+  --v4-nebula: oklch(0.8 0.05 285 / 0.2);
+
+  background: var(--l-sky);
+  color: var(--l-ink);
+  min-height: 100svh;
+  font-family: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+.dark :is(.v4, .v5) {
+  --l-sky: oklch(0.175 0.012 285);
+  --l-deep: oklch(0.135 0.012 285);
+  --l-plate: oklch(0.215 0.014 285);
+  --l-ink: oklch(0.94 0.008 280);
+  --l-mute: oklch(0.74 0.02 280);
+  --l-rule: oklch(1 0 0 / 0.1);
+  --l-gold: oklch(0.86 0.09 90);
+  --l-on-gold: oklch(0.18 0.012 285);
+  --l-cool: oklch(0.78 0.08 285);
+  --l-dots: 0.85;
+  --v4-nebula: oklch(0.25 0.04 285 / 0.5);
+}
+
+/*
+ * A permanently dark region (hero + its header): the eclipse artwork is dark in both themes,
+ * so everything drawn over it uses the dark tokens.
+ */
+:is(.v4, .v5) .on-dark {
+  --l-sky: oklch(0.175 0.012 285);
+  --l-deep: oklch(0.135 0.012 285);
+  --l-ink: oklch(0.94 0.008 280);
+  --l-mute: oklch(0.78 0.02 280);
+  --l-gold: oklch(0.86 0.09 90);
+  --l-on-gold: oklch(0.18 0.012 285);
+  color: var(--l-ink);
+}
+
+:is(.v4, .v5) .display {
+  font-family: "Oswald Variable", "Arial Narrow", sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 1;
+}
+
+:is(.v4, .v5) .eyebrow {
+  font-size: 0.6875rem;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+:is(.v4, .v5) .btn-line {
+  border: 1px solid var(--l-gold);
+  color: var(--l-gold);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    background-color 250ms,
+    color 250ms;
+}
+
+:is(.v4, .v5) .btn-line:hover {
+  background: var(--l-gold);
+  color: var(--l-on-gold);
+}
+
+:is(.v4, .v5) .btn-solid {
+  background: var(--l-gold);
+  color: var(--l-on-gold);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: filter 200ms;
+}
+
+:is(.v4, .v5) .btn-solid:hover {
+  filter: brightness(1.08);
+}
