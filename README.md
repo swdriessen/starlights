@@ -19,11 +19,14 @@ This project uses .NET Aspire for local orchestration. You can run it using Visu
 ### Prerequisites
 
 - .NET 11 SDK (version selected by `global.json`)
+- Aspire CLI 17.0.0 or later, matching the Aspire 17 AppHost and hosting integrations
 - Node.js 20.19+
 - Docker Desktop (or compatible container runtime)
 - Visual Studio (recent version) or Visual Studio Code
 
 Deployment machines must meet .NET 11's CPU requirements: x86-64-v2 on x64, or LSE support on Windows Arm64.
+
+The AppHost currently retains `Aspire.AppHost.Sdk` and `AddProject` for its existing launch/debug workflow. Aspire 17 supports these APIs with deprecation warnings. Migration to `Microsoft.NET.Sdk` and `AddDotnetProject` is a separate step because it changes project launching and coordinated builds, and the replacement does not yet support watch; see the [Aspire migration guidance](https://aspire.dev/integrations/dotnet/migrate-dotnet-project-resource/).
 
 ### Using Visual Studio
 
