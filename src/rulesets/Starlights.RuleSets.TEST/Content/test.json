@@ -1,0 +1,17 @@
+{
+  "format": "starlights-content/1",
+  "id": "test-initialization",
+  "name": "Synthetic test content",
+  "version": "1.0.0",
+  "licence": "MIT",
+  "attribution": "Original Starlights test fixture; not a playable game.",
+  "elements": [
+    {
+      "id": "test:character:default",
+      "name": "Test Character",
+      "type": "character",
+      "ruleset": "TEST",
+      "rules": []
+    }
+  ]
+}

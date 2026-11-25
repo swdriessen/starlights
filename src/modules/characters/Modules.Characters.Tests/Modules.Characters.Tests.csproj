@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\rulesets\Starlights.RuleSets.DND5E5\Starlights.RuleSets.DND5E5.csproj" />
+    <ProjectReference Include="..\..\..\rulesets\Starlights.RuleSets.TEST\Starlights.RuleSets.TEST.csproj" />
     <ProjectReference Include="..\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
     <ProjectReference Include="..\..\..\platform\Starlights.Platform\Starlights.Platform.csproj" />
     <ProjectReference Include="..\Modules.Characters\Modules.Characters.csproj" />

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Starlights.Modules.Characters.Domain.Building;
 using Starlights.Modules.Characters.Domain.Characters.Eventing;
 using Starlights.Modules.Characters.Domain.Components;
 using Starlights.Platform.Domain;
@@ -32,6 +33,44 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// </summary>
     public string Name { get; } = string.Empty;
 
+    /// <summary>Gets the account owning this Character.</summary>
+    public Guid OwnerId { get; private set; }
+
+    /// <summary>Gets the canonical Ruleset, or null for a retained legacy Character.</summary>
+    public string? RulesetId { get; private set; }
+
+    /// <summary>Gets validated initialization state, when loaded for a Ruleset-based build.</summary>
+    public CharacterBuild? Build { get; private set; }
+
+    /// <summary>Creates a valid incomplete Character without starting legacy background processing.</summary>
+    public static Character Create(Guid ownerId, string? name, CharacterBuild build)
+    {
+        if (ownerId == Guid.Empty)
+            throw new ArgumentException("An authenticated owner is required.", nameof(ownerId));
+        if (name?.Length > 100)
+            throw new ArgumentException("Character name cannot exceed 100 characters.", nameof(name));
+        return new Character(string.IsNullOrWhiteSpace(name) ? "The Nameless One" : name)
+        {
+            OwnerId = ownerId,
+            RulesetId = build.RulesetId,
+            Build = build
+        };
+    }
+
+    /// <summary>Reconstitutes authoritative state without initialization or new domain events.</summary>
+    public static Character Reconstitute(CharacterId id, Guid ownerId, string name, CharacterBuild build)
+    {
+        var character = Create(ownerId, name, build);
+        return new Character(id, character.Name)
+        {
+            OwnerId = ownerId,
+            RulesetId = build.RulesetId,
+            Build = build
+        };
+    }
+
+    private Character(CharacterId id, string name) : base(id) => Name = name;
+
     /// <summary>
     /// Creates a new instance of the <see cref="Character"/> class with the specified name.
     /// </summary>
@@ -49,6 +88,8 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// </summary>
     public T AddComponent<T>(T component) where T : CharacterComponentBase
     {
+        if (RulesetId is not null)
+            throw new InvalidOperationException("Legacy components cannot be attached to a Ruleset-based Character.");
         if (component.ParentCharacter != Id)
         {
             throw new InvalidOperationException("Component's CharacterId does not match this Character's Id.");

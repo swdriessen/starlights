@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\modules\characters\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
+    <EmbeddedResource Include="Content\test.json" />
+  </ItemGroup>
+</Project>

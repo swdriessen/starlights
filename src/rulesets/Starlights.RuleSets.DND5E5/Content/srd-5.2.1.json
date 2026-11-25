@@ -1,0 +1,17 @@
+{
+  "format": "starlights-content/1",
+  "id": "srd-5.2.1",
+  "name": "SRD 5.2.1",
+  "version": "0.1.0",
+  "licence": "CC-BY-4.0",
+  "attribution": "Based on the System Reference Document 5.2.1 by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd and licensed under https://creativecommons.org/licenses/by/4.0/legalcode. This initialization subset does not yet implement its game mechanics.",
+  "elements": [
+    {
+      "id": "srd521:character:default",
+      "name": "Dungeons & Dragons",
+      "type": "character",
+      "ruleset": "DND5E5",
+      "rules": []
+    }
+  ]
+}

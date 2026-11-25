@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\modules\characters\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
+    <EmbeddedResource Include="Content\srd-5.2.1.json" />
+  </ItemGroup>
+</Project>
