@@ -91,6 +91,68 @@ These examples exercise the [Identity and access contract](./SPECIFICATION.md#id
 **Given** a user replaces an image in a future consuming feature  
 **Then** the replacement receives a new file identifier and existing references are not silently changed
 
+## F01.1: Create, list and reopen a Character
+
+These examples refine the [first F01 increment](./F01-01-CREATE-LIST-REOPEN.md),
+not the complete reference build. They require F00's verified foundation.
+
+**Given** a signed-in owner and the bundled, pinned SRD 5.2.1 content  
+**When** they create a DND5E5 Character named `Mira` through the real UI  
+**Then** success is shown only after the root and required Ruleset composition commit atomically  
+**And** the Character has a stable identifier, the authenticated owner, canonical Ruleset `DND5E5` and exact content bindings  
+**And** its detail view clearly identifies the build as incomplete, without invented Choices or calculated sheet values
+
+**Given** the owner has created `Mira`  
+**When** they return to their collection, reopen it and refresh its detail URL  
+**Then** the same saved identifier, name, Ruleset and pinned content are shown  
+**And** reopening does not rerun creation or regenerate composed state
+
+**Given** an owner creates two Characters named `Mira`  
+**Then** both appear in the collection with distinct identifiers and reopen independently
+
+**Given** the player omits a name or supplies only whitespace  
+**When** they create a Character  
+**Then** its displayed name is `The Nameless One`  
+**And** a supplied 100-character name is accepted, while 101 characters produces a visible error without creating a Character
+
+**Given** a saved Character and isolated SQL Server storage  
+**When** the application and database restart using the same persistent storage without a reset  
+**Then** its owner can list and reopen the same Character after signing in if necessary  
+**And** its required composition, identities and exact content bindings are unchanged  
+**And** publishing a newer pack version does not silently change its bindings
+
+**Given** creation fails after database writes begin but before commit  
+**Then** the operation fails visibly and no partial Character, ownership or composed state remains  
+**And** the UI retains the entered name rather than navigating to a success view
+
+**Given** a create response is lost and the browser cannot determine whether commit succeeded  
+**Then** the UI reports the uncertain outcome instead of reporting success or automatically submitting another create  
+**And** the player can refresh the collection before deciding whether to try again
+
+**Given** a second account uses the application, including after switching users on the same browser  
+**Then** the first owner's Characters are absent from its collection and client cache  
+**And** requesting a first-owner detail identifier returns 404, just like an absent identifier  
+**And** unauthenticated API requests return 401 and creation without valid antiforgery is rejected without a write
+
+**Given** invalid creation content or an unsupported Ruleset selection  
+**When** creation is requested  
+**Then** it fails explicitly before committing a Character, without falling back to DND5E5
+
+**Given** a saved Character has invalid composed state, an unavailable Ruleset or unavailable pinned content  
+**When** it is reconstituted  
+**Then** the failure is explicit rather than repaired through guessed defaults or a newer pack  
+**And** read failures are not represented as an empty collection
+
+**Given** DND5E5 alone, TEST alone or both Rulesets registered in either order in an isolated test host  
+**When** each registered Ruleset creates a Character which is saved and loaded through a fresh SQL-backed context  
+**Then** it retains its canonical Ruleset and that Ruleset's required typed state without depending on the other Ruleset  
+**And** TEST does not require D&D class, ability or progression parts  
+**And** duplicate identifiers including case-only duplicates, missing implementations and ambiguous initialization fail explicitly
+
+**Given** the ordinary application host  
+**Then** TEST is neither registered nor offered in creation options  
+**And** submitting `TEST` manually does not enable it
+
 ## Reliable Character edits
 
 **Given** two tabs show the same saved Character revision  

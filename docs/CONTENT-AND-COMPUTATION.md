@@ -34,9 +34,12 @@ These are requirements for the new application, carried forward from applicable 
 
 ### Descriptions and sheet presentation
 
-The first Character slice is intended to implement a versioned
+Across its increments, F01 is intended to implement a versioned
 `starlights-content/1` subset of these contracts. That subset is not yet
-implemented in the current checkout. It is expected to validate local pack
+implemented in the current checkout. The [first increment](./F01-01-CREATE-LIST-REOPEN.md)
+only loads and validates the content identity and Character Element binding
+needed for creation; it does not evaluate Grants, Selections or sheet values.
+Subsequent F01 increments are expected to validate local pack
 identities, Grants, Selections, supported numeric Rules and the typed
 properties needed by the reference build. Its initial sheet values are
 expected to support numeric literals, supported statistic names, literal text
