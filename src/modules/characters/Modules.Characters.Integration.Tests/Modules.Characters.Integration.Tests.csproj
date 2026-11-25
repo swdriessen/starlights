@@ -1,0 +1,11 @@
+<Project Sdk="MSTest.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\apps\Starlights.Application\Starlights.Application.csproj" />
+    <ProjectReference Include="..\..\..\rulesets\Starlights.RuleSets.DND5E5\Starlights.RuleSets.DND5E5.csproj" />
+    <ProjectReference Include="..\..\..\rulesets\Starlights.RuleSets.TEST\Starlights.RuleSets.TEST.csproj" />
+  </ItemGroup>
+</Project>

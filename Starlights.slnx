@@ -39,6 +39,7 @@
     <Project Path="src/modules/characters/Modules.Characters.Data.EntityFramework.MigrationService/Modules.Characters.Data.EntityFramework.MigrationService.csproj" />
   </Folder>
   <Folder Name="/src/modules/characters/tests/">
+    <Project Path="src/modules/characters/Modules.Characters.Integration.Tests/Modules.Characters.Integration.Tests.csproj" />
     <Project Path="src/modules/characters/Modules.Characters.Tests/Modules.Characters.Tests.csproj" />
   </Folder>
   <Folder Name="/src/modules/elements/">
@@ -85,6 +86,10 @@
   </Folder>
   <Folder Name="/src/platform/tests/">
     <Project Path="src/platform/Starlights.Platform.Tests/Starlights.Platform.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/rulesets/">
+    <Project Path="src/rulesets/Starlights.RuleSets.DND5E5/Starlights.RuleSets.DND5E5.csproj" />
+    <Project Path="src/rulesets/Starlights.RuleSets.TEST/Starlights.RuleSets.TEST.csproj" />
   </Folder>
   <Folder Name="/src/source-generators/">
     <Project Path="src/source-generators/Starlights.Platform.SourceGenerators.Entities.Attributes/Starlights.Platform.SourceGenerators.Entities.Attributes.csproj" />

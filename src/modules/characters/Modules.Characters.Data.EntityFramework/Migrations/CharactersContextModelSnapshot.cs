@@ -16,7 +16,7 @@ partial class CharactersContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261124221125_CharacterOwnership";
+    public override string LastMigrationId => "20261125150237_CharacterInitialization";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -27,6 +27,40 @@ partial class CharactersContextModelSnapshot : ModelSnapshot
             .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
         SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+        modelBuilder.Entity("Starlights.Modules.Characters.Data.EntityFramework.Building.CharacterBuildRecord", b =>
+            {
+                b.Property<Guid>("CharacterId")
+                    .HasColumnType("uniqueidentifier")
+                    .HasColumnName("character_id");
+
+                b.Property<string>("CharacterElementId")
+                    .IsRequired()
+                    .HasMaxLength(300)
+                    .HasColumnType("nvarchar(300)")
+                    .HasColumnName("character_element_id");
+
+                b.Property<string>("Composition")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("composition");
+
+                b.Property<string>("PackId")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)")
+                    .HasColumnName("pack_id");
+
+                b.Property<string>("PackVersion")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)")
+                    .HasColumnName("pack_version");
+
+                b.HasKey("CharacterId");
+
+                b.ToTable("character_build", "characters");
+            });
 
         modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>
             {
@@ -104,6 +138,11 @@ partial class CharactersContextModelSnapshot : ModelSnapshot
                 b.Property<Guid>("OwnerId")
                     .HasColumnType("uniqueidentifier")
                     .HasColumnName("owner_id");
+
+                b.Property<string>("RulesetId")
+                    .HasMaxLength(32)
+                    .HasColumnType("nvarchar(32)")
+                    .HasColumnName("ruleset_id");
 
                 b.HasKey("Id");
 
@@ -528,6 +567,17 @@ partial class CharactersContextModelSnapshot : ModelSnapshot
                 b.HasBaseType("Starlights.Modules.Characters.Domain.Components.CharacterComponentBase");
 
                 b.ToTable("component_skills", "characters");
+            });
+
+        modelBuilder.Entity("Starlights.Modules.Characters.Data.EntityFramework.Building.CharacterBuildRecord", b =>
+            {
+                b.HasOne("Starlights.Modules.Characters.Domain.Characters.Character", "Character")
+                    .WithOne()
+                    .HasForeignKey("Starlights.Modules.Characters.Data.EntityFramework.Building.CharacterBuildRecord", "CharacterId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Character");
             });
 
         modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>

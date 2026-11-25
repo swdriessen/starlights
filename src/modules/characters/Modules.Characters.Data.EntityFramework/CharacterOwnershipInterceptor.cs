@@ -28,8 +28,11 @@ internal sealed class CharacterOwnershipInterceptor(ICurrentUser currentUser) : 
         }
         foreach (var entry in context.ChangeTracker.Entries<Character>().Where(entry => entry.State == EntityState.Added))
         {
-            entry.Property<Guid>("OwnerId").CurrentValue = currentUser.UserId
+            var ownerId = currentUser.UserId
                 ?? throw new InvalidOperationException("Creating a Character requires an authenticated owner.");
+            if (entry.Entity.RulesetId is not null && entry.Entity.OwnerId != ownerId)
+                throw new InvalidOperationException("Character ownership does not match the authenticated owner.");
+            entry.Property(character => character.OwnerId).CurrentValue = ownerId;
         }
     }
 }
