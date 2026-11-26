@@ -4,8 +4,8 @@ Updated: 2026-11-25
 
 ## Current status
 
-- The user reports that Aspire startup and application development work.
-- The developer tunnel is intentionally deferred.
+- Local Aspire verification is complete, as accepted by the user.
+- Developer-tunnel and private-network verification is intentionally deferred.
 - This frontend pass focused on standardizing the builder on `packages/ui-framework` and its shadcn/Base UI components before F01.
 
 ## Completed
@@ -26,7 +26,14 @@ Updated: 2026-11-25
 - Full builder lint previously reported issues in the local theme provider and character-details page; the local provider is now removed, but full lint has not been rerun. Full shared-UI lint still reports existing `react/only-export-components` diagnostics in other wrappers.
 - Browser smoke checks with mocked session/file API: builder sidebar toggles and dropdown menu, landing navigation menu, and file AlertDialog open/cancel/action all worked without new console errors.
 - A follow-up browser check of the D-key toggle was blocked by the session endpoint returning 502 and the browser automation connection timing out.
-- Vite emitted its existing config-loader warning and a large-chunk warning during production build. Aspire itself was not rerun.
+- Vite emitted its existing config-loader warning and a large-chunk warning during the original migration build.
+
+## Local Aspire verification
+
+- The complete local AppHost started with SQL Server and the storage emulator healthy; the migration workers completed successfully.
+- Real browser sign-in through the builder's same-origin Vite proxy succeeded after the HTTPS proxy fix.
+- The user accepted local Aspire verification as complete. A separate full-graph isolated run and startup-failure injection were not performed.
+- Developer-tunnel and private-network verification remain deferred and are not included in this acceptance.
 
 ## Notes before F01
 
