@@ -1,0 +1,44 @@
+@baseUrl = https://localhost:7246
+@characterId = 00000000-0000-0000-0000-000000000000
+@antiforgery = replace-with-token-from-identity-antiforgery
+
+### Read the owner's authoritative build
+GET {{baseUrl}}/api/characters/{{characterId}}/build
+
+### Record a choice (copy the offered selection and option identities from GET)
+POST {{baseUrl}}/api/characters/{{characterId}}/choices
+X-CSRF-TOKEN: {{antiforgery}}
+Content-Type: application/json
+
+{"expectedRevision":0,"operationId":"ccead3ac-1357-4a65-ab69-88767102b921","selectionId":"srd521:character:default/class","answers":["srd521:class:fighter"]}
+
+### Record a partial input map; the complete standard array comes from GET
+POST {{baseUrl}}/api/characters/{{characterId}}/ability-scores
+X-CSRF-TOKEN: {{antiforgery}}
+Content-Type: application/json
+
+{"expectedRevision":1,"operationId":"d452c77a-bdb4-4561-a7c1-f49824cba0e5","inputs":{"strength":15}}
+
+### Claim a previously selected class package independently
+POST {{baseUrl}}/api/characters/{{characterId}}/equipment-claims
+X-CSRF-TOKEN: {{antiforgery}}
+Content-Type: application/json
+
+{"expectedRevision":2,"operationId":"d411a128-3751-48b0-91b5-130fd8ad1aba","selectionId":"srd521:character:default/class/srd521:class:fighter/equipment"}
+
+### Allocate actual owned item IDs returned by GET
+POST {{baseUrl}}/api/characters/{{characterId}}/equipment
+X-CSRF-TOKEN: {{antiforgery}}
+Content-Type: application/json
+
+{"expectedRevision":3,"operationId":"58df5f9c-95b5-4f18-9bc2-3c6cc7b0faaa","armorId":null,"weaponId":null}
+
+### Rename; replay the identical operationId and payload after a dropped response
+POST {{baseUrl}}/api/characters/{{characterId}}/name
+X-CSRF-TOKEN: {{antiforgery}}
+Content-Type: application/json
+
+{"expectedRevision":4,"operationId":"aa2f4157-04aa-45fc-a8af-15ebad4f2d96","name":"Mira"}
+
+### Unknown or another owner's Character returns 404
+GET {{baseUrl}}/api/characters/00000000-0000-0000-0000-000000000000/build

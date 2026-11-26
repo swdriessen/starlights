@@ -17,12 +17,19 @@ public static class CharacterEndpoints
     public static void AddCharacterWorkflows(this IServiceCollection services)
     {
         services.AddScoped<ICharacterWorkflows, CharacterWorkflows>();
+        services.AddSingleton<CharacterMechanics>();
+        services.AddScoped<ICharacterBuildWorkflows, CharacterBuildWorkflows>();
+        services.AddSingleton<ICharacterSheetCalculation, CharacterSheetCalculation>();
+        services.AddSingleton<ICharacterBuildNotifications, CharacterBuildNotifications>();
+        services.AddHostedService<CharacterCalculationRecovery>();
+        services.AddSignalR();
         services.AddExceptionHandler<CharacterRequestExceptionHandler>();
     }
 
     /// <summary>Maps authenticated create, collection, reopen and supported-option APIs.</summary>
     public static void MapCharacters(this WebApplication app)
     {
+        CharacterBuildEndpoints.MapBuild(app);
         var group = app.MapGroup("/api/characters").WithTags("Characters").RequireAuthorization();
         group.MapPost("", async (CreateCharacterRequest request, ICharacterWorkflows workflows, CancellationToken cancellationToken) =>
         {

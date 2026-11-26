@@ -13,5 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\platform\Starlights.Platform.Hosting.Abstractions\Starlights.Platform.Hosting.Abstractions.csproj" />
     <InternalsVisibleTo Include="Modules.FileManagement.Tests" />
+    <InternalsVisibleTo Include="Modules.Characters.Integration.Tests" />
   </ItemGroup>
 </Project>

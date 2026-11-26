@@ -103,8 +103,8 @@ function CreationForm({ options }: { options: RulesetOption[] }) {
           <CardTitle>{selected?.packName}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <div className="flex flex-wrap gap-2"><Badge variant="outline">{selected?.rulesetId}</Badge><Badge variant="secondary">Initialization only</Badge></div>
-          <p className="text-sm text-muted-foreground">This first slice saves a valid starting point. Species, background, class, equipment and calculated sheets will follow.</p>
+          <div className="flex flex-wrap gap-2"><Badge variant="outline">{selected?.rulesetId}</Badge><Badge variant="secondary">Pinned content</Badge></div>
+          <p className="text-sm text-muted-foreground">Begin with an incomplete character, then make the choices supported by this content. No reference build is filled in for you.</p>
         </CardContent>
         <CardFooter><p className="text-xs text-muted-foreground">Content pack version {selected?.content.packVersion}</p></CardFooter>
       </Card>

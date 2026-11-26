@@ -10,11 +10,13 @@ using Starlights.Modules.Characters.Building;
 using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Characters.Domain.Building;
 using Starlights.Modules.Identity.Data;
+using Starlights.Modules.FileManagement.Data;
 using Starlights.RuleSets.TEST;
 
 namespace Starlights.Modules.Characters.Integration.Tests;
 
-internal sealed class CharacterApplicationFactory(string directory, bool testRuleset = false) : WebApplicationFactory<Program>
+internal sealed class CharacterApplicationFactory(string directory, bool testRuleset = false,
+    Action<IServiceCollection>? configure = null) : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -30,6 +32,10 @@ internal sealed class CharacterApplicationFactory(string directory, bool testRul
             services.RemoveAll<IDbContextOptionsConfiguration<IdentityContext>>();
             services.AddDbContext<IdentityContext>(options =>
                 options.UseSqlite($"Data Source={Path.Combine(directory, "identity.db")};Pooling=False"));
+            services.RemoveAll<DbContextOptions<FileManagementContext>>();
+            services.RemoveAll<IDbContextOptionsConfiguration<FileManagementContext>>();
+            services.AddDbContext<FileManagementContext>(options =>
+                options.UseSqlite($"Data Source={Path.Combine(directory, "files.db")};Pooling=False"));
             if (testRuleset)
             {
                 services.AddSingleton<ICharacterRuleset, TestRuleset>();
@@ -42,6 +48,7 @@ internal sealed class CharacterApplicationFactory(string directory, bool testRul
                     return catalog;
                 });
             }
+            configure?.Invoke(services);
         });
     }
 
@@ -53,6 +60,9 @@ internal sealed class CharacterApplicationFactory(string directory, bool testRul
         await using var context = new CharactersContext(new DbContextOptionsBuilder<CharactersContext>()
             .UseSqlite($"Data Source={Path.Combine(directory, "characters.db")};Pooling=False").Options);
         await context.Database.EnsureCreatedAsync(cancellationToken);
+        await using var files = new FileManagementContext(new DbContextOptionsBuilder<FileManagementContext>()
+            .UseSqlite($"Data Source={Path.Combine(directory, "files.db")};Pooling=False").Options);
+        await files.Database.EnsureCreatedAsync(cancellationToken);
     }
 
     public HttpClient Browser() => CreateClient(new WebApplicationFactoryClientOptions

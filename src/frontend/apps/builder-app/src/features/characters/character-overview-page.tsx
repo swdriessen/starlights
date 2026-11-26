@@ -8,10 +8,13 @@ import { Button } from "@starlights/ui-framework/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@starlights/ui-framework/card";
 import { characterKey, getCharacter } from "./characters-api";
 import { CharacterError, CharacterLoading } from "./character-feedback";
+import { ReferenceCharacterPage } from "./reference-character-page";
 
 export function CharacterOverviewPage() {
   const { id = "" } = useParams();
   const saved = useQuery({ queryKey: characterKey(id), queryFn: ({ signal }) => getCharacter(id, signal), retry: false });
+
+  if (saved.data?.buildSupported) return <ReferenceCharacterPage id={id} />;
 
   return <>
     <Button variant="ghost" nativeButton={false} render={<Link to="/characters" />} className="self-start">

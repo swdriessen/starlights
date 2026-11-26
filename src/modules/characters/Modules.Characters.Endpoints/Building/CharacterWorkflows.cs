@@ -24,7 +24,7 @@ internal sealed class CharacterWorkflows(
     ICurrentUser currentUser, CharacterRulesets rulesets, CharacterContentCatalog catalog,
     ICharacterBuildStore builds, ICharacterOwnership ownership, IPersistence persistence,
     ICharacterCreationService legacyCreation, IElementsModuleQueries elements,
-    ILogger<CharacterWorkflows> logger) : ICharacterWorkflows
+    ILogger<CharacterWorkflows> logger, CharacterMechanics mechanics) : ICharacterWorkflows
 {
     private Guid OwnerId => currentUser.UserId
         ?? throw new InvalidOperationException("Character access requires an authenticated owner.");
@@ -82,7 +82,8 @@ internal sealed class CharacterWorkflows(
                 ? LegacySummary(legacy[header.CharacterId])
                 : new CharacterDetailsDataModel
                 {
-                    CharacterId = header.CharacterId, Name = header.Name, RulesetId = header.RulesetId, Status = "incomplete"
+                    CharacterId = header.CharacterId, Name = header.Name, RulesetId = header.RulesetId, Status = "incomplete",
+                    BuildSupported = header.Content is not null && mechanics.Supports(header.Content)
                 }).ToList(),
             NextOffset = page.Count > 50 ? offset + 50 : null
         };
@@ -106,7 +107,7 @@ internal sealed class CharacterWorkflows(
         return new() { Character = new()
         {
             CharacterId = character.Id, Name = character.Name, RulesetId = build.RulesetId,
-            Status = "incomplete", Content = Content(build.Content)
+            Status = "incomplete", Content = Content(build.Content), BuildSupported = mechanics.Supports(build.Content)
         } };
     }
 

@@ -18,5 +18,11 @@ internal sealed class CharacterBuildRecordConfiguration : IEntityTypeConfigurati
         builder.Property(record => record.PackVersion).HasColumnName("pack_version").HasMaxLength(100);
         builder.Property(record => record.CharacterElementId).HasColumnName("character_element_id").HasMaxLength(300);
         builder.Property(record => record.Composition).HasColumnName("composition").IsRequired();
+        builder.Property(record => record.Revision).HasColumnName("revision").IsConcurrencyToken().HasDefaultValue(0L);
+        builder.Property(record => record.Status).HasColumnName("status").HasMaxLength(20).HasDefaultValue("ready");
+        builder.Property(record => record.OperationId).HasColumnName("operation_id");
+        builder.Property(record => record.Failure).HasColumnName("failure").HasMaxLength(200);
+        builder.Property(record => record.Sheet).HasColumnName("sheet");
+        builder.Property(record => record.SheetRevision).HasColumnName("sheet_revision");
     }
 }

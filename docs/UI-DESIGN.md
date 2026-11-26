@@ -25,6 +25,7 @@ The reference implementation is `src/frontend/apps/landing-page/src/variants/v4/
 13. [Where things live](#where-things-live)
 14. [Moving this into the builder app](#moving-this-into-the-builder-app)
 15. [The builder shell (v5 mockup)](#the-builder-shell-v5-mockup)
+16. [Reference-build editor](#reference-build-editor)
 
 ## Design intent
 
@@ -422,6 +423,32 @@ The shell uses the same tokens, so light mode needs no special cases. The stage 
 - Level is fixed at 1; multiclassing, spells and magic items are out of scope.
 - Autosave is simulated; nothing is stored or sent anywhere.
 - Rules text is paraphrased placeholder copy, not the SRD.
+
+## Reference-build editor
+
+The bounded reference-build editor uses the existing Character workshop shell
+and shared UI components. It is not the full six-stage F04 navigation or the v5
+mockup. Work and the saved sheet sit side by side on wide screens and stack on
+smaller screens. Existing theme tokens, the shared theme toggle and restrained
+cards remain unchanged.
+
+- Name and content-provided decisions autosave after a short pause. A later
+  keystroke remains visible while an earlier save finishes.
+- Standard-array input is separate from effective ability scores. The supported
+  values and decision options come from the server.
+- Package selection, explicit claiming and wearing/wielding owned items are
+  separate controls. Claims are not presented as completed before confirmation.
+- Save status, build completion and sheet readiness are separately labelled.
+  A sheet beside unsaved input identifies the saved revision it describes.
+  Pending or failed calculations do not display an earlier sheet as current.
+- Conflict and unconfirmed-save callouts retain the input. Reapplying against
+  the latest revision or discarding unsaved input requires an explicit choice;
+  an unconfirmed operation is retried with its original identifier.
+- Live-update failures are visible, with a reconnect action and HTTP checks of
+  saved state. Reconnection reloads authoritative state rather than replaying
+  missed notifications.
+- Full and concise authored descriptions use Markdown; descriptions do not
+  replace missing mechanics or silently supply missing player choices.
 
 ## Regenerating the images in this document
 

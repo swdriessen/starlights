@@ -25,7 +25,7 @@ public sealed class CharacterPersistenceTests(TestContext testContext)
     [TestInitialize]
     public async Task Initialize()
     {
-        _directory = Path.Combine(Path.GetTempPath(), $"Starlights.Characters.Tests.{Guid.NewGuid():N}");
+        _directory = Path.Combine(Directory.GetCurrentDirectory(), ".agent-work", $"CharacterPersistence.{Guid.NewGuid():N}");
         Directory.CreateDirectory(_directory);
         _options = new DbContextOptionsBuilder<CharactersContext>()
             .UseSqlite($"Data Source={Path.Combine(_directory, "characters.db")};Pooling=False")
@@ -118,6 +118,51 @@ public sealed class CharacterPersistenceTests(TestContext testContext)
 
     private CharacterBuildStore Store(CharacterRulesets registry)
         => new(new PooledDbContextFactory<CharactersContext>(_options), registry, NullLogger<CharacterBuildStore>.Instance);
+
+    [TestMethod]
+    public async Task AcceptedFactsAndPendingReceipt_WhenPersistenceFails_RollBackTogether()
+    {
+        var ruleset = new DndRuleset();
+        var registry = new CharacterRulesets([ruleset]);
+        var content = new CharacterContentBinding("srd-5.2.1", "0.2.0", "srd521:character:default");
+        var owner = Guid.NewGuid();
+        var root = Character.Create(owner, "Before", new(ruleset, content, ruleset.Initialize(content)));
+        await Store(registry).CreateAsync(root, testContext.CancellationToken);
+        root.Rename("Unsaved");
+        var edits = new CharacterEditStore(new PooledDbContextFactory<CharactersContext>(_options), registry, NullLogger<CharacterEditStore>.Instance);
+        _failure.FailNextInsert = true;
+        var save = () => edits.AcceptAsync(root, 0, Guid.NewGuid(), "fingerprint", testContext.CancellationToken);
+        await save.Should().ThrowAsync<DbUpdateException>();
+        var saved = await edits.ReadAsync(root.Id, owner, testContext.CancellationToken);
+        saved!.Character.Name.Should().Be("Before");
+        saved.Revision.Should().Be(0);
+        saved.Status.Should().Be("ready");
+        await using var context = new CharactersContext(_options);
+        (await context.Set<CharacterEditOperationRecord>().CountAsync(testContext.CancellationToken)).Should().Be(0);
+    }
+
+    [TestMethod]
+    public async Task OriginalPinnedComposition_ReopensWithoutAddingMechanicsOrRebinding()
+    {
+        var ruleset = new DndRuleset();
+        var registry = new CharacterRulesets([ruleset]);
+        var content = new CharacterContentBinding("srd-5.2.1", "0.1.0", "srd521:character:default");
+        var owner = Guid.NewGuid();
+        var root = Character.Create(owner, "Existing", new(ruleset, content, ruleset.Initialize(content)));
+        await Store(registry).CreateAsync(root, testContext.CancellationToken);
+        const string original = """{"Build":{"Stage":"awaiting-choices"}}""";
+        await using (var context = new CharactersContext(_options))
+        {
+            var record = await context.Set<CharacterBuildRecord>().SingleAsync(testContext.CancellationToken);
+            record.Composition = original;
+            await context.SaveChangesAsync(testContext.CancellationToken);
+        }
+        var restored = await Store(registry).GetAsync(root.Id, owner, testContext.CancellationToken);
+        restored!.Build!.Content.Should().Be(content);
+        restored.Build.Composition.Should().BeOfType<DndCharacterComposition>().Which.Facts.Should().BeNull();
+        await using var unchanged = new CharactersContext(_options);
+        (await unchanged.Set<CharacterBuildRecord>().SingleAsync(testContext.CancellationToken)).Composition.Should().Be(original);
+    }
 
     private sealed class FailingInsertInterceptor : DbCommandInterceptor
     {

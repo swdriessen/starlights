@@ -52,6 +52,8 @@ public sealed class Program
             var catalog = new CharacterContentCatalog();
             catalog.AddEmbeddedPack(typeof(DndRuleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1.json",
                 services.GetRequiredService<CharacterRulesets>());
+            catalog.AddEmbeddedPack(typeof(DndRuleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1-reference.json",
+                services.GetRequiredService<CharacterRulesets>());
             return catalog;
         });
         builder.Services.AddCharacterWorkflows();

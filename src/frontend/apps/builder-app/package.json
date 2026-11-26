@@ -8,10 +8,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint --config ../../.oxlintrc.json .",
-    "test": "node --test vite.config.test.mjs",
+    "test": "node --test vite.config.test.mjs reliable-edit-state.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@microsoft/signalr": "^10.0.0",
     "@hookform/resolvers": "^7.0.9",
     "@lucide/lab": "^0.17.0",
     "@starlights/api-client": "file:../../packages/api-client",
@@ -27,7 +28,9 @@
     "react-aria-components": "^1.22.1",
     "react-dom": "^19.3.1",
     "react-hook-form": "^7.92.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.7",
+    "remark-gfm": "^4.0.1",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.7.1",
     "tailwindcss": "^4.3.5",

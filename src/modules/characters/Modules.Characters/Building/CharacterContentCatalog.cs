@@ -8,9 +8,15 @@ namespace Starlights.Modules.Characters.Building;
 public sealed class CharacterContentCatalog
 {
     private readonly List<CharacterCreationOption> _options = [];
+    private readonly Dictionary<(string Id, string Version), JsonElement> _packs = [];
 
     /// <summary>Gets the validated creation options without mutable catalog access.</summary>
-    public IReadOnlyList<CharacterCreationOption> Options => _options.AsReadOnly();
+    public IReadOnlyList<CharacterCreationOption> Options => _options
+        .GroupBy(option => (option.RulesetId, option.Content.PackId, option.Content.CharacterElementId))
+        .Select(group => group.OrderByDescending(option => Version.Parse(option.Content.PackVersion)).First()).ToArray();
+
+    /// <summary>Reads the exact pinned pack; callers never substitute a current version.</summary>
+    public JsonElement GetPack(CharacterContentBinding binding) => _packs[(binding.PackId, binding.PackVersion)];
 
     /// <summary>Loads an embedded pack, surfacing missing content rather than inventing defaults.</summary>
     public void AddEmbeddedPack(Assembly assembly, string resourceName, CharacterRulesets rulesets)
@@ -51,6 +57,7 @@ public sealed class CharacterContentCatalog
         if (additions.Count == 0 || additions.Any(option => _options.Any(existing => existing.Content == option.Content)))
             throw new InvalidOperationException("Bundled content has no Character Element or duplicates an existing binding.");
         _options.AddRange(additions);
+        _packs.Add((packId, version), root.Clone());
     }
 
     /// <summary>Requires an existing exact binding, never a newer version.</summary>

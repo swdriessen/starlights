@@ -46,3 +46,10 @@ test("uses HTTP when Aspire exposes no HTTPS endpoint", async (t) => {
   });
   assert.equal(target, "http://localhost:5240");
 });
+
+test("proxies SignalR WebSockets through the same authenticated browser origin", async () => {
+  const result = await loadConfigFromFile({ command: "serve", mode: "test" }, configFile);
+  assert.ok(result);
+  assert.equal(result.config.server.proxy["/api"].ws, true);
+  assert.equal(result.config.server.proxy["/api"].changeOrigin, false);
+});

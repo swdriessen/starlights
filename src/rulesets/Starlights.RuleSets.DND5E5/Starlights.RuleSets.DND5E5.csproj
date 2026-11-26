@@ -2,5 +2,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\modules\characters\Modules.Characters.Domain\Modules.Characters.Domain.csproj" />
     <EmbeddedResource Include="Content\srd-5.2.1.json" />
+    <EmbeddedResource Include="Content\srd-5.2.1-reference.json" />
   </ItemGroup>
 </Project>

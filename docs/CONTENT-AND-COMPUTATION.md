@@ -36,9 +36,14 @@ These are requirements for the new application, carried forward from applicable 
 
 Across its increments, F01 is intended to implement a versioned
 `starlights-content/1` subset of these contracts. That subset is not yet
-implemented in the current checkout. The [first increment](./F01-01-CREATE-LIST-REOPEN.md)
-only loads and validates the content identity and Character Element binding
-needed for creation; it does not evaluate Grants, Selections or sheet values.
+fully implemented in the current checkout. The [first increment](./F01-01-CREATE-LIST-REOPEN.md)
+only loaded and validated the content identity and Character Element binding
+needed for creation; its pinned `0.1.0` pack still does not evaluate Grants,
+Selections or sheet values. The subsequent
+[reference build increment](./REFERENCE-BUILD-API.md) adds a separately pinned
+`0.2.0` pack and the bounded mechanics required for the Human/Fighter/Soldier
+journey, plus revision-checked durable edits. Unsupported contracts described
+below remain target requirements rather than implemented behavior.
 Subsequent F01 increments are expected to validate local pack
 identities, Grants, Selections, supported numeric Rules and the typed
 properties needed by the reference build. Its initial sheet values are

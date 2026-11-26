@@ -10,4 +10,10 @@ internal sealed class CharacterBuildRecord
     public required string PackVersion { get; set; }
     public required string CharacterElementId { get; set; }
     public required string Composition { get; set; }
+    public long Revision { get; set; }
+    public string Status { get; set; } = "ready";
+    public Guid? OperationId { get; set; }
+    public string? Failure { get; set; }
+    public string? Sheet { get; set; }
+    public long? SheetRevision { get; set; }
 }

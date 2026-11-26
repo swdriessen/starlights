@@ -24,6 +24,7 @@ internal class EntityFrameworkComponent : IPlatformServiceComponent, IPlatformAp
         builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
         builder.Services.AddScoped<ICharacterOwnership, CharacterOwnership>();
         builder.Services.AddScoped<ICharacterBuildStore, CharacterBuildStore>();
+        builder.Services.AddScoped<ICharacterEditStore, CharacterEditStore>();
         builder.Services.TryAddSingleton<CharacterRulesets>();
         builder.Services.AddSingleton<CharacterOwnershipInterceptor>();
 

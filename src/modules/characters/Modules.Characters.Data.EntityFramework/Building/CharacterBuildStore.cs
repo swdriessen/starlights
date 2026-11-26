@@ -67,11 +67,16 @@ internal sealed class CharacterBuildStore(
     public async Task<IReadOnlyList<CharacterHeader>> ListAsync(Guid ownerId, int offset, CancellationToken cancellationToken)
     {
         await using var context = await factory.CreateDbContextAsync(cancellationToken);
-        return await context.Set<Character>().AsNoTracking()
+        var roots = await context.Set<Character>().AsNoTracking()
             .Where(character => character.OwnerId == ownerId)
             .OrderBy(character => (Guid)character.Id).Skip(offset).Take(51)
             .Select(character => new CharacterHeader(character.Id.Value, character.Name, character.RulesetId))
             .ToListAsync(cancellationToken);
+        var ids = roots.Select(root => new CharacterId(root.CharacterId)).ToArray();
+        var bindings = await context.Set<CharacterBuildRecord>().AsNoTracking().Where(record => ids.Contains(record.CharacterId))
+            .Select(record => new { record.CharacterId, record.PackId, record.PackVersion, record.CharacterElementId }).ToListAsync(cancellationToken);
+        return roots.Select(root => bindings.SingleOrDefault(binding => binding.CharacterId.Value == root.CharacterId) is { } binding
+            ? root with { Content = new(binding.PackId, binding.PackVersion, binding.CharacterElementId) } : root).ToArray();
     }
 
     public async Task<bool> IsInitializedAsync(Guid characterId, CancellationToken cancellationToken)

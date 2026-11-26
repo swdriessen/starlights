@@ -16,7 +16,7 @@ partial class CharactersContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261125150237_CharacterInitialization";
+    public override string LastMigrationId => "20261126222703_AddCharacterBuildOperations";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -45,6 +45,15 @@ partial class CharactersContextModelSnapshot : ModelSnapshot
                     .HasColumnType("nvarchar(max)")
                     .HasColumnName("composition");
 
+                b.Property<string>("Failure")
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)")
+                    .HasColumnName("failure");
+
+                b.Property<Guid?>("OperationId")
+                    .HasColumnType("uniqueidentifier")
+                    .HasColumnName("operation_id");
+
                 b.Property<string>("PackId")
                     .IsRequired()
                     .HasMaxLength(200)
@@ -57,9 +66,77 @@ partial class CharactersContextModelSnapshot : ModelSnapshot
                     .HasColumnType("nvarchar(100)")
                     .HasColumnName("pack_version");
 
+                b.Property<long>("Revision")
+                    .IsConcurrencyToken()
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bigint")
+                    .HasDefaultValue(0L)
+                    .HasColumnName("revision");
+
+                b.Property<string>("Sheet")
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("sheet");
+
+                b.Property<long?>("SheetRevision")
+                    .HasColumnType("bigint")
+                    .HasColumnName("sheet_revision");
+
+                b.Property<string>("Status")
+                    .IsRequired()
+                    .ValueGeneratedOnAdd()
+                    .HasMaxLength(20)
+                    .HasColumnType("nvarchar(20)")
+                    .HasDefaultValue("ready")
+                    .HasColumnName("status");
+
                 b.HasKey("CharacterId");
 
                 b.ToTable("character_build", "characters");
+            });
+
+        modelBuilder.Entity("Starlights.Modules.Characters.Data.EntityFramework.Building.CharacterEditOperationRecord", b =>
+            {
+                b.Property<Guid>("CharacterId")
+                    .HasColumnType("uniqueidentifier")
+                    .HasColumnName("character_id");
+
+                b.Property<Guid>("OperationId")
+                    .HasColumnType("uniqueidentifier")
+                    .HasColumnName("operation_id");
+
+                b.Property<string>("Failure")
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)")
+                    .HasColumnName("failure");
+
+                b.Property<string>("Fingerprint")
+                    .IsRequired()
+                    .HasMaxLength(64)
+                    .HasColumnType("nvarchar(64)")
+                    .HasColumnName("fingerprint");
+
+                b.Property<long>("Revision")
+                    .HasColumnType("bigint")
+                    .HasColumnName("revision");
+
+                b.Property<string>("Sheet")
+                    .HasColumnType("nvarchar(max)")
+                    .HasColumnName("sheet");
+
+                b.Property<string>("Status")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("nvarchar(20)")
+                    .HasColumnName("status");
+
+                b.HasKey("CharacterId", "OperationId");
+
+                b.HasIndex("Status");
+
+                b.HasIndex("CharacterId", "Revision")
+                    .IsUnique();
+
+                b.ToTable("character_edit_operations", "characters");
             });
 
         modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>
@@ -578,6 +655,15 @@ partial class CharactersContextModelSnapshot : ModelSnapshot
                     .IsRequired();
 
                 b.Navigation("Character");
+            });
+
+        modelBuilder.Entity("Starlights.Modules.Characters.Data.EntityFramework.Building.CharacterEditOperationRecord", b =>
+            {
+                b.HasOne("Starlights.Modules.Characters.Data.EntityFramework.Building.CharacterBuildRecord", null)
+                    .WithMany()
+                    .HasForeignKey("CharacterId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
             });
 
         modelBuilder.Entity("Starlights.Modules.Characters.Domain.Abilities.AbilityScore", b =>

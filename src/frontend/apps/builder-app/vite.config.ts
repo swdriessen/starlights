@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => {
           target: apiBase,
           changeOrigin: false,
           secure: !["localhost", "127.0.0.1", "[::1]"].includes(new URL(apiBase).hostname),
+          ws: true,
         },
       },
     },

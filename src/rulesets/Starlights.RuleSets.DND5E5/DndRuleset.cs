@@ -11,7 +11,8 @@ public sealed class DndRuleset : ICharacterRuleset
     public Type CompositionType => typeof(DndCharacterComposition);
     /// <inheritdoc />
     public ICharacterComposition Initialize(CharacterContentBinding content)
-        => new DndCharacterComposition(new DndBuildPart("awaiting-choices"));
+        => new DndCharacterComposition(new DndBuildPart("awaiting-choices"),
+            content.PackId == "srd-5.2.1" && content.PackVersion == "0.2.0" ? DndBuildFacts.Empty : null);
     /// <inheritdoc />
     public void Validate(ICharacterComposition composition)
     {

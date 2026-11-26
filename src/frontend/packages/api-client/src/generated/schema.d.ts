@@ -128,61 +128,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/characters": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List a page of the authenticated owner's Characters. */
-        get: operations["ListCharacters"];
-        put?: never;
-        /**
-         * Create and durably initialize an owned Character.
-         * @description Commits the selected Ruleset's initial composition and exact content binding atomically. No sheet is calculated.
-         */
-        post: operations["CreateCharacter"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/characters/{characterId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Reopen an owned Character without reinitializing its saved state. */
-        get: operations["GetCharacter"];
-        put?: never;
-        post?: never;
-        delete: operations["StarlightsModulesCharactersEndpointsCharactersDeleteCharacterDeleteCharacterEndpoint"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/characters/rulesets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List supported content-defined Character creation options. */
-        get: operations["GetCharacterRulesets"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/characters/{characterId}/statistics": {
         parameters: {
             query?: never;
@@ -375,6 +320,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/characters/{characterId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reopen an owned Character without reinitializing its saved state. */
+        get: operations["GetCharacter"];
+        put?: never;
+        post?: never;
+        delete: operations["StarlightsModulesCharactersEndpointsCharactersDeleteCharacterDeleteCharacterEndpoint"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/characters/{characterId}/ability-scores/{abilityScoreId}/base": {
         parameters: {
             query?: never;
@@ -416,7 +378,8 @@ export interface paths {
         };
         get: operations["StarlightsModulesCharactersEndpointsCharactersAbilityScoresGetAbilitiesGetAbilityScoresEndpoint"];
         put?: never;
-        post?: never;
+        /** Record valid partial or complete standard-array inputs. */
+        post: operations["AssignCharacterAbilities"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1223,6 +1186,129 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/characters/{characterId}/build": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the owned Character's authoritative revision and build status. */
+        get: operations["GetCharacterBuild"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/characters/{characterId}/choices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record a revision-checked Selection answer. */
+        post: operations["RecordCharacterChoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/characters/{characterId}/equipment-claims": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Acquire a selected starting package once, independently of the Choice. */
+        post: operations["ClaimCharacterEquipment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/characters/{characterId}/equipment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Allocate owned armor and a weapon. */
+        post: operations["EquipCharacter"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/characters/{characterId}/name": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rename the owned Character using a revision-checked operation. */
+        post: operations["NameCharacter"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/characters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List a page of the authenticated owner's Characters. */
+        get: operations["ListCharacters"];
+        put?: never;
+        /**
+         * Create and durably initialize an owned Character.
+         * @description Commits the selected Ruleset's initial composition and exact content binding atomically. No sheet is calculated.
+         */
+        post: operations["CreateCharacter"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/characters/rulesets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List supported content-defined Character creation options. */
+        get: operations["GetCharacterRulesets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1244,6 +1330,55 @@ export interface components {
         AntiforgeryResponse: {
             requestToken: string;
             headerName: string;
+        };
+        AssignCharacterAbilitiesRequest: {
+            /** Format: int64 */
+            expectedRevision: number | string;
+            /** Format: uuid */
+            operationId: string;
+            inputs: {
+                [key: string]: number | string;
+            };
+        };
+        CharacterAbilityResponse: {
+            id: string;
+            name: string;
+            /** Format: int32 */
+            input: null | number | string;
+            /** Format: int32 */
+            score: null | number | string;
+            /** Format: int32 */
+            modifier: null | number | string;
+        };
+        CharacterAttackResponse: {
+            name: string;
+            /** Format: int32 */
+            toHit: number | string;
+            damage: string;
+            mastery: null | string;
+        };
+        CharacterBuildResponse: {
+            /** Format: uuid */
+            characterId: string;
+            name: string;
+            /** Format: int64 */
+            revision: number | string;
+            status: string;
+            /** Format: uuid */
+            operationId: null | string;
+            failure: null | string;
+            buildComplete: boolean;
+            sheetReady: boolean;
+            selections: components["schemas"]["CharacterSelectionResponse"][];
+            abilities: components["schemas"]["CharacterAbilityResponse"][];
+            equipmentClaims: components["schemas"]["CharacterEquipmentClaimResponse"][];
+            ownedItems: components["schemas"]["CharacterOwnedItemResponse"][];
+            armorId: null | string;
+            weaponId: null | string;
+            sheet: null | components["schemas"]["CharacterSheetResponse"];
+            abilityInputOptions: (number | string)[];
+            /** Format: int64 */
+            acceptedRevision?: null | number | string;
         };
         CharacterClassDataModel: {
             /** Format: uuid */
@@ -1277,10 +1412,65 @@ export interface components {
             rulesetId?: null | string;
             status?: string;
             content?: null | components["schemas"]["CharacterContentResponse"];
+            buildSupported?: boolean;
+        };
+        CharacterEquipmentClaimResponse: {
+            selectionId: string;
+            name: string;
+            claimed: boolean;
+        };
+        CharacterOptionResponse: {
+            id: string;
+            name: string;
+            description: null | string;
+        };
+        CharacterOwnedItemResponse: {
+            id: string;
+            name: string;
+            /** Format: int32 */
+            quantity: number | string;
+            canWear: boolean;
+            canWield: boolean;
         };
         CharacterPortraitOption: {
             url: string;
             description?: null | string;
+        };
+        CharacterSelectionResponse: {
+            id: string;
+            name: string;
+            /** Format: int32 */
+            count: number | string;
+            answers: string[];
+            options: components["schemas"]["CharacterOptionResponse"][];
+        };
+        CharacterSheetEntryResponse: {
+            name: string;
+            description: null | string;
+            usage: null | string;
+            /** @default  */
+            id: string;
+        };
+        CharacterSheetResponse: {
+            statistics: components["schemas"]["CharacterStatisticResponse"][];
+            attacks: components["schemas"]["CharacterAttackResponse"][];
+            entries: components["schemas"]["CharacterSheetEntryResponse"][];
+            /** Format: int32 */
+            gold: number | string;
+        };
+        CharacterStatisticResponse: {
+            id: string;
+            name: string;
+            /** Format: int32 */
+            value: null | number | string;
+            sources: string[];
+        };
+        ClaimCharacterEquipmentRequest: {
+            /** Format: int64 */
+            expectedRevision: number | string;
+            /** Format: uuid */
+            operationId: string;
+            selectionId: string;
         };
         ClassDataModel: {
             /** Format: uuid */
@@ -1550,6 +1740,14 @@ export interface components {
             type: string;
             description: string;
         };
+        EquipCharacterRequest: {
+            /** Format: int64 */
+            expectedRevision: number | string;
+            /** Format: uuid */
+            operationId: string;
+            armorId: null | string;
+            weaponId: null | string;
+        };
         FeatCategoryDataModel: {
             /** Format: uuid */
             id: string;
@@ -1794,6 +1992,13 @@ export interface components {
         ListElementLabelsResponse: {
             labels: string[];
         };
+        NameCharacterRequest: {
+            /** Format: int64 */
+            expectedRevision: number | string;
+            /** Format: uuid */
+            operationId: string;
+            name: string;
+        };
         ProblemDetails: {
             type?: null | string;
             title?: null | string;
@@ -1808,6 +2013,14 @@ export interface components {
             name: string;
             proficiencyType: string;
             description: string;
+        };
+        RecordCharacterChoiceRequest: {
+            /** Format: int64 */
+            expectedRevision: number | string;
+            /** Format: uuid */
+            operationId: string;
+            selectionId: string;
+            answers: string[];
         };
         RegisterSelectionRuleRequest: {
             /** Format: uuid */
@@ -2483,156 +2696,6 @@ export interface operations {
             };
         };
     };
-    ListCharacters: {
-        parameters: {
-            query?: {
-                offset?: number | string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetCharactersResponse"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreateCharacter: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCharacterRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateCharacterResponse"];
-                };
-            };
-            /** @description Bad Request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    GetCharacter: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                characterId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetCharacterDetailsResponse"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Not Found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StarlightsModulesCharactersEndpointsCharactersDeleteCharacterDeleteCharacterEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    GetCharacterRulesets: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RulesetOptionResponse"][];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     StarlightsModulesCharactersEndpointsGenerationStatisticsGetStatisticsGetStatisticsEndpoint: {
         parameters: {
             query?: never;
@@ -2896,6 +2959,60 @@ export interface operations {
             };
         };
     };
+    GetCharacter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetCharacterDetailsResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StarlightsModulesCharactersEndpointsCharactersDeleteCharacterDeleteCharacterEndpoint: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     StarlightsModulesCharactersEndpointsCharactersAbilityScoresUpdateBaseScoreUpdateAbilityBaseScoreEndpoint: {
         parameters: {
             query?: never;
@@ -2960,6 +3077,64 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetAbilityScoresResponse"];
+                };
+            };
+        };
+    };
+    AssignCharacterAbilities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignCharacterAbilitiesRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterBuildResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -4592,6 +4767,379 @@ export interface operations {
         responses: {
             /** @description No Content */
             204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetCharacterBuild: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterBuildResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RecordCharacterChoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordCharacterChoiceRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterBuildResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ClaimCharacterEquipment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClaimCharacterEquipmentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterBuildResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    EquipCharacter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EquipCharacterRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterBuildResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    NameCharacter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NameCharacterRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterBuildResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListCharacters: {
+        parameters: {
+            query?: {
+                offset?: number | string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetCharactersResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreateCharacter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCharacterRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateCharacterResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetCharacterRulesets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulesetOptionResponse"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };

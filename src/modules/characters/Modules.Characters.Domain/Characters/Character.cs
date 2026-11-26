@@ -31,7 +31,7 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <summary>
     /// Gets the name of the character.
     /// </summary>
-    public string Name { get; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
 
     /// <summary>Gets the account owning this Character.</summary>
     public Guid OwnerId { get; private set; }
@@ -70,6 +70,39 @@ public sealed class Character : AggregateRoot<CharacterId>
     }
 
     private Character(CharacterId id, string name) : base(id) => Name = name;
+
+    /// <summary>Records a validated Choice through the selected Ruleset's policy.</summary>
+    public void RecordChoice(ICharacterBuildRules rules, string selectionId, IReadOnlyList<string> answers)
+        => ReplaceBuild(rules, () => rules.RecordChoice(Build!.Composition, selectionId, answers));
+
+    /// <summary>Assigns validated ability inputs without exposing mutable Ruleset parts.</summary>
+    public void AssignAbilityScores(ICharacterBuildRules rules, IReadOnlyDictionary<string, int> inputs)
+        => ReplaceBuild(rules, () => rules.AssignAbilities(Build!.Composition, inputs));
+
+    /// <summary>Claims a starting package once, separately from the selected option.</summary>
+    public void ClaimEquipment(ICharacterBuildRules rules, string selectionId)
+        => ReplaceBuild(rules, () => rules.ClaimEquipment(Build!.Composition, selectionId));
+
+    /// <summary>Allocates owned armor and a weapon using the Ruleset's equipment rules.</summary>
+    public void Equip(ICharacterBuildRules rules, string? armorId, string? weaponId)
+        => ReplaceBuild(rules, () => rules.Equip(Build!.Composition, armorId, weaponId));
+
+    /// <summary>Names an initialized Character without affecting its identity.</summary>
+    public void Rename(string name)
+    {
+        if (Build is null || string.IsNullOrWhiteSpace(name) || name.Length > 100)
+            throw new ArgumentException("A Character name must contain 1 to 100 characters.", nameof(name));
+        Name = name;
+    }
+
+    private void ReplaceBuild(ICharacterBuildRules rules, Func<ICharacterComposition> operation)
+    {
+        var build = Build ?? throw new InvalidOperationException("Legacy Characters do not support build actions.");
+        if (rules.RulesetId != build.RulesetId || rules.Content != build.Content)
+            throw new InvalidOperationException("The build policy does not match the Character's pinned content.");
+        var composition = operation();
+        Build = new CharacterBuild(rules, build.Content, composition);
+    }
 
     /// <summary>
     /// Creates a new instance of the <see cref="Character"/> class with the specified name.

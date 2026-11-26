@@ -16,4 +16,6 @@ public record CharacterDetailsDataModel
     public string Status { get; init; } = "legacy";
     /// <summary>Gets the exact saved content binding for an initialized build.</summary>
     public CharacterContentResponse? Content { get; init; }
+    /// <summary>Gets whether this exact pinned Character supports the implemented reference-build actions.</summary>
+    public bool BuildSupported { get; init; }
 }
