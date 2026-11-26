@@ -1,6 +1,37 @@
 # Roadmap: epic and feature slices
 
-Status: target delivery sequence for refactoring this repository toward the agreed first release. The .NET 11 migration, Identity and private file-library increments of F00 are implemented; full Aspire startup and local/private-network verification remain open. The React builder route is still a placeholder. Existing character and content code is partial implementation input, not completion evidence. Reassess each slice against its acceptance criteria before marking it done.
+This roadmap defines the target delivery sequence and acceptance boundaries for the agreed first release. Existing code may be partial implementation input; assess each slice against its acceptance criteria before marking it done.
+
+## Contents
+
+- [Epic: build a dependable SRD character from concept to sheet](#epic-build-a-dependable-srd-character-from-concept-to-sheet)
+- [How to use this roadmap](#how-to-use-this-roadmap)
+- [Current status](#current-status)
+- [Milestones](#milestones)
+- [Feature slices](#feature-slices)
+  - [F00: Establish the platform foundation](#f00-establish-the-platform-foundation)
+  - [F01: Build, save and reopen the reference character](#f01-build-save-and-reopen-the-reference-character)
+  - [F02: Revise a character without losing work](#f02-revise-a-character-without-losing-work)
+  - [F03: Choose how to generate ability scores](#f03-choose-how-to-generate-ability-scores)
+  - [F04: Choose an origin and navigate the build](#f04-choose-an-origin-and-navigate-the-build)
+  - [F05: Advance a Fighter and revisit earlier decisions](#f05-advance-a-fighter-and-revisit-earlier-decisions)
+  - [F06: Manage ordinary possessions and equipment](#f06-manage-ordinary-possessions-and-equipment)
+  - [F07: Build the first spellcaster](#f07-build-the-first-spellcaster)
+  - [F08: Build a prepared divine spellcaster](#f08-build-a-prepared-divine-spellcaster)
+  - [F09: Support arcane progression and Pact Magic](#f09-support-arcane-progression-and-pact-magic)
+  - [F10: Build the other martial classes](#f10-build-the-other-martial-classes)
+  - [F11: Complete the remaining class journeys](#f11-complete-the-remaining-class-journeys)
+  - [F12: Create higher-level and multiclass characters](#f12-create-higher-level-and-multiclass-characters)
+  - [F13: Understand movement, senses and defenses](#f13-understand-movement-senses-and-defenses)
+  - [F14: Equip magic items and manage attunement](#f14-equip-magic-items-and-manage-attunement)
+  - [F15: Read contextual feature reminders](#f15-read-contextual-feature-reminders)
+  - [F16: Apply identifiable numeric adjustments](#f16-apply-identifiable-numeric-adjustments)
+  - [F17: Maintain a personal collection and portraits](#f17-maintain-a-personal-collection-and-portraits)
+  - [F18: Export a usable PDF sheet](#f18-export-a-usable-pdf-sheet)
+  - [F19: Keep characters consistent with content fixes](#f19-keep-characters-consistent-with-content-fixes)
+  - [F20: Operate the builder safely on a private network](#f20-operate-the-builder-safely-on-a-private-network)
+- [Release gates](#release-gates)
+- [Later product epics](#later-product-epics)
 
 ## Epic: build a dependable SRD character from concept to sheet
 
@@ -22,6 +53,16 @@ The epic is complete only when the release gates below are met. Completing the f
 - Implement slices with [command/query separation](./SPECIFICATION.md#feature-workflows-and-cqrs), sharing commands only where their domain semantics match across Rulesets.
 - Use Minimal APIs for new and replaced HTTP features. Existing FastEndpoints routes may remain temporarily during migration, with equivalent security, validation and OpenAPI coverage; retire FastEndpoints once the retained routes have been migrated.
 
+## Current status
+
+This table is the current status summary for the roadmap. Keep detailed execution and verification evidence in `progress/`; keep specifications and behavior documents focused on stable requirements. Update this table when a slice's status changes. `Verified` means acceptance has been confirmed; the note identifies user-confirmed status where applicable.
+
+| Slice | Current status | Note |
+| ----- | -------------- | ---- |
+| F00: Establish the platform foundation | In progress | Local Aspire verification is recorded complete; developer-tunnel and private-network verification remain deferred. See [frontend readiness](../progress/frontend-readiness.md). |
+| F01: Build, save and reopen the reference character | Verified | User-confirmed on 2026-11-26. Detailed final verification results are not recorded in the [F01 progress record](../progress/f01-first-slice.md). |
+| F02-F20 | Planned | No completion or acceptance status is recorded for these slices. |
+
 ## Milestones
 
 | Milestone                             | Demonstrable result                                                                                                                           |
@@ -41,8 +82,6 @@ Milestones summarize outcomes, not additional implementation layers. Some M4 fea
 
 **User story:** As the developer, I want the existing application to run on the agreed .NET 11 and React/Vite stack with secure identity, a generated TypeScript API client and private local storage, so that Character work starts on a dependable foundation.
 
-**Progress:** the .NET 11 migration, Identity and private file-library increments are implemented. Operator services, durable cookie sessions and revocation, antiforgery, retained Character ownership, React authentication, the same-origin proxy and generated contracts are present. `Modules.FileManagement` adds owner-only Minimal APIs, SQL metadata, private blob storage, a persistent local emulator and a standalone upload/list/view/delete UI. The full .NET suite passes (608 passed, 0 failed, 16 existing skips), including 24 file-library integration cases and a Characters migration-host construction regression test; frontend workspaces build and changed frontend sources lint. The migration-host test verifies unauthenticated persistence construction and ownerless-operation rejection without starting migrations. Repeated generation covers 74 API paths. Isolated SQL Server/Azurite and real-cookie browser checks verified owner isolation, original-byte preservation, upload limits, direct-blob access denial, deletion confirmation and persistence across application/database/emulator restart. The schema matches its generated migration. Full Aspire startup and the local/private-network/tunnel checks remain unverified. Unrelated dependency advisories and existing full-frontend lint violations remain. F00 is not complete.
-
 **Scope:** upgrade the current .NET 10 API to .NET 11; retain React/Vite/Shadcn, Aspire and SQL Server; establish feature-organized Minimal API endpoints for the foundation and migrate existing FastEndpoints routes as needed without duplicate routes; generate the TypeScript API client and contract types from OpenAPI; establish Identity (`Modules.Identity`) with ASP.NET Core Identity cookie authentication and antiforgery; provide secure local operator commands to create accounts, reset passwords and disable/re-enable accounts; enforce owner-only access through GUID-based module contracts; add Azure Blob Storage with a local emulator and API-mediated authorization; route local browser `/api` requests through Vite; and retain the developer tunnel only as an explicit, authenticated development option. Resetting the existing development database is allowed. Do not redesign Character/Element aggregates or build a general calculation engine in F00.
 
 **Identity boundary:** Identity owns accounts, credentials, authentication, account-role assignments and shared access integration. Other modules register resource-specific policies and enforce ownership without exposing Identity entities or depending on each other's tables. Use standard roles/policies/handlers, not a configurable permission engine. Owners use the stable user GUID as `OwnerId`, with no separate Player entity or administrator ownership bypass. External sign-in/linking, account/role-management UI, game-defined security roles and Character transfer remain outside F00.
@@ -52,12 +91,6 @@ Milestones summarize outcomes, not additional implementation layers. Some M4 fea
 **Depends on:** none.
 
 **Detailed contract:** [Application architecture](./SPECIFICATION.md#application-architecture), [Identity and access](./SPECIFICATION.md#identity-and-access), [private file management](./SPECIFICATION.md#private-file-management), the [Identity behavior examples](./BEHAVIOR.md#f00-identity-and-access), the [file-library examples](./BEHAVIOR.md#f00-private-file-library) and the [local/private-network requirements](./SPECIFICATION.md#first-release).
-
-**First increment:** an operator provisions a local account and the user signs in and out through the real React UI, generated API client, Minimal APIs and durable Identity storage on .NET 11. Include antiforgery, protected retained routes and the agreed session lifecycle; demonstrate two accounts, restart and revocation without introducing a dummy Character. Complete private asset storage and its owner-isolation checks in subsequent F00 increments; sign-in alone does not finish F00.
-
-**Second increment (implemented):** a signed-in owner uses a private image library backed by `Modules.FileManagement`, with bounded PNG/JPEG/WebP uploads, original-byte preservation, immutable file identifiers, paginated lists, authorized viewing and retryable deletion. Character assignment and protection against deleting referenced files are deferred together. Quotas, broader file types and sharing remain outside this increment.
-
-**Remaining foundation verification:** start the complete Aspire resource graph without touching a shared database; verify migration/emulator startup ordering and visible failures, same-origin authentication through the actual development proxy, and the explicit developer-tunnel/private-network restrictions. The isolated API/UI checks above are not a substitute for this deployment-topology verification.
 
 ### F01: Build, save and reopen the reference character
 
@@ -69,11 +102,9 @@ Milestones summarize outcomes, not additional implementation layers. Some M4 fea
 
 **Depends on:** F00.
 
-**Acceptance evidence:** [the reference journey and expected values](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier). The first increment is implemented against [F01.1: create, list and reopen](./F01-01-CREATE-LIST-REOPEN.md), with [observable creation and reopening examples](./BEHAVIOR.md#f011-create-list-and-reopen-a-character). Its [executed checks and remaining gates](../progress/f01-first-slice.md) do not close SQL Server restart verification, F00, F01 or M1.
+**Acceptance evidence:** [the reference journey and expected values](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier), plus the [create, list and reopen contract](./F01-01-CREATE-LIST-REOPEN.md) and its [observable examples](./BEHAVIOR.md#f011-create-list-and-reopen-a-character).
 
 Resolve the minimum aggregate, initialization, content-format, evaluation and Character persistence contracts as part of F01; they are not moved into F00. Preserve the shared Character root, validated Ruleset-owned composition, pinned content and aggregate-wide Unit of Work described in the specification. Exercise domain invariants without EF and verify persisted aggregate state survives reopening.
-
-**First increment after F00:** a signed-in player creates a named Character for `DND5E5` using the bundled, pinned SRD pack. The Ruleset initializes its required composition and the application persists it atomically; the player can list and reopen it, with its incomplete build clearly indicated. Exercise this through the real UI, API and persistence, including application/database restart without resetting storage. Introduce the minimal test-only `TEST` Ruleset in this increment to verify Ruleset selection, initialization and durable reconstitution without accidental DND5E5 coupling, including independent and coexistence registration. It is not registered by the ordinary application host or offered as a playable game. Follow the [bounded F01.1 contract](./F01-01-CREATE-LIST-REOPEN.md); add Choices, possessions and sheet calculations in subsequent end-to-end increments. This first increment does not claim to produce a complete sheet or finish F01.
 
 ### F02: Revise a character without losing work
 

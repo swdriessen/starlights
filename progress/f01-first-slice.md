@@ -2,12 +2,13 @@
 
 ## Status
 
-Implementation is committed. Acceptance is **not complete**: the SQL Server
-migration/restart journey and F00's complete Aspire/private-network checks have
-not been executed. This record supplements the
+Implementation is committed. F01 acceptance is **verified**, as confirmed by
+the user on 2026-11-26. This record supplements the
 [delivery contract](../docs/F01-01-CREATE-LIST-REOPEN.md); it does not weaken it.
 
-Verification date: 2026-11-25.
+Acceptance verification date: 2026-11-26. The implementation and checks below
+were recorded on 2026-11-25; detailed results of the final verification were
+not recorded here.
 
 ## Delivered
 
@@ -119,7 +120,10 @@ The browser fixture and Vite process were task-owned helpers, not replacements
 for the normal Aspire startup path. Temporary accounts/databases are not demo
 data, and no credentials were added to application configuration.
 
-## Remaining acceptance gates
+## Gates recorded as open at implementation close (2026-11-25)
+
+The following items were recorded as open before the user confirmed F01
+acceptance on 2026-11-26. They are historical status, not current F01 blockers.
 
 - Review/apply the new Characters migration to an **approved isolated SQL
   Server** instance. Check preservation of existing data and real provider
@@ -131,9 +135,11 @@ data, and no credentials were added to application configuration.
   same-origin authentication and developer-tunnel/private-network restrictions.
 - Resolve or explicitly track the existing whole-app lint baseline separately.
 
-Permission to create/migrate/restart SQL verification resources was not
-obtained. The pre-existing shared SQL container was not migrated or restarted.
-SQLite results must not be relabeled as these missing acceptance checks.
+At the time of this implementation record, permission to create/migrate/restart
+SQL verification resources had not been obtained. The pre-existing shared SQL
+container was not migrated or restarted. The subsequent user confirmation
+establishes F01 acceptance; the detailed SQL Server/Aspire verification results
+are not captured in this file.
 
 ## Learnings for the agentic workflow
 

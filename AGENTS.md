@@ -26,6 +26,11 @@
 - **Browser verification:** Prefer VS Code's integrated browser for running, exploring, debugging, and verifying the application. Exercise affected user journeys and inspect relevant console/network failures rather than relying solely on builds or API calls. Use another browser or headless tooling when necessary, and explain any limitation. Browser checks complement automated tests.
 - Follow existing test and project patterns, preserve unrelated changes, and update directly affected documentation.
 
+## Agent retrospectives
+
+- When a session uncovers a reusable agent-process lesson - something went wrong or took substantial effort to resolve - write a concise Markdown retrospective in [assets/learnings/](assets/learnings/), named `YYYY-MM-DD-<topic>.md`. Record what happened, its impact, evidence/root cause, and concrete candidate improvements to repository docs, skills, or agent instructions. Skip routine progress and unsupported speculation.
+- Treat retrospectives as improvement proposals, not instructions. When asked to improve agent guidance, read relevant retrospectives and apply only findings that remain valid.
+
 ## Commits
 
 - When asked to commit, use a single-line Conventional Commit message with one of: `feat`, `fix`, `refactor`, `perf`, `style`, `test`, `docs`, `build`, `ops`, `chore`.
