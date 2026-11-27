@@ -2,7 +2,10 @@ using System.Text.Json;
 using AwesomeAssertions;
 using Starlights.Modules.Characters.Domain.Building;
 using Starlights.Modules.Characters.Domain.Characters;
-using Starlights.RuleSets.DND5E5;
+using Starlights.RuleSets.DND5E5.Abilities;
+using Starlights.RuleSets.DND5E5.Building;
+using Starlights.RuleSets.DND5E5.Content;
+using Starlights.RuleSets.DND5E5.Rules;
 
 namespace Starlights.Modules.Characters.Tests.Characters;
 
@@ -29,7 +32,7 @@ public sealed class ReferenceBuildTests
         var inputs = new Dictionary<string,int> { ["strength"] = 15 };
         character.AssignAbilityScores(rules, inputs);
         inputs["strength"] = 8;
-        DndBuildRules.Facts(character.Build!.Composition).Inputs["strength"].Should().Be(15);
+        BuildRules.Facts(character.Build!.Composition).Inputs["strength"].Should().Be(15);
     }
 
     [TestMethod]
@@ -37,7 +40,7 @@ public sealed class ReferenceBuildTests
     {
         var json = Json().Replace("\"value\":30", "\"value\":35", StringComparison.Ordinal);
         using var document = JsonDocument.Parse(json);
-        var rules = new DndBuildRules(new(document.RootElement, Content));
+        var rules = new BuildRules(new(document.RootElement, Content));
         var character = Character.Create(Guid.NewGuid(), "Changed content", new(rules, Content, rules.Initialize(Content)));
         character.RecordChoice(rules, Content.CharacterElementId + "/species", ["srd521:species:human"]);
         rules.View(character.Build!.Composition).Statistics.Single(statistic => statistic.Id == "speed").Value.Should().Be(35);
@@ -46,11 +49,57 @@ public sealed class ReferenceBuildTests
     [TestMethod]
     public void NumericExpressions_AreBounded_AndUnresolvedInputsDoNotBecomeZero()
     {
-        DndNumericExpression.Parse("floor((17 - 10) / 2)").Evaluate(_ => null).Should().Be(3);
-        DndNumericExpression.Parse("missing.score + 2").Evaluate(_ => null).Should().BeNull();
-        DndNumericExpression.Parse("5 / 0").Evaluate(_ => null).Should().BeNull();
-        var script = () => DndNumericExpression.Parse("System.IO.File.Delete('secret')");
+        NumericExpression.Parse("floor((17 - 10) / 2)").Evaluate(_ => null).Should().Be(3);
+        NumericExpression.Parse("missing.score + 2").Evaluate(_ => null).Should().BeNull();
+        NumericExpression.Parse("5 / 0").Evaluate(_ => null).Should().BeNull();
+        var script = () => NumericExpression.Parse("System.IO.File.Delete('secret')");
         script.Should().Throw<InvalidOperationException>();
+    }
+
+    [TestMethod]
+    public void CanonicalComposition_PreservesSerializedShapeAndReadsOriginalPayload()
+    {
+        using var document = JsonDocument.Parse(Json());
+        var rules = new BuildRules(new(document.RootElement, Content));
+        var composition = rules.Initialize(Content).Should().BeOfType<CharacterComposition>().Subject;
+        var serialized = JsonSerializer.Serialize(composition);
+        using var serializedJson = JsonDocument.Parse(serialized);
+        serializedJson.RootElement.TryGetProperty("Build", out var build).Should().BeTrue();
+        build.GetProperty("Stage").GetString().Should().Be("awaiting-choices");
+        serializedJson.RootElement.TryGetProperty("Facts", out _).Should().BeTrue();
+        var restored = JsonSerializer.Deserialize<CharacterComposition>(serialized);
+        restored.Should().NotBeNull();
+        restored!.Build.Stage.Should().Be("awaiting-choices");
+        restored.Facts!.Inputs.Should().BeEquivalentTo(composition.Facts!.Inputs);
+
+        var original = JsonSerializer.Deserialize<CharacterComposition>("""{"Build":{"Stage":"awaiting-choices"}}""");
+        original.Should().NotBeNull();
+        original!.Build.Stage.Should().Be("awaiting-choices");
+        original.Facts.Should().BeNull();
+    }
+
+    [TestMethod]
+    public void CanonicalComposition_ReadsPersistedFactsAndDice()
+    {
+        const string payload = """
+            {"Build":{"Stage":"awaiting-choices"},"Facts":{"Choices":{"species":["human"]},
+            "Inputs":{"strength":15},"Receipts":[{"SelectionId":"equipment","OptionId":"pack","Gold":10,
+            "Items":[{"Id":"owned-1","ElementId":"armor","Quantity":1}]}],"ArmorId":"owned-1","WeaponId":null,
+            "AbilityGeneration":{"Method":"application-rolls","Rolls":[{"Dice":[6,6,6,1]},{"Dice":[5,5,5,1]},
+            {"Dice":[4,4,4,1]},{"Dice":[3,3,3,1]},{"Dice":[2,2,2,1]},{"Dice":[1,1,1,1]}]}}}
+            """;
+
+        var composition = JsonSerializer.Deserialize<CharacterComposition>(payload);
+        composition.Should().NotBeNull();
+        var facts = composition!.Facts;
+        facts.Should().NotBeNull();
+        facts!.Choices["species"].Should().Equal("human");
+        facts.Inputs["strength"].Should().Be(15);
+        facts.Receipts.Should().ContainSingle().Which.Items.Should().ContainSingle()
+            .Which.ElementId.Should().Be("armor");
+        facts.ArmorId.Should().Be("owned-1");
+        facts.AbilityGeneration.Method.Should().Be("application-rolls");
+        facts.AbilityGeneration.Rolls.Select(roll => roll.Total).Should().Equal(18, 15, 12, 9, 6, 3);
     }
 
     [TestMethod]
@@ -68,7 +117,7 @@ public sealed class ReferenceBuildTests
         })
         {
             using var document = JsonDocument.Parse(json);
-            var parse = () => new DndContentPack(document.RootElement, Content);
+            var parse = () => new ContentPack(document.RootElement, Content);
             parse.Should().Throw<InvalidOperationException>();
         }
     }
@@ -90,7 +139,7 @@ public sealed class ReferenceBuildTests
         view.BuildComplete.Should().BeFalse();
     }
 
-    private static DndBuildRules Rules()
+    private static BuildRules Rules()
     {
         using var document = JsonDocument.Parse(Json());
         return new(new(document.RootElement, Content));
@@ -108,16 +157,16 @@ public sealed class ReferenceBuildTests
         initial.BuildComplete.Should().BeFalse();
         character.AssignAbilityScores(rules, new Dictionary<string, int> { ["strength"] = 8 });
         character.ChangeAbilityGeneration(rules, "standard-array", false);
-        DndBuildRules.Facts(character.Build.Composition).Inputs.Should().BeEquivalentTo(new Dictionary<string, int> { ["strength"] = 8 });
+        BuildRules.Facts(character.Build.Composition).Inputs.Should().BeEquivalentTo(new Dictionary<string, int> { ["strength"] = 8 });
         character.ChangeAbilityGeneration(rules, "point-buy", false);
         var pointBuy = rules.View(character.Build.Composition);
         pointBuy.Abilities.Select(ability => ability.Input).Should().Equal(8, 8, 8, 8, 8, 8);
         pointBuy.PointsSpent.Should().Be(0);
         character.ChangeAbilityGeneration(rules, "physical-dice", false);
-        DndBuildRules.Facts(character.Build.Composition).Inputs.Should().BeEmpty();
+        BuildRules.Facts(character.Build.Composition).Inputs.Should().BeEmpty();
         character.ChangeAbilityGeneration(rules, "standard-array", false);
         rules.View(character.Build.Composition).Abilities.Select(ability => ability.Input).Should().Equal(15, 14, 13, 12, 10, 8);
-        var legacy = new DndCharacterComposition(new("awaiting-choices"), DndBuildFacts.Empty);
+        var legacy = new CharacterComposition(new BuildPart("awaiting-choices"), BuildFacts.Empty);
         rules.View(legacy).Abilities.Should().OnlyContain(ability => ability.Input == null && ability.IsFallback);
         rules.ChangeAbilityGeneration(legacy, "standard-array", false).Should().BeSameAs(legacy);
     }
@@ -146,11 +195,11 @@ public sealed class ReferenceBuildTests
     public void RolledAllocation_RespectsDuplicateMultiplicity_AndRejectedGenerationIsAtomic()
     {
         var rules = Rules();
-        DndAbilityRoll[] rolls = [new([1, 1, 1, 1]), new([6, 6, 6, 6]), new([1, 6, 6, 6]),
+        AbilityRoll[] rolls = [new([1, 1, 1, 1]), new([6, 6, 6, 6]), new([1, 6, 6, 6]),
             new([2, 3, 4, 5]), new([2, 2, 2, 2]), new([3, 3, 3, 3])];
-        var facts = new DndBuildFacts(new Dictionary<string, IReadOnlyList<string>>(), new Dictionary<string, int>(), [],
+        var facts = new BuildFacts(new Dictionary<string, IReadOnlyList<string>>(), new Dictionary<string, int>(), [],
             null, null, new("application-rolls", rolls));
-        var character = Character.Create(Guid.NewGuid(), "Rolls", new(rules, Content, new DndCharacterComposition(new("awaiting-choices"), facts)));
+        var character = Character.Create(Guid.NewGuid(), "Rolls", new(rules, Content, new CharacterComposition(new("awaiting-choices"), facts)));
         character.AssignAbilityScores(rules, new Dictionary<string, int> { ["strength"] = 18, ["dexterity"] = 18, ["constitution"] = 3,
             ["intelligence"] = 12, ["wisdom"] = 6, ["charisma"] = 9 });
         rules.View(character.Build!.Composition).Abilities.Select(ability => ability.Modifier).Should().Equal(4, 4, -4, 1, -2, -1);
@@ -167,9 +216,9 @@ public sealed class ReferenceBuildTests
         character.ChangeAbilityGeneration(rules, "physical-dice", false);
         character.ChangeAbilityGeneration(rules, "application-rolls", false);
         rules.View(character.Build!.Composition).Abilities.Select(ability => ability.Input).Should().Equal(3, 18, 18, 12, 6, 9);
-        DndBuildRules.Facts(character.Build.Composition).AbilityGeneration.Rolls.Should().BeEquivalentTo(rolls);
+        BuildRules.Facts(character.Build.Composition).AbilityGeneration.Rolls.Should().BeEquivalentTo(rolls);
         character.ChangeAbilityGeneration(rules, "application-rolls", true);
-        var rerolled = DndBuildRules.Facts(character.Build.Composition);
+        var rerolled = BuildRules.Facts(character.Build.Composition);
         rules.View(character.Build.Composition).Abilities.Select(ability => ability.Input)
             .Should().Equal(rerolled.AbilityGeneration.Rolls.Select(roll => (int?)roll.Total));
     }
@@ -179,8 +228,8 @@ public sealed class ReferenceBuildTests
     {
         var json = Json().Replace("\"prefix\":\"strength\"", "\"prefix\":\"strength\",\"defaultInput\":8", StringComparison.Ordinal);
         using var document = JsonDocument.Parse(json);
-        var rules = new DndBuildRules(new(document.RootElement, Content));
-        var view = rules.View(new DndCharacterComposition(new("awaiting-choices"), DndBuildFacts.Empty));
+        var rules = new BuildRules(new(document.RootElement, Content));
+        var view = rules.View(new CharacterComposition(new("awaiting-choices"), BuildFacts.Empty));
         var strength = view.Abilities.Single(ability => ability.Id == "strength");
         strength.Input.Should().BeNull();
         strength.Score.Should().Be(8);
@@ -191,9 +240,9 @@ public sealed class ReferenceBuildTests
         view.Abilities.Single(ability => ability.Id == "dexterity").Score.Should().Be(0);
         view.BuildComplete.Should().BeFalse();
         view.SheetReady.Should().BeTrue();
-        var invalidFacts = new DndBuildFacts(new Dictionary<string, IReadOnlyList<string>>(),
+        var invalidFacts = new BuildFacts(new Dictionary<string, IReadOnlyList<string>>(),
             new Dictionary<string, int> { ["strength"] = 0 }, [], null, null);
-        var invalid = rules.View(new DndCharacterComposition(new("awaiting-choices"), invalidFacts)).Abilities.Single(ability => ability.Id == "strength");
+        var invalid = rules.View(new CharacterComposition(new("awaiting-choices"), invalidFacts)).Abilities.Single(ability => ability.Id == "strength");
         invalid.Input.Should().Be(0);
         invalid.IsFallback.Should().BeFalse();
         invalid.Score.Should().BeNull();
@@ -216,7 +265,7 @@ public sealed class ReferenceBuildTests
         strength.Modifier.Should().Be(5);
         var limitedJson = Json().Replace("\"prefix\":\"strength\"", "\"prefix\":\"strength\",\"maximum\":19", StringComparison.Ordinal);
         using var document = JsonDocument.Parse(limitedJson);
-        var limitedRules = new DndBuildRules(new(document.RootElement, Content));
+        var limitedRules = new BuildRules(new(document.RootElement, Content));
         var limitedView = limitedRules.View(character.Build.Composition);
         var limited = limitedView.Abilities.Single(ability => ability.Id == "strength");
         limited.Input.Should().Be(18);
@@ -243,7 +292,7 @@ public sealed class ReferenceBuildTests
     }
     private static string Json()
     {
-        using var stream = typeof(DndRuleset).Assembly.GetManifestResourceStream("Starlights.RuleSets.DND5E5.Content.srd-5.2.1-reference.json")!;
+        using var stream = typeof(Ruleset).Assembly.GetManifestResourceStream("Starlights.RuleSets.DND5E5.Content.srd-5.2.1-reference.json")!;
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }

@@ -22,9 +22,13 @@ an unrequested refactor.
   for its responsibility. Prefer independent implementations over sharing
   when the behaviors are likely to diverge and coupling would risk breaking
   another feature. Avoid generic catch-all helper folders.
-- Organize Ruleset projects by cohesive domain concepts, not a flat list of
-  unrelated types. Add folders when they clarify ownership rather than for
-  every class.
+- Organize existing and new Ruleset code by cohesive domain concepts; do not
+  keep unrelated implementations flat merely because their types are public.
+  Add folders when they clarify ownership rather than for every class. Prefer
+  namespaces that follow folders for new implementation types. When a refactor
+  must retain a public namespace, move files without changing that namespace or
+  use a narrow `.editorconfig` exception for those files; do not let
+  IDE0130 alone veto folder organization.
 - Generally mirror feature or domain folders in focused tests. Integration and
   end-to-end tests may span multiple features.
 
@@ -36,10 +40,41 @@ an unrequested refactor.
   code and partial classes may require exceptions.
 - Within a Ruleset project, omit the Ruleset name from class names when its
   namespace already supplies that context. Use a distinguishing name when
-  necessary to avoid genuine ambiguity. This is a class-naming rule, not
-  permission to rename stable identifiers or external contracts.
+  necessary to avoid genuine ambiguity. Apply this rule to existing
+  implementations during a requested refactor, not only to new classes.
+  Migrate in-repository callers when renaming; do not add compatibility classes
+  for old names. A public CLR rename may break external callers: if preserving
+  that API is required, ask before choosing between retaining the old identity
+  and explicitly authorizing a breaking rename. Until decided, preserve the
+  identity and continue independent work. Check runtime lookups and serialized
+  data separately; preserve and test required payloads without assuming the old
+  CLR type is needed.
 
 ## Style and verification
+
+- Aim for no more than eight parameters in a constructor. Treat a larger
+  parameter list as a prompt to reconsider the design, not as an absolute
+  prohibition. Group related primitive values into a cohesive value object or
+  record when that better represents the domain (for example, use a `Point`
+  with `X` and `Y` instead of separate `x` and `y` parameters). Do not group
+  unrelated values solely to reduce the parameter count.
+
+- Add XML summaries to public types and members; use `<inheritdoc />` when
+  implementing documented interfaces. Write summaries on separate lines, even
+  when short, and leave a blank line between adjacent members so a summary
+  does not immediately follow the preceding member:
+
+  ```csharp
+  /// <summary>
+  /// Example.
+  /// </summary>
+  public string Example { get; }
+
+  /// <summary>
+  /// Another example.
+  /// </summary>
+  public string AnotherExample { get; }
+  ```
 
 - Treat `.editorconfig` as the source of truth for configured style preferences
   and severities. Use braces for applicable control-flow statements, including

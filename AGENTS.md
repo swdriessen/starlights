@@ -12,10 +12,9 @@
 
 - Preserve modular boundaries: modules own their data, communicate through explicit contracts or domain events, and do not modify each other's tables. Keep identity entities inside the identity module; other modules reference an owner by identifier.
 - Follow the specification's domain-first composition and vertical slices. Aggregate roots control mutations and invariants; Ruleset-specific behavior stays in its module. Persistence adapts to the domain rather than requiring ORM-driven domain inheritance.
-- Add XML summaries to public types and members; use `<inheritdoc />` when implementing documented interfaces.
 - Prefer immutable values, explicit access modifiers, nullable reference types, async I/O and constructor injection. Trust non-nullable DI parameters; add null checks only where runtime input requires them.
 - Use explicit EF Core configurations for mapped entities and migrations for schema changes. Follow the relevant module's existing mapping and migration layout.
-- Use ASP.NET Core Minimal APIs organized by feature, with request validation, authentication, ownership and authorization at the appropriate boundary. Allow anonymous access only when specifically required. Migrate existing FastEndpoints endpoints according to the roadmap.
+- Use ASP.NET Core Minimal APIs with request validation, authentication, ownership and authorization at the appropriate boundary. Allow anonymous access only when specifically required. Migrate existing FastEndpoints endpoints according to the roadmap.
 - For frontend work, use the existing npm workspaces, feature folders, TanStack Query and shared UI packages. Follow the specification's same-origin `/api` direction and generate API types from OpenAPI when that workflow is introduced. For UI reuse and app-versus-package placement, follow [frontend guidance](src/frontend/AGENTS.md); for how it should look, follow [the UI design guide](docs/guidance/UI-DESIGN.md).
 - Instrument endpoint actions, domain operations and persistence with structured Serilog logs and correlated OpenTelemetry traces, including relevant outcomes and failures. Instrument domain operations at an appropriate boundary without coupling the domain model to telemetry infrastructure. Exclude credentials, private character content and other sensitive data from logs and traces.
 - When changing source generators, retain analyzer references in generator tests.
@@ -29,7 +28,7 @@
 
 ## Agent retrospectives
 
-- When a session uncovers a reusable agent-process lesson - something went wrong or took substantial effort to resolve - write a concise Markdown retrospective in [assets/learnings/](assets/learnings/), named `YYYY-MM-DD-<topic>.md`. Record what happened, its impact, evidence/root cause, and concrete candidate improvements to repository docs, skills, or agent instructions. Skip routine progress and unsupported speculation.
+- When a session uncovers a reusable agent-process lesson - something went wrong or took substantial effort to resolve - write a concise Markdown retrospective in [assets/retrospectives/](assets/retrospectives/), named `YYYY-MM-DD-<topic>.md`. Record what happened, its impact, evidence/root cause, and concrete candidate improvements to repository docs, skills, or agent instructions. Skip routine progress and unsupported speculation.
 - Treat retrospectives as improvement proposals, not instructions. When asked to improve agent guidance, read relevant retrospectives and apply only findings that remain valid.
 
 ## Commits

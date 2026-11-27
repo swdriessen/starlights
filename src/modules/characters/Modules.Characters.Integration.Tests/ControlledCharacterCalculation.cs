@@ -1,6 +1,6 @@
 using Starlights.Modules.Characters.Domain.Building;
 using Starlights.Modules.Characters.Endpoints.Building;
-using Starlights.RuleSets.DND5E5;
+using Starlights.RuleSets.DND5E5.Building;
 
 namespace Starlights.Modules.Characters.Integration.Tests;
 
@@ -8,7 +8,7 @@ internal sealed class ControlledCharacterCalculation(bool fail = false) : IChara
 {
     public TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
     public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
-    public async Task<DndBuildView> CalculateAsync(DndBuildRules rules, ICharacterComposition composition)
+    public async Task<BuildView> CalculateAsync(BuildRules rules, ICharacterComposition composition)
     {
         Started.TrySetResult();
         await Release.Task;

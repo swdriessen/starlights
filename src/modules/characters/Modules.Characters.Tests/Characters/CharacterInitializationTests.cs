@@ -2,7 +2,8 @@ using AwesomeAssertions;
 using Starlights.Modules.Characters.Building;
 using Starlights.Modules.Characters.Domain.Building;
 using Starlights.Modules.Characters.Domain.Characters;
-using Starlights.RuleSets.DND5E5;
+using Starlights.RuleSets.DND5E5.Building;
+using Starlights.RuleSets.DND5E5.Rules;
 using Starlights.RuleSets.TEST;
 
 namespace Starlights.Modules.Characters.Tests.Characters;
@@ -19,7 +20,7 @@ public sealed class CharacterInitializationTests
     [DataRow("Mira", "Mira")]
     public void Create_InitializesAnIncompleteOwnedCharacter(string? name, string expected)
     {
-        var ruleset = new DndRuleset();
+        var ruleset = new Ruleset();
         var owner = Guid.NewGuid();
         var build = new CharacterBuild(ruleset, Content, ruleset.Initialize(Content));
         var character = Character.Create(owner, name, build);
@@ -28,7 +29,7 @@ public sealed class CharacterInitializationTests
         character.OwnerId.Should().Be(owner);
         character.RulesetId.Should().Be("DND5E5");
         character.Components.Should().BeEmpty();
-        character.Build!.Composition.Should().BeOfType<DndCharacterComposition>()
+        character.Build!.Composition.Should().BeOfType<CharacterComposition>()
             .Which.Build.Stage.Should().Be("awaiting-choices");
     }
 
@@ -49,12 +50,12 @@ public sealed class CharacterInitializationTests
     [TestMethod]
     public void Composition_RejectsMissingAndIncompatibleStateWithoutChangingAnExistingBuild()
     {
-        var ruleset = new DndRuleset();
-        var composition = new DndCharacterComposition(new DndBuildPart("awaiting-choices"));
+        var ruleset = new Ruleset();
+        var composition = new CharacterComposition(new BuildPart("awaiting-choices"));
         var character = Character.Create(Guid.NewGuid(), "Mira", new(ruleset, Content, composition));
         var incompatible = () => new CharacterBuild(ruleset, Content, new TestCharacterComposition("initialized-by-test"));
         incompatible.Should().Throw<InvalidOperationException>();
-        var missing = () => new DndCharacterComposition(null!);
+        var missing = () => new CharacterComposition(null!);
         missing.Should().Throw<ArgumentException>();
         character.Build!.Composition.Should().BeSameAs(composition);
         character.Components.Should().BeEmpty();
@@ -69,10 +70,10 @@ public sealed class CharacterInitializationTests
     {
         ICharacterRuleset[] modules = configuration switch
         {
-            "DND5E5" => [new DndRuleset()],
+            "DND5E5" => [new Ruleset()],
             "TEST" => [new TestRuleset()],
-            "both" => [new DndRuleset(), new TestRuleset()],
-            _ => [new TestRuleset(), new DndRuleset()]
+            "both" => [new Ruleset(), new TestRuleset()],
+            _ => [new TestRuleset(), new Ruleset()]
         };
         var registry = new CharacterRulesets(modules);
         foreach (var module in modules)
@@ -99,15 +100,15 @@ public sealed class CharacterInitializationTests
     [TestMethod]
     public void Catalog_LoadsAndPinsContentInsteadOfRebindingToANewerPack()
     {
-        var registry = new CharacterRulesets([new DndRuleset()]);
+        var registry = new CharacterRulesets([new Ruleset()]);
         var catalog = new CharacterContentCatalog();
-        catalog.AddEmbeddedPack(typeof(DndRuleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1.json", registry);
+        catalog.AddEmbeddedPack(typeof(Ruleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1.json", registry);
         var option = catalog.Options.Should().ContainSingle().Subject;
         option.Content.Should().Be(new CharacterContentBinding("srd-5.2.1", "0.1.0", "srd521:character:default"));
         option.Definition.GetProperty("rules").GetArrayLength().Should().Be(0);
         var unavailable = () => catalog.GetRequired("DND5E5", new("srd-5.2.1", "0.2.0", "srd521:character:default"));
         unavailable.Should().Throw<InvalidOperationException>();
-        var duplicate = () => catalog.AddEmbeddedPack(typeof(DndRuleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1.json", registry);
+        var duplicate = () => catalog.AddEmbeddedPack(typeof(Ruleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1.json", registry);
         duplicate.Should().Throw<InvalidOperationException>();
         catalog.Options.Should().ContainSingle();
     }

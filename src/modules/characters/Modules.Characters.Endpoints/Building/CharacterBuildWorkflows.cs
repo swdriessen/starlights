@@ -5,7 +5,8 @@ using Microsoft.Extensions.Logging;
 using Starlights.Modules.Characters.Data;
 using Starlights.Modules.Characters.Domain;
 using Starlights.Platform.Hosting;
-using Starlights.RuleSets.DND5E5;
+using Starlights.RuleSets.DND5E5.Building;
+using Starlights.RuleSets.DND5E5.Content;
 
 namespace Starlights.Modules.Characters.Endpoints.Building;
 
@@ -19,7 +20,6 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
         var state = await store.ReadAsync(characterId, OwnerId, cancellationToken);
         return state is null ? null : Snapshot(state);
     }
-
     public async Task<CharacterBuildResponse?> EditAsync(Guid characterId, ICharacterEditRequest request, CancellationToken cancellationToken)
     {
         using var activity = CharactersInstrumentation.StartActivity("Character.Edit");
@@ -47,7 +47,7 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
                 case AssignCharacterAbilitiesRequest abilities when abilities.Inputs is not null:
                     character.AssignAbilityScores(rules, abilities.Inputs); break;
                 case ChangeCharacterAbilityGenerationRequest generation when !string.IsNullOrWhiteSpace(generation.Method):
-                    var facts = DndBuildRules.Facts(character.Build!.Composition);
+                    var facts = BuildRules.Facts(character.Build!.Composition);
                     if ((generation.Reroll || generation.Method != facts.AbilityGeneration.Method && facts.Inputs.Count > 0)
                         && !generation.ConfirmReplacement)
                         throw new CharacterRequestException("Confirm replacing the current ability assignments or rolled results.");
@@ -77,7 +77,7 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
         await NotifySafelyAsync(characterId, OwnerId, revision, "pending");
         string? sheet = null, failure = null;
         try { sheet = JsonSerializer.Serialize(Sheet(await calculation.CalculateAsync(rules, character.Build!.Composition),
-            DndBuildRules.Facts(character.Build.Composition))); }
+            BuildRules.Facts(character.Build.Composition))); }
         catch (Exception)
         {
             failure = "Calculation failed. Submit an edit to recalculate.";
@@ -99,7 +99,7 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
         var build = state.Character.Build!;
         var rules = mechanics.Required(build.Content);
         var view = rules.View(build.Composition);
-        var facts = DndBuildRules.Facts(build.Composition);
+        var facts = BuildRules.Facts(build.Composition);
         var ready = state.Status == "ready";
         // Rebuild from authoritative facts so older caches cannot hide newly supported fallback/limit evidence.
         var savedSheet = Sheet(view, facts);
@@ -113,7 +113,7 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
         {
             var element = rules.Element(item.ElementId);
             return new CharacterOwnedItemResponse(item.Id, element.Name, item.Quantity,
-                element.Property<DndArmorProperty>() is not null, element.Property<DndWeaponProperty>() is not null);
+                element.Property<ArmorProperty>() is not null, element.Property<WeaponProperty>() is not null);
         }).ToArray();
         return new(state.Character.Id, state.Character.Name, state.Revision, state.Status, state.OperationId, state.Failure,
             view.BuildComplete, ready && view.SheetReady, selections,
@@ -125,7 +125,7 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
                 view.PointsSpent, view.PointsSpent.HasValue ? 27 - view.PointsSpent.Value : null));
     }
 
-    private static CharacterSheetResponse Sheet(DndBuildView view, DndBuildFacts facts) => new(
+    private static CharacterSheetResponse Sheet(BuildView view, BuildFacts facts) => new(
         view.Statistics.Select(statistic => new CharacterStatisticResponse(statistic.Id, statistic.Name, statistic.Value, statistic.Sources)).ToArray(),
         view.Attacks.Select(attack => new CharacterAttackResponse(attack.Name, attack.ToHit, attack.Damage, attack.Mastery)).ToArray(),
         view.Entries.Select(entry => new CharacterSheetEntryResponse(entry.Name, entry.Description, entry.Usage, entry.Id)).ToArray(),

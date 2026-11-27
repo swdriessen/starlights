@@ -13,7 +13,20 @@ a one-line local rename does not need the ceremony a public multi-targeted chang
 ## Mandatory gate: classify before validation or editing
 
 Read only enough repository context to classify **each requested operation**. Do this before restoring,
-building, or making an edit. Classification precedence is:
+building, or making an edit. For a broad refactoring request based on guidelines, read the applicable
+repository instructions and guidance, inspect the requested scope, and identify concrete structural
+candidates before classifying them. If the intended scope remains materially ambiguous, ask the user.
+An unnamed operation is not itself a behavior change or a reason to use the stop response. An inventory
+alone does not authorize changes.
+
+If a requested public rename conflicts with a no-compatibility-class requirement and preserving the
+old CLR API is also required or unclear, ask before editing that boundary: retain the old identity or
+explicitly authorize a breaking rename. A no-facade preference alone does not authorize an API break.
+Continue independent behavior-preserving work; route an authorized breaking rename to the applicable
+contract-change workflow rather than calling it behavior-preserving. This decision gate precedes the
+whole-request stop response below.
+
+Classification precedence is:
 
 - If the request explicitly asks for at least one separable behavior-preserving operation, complete
   that structural work and defer only the behavior-changing or contract-changing operations. Do not
@@ -40,6 +53,11 @@ For a whole request that is outside behavior-preserving refactoring:
 For a mixed request, never stop after classification. Perform the separable structural operation,
 explicitly defer the behavior/contract change, and never state `No files changed.` after completing
 structural work. Never modify tests to make an unauthorized behavior change appear preserved.
+
+For a broad request to bring a named scope into compliance with repository guidance, treat the
+guidance's applicable structural rules as requested work, not as an inventory-only exercise. Assess
+every hand-maintained file in scope against each applicable rule. Do not infer changes beyond the
+guidance or touch compliant files merely to demonstrate activity.
 
 ## Work only in the current workspace
 
@@ -74,8 +92,9 @@ For the operation → Roslyn-provider mapping and representative PRs, see
 
 When de-duplicating, preserve the ownership direction stated by the code or request. If `B` duplicates
 an implementation already owned by `A`, keep `A` canonical and make `B` delegate to it; do not invert
-the dependency merely because either direction compiles. Preserve public compatibility wrappers when
-the duplicate surface is shipped, and migrate only in-repo callers that are safe to move.
+the dependency merely because either direction compiles. Preserve existing public compatibility wrappers
+when the duplicate surface is shipped unless a breaking removal is explicitly authorized, and migrate
+only in-repo callers that are safe to move.
 
 ## Decisions that change the edit
 
@@ -89,6 +108,26 @@ Use the first matching row instead of applying the requested operation mechanica
 | Extract duplicated logic whose callers pass different values | Extract the algorithm and pass each caller's existing inputs through unchanged. | Collapse distinct inputs, evaluation order, rounding, or side effects into one caller's version. |
 | Rename code compiled under `#if` or multiple TFMs | Update every source branch and validate each target framework explicitly. | Treat a green default-target build as evidence for unbuilt branches. |
 | Merge near-identical types | Parameterize only the values that differ, migrate every construction site, and preserve each old value exactly. If the old types are internal/unshipped and the request says to merge into one type, delete their declarations. | Retain unnecessary aliases, static holders, factories, or wrapper types that leave the requested merge incomplete; introduce a new hierarchy or behavior. |
+
+## Guidance-driven names and organization
+
+When the request or repository guidance calls for cohesive folders or contextual class names, do not
+abandon that work merely because the existing types are public. Separate the physical file path from
+the namespace, CLR type identity, serialized shape and runtime lookup:
+
+- A file-only move can preserve the existing namespace and CLR identity. If
+  `dotnet_style_namespace_match_folder` reports that deliberate compatibility layout, use a narrow
+  `.editorconfig` exception for those files rather than leaving the implementation flat.
+- For a public type rename or namespace move, follow the repository's compatibility policy and the
+  request's contract requirements. If preserving the old CLR API is required and a compatibility type
+  is permitted, retain a usable old entry point. If compatibility classes are excluded, apply the
+  decision gate above instead of adding one. In the authorized breaking-rename workflow, migrate all
+  in-repo callers, verify no excluded compatibility types were added, and report the break.
+- For records and types used by serialization, reflection, DI or configuration, check equality,
+  construction, runtime type selection and old payloads separately. Preserve and test each required
+  runtime or serialized contract independently of CLR type compatibility.
+- If a specific required contract cannot be preserved under the chosen policy, keep that boundary
+  unchanged, explain the exact evidence, and continue independent moves and renames.
 
 ## Preserve contracts beyond C# call sites
 
@@ -126,6 +165,10 @@ Use the repo's own build/test workflow when it documents one (`README`/`CONTRIBU
 5. Rebuild and run the relevant tests. If the gate goes red, report the failure and repair or reassess only
   your edit; never discard unrelated worktree changes.
 
+For a broad scope, repeat this sequence for each applicable operation until every in-scope file is
+changed, already compliant, or blocked by a specific compatibility boundary. A blocker on one symbol
+does not stop independent work. Report the completed, unchanged and blocked scope explicitly.
+
 Otherwise:
 ```bash
 dotnet build   # 0 errors
@@ -157,15 +200,17 @@ that governs the symbol (don't assume): the public-API gate (`PublicAPI.Shipped/
 PublicApiAnalyzers, and/or `ApiCompat`/`<EnablePackageValidation>` — not interchangeable),
 `<TargetFrameworks>`/`#if` branches, and `InternalsVisibleTo`. Moving a public type to another assembly
 needs `[TypeForwardedTo]` in the original assembly; a move within one assembly does not. A public
-*rename* needs an `[Obsolete]` shim, not a forwarder. For a provably local/private change, skip these
-checks.
+*rename* that must preserve the old CLR API needs a shim, not a forwarder; apply the decision gate above
+if shims are excluded or the break is authorized. Treat a shim recommended by `dotnet-breaking-changes`
+as a compatibility option, not permission to override an explicit no-shim requirement. For a provably
+local/private change, skip these checks.
 
 ## Stop an in-scope refactor when
 
 - The baseline is already red (you can't prove you preserved behavior).
-- The requested structural change would alter a public/shipped API and no compatibility shim or forwarder
-  can preserve it. Report the boundary. Use the gate's handoff format when no structural work was completed;
-  after separable work, put the incompatible operation on the `Deferred:` line instead. Do not ask to make
-  the breaking change.
+- The requested structural change would alter a public/shipped API and no permitted compatibility
+  mechanism preserves it. Apply the decision gate above when its conditions hold; otherwise report the
+  boundary. Use the gate's handoff format when no structural work was completed; after separable work,
+  put the incompatible operation on the `Deferred:` line.
 - Equivalence depends on runtime behavior tests don't cover (reflection, DI, serialization, `dynamic`,
   P/Invoke) — report the unverified boundary instead of claiming behavior was preserved.

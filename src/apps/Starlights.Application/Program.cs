@@ -7,7 +7,7 @@ using Starlights.Modules.Characters.Data.EntityFramework.EventProcessing;
 using Starlights.Modules.Characters.Endpoints;
 using Starlights.Modules.Characters.Building;
 using Starlights.Modules.Characters.Domain.Building;
-using Starlights.RuleSets.DND5E5;
+using Starlights.RuleSets.DND5E5.Rules;
 using Starlights.Modules.Characters.Services.Processing;
 using Starlights.Modules.Elements;
 using Starlights.Modules.Elements.Data.EntityFramework;
@@ -45,14 +45,14 @@ public sealed class Program
             options.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod());
         });
         builder.AddFileManagementModule();
-        builder.Services.AddSingleton<ICharacterRuleset, DndRuleset>();
+        builder.Services.AddSingleton<ICharacterRuleset, Ruleset>();
         builder.Services.AddSingleton<CharacterRulesets>();
         builder.Services.AddSingleton(services =>
         {
             var catalog = new CharacterContentCatalog();
-            catalog.AddEmbeddedPack(typeof(DndRuleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1.json",
+            catalog.AddEmbeddedPack(typeof(Ruleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1.json",
                 services.GetRequiredService<CharacterRulesets>());
-            catalog.AddEmbeddedPack(typeof(DndRuleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1-reference.json",
+            catalog.AddEmbeddedPack(typeof(Ruleset).Assembly, "Starlights.RuleSets.DND5E5.Content.srd-5.2.1-reference.json",
                 services.GetRequiredService<CharacterRulesets>());
             return catalog;
         });

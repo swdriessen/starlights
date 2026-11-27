@@ -8,7 +8,8 @@ using Starlights.Modules.Characters.Data.EntityFramework;
 using Starlights.Modules.Characters.Data.EntityFramework.Building;
 using Starlights.Modules.Characters.Domain.Building;
 using Starlights.Modules.Characters.Domain.Characters;
-using Starlights.RuleSets.DND5E5;
+using Starlights.RuleSets.DND5E5.Building;
+using Starlights.RuleSets.DND5E5.Rules;
 using Starlights.RuleSets.TEST;
 
 [assembly: DoNotParallelize]
@@ -46,10 +47,10 @@ public sealed class CharacterPersistenceTests(TestContext testContext)
     {
         ICharacterRuleset[] modules = configuration switch
         {
-            "DND5E5" => [new DndRuleset()],
+            "DND5E5" => [new Ruleset()],
             "TEST" => [new TestRuleset()],
-            "both" => [new DndRuleset(), new TestRuleset()],
-            _ => [new TestRuleset(), new DndRuleset()]
+            "both" => [new Ruleset(), new TestRuleset()],
+            _ => [new TestRuleset(), new Ruleset()]
         };
         var registry = new CharacterRulesets(modules);
         var store = Store(registry);
@@ -69,7 +70,7 @@ public sealed class CharacterPersistenceTests(TestContext testContext)
             if (module.Id == "TEST")
                 loaded.Build.Composition.Should().BeOfType<TestCharacterComposition>().Which.Marker.Should().Be("initialized-by-test");
             else
-                loaded.Build.Composition.Should().BeOfType<DndCharacterComposition>().Which.Build.Stage.Should().Be("awaiting-choices");
+                loaded.Build.Composition.Should().BeOfType<CharacterComposition>().Which.Build.Stage.Should().Be("awaiting-choices");
             (await store.GetAsync(created.Id, Guid.NewGuid(), CancellationToken.None)).Should().BeNull();
         }
         (await store.ListAsync(Guid.NewGuid(), 0, CancellationToken.None)).Should().BeEmpty();
@@ -122,7 +123,7 @@ public sealed class CharacterPersistenceTests(TestContext testContext)
     [TestMethod]
     public async Task AcceptedFactsAndPendingReceipt_WhenPersistenceFails_RollBackTogether()
     {
-        var ruleset = new DndRuleset();
+        var ruleset = new Ruleset();
         var registry = new CharacterRulesets([ruleset]);
         var content = new CharacterContentBinding("srd-5.2.1", "0.2.0", "srd521:character:default");
         var owner = Guid.NewGuid();
@@ -144,7 +145,7 @@ public sealed class CharacterPersistenceTests(TestContext testContext)
     [TestMethod]
     public async Task OriginalPinnedComposition_ReopensWithoutAddingMechanicsOrRebinding()
     {
-        var ruleset = new DndRuleset();
+        var ruleset = new Ruleset();
         var registry = new CharacterRulesets([ruleset]);
         var content = new CharacterContentBinding("srd-5.2.1", "0.1.0", "srd521:character:default");
         var owner = Guid.NewGuid();
@@ -159,7 +160,7 @@ public sealed class CharacterPersistenceTests(TestContext testContext)
         }
         var restored = await Store(registry).GetAsync(root.Id, owner, testContext.CancellationToken);
         restored!.Build!.Content.Should().Be(content);
-        restored.Build.Composition.Should().BeOfType<DndCharacterComposition>().Which.Facts.Should().BeNull();
+        restored.Build.Composition.Should().BeOfType<CharacterComposition>().Which.Facts.Should().BeNull();
         await using var unchanged = new CharactersContext(_options);
         (await unchanged.Set<CharacterBuildRecord>().SingleAsync(testContext.CancellationToken)).Composition.Should().Be(original);
     }
