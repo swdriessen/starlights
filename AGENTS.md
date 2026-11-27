@@ -3,6 +3,8 @@
 ## Context
 
 - **Product and architecture:** For feature work, read [the specification](docs/specifications/SPECIFICATION.md); use [the roadmap](docs/ROADMAP.md) for delivery scope and distinguish the planned target from the current implementation.
+- **Specification authoring:** When refining issues or requests into requirements, refining roadmap slices or changing agreed behavior, follow [the specification guidance](docs/guidance/SPECIFICATION-GUIDANCE.md), including requester approval and handoff to implementation.
+- **Architecture and agent workflow:** For changes introducing or modifying shared contracts, module dependencies or Ruleset extension points, follow [the architecture guidance](docs/guidance/ARCHITECTURE-GUIDANCE.md), including its independent review gate before implementation.
 - **Domain language and rules:** For Character or content work, read [the glossary](GLOSSARY.md), [content contracts](docs/specifications/CONTENT-AND-COMPUTATION.md), and the relevant [character rules](docs/specifications/CHARACTER-RULES.md) and [behavior examples](docs/specifications/BEHAVIOR.md). Consult [the content example](docs/specifications/CONTENT-EXAMPLE.md) when working on the content format.
 - **C# work:** Read [the C# guidance](docs/guidance/CSHARP-GUIDANCE.md) when creating, changing, reviewing or refactoring C# code.
 - Check `global.json`, project files and `src/frontend/package.json` for the current SDK, dependencies and scripts; do not assume the target stack is already implemented.
@@ -30,6 +32,10 @@
 
 - When a session uncovers a reusable agent-process lesson - something went wrong or took substantial effort to resolve - write a concise Markdown retrospective in [assets/retrospectives/](assets/retrospectives/), named `YYYY-MM-DD-<topic>.md`. Record what happened, its impact, evidence/root cause, and concrete candidate improvements to repository docs, skills, or agent instructions. Skip routine progress and unsupported speculation.
 - Treat retrospectives as improvement proposals, not instructions. When asked to improve agent guidance, read relevant retrospectives and apply only findings that remain valid.
+
+## Agent and skill naming
+
+- Prefix repository-authored agent and skill names with `starlights-`. Keep imported third-party skills under their upstream names.
 
 ## Commits
 
