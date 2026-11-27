@@ -480,6 +480,29 @@ This work includes material from the System Reference Document 5.2.1 (“SRD 5.2
 **And** modifiers and dependent values use the Effective Ability Scores  
 **And** calculation sources identify the inputs and applicable increases and limits
 
+**Given** assignments exist for the current method  
+**When** the player chooses another method  
+**Then** confirmation is required before clearing assignments  
+**And** canceling leaves the saved method and inputs unchanged  
+**And** existing application dice are retained when switching away and back
+
+**Given** point buy has six valid assignments costing at most 27 points  
+**Then** the ability decisions are complete even with points remaining  
+**And** other unanswered build decisions still keep the Character incomplete
+
+**Given** application rolls contain two totals of 18 and no third 18  
+**Then** two Abilities may receive 18  
+**And** a third assignment of 18 is rejected without changing saved inputs
+
+**Given** an application-roll or reroll response is lost after acceptance  
+**When** the identical operation identifier, revision and request are retried  
+**Then** the original saved dice are returned without another generation or revision increment
+
+**Given** Strength input is 18, an eligible increase is +2 and the applicable maximum is 19  
+**Then** the input stays 18, the ordinary score is 20 and the effective score is 19  
+**And** the modifier is +4 and dependent checks use +4, not +5  
+**And** raising the maximum to 20 reveals the retained ordinary score and modifier +5
+
 ## Delete a character
 
 **Given** a player has a saved character  

@@ -6,4 +6,5 @@ public sealed record CharacterBuildResponse(
     bool BuildComplete, bool SheetReady, IReadOnlyList<CharacterSelectionResponse> Selections,
     IReadOnlyList<CharacterAbilityResponse> Abilities, IReadOnlyList<CharacterEquipmentClaimResponse> EquipmentClaims,
     IReadOnlyList<CharacterOwnedItemResponse> OwnedItems, string? ArmorId, string? WeaponId,
-    CharacterSheetResponse? Sheet, IReadOnlyList<int> AbilityInputOptions, long? AcceptedRevision = null);
+    CharacterSheetResponse? Sheet, IReadOnlyList<int> AbilityInputOptions,
+    CharacterAbilityGenerationResponse AbilityGeneration, long? AcceptedRevision = null);

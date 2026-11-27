@@ -3,7 +3,7 @@ using Starlights.Modules.Characters.Domain.Building;
 namespace Starlights.RuleSets.DND5E5;
 
 /// <summary>Direct reference-build policies and a rebuildable evaluation over player facts and typed JSON content.</summary>
-public sealed class DndBuildRules(DndContentPack pack) : ICharacterBuildRules
+public sealed class DndBuildRules(DndContentPack pack) : ICharacterAbilityGenerationRules
 {
     /// <summary>Reads the pinned, validated definition for a retained possession.</summary>
     public DndContentElement Element(string id) => pack.Elements[id];
@@ -36,25 +36,58 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterBuildRules
         // Qualification for replacement excludes this decision's old answers, not another granting origin.
         var without = facts.Choices.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
         without.Remove(selectionId);
-        var replacement = Compose(new(without, facts.Inputs, facts.Receipts, facts.ArmorId, facts.WeaponId));
+        var replacement = Compose(new(without, facts.Inputs, facts.Receipts, facts.ArmorId, facts.WeaponId, facts.AbilityGeneration));
         var options = View(replacement).Selections.Single(candidate => candidate.Id == selectionId).Options;
         if (answers.Count > selection.Count || answers.Distinct(StringComparer.Ordinal).Count() != answers.Count
             || answers.Any(answer => !options.Any(option => option.Id == answer)))
             throw new ArgumentException("The Selection answers are invalid.");
         without[selectionId] = answers;
-        return Compose(new(without, facts.Inputs, facts.Receipts, facts.ArmorId, facts.WeaponId));
+        return Compose(new(without, facts.Inputs, facts.Receipts, facts.ArmorId, facts.WeaponId, facts.AbilityGeneration));
     }
     /// <inheritdoc />
     public ICharacterComposition AssignAbilities(ICharacterComposition composition, IReadOnlyDictionary<string, int> inputs)
     {
         var facts = Facts(composition);
         var abilities = View(composition).Abilities.Select(ability => ability.Id).ToArray();
-        var array = pack.Elements[Content.CharacterElementId].Property<DndStandardArrayProperty>()?.Values
-            ?? throw new InvalidOperationException("The ability method is unavailable.");
-        if (inputs.Keys.Any(key => !abilities.Contains(key, StringComparer.Ordinal))
-            || inputs.Values.GroupBy(value => value).Any(group => group.Count() > array.Count(value => value == group.Key)))
-            throw new ArgumentException("Assign each standard-array value at most once to an offered ability.");
-        return Compose(new(facts.Choices, inputs, facts.Receipts, facts.ArmorId, facts.WeaponId));
+        var issue = InputIssue(facts.AbilityGeneration, inputs, abilities);
+        if (issue is not null) throw new ArgumentException(issue);
+        return Compose(new(facts.Choices, inputs, facts.Receipts, facts.ArmorId, facts.WeaponId, facts.AbilityGeneration));
+    }
+    /// <inheritdoc />
+    public ICharacterComposition ChangeAbilityGeneration(ICharacterComposition composition, string method, bool reroll)
+    {
+        var facts = Facts(composition);
+        if (method is not ("standard-array" or "point-buy" or "application-rolls" or "physical-dice")
+            || reroll && (method != "application-rolls" || facts.AbilityGeneration.Method != method))
+            throw new ArgumentException("Select a supported method; reroll only the active application-roll method.");
+        if (method == facts.AbilityGeneration.Method && !reroll) return composition;
+        var rolls = method == "application-rolls" && (reroll || facts.AbilityGeneration.Rolls.Count == 0)
+            ? DndAbilityGeneration.Roll() : facts.AbilityGeneration.Rolls;
+        return Compose(new(facts.Choices, new Dictionary<string, int>(), facts.Receipts, facts.ArmorId, facts.WeaponId, new(method, rolls)));
+    }
+
+    private string? InputIssue(DndAbilityGeneration generation, IReadOnlyDictionary<string, int> inputs, IReadOnlyList<string> abilities)
+    {
+        if (inputs.Keys.Any(key => !abilities.Contains(key, StringComparer.Ordinal)))
+            return "Assign scores only to offered abilities.";
+        if (generation.Method == "point-buy")
+        {
+            if (inputs.Values.Any(value => value is < 8 or > 15)) return "Point-buy scores must be from 8 through 15.";
+            if (inputs.Values.Sum(DndAbilityGeneration.PointCost) > 27) return "Point-buy assignments cannot exceed the 27-point budget.";
+        }
+        else if (generation.Method == "physical-dice")
+        {
+            if (inputs.Values.Any(value => value is < 3 or > 18)) return "Physical dice totals must be from 3 through 18.";
+        }
+        else
+        {
+            var available = generation.Method == "application-rolls" ? generation.Rolls.Select(roll => roll.Total).ToArray()
+                : pack.Elements[Content.CharacterElementId].Property<DndStandardArrayProperty>()?.Values
+                    ?? throw new InvalidOperationException("The ability method is unavailable.");
+            if (inputs.Values.GroupBy(value => value).Any(group => group.Count() > available.Count(value => value == group.Key)))
+                return "Assign each available result at most once; duplicate rolled totals may be used as often as rolled.";
+        }
+        return null;
     }
     /// <inheritdoc />
     public ICharacterComposition ClaimEquipment(ICharacterComposition composition, string selectionId)
@@ -78,7 +111,7 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterBuildRules
             return new DndOwnedItem($"{selectionId}/item-{index}", target, item.Quantity);
         }).ToArray();
         var receipt = new DndEquipmentReceipt(selectionId, option.Id, package.Gold, items);
-        return Compose(new(facts.Choices, facts.Inputs, [.. facts.Receipts, receipt], facts.ArmorId, facts.WeaponId));
+        return Compose(new(facts.Choices, facts.Inputs, [.. facts.Receipts, receipt], facts.ArmorId, facts.WeaponId, facts.AbilityGeneration));
     }
     /// <inheritdoc />
     public ICharacterComposition Equip(ICharacterComposition composition, string? armorId, string? weaponId)
@@ -88,7 +121,7 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterBuildRules
         if (armorId is not null && (!items.TryGetValue(armorId, out var armor) || pack.Elements[armor.ElementId].Property<DndArmorProperty>() is null)
             || weaponId is not null && (!items.TryGetValue(weaponId, out var weapon) || pack.Elements[weapon.ElementId].Property<DndWeaponProperty>() is null))
             throw new ArgumentException("Equipment must refer to owned items with the appropriate equipment property.");
-        return Compose(new(facts.Choices, facts.Inputs, facts.Receipts, armorId, weaponId));
+        return Compose(new(facts.Choices, facts.Inputs, facts.Receipts, armorId, weaponId, facts.AbilityGeneration));
     }
 
     /// <summary>Independently derives the current decisions, numeric values and source evidence.</summary>
@@ -143,11 +176,18 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterBuildRules
             existing.Add((value, source));
         }
         var abilityDefinitions = occurrences.Where(occurrence => occurrence.Element.Property<DndAbilityProperty>() is not null).ToArray();
+        var inputIssue = InputIssue(facts.AbilityGeneration, facts.Inputs,
+            abilityDefinitions.Select(occurrence => occurrence.Element.Property<DndAbilityProperty>()!.Prefix).ToArray());
+        var abilityLimits = abilityDefinitions.ToDictionary(occurrence => occurrence.Element.Property<DndAbilityProperty>()!.Prefix + ".score",
+            occurrence => occurrence.Element.Property<DndAbilityProperty>()!.Maximum, StringComparer.Ordinal);
         foreach (var occurrence in abilityDefinitions)
         {
             var ability = occurrence.Element.Property<DndAbilityProperty>()!;
-            Add($"{ability.Prefix}.score", facts.Inputs.TryGetValue(ability.Prefix, out var input) ? input.ToString(System.Globalization.CultureInfo.InvariantCulture) : "unassigned.input",
-                $"{occurrence.Path}/input");
+            var assigned = facts.Inputs.TryGetValue(ability.Prefix, out var input);
+            Add($"{ability.Prefix}.score", inputIssue is not null ? "invalid.input"
+                : (assigned ? input : ability.DefaultInput ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture),
+                assigned ? $"{occurrence.Path}/input/{facts.AbilityGeneration.Method}"
+                    : $"{occurrence.Path}/fallback/{(ability.DefaultInput.HasValue ? "declared-default" : "zero")}");
             Add($"{ability.Prefix}.modifier", ability.Modifier, $"{occurrence.Path}/modifier");
         }
         foreach (var occurrence in occurrences)
@@ -161,6 +201,7 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterBuildRules
         }
         else Add("armor-class", "10 + dexterity.modifier", "unarmored");
         var evaluated = new Dictionary<string, int?>(StringComparer.Ordinal);
+        var ordinaryScores = new Dictionary<string, int?>(StringComparer.Ordinal);
         var visiting = new HashSet<string>(StringComparer.Ordinal);
         int? Calculate(string id)
         {
@@ -169,16 +210,25 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterBuildRules
             int? total = 0;
             foreach (var source in sources) total += DndNumericExpression.Parse(source.Value).Evaluate(name => Calculate(name));
             visiting.Remove(id);
+            if (abilityLimits.TryGetValue(id, out var maximum))
+            {
+                ordinaryScores[id] = total;
+                total = total.HasValue ? Math.Min(total.Value, maximum) : null;
+            }
             evaluated[id] = total;
             return total;
         }
         var statistics = contributions.Select(pair => new DndStatistic(pair.Key, pair.Key.Replace('.', ' ').Replace('-', ' '),
-            Calculate(pair.Key), Array.AsReadOnly(pair.Value.Select(value => value.Source).ToArray()))).ToArray();
+            Calculate(pair.Key), Array.AsReadOnly(pair.Value.Select(value => value.Source)
+                .Concat(abilityLimits.TryGetValue(pair.Key, out var maximum) ? [$"DND5E5/maximum/{maximum}"] : Array.Empty<string>()).ToArray()))).ToArray();
         var abilities = abilityDefinitions.Select(occurrence =>
         {
             var ability = occurrence.Element.Property<DndAbilityProperty>()!;
             return new DndAbilityResult(ability.Prefix, occurrence.Element.Name, facts.Inputs.TryGetValue(ability.Prefix, out var input) ? input : null,
-                Calculate($"{ability.Prefix}.score"), Calculate($"{ability.Prefix}.modifier"));
+                Calculate($"{ability.Prefix}.score"), Calculate($"{ability.Prefix}.modifier"),
+                ordinaryScores.GetValueOrDefault($"{ability.Prefix}.score"), ability.Maximum, !facts.Inputs.ContainsKey(ability.Prefix),
+                inputIssue ?? (facts.Inputs.ContainsKey(ability.Prefix) ? null : "Required ability assignment is missing; fallback is not an answer."),
+                statistics.Single(statistic => statistic.Id == $"{ability.Prefix}.score").Sources);
         }).ToArray();
         var attacks = new List<DndAttack>();
         var weaponItem = facts.Receipts.SelectMany(receipt => receipt.Items).SingleOrDefault(item => item.Id == facts.WeaponId);
@@ -209,12 +259,21 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterBuildRules
             });
             return new DndSheetEntry(Replace(entry.Name)!, Replace(entry.Description), Replace(entry.Usage), $"{occurrence.Path}/sheet/{entry.Id}");
         })).ToArray();
-        var complete = abilities.All(ability => ability.Input.HasValue) && selections.All(selection =>
+        var complete = inputIssue is null && abilities.All(ability => ability.Input.HasValue) && selections.All(selection =>
             selection.Answers.Count == selection.Count && selection.Answers.All(answer => selection.Options.Any(option => option.Id == answer)));
         var ready = statistics.All(statistic => statistic.Value.HasValue) && presentationReady;
-        var inputOptions = pack.Elements[Content.CharacterElementId].Property<DndStandardArrayProperty>()?.Values ?? [];
+        IReadOnlyList<int> inputOptions = facts.AbilityGeneration.Method switch
+        {
+            "standard-array" => pack.Elements[Content.CharacterElementId].Property<DndStandardArrayProperty>()?.Values ?? [],
+            "application-rolls" => facts.AbilityGeneration.Rolls.Select(roll => roll.Total).ToArray(),
+            "point-buy" => Enumerable.Range(8, 8).ToArray(),
+            "physical-dice" => Enumerable.Range(3, 16).ToArray(),
+            _ => throw new InvalidOperationException("Unsupported ability generation method.")
+        };
+        var pointsSpent = facts.AbilityGeneration.Method == "point-buy" && inputIssue is null
+            ? facts.Inputs.Values.Sum(DndAbilityGeneration.PointCost) : (int?)null;
         return new(Array.AsReadOnly(selections), Array.AsReadOnly(abilities), Array.AsReadOnly(statistics),
-            attacks.AsReadOnly(), Array.AsReadOnly(entries), complete, ready, inputOptions);
+            attacks.AsReadOnly(), Array.AsReadOnly(entries), complete, ready, inputOptions, pointsSpent);
     }
 
     /// <summary>Reads protected facts from the supported composition.</summary>

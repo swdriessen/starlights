@@ -14,6 +14,7 @@ import { CharacterError, CharacterLoading } from "./character-feedback";
 import { CharacterDescription } from "./character-description";
 import { useCharacterNotifications } from "./use-character-notifications";
 import { useReliableEdits } from "./use-reliable-edits";
+import { CharacterAbilities } from "./character-abilities";
 
 export function ReferenceCharacterPage({ id }: { id: string }) {
   const query = useQuery({
@@ -142,28 +143,8 @@ function ReferenceEditor({ id, snapshot, queryFailed }: { id: string; snapshot: 
           </CardContent>
           <CardFooter><p className="text-xs text-muted-foreground">Unanswered choices are build work, not invented benefits.</p></CardFooter>
         </Card>
-        <Card>
-          <CardHeader><CardTitle>Ability scores</CardTitle><CardDescription>Assign the standard array. Each value can be used once.</CardDescription></CardHeader>
-          <CardContent>
-            <FieldGroup>
-              {saved.abilities.map((ability) => <Field key={ability.id}>
-                <FieldLabel htmlFor={`ability-${ability.id}`}>{ability.name}</FieldLabel>
-                <NativeSelect className="w-full min-w-0" id={`ability-${ability.id}`} value={inputs[ability.id] ?? ""} onChange={(event) => {
-                  const updated = { ...inputs };
-                  if (event.target.value) updated[ability.id] = Number(event.target.value);
-                  else delete updated[ability.id];
-                  editor.edit("abilities", { kind: "abilities", inputs: updated });
-                }}>
-                  <NativeSelectOption value="">Unassigned</NativeSelectOption>
-                  {saved.abilityInputOptions.map((value) => <NativeSelectOption key={value} value={value}
-                    disabled={Object.entries(inputs).some(([id, input]) => id !== ability.id && input === value)}>{value}</NativeSelectOption>)}
-                </NativeSelect>
-                <FieldDescription>Saved effective score: {ability.score ?? "unavailable"} / modifier: {ability.modifier ?? "unavailable"}</FieldDescription>
-              </Field>)}
-            </FieldGroup>
-          </CardContent>
-          <CardFooter><p className="text-xs text-muted-foreground">Recorded input stays distinct from content-derived increases.</p></CardFooter>
-        </Card>
+        <CharacterAbilities saved={saved} inputs={inputs} edit={editor.edit} unsaved={unsaved}
+          generationPending={Boolean(local("ability-generation"))} />
         <Card>
           <CardHeader><CardTitle>Starting equipment</CardTitle><CardDescription>Choosing a package does not acquire it. Claim each package separately.</CardDescription></CardHeader>
           <CardContent className="flex flex-col gap-5">

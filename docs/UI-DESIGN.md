@@ -434,8 +434,17 @@ cards remain unchanged.
 
 - Name and content-provided decisions autosave after a short pause. A later
   keystroke remains visible while an earlier save finishes.
-- Standard-array input is separate from effective ability scores. The supported
-  values and decision options come from the server.
+- Ability generation offers standard array, point buy, application rolls and
+  physical dice through the shared outline toggle group. Supported values come
+  from the server. Method switches and rerolls use an accessible confirmation
+  dialog; pending edits must be resolved before replacement.
+- Application dice and drop-lowest totals remain visible before allocation.
+  Point-buy accounting identifies the saved budget; physical totals explicitly
+  identify player-provided results without claiming verified rolls.
+- Input, ordinary pre-limit score, maximum, effective score and modifier remain
+  separate. Missing required assignments carry explicit fallback and issue
+  labels, with expandable source origins. Generation changes unlock assignments
+  only after save confirmation. The same cards and tokens stack on mobile.
 - Package selection, explicit claiming and wearing/wielding owned items are
   separate controls. Claims are not presented as completed before confirmation.
 - Save status, build completion and sheet readiness are separately labelled.

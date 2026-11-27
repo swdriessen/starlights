@@ -97,6 +97,104 @@ public sealed class ReferenceBuildTests
     }
 
     [TestMethod]
+    [DataRow(8, 0, -1)]
+    [DataRow(9, 1, -1)]
+    [DataRow(10, 2, 0)]
+    [DataRow(11, 3, 0)]
+    [DataRow(12, 4, 1)]
+    [DataRow(13, 5, 1)]
+    [DataRow(14, 7, 2)]
+    [DataRow(15, 9, 2)]
+    public void PointBuy_UsesSrdCostsAndModifiers(int input, int cost, int modifier)
+    {
+        var rules = Rules();
+        var character = Character.Create(Guid.NewGuid(), "Point buy", new(rules, Content, rules.Initialize(Content)));
+        character.ChangeAbilityGeneration(rules, "point-buy", false);
+        character.AssignAbilityScores(rules, new Dictionary<string, int> { ["strength"] = input });
+        var view = rules.View(character.Build!.Composition);
+        view.PointsSpent.Should().Be(cost);
+        view.Abilities.Single(ability => ability.Id == "strength").Modifier.Should().Be(modifier);
+    }
+
+    [TestMethod]
+    public void RolledAllocation_RespectsDuplicateMultiplicity_AndRejectedGenerationIsAtomic()
+    {
+        var rules = Rules();
+        DndAbilityRoll[] rolls = [new([1, 1, 1, 1]), new([6, 6, 6, 6]), new([1, 6, 6, 6]),
+            new([2, 3, 4, 5]), new([2, 2, 2, 2]), new([3, 3, 3, 3])];
+        var facts = new DndBuildFacts(new Dictionary<string, IReadOnlyList<string>>(), new Dictionary<string, int>(), [],
+            null, null, new("application-rolls", rolls));
+        var character = Character.Create(Guid.NewGuid(), "Rolls", new(rules, Content, new DndCharacterComposition(new("awaiting-choices"), facts)));
+        character.AssignAbilityScores(rules, new Dictionary<string, int> { ["strength"] = 18, ["dexterity"] = 18, ["constitution"] = 3,
+            ["intelligence"] = 12, ["wisdom"] = 6, ["charisma"] = 9 });
+        rules.View(character.Build!.Composition).Abilities.Select(ability => ability.Modifier).Should().Equal(4, 4, -4, 1, -2, -1);
+        var before = character.Build;
+        var excessive = () => character.AssignAbilityScores(rules, new Dictionary<string, int>
+            { ["strength"] = 18, ["dexterity"] = 18, ["constitution"] = 18 });
+        excessive.Should().Throw<ArgumentException>();
+        character.Build.Should().BeSameAs(before);
+        var badMethod = () => character.ChangeAbilityGeneration(rules, "unknown", false);
+        badMethod.Should().Throw<ArgumentException>();
+        var invalidReroll = () => character.ChangeAbilityGeneration(rules, "point-buy", true);
+        invalidReroll.Should().Throw<ArgumentException>();
+        character.Build.Should().BeSameAs(before);
+    }
+
+    [TestMethod]
+    public void AbilityFallback_IdentifiesAbsentDefaultsZeroAndInvalidRecordedInputs()
+    {
+        var json = Json().Replace("\"prefix\":\"strength\"", "\"prefix\":\"strength\",\"defaultInput\":8", StringComparison.Ordinal);
+        using var document = JsonDocument.Parse(json);
+        var rules = new DndBuildRules(new(document.RootElement, Content));
+        var view = rules.View(rules.Initialize(Content));
+        var strength = view.Abilities.Single(ability => ability.Id == "strength");
+        strength.Input.Should().BeNull();
+        strength.Score.Should().Be(8);
+        strength.Modifier.Should().Be(-1);
+        strength.IsFallback.Should().BeTrue();
+        strength.Issue.Should().Contain("missing");
+        strength.Sources.Should().Contain(source => source.Contains("declared-default", StringComparison.Ordinal));
+        view.Abilities.Single(ability => ability.Id == "dexterity").Score.Should().Be(0);
+        view.BuildComplete.Should().BeFalse();
+        view.SheetReady.Should().BeTrue();
+        var invalidFacts = new DndBuildFacts(new Dictionary<string, IReadOnlyList<string>>(),
+            new Dictionary<string, int> { ["strength"] = 0 }, [], null, null);
+        var invalid = rules.View(new DndCharacterComposition(new("awaiting-choices"), invalidFacts)).Abilities.Single(ability => ability.Id == "strength");
+        invalid.Input.Should().Be(0);
+        invalid.IsFallback.Should().BeFalse();
+        invalid.Score.Should().BeNull();
+        invalid.Issue.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void AbilityMaximum_LimitsEffectiveScoreAndConsumersWithoutChangingInputOrIncreases()
+    {
+        var rules = Rules();
+        var character = Character.Create(Guid.NewGuid(), "Limits", new(rules, Content, rules.Initialize(Content)));
+        character.ChangeAbilityGeneration(rules, "physical-dice", false);
+        character.AssignAbilityScores(rules, new Dictionary<string, int> { ["strength"] = 18, ["constitution"] = 18 });
+        character.RecordChoice(rules, Content.CharacterElementId + "/background", ["srd521:background:soldier"]);
+        character.RecordChoice(rules, Content.CharacterElementId + "/background/srd521:background:soldier/ability-increases", ["srd521:soldier-increases:str-con"]);
+        var strength = rules.View(character.Build!.Composition).Abilities.Single(ability => ability.Id == "strength");
+        strength.Input.Should().Be(18);
+        strength.OrdinaryScore.Should().Be(20);
+        strength.Score.Should().Be(20);
+        strength.Modifier.Should().Be(5);
+        var limitedJson = Json().Replace("\"prefix\":\"strength\"", "\"prefix\":\"strength\",\"maximum\":19", StringComparison.Ordinal);
+        using var document = JsonDocument.Parse(limitedJson);
+        var limitedRules = new DndBuildRules(new(document.RootElement, Content));
+        var limitedView = limitedRules.View(character.Build.Composition);
+        var limited = limitedView.Abilities.Single(ability => ability.Id == "strength");
+        limited.Input.Should().Be(18);
+        limited.OrdinaryScore.Should().Be(20);
+        limited.Score.Should().Be(19);
+        limited.Modifier.Should().Be(4);
+        limited.Sources.Should().Contain(source => source.Contains("str-con", StringComparison.Ordinal));
+        limited.Sources.Should().Contain("DND5E5/maximum/19");
+        limitedView.Statistics.Single(statistic => statistic.Id == "athletics").Value.Should().Be(4);
+    }
+
+    [TestMethod]
     public void UnansweredSelections_DoNotInventProficiencyOrMakeResolvedInputsUnavailable()
     {
         var rules = Rules();

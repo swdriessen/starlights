@@ -23,8 +23,10 @@ The supported `starlights-content/1` mechanics subset comprises:
   nonrepeatable ordinary answers. Ineligible and dormant answers remain facts.
 - Character numeric `increase` Rules. Bounded integer literals, statistic
   references, arithmetic, parentheses and `floor` are interpreted, not compiled
-  or executed. Missing player inputs remain unresolved; unknown authored
-  references and unsupported mechanics fail validation.
+  or executed. Missing required ability answers remain incomplete; F03's
+  explicitly labelled ability fallback can still resolve their current
+  statistics. Unknown authored references and unsupported mechanics fail
+  validation.
 - The representative inline `ability` property and reusable typed `properties`
   contracts: `standard-array`, `armor`, `weapon`, `weapon-mastery` and `starting-package`.
   Package items identify a definition or an explicitly named decision. An
@@ -48,14 +50,15 @@ leave numbers unavailable. Unclaimed equipment does not block completion.
 
 Authenticated owner-only `GET /api/characters/{characterId}/build` returns the
 authoritative facts, current revision, calculation status and qualified sheet.
-The five POST actions are `choices`, `ability-scores`, `equipment-claims`,
+The six POST actions are `choices`, `ability-scores`, `ability-generation`, `equipment-claims`,
 `equipment`, and `name`. OpenAPI and
 [`CharacterBuild.http`](../src/modules/characters/Modules.Characters.Endpoints/CharacterBuild.http)
 document their bodies. All mutations require the standard antiforgery header.
 
 Each action requires a nonempty `operationId` and numeric `expectedRevision`.
-Valid partial ability maps replace the recorded input map; duplicates,
-unsupported abilities and values outside the content array are rejected.
+Valid partial ability maps replace the recorded input map under the saved
+generation method. Unsupported abilities, unavailable array/roll allocations,
+invalid physical totals and point-buy limits are rejected.
 Invalid input returns **400** without changing facts. A stale revision or
 operation-ID payload mismatch returns **409**. Absent/other-owner resources
 return **404**.
@@ -76,7 +79,50 @@ acceptance. Clients must use this receipt to reconcile their own queued edits.
 Cached sheets are rebuildable and carry their exact revision. Finishing an older
 operation never publishes its obsolete sheet over a later revision. Startup
 explicitly marks interrupted pending operations failed while retaining accepted
-facts. Submit another revision-checked edit to recalculate.
+facts. Submit another revision-checked edit to recalculate. Ready reads rebuild
+the sheet from facts and pinned content, preventing older caches from concealing
+newly supported ability fallback and limit evidence.
+
+### F03 ability generation
+
+`ability-generation` takes `method` (`standard-array`, `point-buy`,
+`application-rolls`, `physical-dice`), optional `reroll` and
+`confirmReplacement`, plus the normal revision and operation identifier.
+Changing methods clears assignments. Replacing existing assignments, or
+rerolling, requires explicit confirmation. A same-method request without reroll
+does not clear assignments. Reroll is valid only for active application rolls.
+No caller supplies application dice.
+
+Application rolls generate six independent 4d6-drop-one-lowest results at the
+edit boundary. Original dice persist within the existing composition JSON, with
+no database schema change. Switching away retains them; switching back uses
+them. Explicit reroll replaces all six and clears assignments. Idempotent retries
+return the accepted dice, including after application restart. A request rejected
+before acceptance does not persist generated dice.
+
+Standard-array and application-roll assignments consume a multiset of available
+values; equal rolled totals can be assigned once per occurrence. Point buy
+permits 8-15 with costs 0, 1, 2, 3, 4, 5, 7, 9 and at most 27 points. All six
+assignments are required, but spending all points is optional. Physical totals
+are player-provided integers from 3-18; no claim is made about their rolling
+procedure. Partial maps are allowed for every method.
+
+The build response includes the selected method, saved dice and totals, saved
+point accounting, and method-specific `abilityInputOptions`. Each ability
+includes input, ordinary pre-limit score, maximum, effective score, modifier,
+fallback flag, issue and source origins. Missing required inputs remain
+incomplete even when fallback-derived calculations are ready.
+
+The inline `ability` content property supports `defaultInput` and optional
+literal `maximum` (1-30; default 20 under DND5E5). Its prefix is explicitly
+validated and unique across definitions. Absent input resolves to the declared
+default, otherwise 0; a recorded invalid input remains recorded and unresolved,
+not silently replaced. Zero is not a permitted new input for these four
+generation methods. Ordinary increases apply before the maximum; modifiers and
+other consumers read the effective score. Setting effects and dynamic
+maximum-changing content remain unsupported contracts, not inferred mechanics.
+Previously saved compositions without generation state retain their standard
+array and inputs, and exact content bindings remain unchanged.
 
 `/api/characters/notifications` is an authenticated SignalR hub. Server-assigned
 groups derive exclusively from trusted current-user identity; no client group

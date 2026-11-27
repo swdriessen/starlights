@@ -31,7 +31,11 @@ internal static class CharacterBuildEndpoints
             .ProducesProblem(400).ProducesProblem(409).Produces(401);
         group.MapPost("/ability-scores", (Guid characterId, AssignCharacterAbilitiesRequest request, ICharacterBuildWorkflows workflows, CancellationToken cancellationToken)
             => Edit(characterId, request, workflows, cancellationToken))
-            .WithName("AssignCharacterAbilities").WithSummary("Record valid partial or complete standard-array inputs.")
+            .WithName("AssignCharacterAbilities").WithSummary("Record valid partial or complete inputs for the saved ability method.")
+            .ProducesProblem(400).ProducesProblem(409).Produces(401);
+        group.MapPost("/ability-generation", (Guid characterId, ChangeCharacterAbilityGenerationRequest request, ICharacterBuildWorkflows workflows, CancellationToken cancellationToken)
+            => Edit(characterId, request, workflows, cancellationToken))
+            .WithName("ChangeCharacterAbilityGeneration").WithSummary("Change the generation method or confirm replacement application rolls.")
             .ProducesProblem(400).ProducesProblem(409).Produces(401);
         group.MapPost("/equipment-claims", (Guid characterId, ClaimCharacterEquipmentRequest request, ICharacterBuildWorkflows workflows, CancellationToken cancellationToken)
             => Edit(characterId, request, workflows, cancellationToken))

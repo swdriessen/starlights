@@ -378,7 +378,7 @@ export interface paths {
         };
         get: operations["StarlightsModulesCharactersEndpointsCharactersAbilityScoresGetAbilitiesGetAbilityScoresEndpoint"];
         put?: never;
-        /** Record valid partial or complete standard-array inputs. */
+        /** Record valid partial or complete inputs for the saved ability method. */
         post: operations["AssignCharacterAbilities"];
         delete?: never;
         options?: never;
@@ -1220,6 +1220,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/characters/{characterId}/ability-generation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Change the generation method or confirm replacement application rolls. */
+        post: operations["ChangeCharacterAbilityGeneration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/characters/{characterId}/equipment-claims": {
         parameters: {
             query?: never;
@@ -1340,6 +1357,25 @@ export interface components {
                 [key: string]: number | string;
             };
         };
+        ChangeCharacterAbilityGenerationRequest: {
+            /** Format: int64 */
+            expectedRevision: number | string;
+            /** Format: uuid */
+            operationId: string;
+            method: string;
+            /** @default false */
+            reroll: boolean;
+            /** @default false */
+            confirmReplacement: boolean;
+        };
+        CharacterAbilityGenerationResponse: {
+            method: string;
+            rolls: components["schemas"]["CharacterAbilityRollResponse"][];
+            /** Format: int32 */
+            pointsSpent: null | number | string;
+            /** Format: int32 */
+            pointsRemaining: null | number | string;
+        };
         CharacterAbilityResponse: {
             id: string;
             name: string;
@@ -1349,6 +1385,18 @@ export interface components {
             score: null | number | string;
             /** Format: int32 */
             modifier: null | number | string;
+            /** Format: int32 */
+            ordinaryScore: null | number | string;
+            /** Format: int32 */
+            maximum: number | string;
+            isFallback: boolean;
+            issue: null | string;
+            sources: string[];
+        };
+        CharacterAbilityRollResponse: {
+            dice: (number | string)[];
+            /** Format: int32 */
+            total: number | string;
         };
         CharacterAttackResponse: {
             name: string;
@@ -1377,6 +1425,7 @@ export interface components {
             weaponId: null | string;
             sheet: null | components["schemas"]["CharacterSheetResponse"];
             abilityInputOptions: (number | string)[];
+            abilityGeneration: components["schemas"]["CharacterAbilityGenerationResponse"];
             /** Format: int64 */
             acceptedRevision?: null | number | string;
         };
@@ -4831,6 +4880,64 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["RecordCharacterChoiceRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CharacterBuildResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ChangeCharacterAbilityGeneration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                characterId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeCharacterAbilityGenerationRequest"];
             };
         };
         responses: {

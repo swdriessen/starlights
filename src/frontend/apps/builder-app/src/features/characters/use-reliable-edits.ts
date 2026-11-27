@@ -31,11 +31,21 @@ export function useReliableEdits<S extends RevisionSnapshot, T>(
       if (disposed) return;
       const rejected = error instanceof ApiError && error.status >= 400 && error.status < 500;
       const conflict = error instanceof ApiError && error.status === 409;
+      let detail: string | null = null;
+      if (rejected && !conflict) {
+        try {
+          const problem: unknown = JSON.parse(error.body);
+          if (problem && typeof problem === "object" && "detail" in problem && typeof problem.detail === "string")
+            detail = problem.detail;
+        } catch (parseError) {
+          if (!(parseError instanceof SyntaxError)) throw parseError;
+        }
+      }
       dispatch({
         type: "failed", operationId: edit.operationId,
         phase: conflict ? "conflict" : rejected ? "rejected" : "unconfirmed",
         message: conflict ? "A newer saved revision conflicts with this edit. Your input has not been discarded."
-          : rejected ? "The server rejected this edit. Check your input before reapplying it. Saved facts were not overwritten."
+          : rejected ? detail ?? "The server rejected this edit. Check your input before reapplying it. Saved facts were not overwritten."
           : "Saving could not be confirmed. The server may already have accepted this operation; retrying will use the same operation identifier.",
       });
     });

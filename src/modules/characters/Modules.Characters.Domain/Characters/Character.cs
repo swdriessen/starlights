@@ -79,6 +79,10 @@ public sealed class Character : AggregateRoot<CharacterId>
     public void AssignAbilityScores(ICharacterBuildRules rules, IReadOnlyDictionary<string, int> inputs)
         => ReplaceBuild(rules, () => rules.AssignAbilities(Build!.Composition, inputs));
 
+    /// <summary>Changes ability generation through the selected Ruleset without exposing mutable state.</summary>
+    public void ChangeAbilityGeneration(ICharacterAbilityGenerationRules rules, string method, bool reroll)
+        => ReplaceBuild(rules, () => rules.ChangeAbilityGeneration(Build!.Composition, method, reroll));
+
     /// <summary>Claims a starting package once, separately from the selected option.</summary>
     public void ClaimEquipment(ICharacterBuildRules rules, string selectionId)
         => ReplaceBuild(rules, () => rules.ClaimEquipment(Build!.Composition, selectionId));

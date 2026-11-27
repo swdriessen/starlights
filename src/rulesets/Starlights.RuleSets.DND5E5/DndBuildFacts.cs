@@ -10,7 +10,7 @@ public sealed record DndBuildFacts
     [JsonConstructor]
     public DndBuildFacts(IReadOnlyDictionary<string, IReadOnlyList<string>> choices,
         IReadOnlyDictionary<string, int> inputs, IReadOnlyList<DndEquipmentReceipt> receipts,
-        string? armorId, string? weaponId)
+        string? armorId, string? weaponId, DndAbilityGeneration? abilityGeneration = null)
     {
         Choices = new ReadOnlyDictionary<string, IReadOnlyList<string>>(choices.ToDictionary(
             pair => pair.Key, pair => (IReadOnlyList<string>)Array.AsReadOnly(pair.Value.ToArray()), StringComparer.Ordinal));
@@ -18,6 +18,7 @@ public sealed record DndBuildFacts
         Receipts = Array.AsReadOnly(receipts.ToArray());
         ArmorId = armorId;
         WeaponId = weaponId;
+        AbilityGeneration = abilityGeneration ?? DndAbilityGeneration.Default;
     }
     /// <summary>Gets recorded intent, including decisions whose origin is no longer active.</summary>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> Choices { get; }
@@ -29,6 +30,8 @@ public sealed record DndBuildFacts
     public string? ArmorId { get; }
     /// <summary>Gets the owned weapon allocation.</summary>
     public string? WeaponId { get; }
+    /// <summary>Gets the generation method and original application dice; absent legacy state means standard array.</summary>
+    public DndAbilityGeneration AbilityGeneration { get; }
     /// <summary>Creates a new uncompleted build.</summary>
     public static DndBuildFacts Empty => new(new Dictionary<string, IReadOnlyList<string>>(), new Dictionary<string, int>(), [], null, null);
 }

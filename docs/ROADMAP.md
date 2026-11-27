@@ -62,7 +62,8 @@ This table is the current status summary for the roadmap. Keep detailed executio
 | F00: Establish the platform foundation | In progress | Local Aspire verification is recorded complete; developer-tunnel and private-network verification remain deferred. See [frontend readiness](../progress/frontend-readiness.md). |
 | F01: Build, save and reopen the reference character | Verified locally | Missing reference choices, equipment and sheet mechanics are implemented and browser-verified with isolated SQLite, including application restart. SQL Server provider verification remains deferred. See [integrated evidence](../progress/f02-reliable-edits.md); the [first-increment record](../progress/f01-first-slice.md) retains the earlier user-confirmed evidence. |
 | F02: Revise a character without losing work | Verified locally | Revision-checked autosave, retained input, idempotent recovery, durable calculation status and authenticated cross-tab notifications passed browser/integration checks. Application restart preserved accepted facts and browser access. SQL Server provider verification remains deferred. See [execution evidence](../progress/f02-reliable-edits.md). |
-| F03-F20 | Planned | No completion or acceptance status is recorded for these slices. |
+| F03: Choose how to generate ability scores | Verified locally | All four methods, retained application dice, validated allocations, point accounting, effective scores, limits and fallback evidence passed domain/API/browser checks and application restart with isolated SQLite. SQL Server provider verification remains deferred. See [execution evidence](../progress/f03-ability-generation.md). |
+| F04-F20 | Planned | No completion or acceptance status is recorded for these slices. |
 
 ## Milestones
 

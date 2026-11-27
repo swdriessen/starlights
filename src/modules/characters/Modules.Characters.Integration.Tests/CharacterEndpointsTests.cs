@@ -247,7 +247,8 @@ public sealed class CharacterEndpointsTests(TestContext testContext)
         var id = await Create(browser, new() { RulesetId = "DND5E5", Name = "Reference" });
         var state = await Build(browser, id);
         state.BuildComplete.Should().BeFalse();
-        state.SheetReady.Should().BeFalse();
+        state.SheetReady.Should().BeTrue();
+        state.Abilities.Should().OnlyContain(ability => ability.IsFallback && ability.Input == null && ability.Issue != null);
         async Task Choose(string suffix, params string[] answers)
         {
             var selection = state.Selections.Single(selection => selection.Id.EndsWith(suffix, StringComparison.Ordinal));
@@ -431,6 +432,112 @@ public sealed class CharacterEndpointsTests(TestContext testContext)
 
     private async Task<CharacterBuildResponse> Build(HttpClient browser, Guid id)
         => (await browser.GetFromJsonAsync<CharacterBuildResponse>($"/api/characters/{id}/build", testContext.CancellationToken))!;
+
+    [TestMethod]
+    public async Task AbilityGeneration_PersistsDiceAcrossAssignmentsRetriesMethodSwitchesAndRestart()
+    {
+        using var browser = await SignIn("owner");
+        var id = await Create(browser, new() { RulesetId = "DND5E5" });
+        var initial = await Build(browser, id);
+        initial.AbilityGeneration.Method.Should().Be("standard-array");
+        initial.AbilityGeneration.Rolls.Should().BeEmpty();
+        var rollRequest = new ChangeCharacterAbilityGenerationRequest(0, Guid.NewGuid(), "application-rolls");
+        var rolled = await Action(browser, id, "ability-generation", rollRequest);
+        rolled.AbilityGeneration.Rolls.Should().HaveCount(6);
+        foreach (var roll in rolled.AbilityGeneration.Rolls)
+        {
+            roll.Dice.Should().HaveCount(4).And.OnlyContain(die => die >= 1 && die <= 6);
+            roll.Total.Should().Be(roll.Dice.OrderDescending().Take(3).Sum());
+        }
+        var inputs = rolled.Abilities.Select((ability, index) => (ability.Id, rolled.AbilityGeneration.Rolls[index].Total))
+            .ToDictionary(pair => pair.Id, pair => pair.Total);
+        var assigned = await Action(browser, id, "ability-scores", new AssignCharacterAbilitiesRequest(1, Guid.NewGuid(), inputs));
+        assigned.Abilities.Select(ability => ability.Score).Should().Equal(inputs.Values.Select(value => (int?)value));
+        assigned.Abilities.Select(ability => ability.Modifier).Should().Equal(inputs.Values.Select(value => (int?)Math.Floor((value - 10) / 2d)));
+        var replay = await Action(browser, id, "ability-generation", rollRequest);
+        replay.AcceptedRevision.Should().Be(1);
+        replay.Revision.Should().Be(2);
+        replay.AbilityGeneration.Rolls.Should().BeEquivalentTo(rolled.AbilityGeneration.Rolls);
+        using var unconfirmed = await Write(browser, $"/api/characters/{id}/ability-generation",
+            new ChangeCharacterAbilityGenerationRequest(2, Guid.NewGuid(), "point-buy"));
+        unconfirmed.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        (await Build(browser, id)).Revision.Should().Be(2);
+        var switched = await Action(browser, id, "ability-generation", new ChangeCharacterAbilityGenerationRequest(2, Guid.NewGuid(), "point-buy", ConfirmReplacement: true));
+        switched.Abilities.Should().OnlyContain(ability => ability.Input == null);
+        switched.AbilityGeneration.Rolls.Should().BeEquivalentTo(rolled.AbilityGeneration.Rolls);
+        var back = await Action(browser, id, "ability-generation", new ChangeCharacterAbilityGenerationRequest(3, Guid.NewGuid(), "application-rolls"));
+        back.AbilityGeneration.Rolls.Should().BeEquivalentTo(rolled.AbilityGeneration.Rolls);
+        using var rerollWithoutConfirmation = await Write(browser, $"/api/characters/{id}/ability-generation",
+            new ChangeCharacterAbilityGenerationRequest(4, Guid.NewGuid(), "application-rolls", Reroll: true));
+        rerollWithoutConfirmation.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var rerollRequest = new ChangeCharacterAbilityGenerationRequest(4, Guid.NewGuid(), "application-rolls", true, true);
+        var rerolled = await Action(browser, id, "ability-generation", rerollRequest);
+        rerolled.Abilities.Should().OnlyContain(ability => ability.Input == null);
+        var rerollReplay = await Action(browser, id, "ability-generation", rerollRequest);
+        rerollReplay.Revision.Should().Be(5);
+        rerollReplay.AbilityGeneration.Should().BeEquivalentTo(rerolled.AbilityGeneration);
+        await Action(browser, id, "name", new NameCharacterRequest(5, Guid.NewGuid(), "Unrelated edit"));
+        await _factory.DisposeAsync();
+        _factory = new(_directory);
+        await _factory.InitializeAsync(testContext.CancellationToken);
+        using var reopened = await SignIn("owner");
+        var restored = await Build(reopened, id);
+        restored.Revision.Should().Be(6);
+        restored.AbilityGeneration.Should().BeEquivalentTo(rerolled.AbilityGeneration);
+        restored.Abilities.Should().OnlyContain(ability => ability.IsFallback);
+        var stale = await Write(reopened, $"/api/characters/{id}/ability-generation",
+            new ChangeCharacterAbilityGenerationRequest(4, Guid.NewGuid(), "physical-dice", ConfirmReplacement: true));
+        using (stale) stale.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        using var other = await SignIn("other");
+        using var hidden = await Write(other, $"/api/characters/{id}/ability-generation",
+            new ChangeCharacterAbilityGenerationRequest(6, Guid.NewGuid(), "physical-dice"));
+        hidden.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        using var noCsrf = await reopened.PostAsJsonAsync($"/api/characters/{id}/ability-generation",
+            new ChangeCharacterAbilityGenerationRequest(6, Guid.NewGuid(), "physical-dice"), testContext.CancellationToken);
+        noCsrf.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        (await Build(reopened, id)).AbilityGeneration.Should().BeEquivalentTo(rerolled.AbilityGeneration);
+    }
+
+    [TestMethod]
+    public async Task AbilityGeneration_PointBuyAndPhysicalDiceValidateBoundariesWithoutChangingRejectedFacts()
+    {
+        using var browser = await SignIn("owner");
+        var id = await Create(browser, new() { RulesetId = "DND5E5" });
+        var state = await Action(browser, id, "ability-generation", new ChangeCharacterAbilityGenerationRequest(0, Guid.NewGuid(), "point-buy"));
+        state.AbilityGeneration.PointsRemaining.Should().Be(27);
+        state = await Action(browser, id, "ability-scores", new AssignCharacterAbilitiesRequest(1, Guid.NewGuid(),
+            new() { ["strength"] = 15, ["dexterity"] = 15, ["constitution"] = 15, ["intelligence"] = 8, ["wisdom"] = 8, ["charisma"] = 8 }));
+        state.AbilityGeneration.PointsSpent.Should().Be(27);
+        state.AbilityGeneration.PointsRemaining.Should().Be(0);
+        state.Abilities.Select(ability => ability.Modifier).Should().Equal(2, 2, 2, -1, -1, -1);
+        foreach (var inputs in new[] {
+            new Dictionary<string, int> { ["strength"] = 7 },
+            new Dictionary<string, int> { ["strength"] = 16 },
+            new Dictionary<string, int> { ["strength"] = 15, ["dexterity"] = 15, ["constitution"] = 15, ["intelligence"] = 9 }
+        })
+        {
+            using var invalid = await Write(browser, $"/api/characters/{id}/ability-scores", new AssignCharacterAbilitiesRequest(2, Guid.NewGuid(), inputs));
+            invalid.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            (await Build(browser, id)).Should().BeEquivalentTo(state, options => options.Excluding(snapshot => snapshot.AcceptedRevision));
+        }
+        state = await Action(browser, id, "ability-generation", new ChangeCharacterAbilityGenerationRequest(2, Guid.NewGuid(), "physical-dice", ConfirmReplacement: true));
+        state = await Action(browser, id, "ability-scores", new AssignCharacterAbilitiesRequest(3, Guid.NewGuid(),
+            new() { ["strength"] = 3, ["dexterity"] = 18, ["constitution"] = 18, ["intelligence"] = 3, ["wisdom"] = 10, ["charisma"] = 12 }));
+        state.Abilities.Select(ability => ability.Score).Should().Equal(3, 18, 18, 3, 10, 12);
+        state.Abilities.Select(ability => ability.Modifier).Should().Equal(-4, 4, 4, -4, 0, 1);
+        state.AbilityGeneration.Rolls.Should().BeEmpty();
+        foreach (var value in new[] { 0, 2, 19 })
+        {
+            using var invalid = await Write(browser, $"/api/characters/{id}/ability-scores",
+                new AssignCharacterAbilitiesRequest(4, Guid.NewGuid(), new() { ["strength"] = value }));
+            invalid.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            (await invalid.Content.ReadAsStringAsync(testContext.CancellationToken)).Should().Contain("3 through 18");
+        }
+        using var fractional = await Write(browser, $"/api/characters/{id}/ability-scores",
+            new { ExpectedRevision = 4, OperationId = Guid.NewGuid(), Inputs = new { strength = 3.5 } });
+        fractional.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        (await Build(browser, id)).Should().BeEquivalentTo(state, options => options.Excluding(snapshot => snapshot.AcceptedRevision));
+    }
 
     [TestMethod]
     [Timeout(30000, CooperativeCancellation = true)]

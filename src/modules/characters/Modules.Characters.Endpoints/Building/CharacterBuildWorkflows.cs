@@ -46,6 +46,12 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
                     character.RecordChoice(rules, choice.SelectionId, choice.Answers); break;
                 case AssignCharacterAbilitiesRequest abilities when abilities.Inputs is not null:
                     character.AssignAbilityScores(rules, abilities.Inputs); break;
+                case ChangeCharacterAbilityGenerationRequest generation when !string.IsNullOrWhiteSpace(generation.Method):
+                    var facts = DndBuildRules.Facts(character.Build!.Composition);
+                    if ((generation.Reroll || generation.Method != facts.AbilityGeneration.Method && facts.Inputs.Count > 0)
+                        && !generation.ConfirmReplacement)
+                        throw new CharacterRequestException("Confirm replacing the current ability assignments or rolled results.");
+                    character.ChangeAbilityGeneration(rules, generation.Method, generation.Reroll); break;
                 case ClaimCharacterEquipmentRequest claim when !string.IsNullOrWhiteSpace(claim.SelectionId):
                     character.ClaimEquipment(rules, claim.SelectionId); break;
                 case EquipCharacterRequest equipment:
@@ -54,6 +60,10 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
                     character.Rename(name.Name); break;
                 default: throw new CharacterRequestException("The named action's input is incomplete.");
             }
+        }
+        catch (ArgumentException exception) when (request is AssignCharacterAbilitiesRequest or ChangeCharacterAbilityGenerationRequest)
+        {
+            throw new CharacterRequestException(exception.Message);
         }
         catch (ArgumentException) { throw new CharacterRequestException("The named action's input is invalid."); }
         if (!await store.AcceptAsync(character, request.ExpectedRevision, request.OperationId, fingerprint, cancellationToken))
@@ -91,8 +101,8 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
         var view = rules.View(build.Composition);
         var facts = DndBuildRules.Facts(build.Composition);
         var ready = state.Status == "ready";
-        var savedSheet = ready && state.SheetRevision == state.Revision && state.Sheet is not null
-            ? JsonSerializer.Deserialize<CharacterSheetResponse>(state.Sheet) ?? throw new InvalidOperationException("The saved sheet cache is unavailable.") : Sheet(view, facts);
+        // Rebuild from authoritative facts so older caches cannot hide newly supported fallback/limit evidence.
+        var savedSheet = Sheet(view, facts);
         var selections = view.Selections.Select(selection => new CharacterSelectionResponse(selection.Id, selection.Name, selection.Count, selection.Answers,
             selection.Options.Select(option => new CharacterOptionResponse(option.Id, option.Name, option.Description)).ToArray())).ToArray();
         var claims = view.Selections.Where(selection => selection.IsPackage).Select(selection => new CharacterEquipmentClaimResponse(
@@ -108,8 +118,11 @@ internal sealed class CharacterBuildWorkflows(ICurrentUser user, ICharacterEditS
         return new(state.Character.Id, state.Character.Name, state.Revision, state.Status, state.OperationId, state.Failure,
             view.BuildComplete, ready && view.SheetReady, selections,
             view.Abilities.Select(ability => new CharacterAbilityResponse(ability.Id, ability.Name, ability.Input,
-                ready ? ability.Score : null, ready ? ability.Modifier : null)).ToArray(), claims, items, facts.ArmorId, facts.WeaponId,
-            ready ? savedSheet : null, view.AbilityInputOptions);
+                ready ? ability.Score : null, ready ? ability.Modifier : null, ready ? ability.OrdinaryScore : null,
+                ability.Maximum, ability.IsFallback, ability.Issue, ability.Sources)).ToArray(), claims, items, facts.ArmorId, facts.WeaponId,
+            ready ? savedSheet : null, view.AbilityInputOptions,
+            new(facts.AbilityGeneration.Method, facts.AbilityGeneration.Rolls.Select(roll => new CharacterAbilityRollResponse(roll.Dice, roll.Total)).ToArray(),
+                view.PointsSpent, view.PointsSpent.HasValue ? 27 - view.PointsSpent.Value : null));
     }
 
     private static CharacterSheetResponse Sheet(DndBuildView view, DndBuildFacts facts) => new(

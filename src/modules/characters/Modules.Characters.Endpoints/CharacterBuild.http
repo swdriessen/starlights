@@ -42,3 +42,24 @@ Content-Type: application/json
 
 ### Unknown or another owner's Character returns 404
 GET {{baseUrl}}/api/characters/00000000-0000-0000-0000-000000000000/build
+
+### Change generation method; use the latest revision from GET
+POST {{baseUrl}}/api/characters/{{characterId}}/ability-generation
+X-CSRF-TOKEN: {{antiforgery}}
+Content-Type: application/json
+
+{"expectedRevision":5,"operationId":"b24686c5-3764-4ef8-aeca-1e4d6b02a679","method":"application-rolls","confirmReplacement":true}
+
+### Explicitly replace active application rolls; retries reuse this entire request
+POST {{baseUrl}}/api/characters/{{characterId}}/ability-generation
+X-CSRF-TOKEN: {{antiforgery}}
+Content-Type: application/json
+
+{"expectedRevision":6,"operationId":"8f5af9fd-0534-4c06-b1a4-e74b4d523473","method":"application-rolls","reroll":true,"confirmReplacement":true}
+
+### Invalid method returns 400 without changing saved facts
+POST {{baseUrl}}/api/characters/{{characterId}}/ability-generation
+X-CSRF-TOKEN: {{antiforgery}}
+Content-Type: application/json
+
+{"expectedRevision":7,"operationId":"5d4b666a-2f18-4478-95f8-97f3e48e723a","method":"unsupported"}

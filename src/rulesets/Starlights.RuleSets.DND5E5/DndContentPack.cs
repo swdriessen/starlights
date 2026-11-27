@@ -22,8 +22,13 @@ public sealed class DndContentPack
             var properties = new List<IDndElementProperty>();
             if (raw.TryGetProperty("ability", out var ability))
             {
-                Fields(ability, "prefix", "modifier", "defaultInput");
-                properties.Add(new DndAbilityProperty(Text(ability, "prefix"), Text(ability, "modifier")));
+                Fields(ability, "prefix", "modifier", "defaultInput", "maximum");
+                var prefix = Text(ability, "prefix");
+                var defaultInput = ability.TryGetProperty("defaultInput", out var fallback) ? fallback.GetInt32() : (int?)null;
+                var maximum = ability.TryGetProperty("maximum", out var limit) ? limit.GetInt32() : 20;
+                if (!System.Text.RegularExpressions.Regex.IsMatch(prefix, "^[a-z][a-z0-9-]*$")
+                    || defaultInput is < 0 or > 30 || maximum is < 1 or > 30) throw Invalid();
+                properties.Add(new DndAbilityProperty(prefix, Text(ability, "modifier"), defaultInput, maximum));
             }
             if (raw.TryGetProperty("properties", out var parts))
                 foreach (var part in parts.EnumerateArray()) properties.Add(ParseProperty(part));
@@ -77,6 +82,8 @@ public sealed class DndContentPack
             if (!elements.TryAdd(element.Id, element)) throw Invalid();
         }
         if (!elements.TryGetValue(content.CharacterElementId, out var character) || character.Type != "character") throw Invalid();
+        if (elements.Values.SelectMany(element => element.Properties.OfType<DndAbilityProperty>())
+            .GroupBy(ability => ability.Prefix, StringComparer.Ordinal).Any(group => group.Count() > 1)) throw Invalid();
         foreach (var element in elements.Values)
         {
             foreach (var rule in element.Rules)
