@@ -88,7 +88,8 @@ newly supported ability fallback and limit evidence.
 `ability-generation` takes `method` (`standard-array`, `point-buy`,
 `application-rolls`, `physical-dice`), optional `reroll` and
 `confirmReplacement`, plus the normal revision and operation identifier.
-Changing methods clears assignments. Replacing existing assignments, or
+Changing methods replaces assignments with the selected method's initial
+allocation. Replacing existing assignments, or
 rerolling, requires explicit confirmation. A same-method request without reroll
 does not clear assignments. Reroll is valid only for active application rolls.
 No caller supplies application dice.
@@ -96,7 +97,8 @@ No caller supplies application dice.
 Application rolls generate six independent 4d6-drop-one-lowest results at the
 edit boundary. Original dice persist within the existing composition JSON, with
 no database schema change. Switching away retains them; switching back uses
-them. Explicit reroll replaces all six and clears assignments. Idempotent retries
+them. Explicit reroll replaces all six and assigns their totals in displayed
+ability order. Idempotent retries
 return the accepted dice, including after application restart. A request rejected
 before acceptance does not persist generated dice.
 
@@ -106,6 +108,16 @@ permits 8-15 with costs 0, 1, 2, 3, 4, 5, 7, 9 and at most 27 points. All six
 assignments are required, but spending all points is optional. Physical totals
 are player-provided integers from 3-18; no claim is made about their rolling
 procedure. Partial maps are allowed for every method.
+
+F03-a initializes new Characters with the authored standard array in displayed
+ability order (Strength, Dexterity, Constitution, Intelligence, Wisdom,
+Charisma in the bundled pack: 15, 14, 13, 12, 10, 8). Confirmed switches to
+standard array or application rolls assign the array or retained/generated
+totals in that same order. Point buy starts every offered ability at 8, with
+0 spent and 27 remaining; physical dice starts unassigned. These are persisted,
+editable inputs, not derived fallback. Reading, recalculating and same-method
+requests without reroll preserve existing customized, partial or absent inputs.
+No saved Character is backfilled or migrated.
 
 The build response includes the selected method, saved dice and totals, saved
 point accounting, and method-specific `abilityInputOptions`. Each ability

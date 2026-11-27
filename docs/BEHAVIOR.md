@@ -453,22 +453,24 @@ This work includes material from the System Reference Document 5.2.1 (“SRD 5.2
 **Given** a new D&D 5e5 Character  
 **When** the player opens its Abilities stage  
 **Then** the standard array (15, 14, 13, 12, 10 and 8) is the selected method  
-**And** each value can be assigned to only one Ability  
-**And** the Character remains incomplete until all six assignments are valid
+**And** those values are already assigned to Strength, Dexterity, Constitution, Intelligence, Wisdom and Charisma in that order  
+**And** the player can revise the assignments, using each available value only once  
+**And** other unanswered build decisions still keep the Character incomplete
 
 **When** the player selects point buy  
-**Then** each Ability can be assigned a score from 8 through 15  
+**Then** all six Ability inputs start at 8, spending 0 of 27 points  
+**And** each Ability can be assigned a score from 8 through 15  
 **And** the costs for 8 through 15 are 0, 1, 2, 3, 4, 5, 7 and 9 points  
 **And** the 27-point budget and remaining points update with saved inputs  
 **And** a score or total outside those limits is rejected without changing saved inputs
 
 **When** the player requests application rolls  
-**Then** six 4d6-drop-lowest results are generated and shown before assignment  
+**Then** six 4d6-drop-lowest results are generated, shown and assigned in displayed Ability order  
 **And** assigning them does not change the recorded results  
 **When** the player edits another Choice or reopens the Character  
 **Then** the same results remain saved  
 **When** the player requests a reroll and confirms replacing the results  
-**Then** the replacement results are saved and the old assignments are cleared
+**Then** the replacement results are saved and assigned in displayed Ability order, replacing the old assignments
 
 **When** the player enters physical dice totals  
 **Then** each entered total from 3 through 18 is recorded as player-provided  
@@ -482,9 +484,14 @@ This work includes material from the System Reference Document 5.2.1 (“SRD 5.2
 
 **Given** assignments exist for the current method  
 **When** the player chooses another method  
-**Then** confirmation is required before clearing assignments  
+**Then** confirmation is required before replacing assignments  
 **And** canceling leaves the saved method and inputs unchanged  
-**And** existing application dice are retained when switching away and back
+**And** standard array and application rolls initialize assignments in displayed Ability order, point buy initializes all six at 8, and physical dice starts unassigned  
+**And** existing application dice are retained and assigned when switching away and back
+
+**Given** a saved Character has customized, partial or absent Ability inputs  
+**When** the Character is recalculated, reopened or its current method is selected without a reroll  
+**Then** those saved inputs remain unchanged; initial allocation is not a read-time fallback or migration
 
 **Given** point buy has six valid assignments costing at most 27 points  
 **Then** the ability decisions are complete even with points remaining  

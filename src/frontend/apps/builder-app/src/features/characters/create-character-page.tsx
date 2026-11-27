@@ -56,7 +56,7 @@ function CreationForm({ options }: { options: RulesetOption[] }) {
     <Card>
       <CardHeader>
         <CardTitle>The beginning of your story</CardTitle>
-        <CardDescription>Your Character is saved when you create it. No build decisions are made for you.</CardDescription>
+        <CardDescription>Your Character is saved when you create it. Any starting ability assignments remain editable.</CardDescription>
       </CardHeader>
       <CardContent>
         <form id="create-character" onSubmit={form.handleSubmit(({ name }) => {

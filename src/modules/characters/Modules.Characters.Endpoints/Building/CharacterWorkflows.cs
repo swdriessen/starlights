@@ -61,7 +61,8 @@ internal sealed class CharacterWorkflows(
         if (option is null)
             throw new CharacterRequestException("Select an available exact Character content version.");
         logger.LogInformation("Initializing Character with Ruleset {RulesetId}", ruleset.Id);
-        var composition = ruleset.Initialize(option.Content);
+        var composition = mechanics.Supports(option.Content)
+            ? mechanics.Required(option.Content).Initialize(option.Content) : ruleset.Initialize(option.Content);
         var character = Character.Create(OwnerId, request.Name, new(ruleset, option.Content, composition));
         await builds.CreateAsync(character, cancellationToken);
         logger.LogInformation("Created Character {CharacterId} with Ruleset {RulesetId}", character.Id, ruleset.Id);

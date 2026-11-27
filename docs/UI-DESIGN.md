@@ -370,6 +370,13 @@ The guided flow from the roadmap (F04): **Concept, Origin, Class, Abilities, Equ
 | Equipment | Fighter and background packages: choose A or B, then **claim**; possessions with Wear / Wield; a "Why armor class N?" box |
 | Review | Checklist with a jump to each stage, conflict list, `Finish build` (enabled only when complete), `Export PDF` (planned, disabled) |
 
+Ability generation starts with editable assignments: standard array uses its
+authored order, application rolls use their displayed roll order, and point buy
+starts every ability at 8. Allocation follows the displayed ability order,
+without guessing a class-specific priority. Confirmed method changes and rerolls
+replace assignments with these starting values; physical dice starts blank.
+Confirmation copy explains the replacement. Reopening preserves saved inputs.
+
 ### The description panel
 
 Hovering or focusing any option (species, background, style, mastery, ability, class) previews it in the **Description** tab without choosing it; choosing pins it. With nothing in focus the panel explains the current stage. A description is: gold eyebrow (`Species · SRD 5.2.1`), an uppercase Oswald title, a fact grid, paragraphs, a ruled **Grants** list and an optional gold-ruled note. It always ends with "Mock text for the prototype, not shipped content."

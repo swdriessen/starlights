@@ -97,6 +97,32 @@ public sealed class ReferenceBuildTests
     }
 
     [TestMethod]
+    public void AbilityGeneration_InitializesAssignmentsOnlyAtCreationOrMethodReplacement()
+    {
+        var rules = Rules();
+        var character = Character.Create(Guid.NewGuid(), "Initial assignments", new(rules, Content, rules.Initialize(Content)));
+        var initial = rules.View(character.Build!.Composition);
+        initial.Abilities.Select(ability => ability.Id).Should().Equal("strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma");
+        initial.Abilities.Select(ability => ability.Input).Should().Equal(15, 14, 13, 12, 10, 8);
+        initial.Abilities.Should().OnlyContain(ability => !ability.IsFallback && ability.Issue == null);
+        initial.BuildComplete.Should().BeFalse();
+        character.AssignAbilityScores(rules, new Dictionary<string, int> { ["strength"] = 8 });
+        character.ChangeAbilityGeneration(rules, "standard-array", false);
+        DndBuildRules.Facts(character.Build.Composition).Inputs.Should().BeEquivalentTo(new Dictionary<string, int> { ["strength"] = 8 });
+        character.ChangeAbilityGeneration(rules, "point-buy", false);
+        var pointBuy = rules.View(character.Build.Composition);
+        pointBuy.Abilities.Select(ability => ability.Input).Should().Equal(8, 8, 8, 8, 8, 8);
+        pointBuy.PointsSpent.Should().Be(0);
+        character.ChangeAbilityGeneration(rules, "physical-dice", false);
+        DndBuildRules.Facts(character.Build.Composition).Inputs.Should().BeEmpty();
+        character.ChangeAbilityGeneration(rules, "standard-array", false);
+        rules.View(character.Build.Composition).Abilities.Select(ability => ability.Input).Should().Equal(15, 14, 13, 12, 10, 8);
+        var legacy = new DndCharacterComposition(new("awaiting-choices"), DndBuildFacts.Empty);
+        rules.View(legacy).Abilities.Should().OnlyContain(ability => ability.Input == null && ability.IsFallback);
+        rules.ChangeAbilityGeneration(legacy, "standard-array", false).Should().BeSameAs(legacy);
+    }
+
+    [TestMethod]
     [DataRow(8, 0, -1)]
     [DataRow(9, 1, -1)]
     [DataRow(10, 2, 0)]
@@ -138,6 +164,14 @@ public sealed class ReferenceBuildTests
         var invalidReroll = () => character.ChangeAbilityGeneration(rules, "point-buy", true);
         invalidReroll.Should().Throw<ArgumentException>();
         character.Build.Should().BeSameAs(before);
+        character.ChangeAbilityGeneration(rules, "physical-dice", false);
+        character.ChangeAbilityGeneration(rules, "application-rolls", false);
+        rules.View(character.Build!.Composition).Abilities.Select(ability => ability.Input).Should().Equal(3, 18, 18, 12, 6, 9);
+        DndBuildRules.Facts(character.Build.Composition).AbilityGeneration.Rolls.Should().BeEquivalentTo(rolls);
+        character.ChangeAbilityGeneration(rules, "application-rolls", true);
+        var rerolled = DndBuildRules.Facts(character.Build.Composition);
+        rules.View(character.Build.Composition).Abilities.Select(ability => ability.Input)
+            .Should().Equal(rerolled.AbilityGeneration.Rolls.Select(roll => (int?)roll.Total));
     }
 
     [TestMethod]
@@ -146,7 +180,7 @@ public sealed class ReferenceBuildTests
         var json = Json().Replace("\"prefix\":\"strength\"", "\"prefix\":\"strength\",\"defaultInput\":8", StringComparison.Ordinal);
         using var document = JsonDocument.Parse(json);
         var rules = new DndBuildRules(new(document.RootElement, Content));
-        var view = rules.View(rules.Initialize(Content));
+        var view = rules.View(new DndCharacterComposition(new("awaiting-choices"), DndBuildFacts.Empty));
         var strength = view.Abilities.Single(ability => ability.Id == "strength");
         strength.Input.Should().BeNull();
         strength.Score.Should().Be(8);

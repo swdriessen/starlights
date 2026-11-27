@@ -13,6 +13,7 @@ This roadmap defines the target delivery sequence and acceptance boundaries for 
   - [F01: Build, save and reopen the reference character](#f01-build-save-and-reopen-the-reference-character)
   - [F02: Revise a character without losing work](#f02-revise-a-character-without-losing-work)
   - [F03: Choose how to generate ability scores](#f03-choose-how-to-generate-ability-scores)
+  - [F03-a: Start with assigned ability scores](#f03-a-start-with-assigned-ability-scores)
   - [F04: Choose an origin and navigate the build](#f04-choose-an-origin-and-navigate-the-build)
   - [F05: Advance a Fighter and revisit earlier decisions](#f05-advance-a-fighter-and-revisit-earlier-decisions)
   - [F06: Manage ordinary possessions and equipment](#f06-manage-ordinary-possessions-and-equipment)
@@ -63,6 +64,7 @@ This table is the current status summary for the roadmap. Keep detailed executio
 | F01: Build, save and reopen the reference character | Verified locally | Missing reference choices, equipment and sheet mechanics are implemented and browser-verified with isolated SQLite, including application restart. SQL Server provider verification remains deferred. See [integrated evidence](../progress/f02-reliable-edits.md); the [first-increment record](../progress/f01-first-slice.md) retains the earlier user-confirmed evidence. |
 | F02: Revise a character without losing work | Verified locally | Revision-checked autosave, retained input, idempotent recovery, durable calculation status and authenticated cross-tab notifications passed browser/integration checks. Application restart preserved accepted facts and browser access. SQL Server provider verification remains deferred. See [execution evidence](../progress/f02-reliable-edits.md). |
 | F03: Choose how to generate ability scores | Verified locally | All four methods, retained application dice, validated allocations, point accounting, effective scores, limits and fallback evidence passed domain/API/browser checks and application restart with isolated SQLite. SQL Server provider verification remains deferred. See [execution evidence](../progress/f03-ability-generation.md). |
+| F03-a: Start with assigned ability scores | Verified locally | Standard array and application rolls start allocated in displayed ability order; point buy starts at six 8s. Saved edits, confirmation, retained dice and restart persistence passed automated/browser checks with isolated SQLite. See [revision evidence](../progress/f03a-automatic-allocation.md). SQL Server provider verification remains deferred. |
 | F04-F20 | Planned | No completion or acceptance status is recorded for these slices. |
 
 ## Milestones
@@ -129,6 +131,18 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 **Done when:** each method produces independently verified values; recalculation and reopening do not reroll scores; invalid input is explained; absent-input fallback remains distinguishable from a required missing answer.
 
 **Depends on:** F01.
+
+**Acceptance examples:** [ability-score generation](./BEHAVIOR.md#choose-an-ability-score-generation-method).
+
+### F03-a: Start with assigned ability scores
+
+**User story:** As a player, I want supported generation methods to begin with editable assignments, so that getting started does not require assigning all six scores manually.
+
+**Scope:** initialize new Characters with standard-array values in displayed ability order; initialize confirmed standard-array/application-roll switches and rerolls with the method's values in that order; start point buy at six 8s; keep physical totals unassigned. These are saved inputs, separate from origin or progression increases.
+
+**Done when:** initial values and point accounting are independently verified; assignments remain editable; reopening, recalculation and same-method requests do not overwrite saved intent; cancellation changes nothing; retained rolls and idempotent rerolls retain F03's guarantees.
+
+**Depends on:** F03.
 
 **Acceptance examples:** [ability-score generation](./BEHAVIOR.md#choose-an-ability-score-generation-method).
 

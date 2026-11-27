@@ -1,5 +1,9 @@
 # F03 ability generation
 
+This records the original F03 delivery. [F03-a](./f03a-automatic-allocation.md)
+subsequently replaces blank initial assignments with editable automatic
+allocations; the browser observations below describe the original behavior.
+
 ## Delivered
 
 - Standard array, 27-point buy, application 4d6-drop-one-lowest rolls and

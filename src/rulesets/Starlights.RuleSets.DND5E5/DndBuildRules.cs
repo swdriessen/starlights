@@ -16,7 +16,7 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterAbilityGenera
     /// <inheritdoc />
     public Type CompositionType => typeof(DndCharacterComposition);
     /// <inheritdoc />
-    public ICharacterComposition Initialize(CharacterContentBinding content) => new DndCharacterComposition(new("awaiting-choices"), DndBuildFacts.Empty);
+    public ICharacterComposition Initialize(CharacterContentBinding content) => InitializeAbilityAssignments(Compose(DndBuildFacts.Empty));
     /// <inheritdoc />
     public void Validate(ICharacterComposition composition)
     {
@@ -63,7 +63,20 @@ public sealed class DndBuildRules(DndContentPack pack) : ICharacterAbilityGenera
         if (method == facts.AbilityGeneration.Method && !reroll) return composition;
         var rolls = method == "application-rolls" && (reroll || facts.AbilityGeneration.Rolls.Count == 0)
             ? DndAbilityGeneration.Roll() : facts.AbilityGeneration.Rolls;
-        return Compose(new(facts.Choices, new Dictionary<string, int>(), facts.Receipts, facts.ArmorId, facts.WeaponId, new(method, rolls)));
+        return InitializeAbilityAssignments(Compose(new(facts.Choices, new Dictionary<string, int>(), facts.Receipts, facts.ArmorId, facts.WeaponId, new(method, rolls))));
+    }
+
+    private ICharacterComposition InitializeAbilityAssignments(ICharacterComposition composition)
+    {
+        var generation = Facts(composition).AbilityGeneration;
+        if (generation.Method == "physical-dice") return composition;
+        var view = View(composition);
+        IReadOnlyList<int> values = generation.Method == "point-buy"
+            ? Enumerable.Repeat(8, view.Abilities.Count).ToArray() : view.AbilityInputOptions;
+        if (values.Count != view.Abilities.Count)
+            throw new InvalidOperationException("The generation results must match the number of offered abilities.");
+        return AssignAbilities(composition, view.Abilities.Select((ability, index) => (ability.Id, Value: values[index]))
+            .ToDictionary(pair => pair.Id, pair => pair.Value, StringComparer.Ordinal));
     }
 
     private string? InputIssue(DndAbilityGeneration generation, IReadOnlyDictionary<string, int> inputs, IReadOnlyList<string> abilities)

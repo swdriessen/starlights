@@ -50,7 +50,7 @@ export function CharacterAbilities({ saved, inputs, edit, unsaved, generationPen
           </ToggleGroup>
           <FieldDescription>{generationPending ? "Generation change is awaiting save confirmation. Assignments unlock after it is saved."
             : unsaved ? "Finish or resolve pending edits before changing methods."
-            : "Changing methods clears assignments after confirmation. Previously generated dice are retained."}</FieldDescription>
+            : "Standard array and application rolls start assigned in ability order; point buy starts at 8. Confirmed method changes replace assignments. Previously generated dice are retained."}</FieldDescription>
         </Field>
       </FieldGroup>
       {generation.method === "point-buy" && <p role="status" className="text-sm">
@@ -105,8 +105,10 @@ export function CharacterAbilities({ saved, inputs, edit, unsaved, generationPen
           <AlertDialogHeader>
             <AlertDialogTitle>{replacement?.reroll ? "Replace the saved rolls?" : "Change ability generation?"}</AlertDialogTitle>
             <AlertDialogDescription>
-              {replacement?.reroll ? "Generate six new results and clear the current assignments. The old results will be replaced."
-                : "Clear current assignments and use the selected method. Existing application dice are retained; choosing application rolls generates them only if none exist."}
+              {replacement?.reroll ? "Generate six new results and assign them in ability order, replacing the current rolls and assignments."
+                : replacement?.method === "physical-dice" ? "Clear current assignments so you can enter your physical dice totals. Existing application dice are retained."
+                : replacement?.method === "point-buy" ? "Replace current assignments with 8 for every ability. All 27 points remain available. Existing application dice are retained."
+                : "Replace current assignments with the selected method's values in ability order. Existing application dice are retained; choosing application rolls generates them only if none exist."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
