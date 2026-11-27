@@ -27,8 +27,8 @@ allocations; the browser observations below describe the original behavior.
   retained rejected input with actionable server validation messages.
 
 Stable contracts and observable examples are in
-[REFERENCE-BUILD-API.md](../docs/REFERENCE-BUILD-API.md) and
-[BEHAVIOR.md](../docs/BEHAVIOR.md#choose-an-ability-score-generation-method).
+[REFERENCE-BUILD-API.md](../docs/reference/REFERENCE-BUILD-API.md) and
+[BEHAVIOR.md](../docs/specifications/BEHAVIOR.md#choose-an-ability-score-generation-method).
 
 ## Executed automated checks
 

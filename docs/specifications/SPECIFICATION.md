@@ -1,7 +1,7 @@
 # Character-building application specification
 
 Status: agreed target direction for refactoring this repository in place. This specification describes intended behavior, not proof of completion. The checkout targets .NET 11 and uses React/Vite; the first Identity increment, same-origin API access and generated API contracts are implemented. Private blob storage and remaining F00 checks are still open. Neither the framework migration nor sign-in alone completes F00. Items explicitly marked as working directions, open or deferred remain unsettled or outside the initial scope as stated.
-See [CONTENT-AND-COMPUTATION.md](./CONTENT-AND-COMPUTATION.md) for content structure, validation and evaluation contracts; [CHARACTER-RULES.md](./CHARACTER-RULES.md) for character, spell and equipment mechanics; [GLOSSARY.md](../GLOSSARY.md) for domain language; and [BEHAVIOR.md](./BEHAVIOR.md) for acceptance examples.
+See [CONTENT-AND-COMPUTATION.md](./CONTENT-AND-COMPUTATION.md) for content structure, validation and evaluation contracts; [CHARACTER-RULES.md](./CHARACTER-RULES.md) for character, spell and equipment mechanics; [GLOSSARY.md](../../GLOSSARY.md) for domain language; and [BEHAVIOR.md](./BEHAVIOR.md) for acceptance examples.
 
 ## Product direction
 
@@ -14,7 +14,7 @@ See [CONTENT-AND-COMPUTATION.md](./CONTENT-AND-COMPUTATION.md) for content struc
 - Refactor the existing Starlights application in place. Preserve its modular-monolith, API, React/Vite, Aspire and SQL Server foundations where they fit; replace existing behavior incrementally where it conflicts with this specification rather than starting a parallel application.
 - Use Aurora WPF's proven character-building experience, this repository's existing behavior and Aurora Next's agreements and experiments as design input. Adopt only applicable requirements; existing implementation and imported agreements are not proof that a requirement is already satisfied.
 - Develop in small, working, tested end-to-end slices that expand toward the full first-release scope; early slices are checkpoints, not a reduction of that scope.
-- Begin with the bounded F00 platform-foundation checkpoint in [ROADMAP.md](./ROADMAP.md): upgrade the existing application to .NET 11, establish the OpenAPI-generated TypeScript API client, Identity and owner isolation, and private local blob storage. F00 does not redesign the Character domain or build a general rules engine.
+- Begin with the bounded F00 platform-foundation checkpoint in [ROADMAP.md](../ROADMAP.md): upgrade the existing application to .NET 11, establish the OpenAPI-generated TypeScript API client, Identity and owner isolation, and private local blob storage. F00 does not redesign the Character domain or build a general rules engine.
 - The first character-building checkpoint is the [level-1 SRD 5.2.1 Human Fighter/Soldier reference journey](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier), with saving, reopening and independently checked sheet values, using real persistent storage and content loading rather than mock data.
 - Agree important behaviors through concrete examples before implementation. Focus on C# Playwright end-to-end tests for real user journeys, supplemented by focused automated rules tests for complex calculations and edge cases.
 - Use MSTest with the `MSTest.Sdk` project SDK for .NET unit tests.
@@ -233,7 +233,7 @@ The following applicable Aurora Next agreements are carried forward as design re
 
 - Bundle one versioned SRD 5.2.1 JSON Content Pack with the application and load it locally at startup. Stable pack-scoped string IDs are the public identity of Elements; internal persistence IDs, if used, are separate. No remote Content Provider or marketplace is required initially.
 - Support the bundled SRD pack only in the initial release. Keep multiple compatible packs and their dependency/conflict resolution as later capabilities; do not build a multi-pack framework before a second pack requires it.
-- Author the initial pack from the [official SRD 5.2.1](../assets/SRD_CC_v5.2.1.pdf) and identify its source revision and applicable attribution; see the [source and license reference](../assets/README.md).
+- Author the initial pack from the [official SRD 5.2.1](../../assets/SRD_CC_v5.2.1.pdf) and identify its source revision and applicable attribution; see the [source and license reference](../../assets/README.md).
 - Obtained packs remain available from the application server when their original source is temporarily offline. Storage technology and longer-term removal or licensing policies remain open.
 - Keep a published content-pack version's identity shared across users while keeping access and character decisions separate.
 - A published pack retains its identity across updates; versions distinguish its revisions.

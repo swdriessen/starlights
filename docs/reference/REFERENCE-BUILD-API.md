@@ -10,7 +10,7 @@ APIs remain separate and reject initialized Characters.
 
 The new pack covers the level-1 Human/Fighter/Soldier reference, not the full SRD.
 Definitions and numeric values come from JSON; the independent oracle remains
-[the reference journey](BEHAVIOR.md#first-checkpoint-human-fighter-soldier).
+[the reference journey](../specifications/BEHAVIOR.md#first-checkpoint-human-fighter-soldier).
 The official English PDF was retrieved from
 https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf and the
 reference checked against pages 13, 20–22, 47–48, 83, 86–88 and 91–92.
@@ -52,7 +52,7 @@ Authenticated owner-only `GET /api/characters/{characterId}/build` returns the
 authoritative facts, current revision, calculation status and qualified sheet.
 The six POST actions are `choices`, `ability-scores`, `ability-generation`, `equipment-claims`,
 `equipment`, and `name`. OpenAPI and
-[`CharacterBuild.http`](../src/modules/characters/Modules.Characters.Endpoints/CharacterBuild.http)
+[`CharacterBuild.http`](../../src/modules/characters/Modules.Characters.Endpoints/CharacterBuild.http)
 document their bodies. All mutations require the standard antiforgery header.
 
 Each action requires a nonempty `operationId` and numeric `expectedRevision`.

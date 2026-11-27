@@ -1,12 +1,12 @@
 # Starlights UI design: the "Eclipse" landing page (v4)
 
-Status: the approved visual direction for the Starlights landing page, and the reference for the look of the rest of the web UI. Read this before changing the landing page or designing a new page, and follow [the frontend guidance](../src/frontend/AGENTS.md) for where code belongs.
+Status: the approved visual direction for the Starlights landing page, and the reference for the look of the rest of the web UI. Read this before changing the landing page or designing a new page, and follow [the frontend guidance](../../src/frontend/AGENTS.md) for where code belongs.
 
 The reference implementation is `src/frontend/apps/landing-page/src/variants/v4/` (route `/v4` in the landing-page app). `v0` to `v3` are earlier explorations kept for comparison; **v4 is the one to build from**.
 
 | Dark (home theme) | Light |
 | --- | --- |
-| ![Dark hero](images/ui/dark-hero.webp) | ![Light hero](images/ui/light-hero.webp) |
+| ![Dark hero](../images/ui/dark-hero.webp) | ![Light hero](../images/ui/light-hero.webp) |
 
 ## Contents
 
@@ -43,11 +43,11 @@ All colour comes from seven tokens, defined per theme under the `.v4` root in `v
 
 ### Dark (home theme)
 
-![Dark palette](images/ui/palette-dark.png)
+![Dark palette](../images/ui/palette-dark.png)
 
 ### Light
 
-![Light palette](images/ui/palette-light.png)
+![Light palette](../images/ui/palette-light.png)
 
 ### Token reference
 
@@ -70,7 +70,7 @@ Rules:
 - **Cool lilac-blue is reserved** for the star map's "Exploring" state and the dotted far lines. It is not a general UI colour.
 - Status colour mapping (used by the legend and the map; see `statusColor` in `src/data/content.ts`):
 
-![Status stars](images/ui/palette-status.png)
+![Status stars](../images/ui/palette-status.png)
 
 ### Contrast (WCAG, computed from the tokens)
 
@@ -152,15 +152,15 @@ Top to bottom:
 6. **Closing band** (`bg-deep`): star mark, heading with a gold clause, one sentence, `.btn-line` to GitHub.
 7. **Footer:** brand, the variant switcher, the prototype-art note, the trademark note.
 
-![Builder section](images/ui/dark-builder.webp)
+![Builder section](../images/ui/dark-builder.webp)
 
-![Also in the works](images/ui/dark-also.webp)
+![Also in the works](../images/ui/dark-also.webp)
 
 ## The star map (roadmap constellation)
 
 The roadmap is an interactive constellation. This concept is fixed; layout and styling may vary between pages, but the behaviour below must be kept. Implementation: `variants/sky.tsx` (generic) with `variants/armillary.tsx` and `variants/armillary-layout.ts` (the Eclipse look).
 
-![Star map, dark](images/ui/dark-sky.webp)
+![Star map, dark](../images/ui/dark-sky.webp)
 
 ### Composition
 
@@ -248,10 +248,10 @@ Light mode is the same page "printed on cool paper": identical layout, spacing, 
 
 | Dark | Light |
 | --- | --- |
-| ![Dark star map](images/ui/dark-sky.webp) | ![Light star map](images/ui/light-sky.webp) |
-| ![Dark builder](images/ui/dark-builder.webp) | ![Light builder](images/ui/light-builder.webp) |
-| ![Dark also](images/ui/dark-also.webp) | ![Light also](images/ui/light-also.webp) |
-| ![Dark closing](images/ui/dark-end.webp) | ![Light closing](images/ui/light-end.webp) |
+| ![Dark star map](../images/ui/dark-sky.webp) | ![Light star map](../images/ui/light-sky.webp) |
+| ![Dark builder](../images/ui/dark-builder.webp) | ![Light builder](../images/ui/light-builder.webp) |
+| ![Dark also](../images/ui/dark-also.webp) | ![Light also](../images/ui/light-also.webp) |
+| ![Dark closing](../images/ui/dark-end.webp) | ![Light closing](../images/ui/light-end.webp) |
 
 Differences to know:
 
@@ -263,7 +263,7 @@ Differences to know:
 
 ## Responsive behaviour
 
-![Mobile, dark above and light below](images/ui/mobile-dark-light.webp)
+![Mobile, dark above and light below](../images/ui/mobile-dark-light.webp)
 
 - Header nav hides below `md`; the brand stays.
 - Hero heading scales with `clamp()`; the hero stays 100svh and centred.
@@ -333,16 +333,16 @@ The landing page is a mock-up in its own app. When porting:
 
 1. **Tokens.** The seven tokens are scoped to `.v4`/`.dark .v4`. The v0 page re-points the shadcn variables (`--background`, `--foreground`, `--primary`, ...) onto its tokens so `ui-framework` components match; **v4 does not yet do this**. Add the same mapping (`--background: var(--l-sky)`, `--foreground: var(--l-ink)`, `--muted-foreground: var(--l-mute)`, `--border: var(--l-rule)`, `--primary: var(--l-gold)`, `--primary-foreground: var(--l-on-gold)`, `--ring: var(--l-gold)`) when shared components appear inside the page.
 2. **Fonts.** Load Oswald and Geist through the shared package, not per app.
-3. **Shared pieces.** `Sky`, `StatusGlyph`, `Starfield`, `Reveal` and the falling-dust CSS are generic and are candidates for `packages/ui-framework`, per [the frontend guidance](../src/frontend/AGENTS.md): promote them only when a second app needs them.
+3. **Shared pieces.** `Sky`, `StatusGlyph`, `Starfield`, `Reveal` and the falling-dust CSS are generic and are candidates for `packages/ui-framework`, per [the frontend guidance](../../src/frontend/AGENTS.md): promote them only when a second app needs them.
 4. **Theme.** Use the shared `ThemeProvider` and `useTheme`; do not add another toggle.
 5. **Images.** Replace the placeholders and uncleared art (see Provenance) before publishing.
 6. **Behaviour to preserve:** no jitter, click-through fix, reduced-motion path, the dark hero island.
 
 ## The builder shell (v5 mockup)
 
-`/v5` in the landing-page app is a clickable mockup of how the **character builder** should look and behave, built from the same tokens, type and motion rules as the landing page. All data is mock; the build itself is the roadmap's reference character (Human Fighter, Soldier) so its numbers match [the first checkpoint](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier): armor class 17, hit points 12, initiative +4, greatsword +5 for 2d6 + 3 with Graze, 18 GP. Code: `src/frontend/apps/landing-page/src/variants/v5/`.
+`/v5` in the landing-page app is a clickable mockup of how the **character builder** should look and behave, built from the same tokens, type and motion rules as the landing page. All data is mock; the build itself is the roadmap's reference character (Human Fighter, Soldier) so its numbers match [the first checkpoint](../specifications/BEHAVIOR.md#first-checkpoint-human-fighter-soldier): armor class 17, hit points 12, initiative +4, greatsword +5 for 2d6 + 3 with Graze, 18 GP. Code: `src/frontend/apps/landing-page/src/variants/v5/`.
 
-![Builder, Origin stage, dark](images/ui/builder-origin-dark.webp)
+![Builder, Origin stage, dark](../images/ui/builder-origin-dark.webp)
 
 ### Anatomy
 
@@ -385,7 +385,7 @@ Hovering or focusing any option (species, background, style, mastery, ability, c
 
 The **Sheet** tab is the live, recalculated sheet: six ability tiles (modifier large, score and its breakdown beneath, e.g. `17 (15+2)`), stat tiles for armor class, hit points, initiative, speed, proficiency and passive Perception, saving throws, all 18 skills with a proficiency dot, attacks, features and feats, and equipment with currency. Each stat tile shows **where the number came from** (`Chain mail 16 + Defense +1`, `10 + CON +2`, `DEX +2 · Alert +2`). This is the "shows its work" promise applied to the sheet.
 
-![Sheet, light](images/ui/builder-sheet-light.webp)
+![Sheet, light](../images/ui/builder-sheet-light.webp)
 
 ### Behaviours the mockup demonstrates
 
@@ -399,7 +399,7 @@ These come straight from the roadmap and must survive the real implementation:
 - **Scores keep their sources.** Base, origin increase and total are always separate columns, and rolled results are saved and never silently rerolled.
 - **Unsupported things say so.** Other classes show "Later"; levels 2 to 20 are locked with their roadmap slice; PDF export is disabled and labelled planned.
 
-![Retained choices after switching background](images/ui/builder-retained-choices.webp)
+![Retained choices after switching background](../images/ui/builder-retained-choices.webp)
 
 ### Controls and states
 
@@ -412,7 +412,7 @@ These come straight from the roadmap and must survive the real implementation:
 
 ### Responsive
 
-![Equipment stage, dark](images/ui/builder-equipment-dark.webp)
+![Equipment stage, dark](../images/ui/builder-equipment-dark.webp)
 
 - `xl` and up: three columns as described.
 - `lg` to `xl`: stage tabs on top, work area and detail panel side by side (24rem panel).
@@ -422,7 +422,7 @@ These come straight from the roadmap and must survive the real implementation:
 
 The shell uses the same tokens, so light mode needs no special cases. The stage banner is a permanent dark island (like the landing hero), and the rest of the app turns to paper.
 
-![Abilities, point buy](images/ui/builder-abilities-dark.webp)
+![Abilities, point buy](../images/ui/builder-abilities-dark.webp)
 
 ### Known limits of the mockup
 

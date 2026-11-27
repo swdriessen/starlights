@@ -18,9 +18,9 @@
 - Confirmation and creation copy describe automatic allocation accurately.
   No schema migration, pinned-content change or API-shape change is required.
 
-Stable requirements are in [the behavior examples](../docs/BEHAVIOR.md#choose-an-ability-score-generation-method),
-[API contract](../docs/REFERENCE-BUILD-API.md#f03-ability-generation) and
-[UI guidance](../docs/UI-DESIGN.md).
+Stable requirements are in [the behavior examples](../docs/specifications/BEHAVIOR.md#choose-an-ability-score-generation-method),
+[API contract](../docs/reference/REFERENCE-BUILD-API.md#f03-ability-generation) and
+[UI guidance](../docs/guidance/UI-DESIGN.md).
 
 ## Automated verification
 

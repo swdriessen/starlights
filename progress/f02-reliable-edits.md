@@ -7,7 +7,7 @@ complete the missing F01 Human/Fighter/Soldier mechanics. The historical F01.1
 create/list/reopen evidence is retained in [its record](f01-first-slice.md).
 
 The bounded content and HTTP contracts are documented in
-[REFERENCE-BUILD-API.md](../docs/REFERENCE-BUILD-API.md). New Characters pin
+[REFERENCE-BUILD-API.md](../docs/reference/REFERENCE-BUILD-API.md). New Characters pin
 `srd-5.2.1` version `0.2.0`; existing `0.1.0` pins are unchanged. Broader origin,
 ability-generation, advancement and equipment slices are not implied.
 

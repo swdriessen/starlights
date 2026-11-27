@@ -2,7 +2,7 @@
 
 These agreed examples complement the [specification](./SPECIFICATION.md). They are not yet executable tests.
 
-The [F00 platform foundation](./ROADMAP.md#f00-establish-the-platform-foundation) is verified before the Character-building slices below. These examples do not require Character functionality to be added to F00.
+The [F00 platform foundation](../ROADMAP.md#f00-establish-the-platform-foundation) is verified before the Character-building slices below. These examples do not require Character functionality to be added to F00.
 
 ## F00: Identity and access
 
@@ -430,7 +430,7 @@ The player makes these choices:
 - Savage Attacker, Alert, Defense, Second Wind and the selected weapon masteries; Second Wind has two uses.
 - Both claimed starting packages and 18 GP in total, without duplicate equipment or currency after reopening.
 
-Expected results are independently derived from the [local SRD 5.2.1](../assets/SRD_CC_v5.2.1.pdf), pages 13, 20–22, 47–48, 83, 86–88 and 91–92. They must not be generated from the application under test.
+Expected results are independently derived from the [local SRD 5.2.1](../../assets/SRD_CC_v5.2.1.pdf), pages 13, 20–22, 47–48, 83, 86–88 and 91–92. They must not be generated from the application under test.
 
 This work includes material from the System Reference Document 5.2.1 (“SRD 5.2.1”) by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.
 

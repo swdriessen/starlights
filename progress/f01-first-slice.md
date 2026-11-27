@@ -4,7 +4,7 @@
 
 Implementation is committed. F01 acceptance is **verified**, as confirmed by
 the user on 2026-11-26. This record supplements the
-[delivery contract](../docs/F01-01-CREATE-LIST-REOPEN.md); it does not weaken it.
+[delivery contract](../docs/specifications/F01-01-CREATE-LIST-REOPEN.md); it does not weaken it.
 
 Acceptance verification date: 2026-11-26. The implementation and checks below
 were recorded on 2026-11-25; detailed results of the final verification were

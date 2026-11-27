@@ -40,7 +40,7 @@ fully implemented in the current checkout. The [first increment](./F01-01-CREATE
 only loaded and validated the content identity and Character Element binding
 needed for creation; its pinned `0.1.0` pack still does not evaluate Grants,
 Selections or sheet values. The subsequent
-[reference build increment](./REFERENCE-BUILD-API.md) adds a separately pinned
+[reference build increment](../reference/REFERENCE-BUILD-API.md) adds a separately pinned
 `0.2.0` pack and the bounded mechanics required for the Human/Fighter/Soldier
 journey, plus revision-checked durable edits. Unsupported contracts described
 below remain target requirements rather than implemented behavior.

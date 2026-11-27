@@ -38,7 +38,7 @@ This roadmap defines the target delivery sequence and acceptance boundaries for 
 
 **User story:** As a TTRPG player, I want to create, understand, save and revise a character using supported game content, so that I can bring an accurate and readable character sheet to the table.
 
-**Target product:** the [agreed first release](./SPECIFICATION.md#first-release): a private, web-based SRD 5.2.1 character builder supporting all SRD classes at levels 1-20, multiclassing, relevant equipment and magic items, and on-screen and PDF sheets.
+**Target product:** the [agreed first release](./specifications/SPECIFICATION.md#first-release): a private, web-based SRD 5.2.1 character builder supporting all SRD classes at levels 1-20, multiclassing, relevant equipment and magic items, and on-screen and PDF sheets.
 
 The epic is complete only when the release gates below are met. Completing the first checkpoint or a subset of classes does not redefine the product as finished.
 
@@ -47,11 +47,11 @@ The epic is complete only when the release gates below are met. Completing the f
 - Each numbered slice normally delivers user-visible behavior through content, domain behavior, persistence, application workflow, UI and tests as needed. F00 is the bounded platform foundation for the existing application: it upgrades and secures the current API/React/Aspire setup without redesigning the Character domain or building a general rules engine. Avoid separate "build the engine," "build the database" and "build the UI" phases thereafter.
 - Numbers indicate a suggested sequence, not a requirement to finish every lower number first. The listed dependencies are prerequisites; independent features may proceed separately once their prerequisites are satisfied.
 - These are high-level feature slices, not estimates or sprint-sized tickets. Before starting a large class/progression feature, refine it into smaller end-to-end stories with concrete content and independently checked expected results. Keep the parent feature open until its full scope works.
-- Before implementing a slice, resolve only the open contracts it needs and add its observable examples to [BEHAVIOR.md](./BEHAVIOR.md). Consult [the content contracts](./CONTENT-AND-COMPUTATION.md), [character mechanics](./CHARACTER-RULES.md) and [the JSON baseline](./CONTENT-EXAMPLE.md) rather than inventing a parallel specification.
+- Before implementing a slice, resolve only the open contracts it needs and add its observable examples to [BEHAVIOR.md](./specifications/BEHAVIOR.md). Consult [the content contracts](./specifications/CONTENT-AND-COMPUTATION.md), [character mechanics](./specifications/CHARACTER-RULES.md) and [the JSON baseline](./specifications/CONTENT-EXAMPLE.md) rather than inventing a parallel specification.
 - Carry forward earlier features and regression checks. New content is not considered supported if its required decisions or persistent sheet effects are missing.
 - Accessibility, authorization, diagnostics, safe rendering and persistence correctness apply from the first feature that uses them. Later features extend those guarantees; they are not permission to postpone them.
-- Preserve [domain-first composition and independent Ruleset modules](./SPECIFICATION.md#domain-composition-and-ruleset-modules). Add the smallest typed contracts needed for the slice; persistence adapts to the domain. Do not construct a speculative framework for all future games.
-- Implement slices with [command/query separation](./SPECIFICATION.md#feature-workflows-and-cqrs), sharing commands only where their domain semantics match across Rulesets.
+- Preserve [domain-first composition and independent Ruleset modules](./specifications/SPECIFICATION.md#domain-composition-and-ruleset-modules). Add the smallest typed contracts needed for the slice; persistence adapts to the domain. Do not construct a speculative framework for all future games.
+- Implement slices with [command/query separation](./specifications/SPECIFICATION.md#feature-workflows-and-cqrs), sharing commands only where their domain semantics match across Rulesets.
 - Use Minimal APIs for new and replaced HTTP features. Existing FastEndpoints routes may remain temporarily during migration, with equivalent security, validation and OpenAPI coverage; retire FastEndpoints once the retained routes have been migrated.
 
 ## Current status
@@ -94,7 +94,7 @@ Milestones summarize outcomes, not additional implementation layers. Some M4 fea
 
 **Depends on:** none.
 
-**Detailed contract:** [Application architecture](./SPECIFICATION.md#application-architecture), [Identity and access](./SPECIFICATION.md#identity-and-access), [private file management](./SPECIFICATION.md#private-file-management), the [Identity behavior examples](./BEHAVIOR.md#f00-identity-and-access), the [file-library examples](./BEHAVIOR.md#f00-private-file-library) and the [local/private-network requirements](./SPECIFICATION.md#first-release).
+**Detailed contract:** [Application architecture](./specifications/SPECIFICATION.md#application-architecture), [Identity and access](./specifications/SPECIFICATION.md#identity-and-access), [private file management](./specifications/SPECIFICATION.md#private-file-management), the [Identity behavior examples](./specifications/BEHAVIOR.md#f00-identity-and-access), the [file-library examples](./specifications/BEHAVIOR.md#f00-private-file-library) and the [local/private-network requirements](./specifications/SPECIFICATION.md#first-release).
 
 ### F01: Build, save and reopen the reference character
 
@@ -102,11 +102,11 @@ Milestones summarize outcomes, not additional implementation layers. Some M4 fea
 
 **Scope:** use the completed F00 application and configured sign-in; load the bundled, versioned SRD 5.2.1 JSON pack; initialize the Character through the selected Ruleset; record the reference Choices; separately claim class and background equipment; equip the character; save and display its calculated sheet.
 
-**Done when:** the [reference journey and expected values](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier) pass through the browser with real content and durable storage, including save/reopen and application restart. Identity, grants, choices and possessions are not hardcoded to this one character. Private access and visible save/calculation failures work for this journey.
+**Done when:** the [reference journey and expected values](./specifications/BEHAVIOR.md#first-checkpoint-human-fighter-soldier) pass through the browser with real content and durable storage, including save/reopen and application restart. Identity, grants, choices and possessions are not hardcoded to this one character. Private access and visible save/calculation failures work for this journey.
 
 **Depends on:** F00.
 
-**Acceptance evidence:** [the reference journey and expected values](./BEHAVIOR.md#first-checkpoint-human-fighter-soldier), plus the [create, list and reopen contract](./F01-01-CREATE-LIST-REOPEN.md) and its [observable examples](./BEHAVIOR.md#f011-create-list-and-reopen-a-character).
+**Acceptance evidence:** [the reference journey and expected values](./specifications/BEHAVIOR.md#first-checkpoint-human-fighter-soldier), plus the [create, list and reopen contract](./specifications/F01-01-CREATE-LIST-REOPEN.md) and its [observable examples](./specifications/BEHAVIOR.md#f011-create-list-and-reopen-a-character).
 
 Resolve the minimum aggregate, initialization, content-format, evaluation and Character persistence contracts as part of F01; they are not moved into F00. Preserve the shared Character root, validated Ruleset-owned composition, pinned content and aggregate-wide Unit of Work described in the specification. Exercise domain invariants without EF and verify persisted aggregate state survives reopening.
 
@@ -120,7 +120,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F01.
 
-**Acceptance examples:** [reliable Character edits](./BEHAVIOR.md#reliable-character-edits).
+**Acceptance examples:** [reliable Character edits](./specifications/BEHAVIOR.md#reliable-character-edits).
 
 ### F03: Choose how to generate ability scores
 
@@ -132,7 +132,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F01.
 
-**Acceptance examples:** [ability-score generation](./BEHAVIOR.md#choose-an-ability-score-generation-method).
+**Acceptance examples:** [ability-score generation](./specifications/BEHAVIOR.md#choose-an-ability-score-generation-method).
 
 ### F03-a: Start with assigned ability scores
 
@@ -144,7 +144,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F03.
 
-**Acceptance examples:** [ability-score generation](./BEHAVIOR.md#choose-an-ability-score-generation-method).
+**Acceptance examples:** [ability-score generation](./specifications/BEHAVIOR.md#choose-an-ability-score-generation-method).
 
 ### F04: Choose an origin and navigate the build
 
@@ -156,7 +156,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F01.
 
-**Acceptance examples:** [guided Character building](./BEHAVIOR.md#guided-character-building).
+**Acceptance examples:** [guided Character building](./specifications/BEHAVIOR.md#guided-character-building).
 
 ### F05: Advance a Fighter and revisit earlier decisions
 
@@ -168,7 +168,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F02, F03, F04.
 
-**Acceptance examples:** [retaining temporarily unavailable Choices](./BEHAVIOR.md#preserve-a-temporarily-unavailable-choice) and [recalculating after removing the first class](./BEHAVIOR.md#recalculate-after-removing-the-first-class).
+**Acceptance examples:** [retaining temporarily unavailable Choices](./specifications/BEHAVIOR.md#preserve-a-temporarily-unavailable-choice) and [recalculating after removing the first class](./specifications/BEHAVIOR.md#recalculate-after-removing-the-first-class).
 
 ### F06: Manage ordinary possessions and equipment
 
@@ -310,7 +310,7 @@ Resolve the minimum aggregate, initialization, content-format, evaluation and Ch
 
 **Depends on:** F02, F04, F15.
 
-**Decision gate:** resolve fix classification, migration and compatibility details and the replacement/append contracts before implementing those parts. Eligible fixes automatically migrate a Character's pinned version as described in the specification. This slice does not introduce player imports, marketplace workflows or a multiple-pack selection UI into the first release; eventual capabilities remain scoped by [SPECIFICATION.md](./SPECIFICATION.md#content-distribution).
+**Decision gate:** resolve fix classification, migration and compatibility details and the replacement/append contracts before implementing those parts. Eligible fixes automatically migrate a Character's pinned version as described in the specification. This slice does not introduce player imports, marketplace workflows or a multiple-pack selection UI into the first release; eventual capabilities remain scoped by [SPECIFICATION.md](./specifications/SPECIFICATION.md#content-distribution).
 
 ### F20: Operate the builder safely on a private network
 
@@ -351,4 +351,4 @@ These are directions, not scheduled first-release slices or newly approved requi
 - Real-time campaign/room broadcasts and DM-triggered notifications, using SignalR after campaign membership and broadcast authorization are designed. These are not part of the first release.
 - Marketplace and standalone compendium experiences, only after their separate scope and design are agreed.
 
-Other deferred items, including editable character transfer, duplication, offline editing and alternate sheet templates, retain their status in [SPECIFICATION.md](./SPECIFICATION.md). None is a hidden completion condition for this epic.
+Other deferred items, including editable character transfer, duplication, offline editing and alternate sheet templates, retain their status in [SPECIFICATION.md](./specifications/SPECIFICATION.md). None is a hidden completion condition for this epic.
