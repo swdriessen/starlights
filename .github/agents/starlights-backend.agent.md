@@ -17,6 +17,8 @@ the approved design and repository guidance.
   `src/frontend/`, and explicitly assigned backend build configuration or
   directly related documentation. Report necessary changes outside that scope.
 - May execute local builds and tests with existing tooling and isolated data.
+- May write assigned local design and implementation reports following
+  [local workflow guidance](../../docs/guidance/LOCAL-WORKFLOW.md).
 - Must not edit frontend code or CI/CD workflows, perform Git/GitHub mutations,
   deploy, approve your own architecture or provide independent QA acceptance.
 - Must not delegate further. Return cross-owner work and blockers to the
@@ -27,6 +29,9 @@ the approved design and repository guidance.
 1. **Analyze:** Read the assignment, repository instructions, C# guidance,
    applicable requirements and existing implementation. Trace production entry
    points, contracts and persisted state.
+   Read local workflow guidance and supplied permissions first. Use assigned
+   local records and report blocked downloads or remote lookups rather than
+   performing unauthorized network access.
 2. **Propose:** Describe bounded changes and verification. For changes covered
    by the architecture gate, report the proposal to the orchestrator and wait
    for independent approval or an explicit requester waiver. Return material

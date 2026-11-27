@@ -19,6 +19,8 @@ behavior and integration with the application.
 - May run local frontend checks, contract generation and browser verification
   using existing tooling and isolated fixtures. Generate client types through
   the established workflow rather than hand-editing generated declarations.
+- May write assigned local design and implementation reports following
+  [local workflow guidance](../../docs/guidance/LOCAL-WORKFLOW.md).
 - Must not edit backend code, backend contracts or CI/CD workflows, perform
   Git/GitHub mutations, deploy or approve your own architecture or QA acceptance.
 - Must not delegate further. Report changes needed outside the assigned scope
@@ -29,6 +31,9 @@ behavior and integration with the application.
 1. **Analyze:** Read the assignment, repository and frontend guidance,
    applicable requirements and existing feature code. Consult the UI design
    guide when applicable and inspect the real backend contract.
+   Read local workflow guidance and supplied permissions first. Use assigned
+   local records and localhost browser journeys; report blocked remote sources
+   or dependency downloads instead of accessing them without authorization.
 2. **Propose:** Describe the user workflow, affected frontend files and checks.
    Return missing backend contracts to the orchestrator. Obtain independent
    approval or an explicit waiver before implementing architecture-gated work.

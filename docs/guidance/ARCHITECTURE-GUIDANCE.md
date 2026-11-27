@@ -61,6 +61,11 @@ invariant; review remains necessary for responsibilities and domain meaning.
 
 ## Specialist coordination
 
+Default to [local workflow guidance](./LOCAL-WORKFLOW.md). Local tickets and
+reports replace remote issue/PR steps unless the requester explicitly authorizes
+remote operations. Local Git inspection does not authorize branch creation or
+commits. The review and verification gates still apply.
+
 For new or ambiguous requirements,
 [starlights-specification-author](../../.github/agents/starlights-specification-author.agent.md)
 refines the request using
@@ -105,10 +110,12 @@ Agent tool lists select the capabilities needed for their roles. Check the
 actual runtime inventory before relying on an agent: the specification author
 needs reading/search and assigned documentation editing, but no execution or
 delegation; architect and Ruleset
-reviewers need reading/search; QA needs execution and browser verification
-but no direct editing or delegation; implementation and Git Ops agents need
+reviewers need reading/search; QA needs execution and browser verification;
+these reviewers may edit only their assigned local reports, not reviewed files.
+Implementation and Git Ops agents need
 editing/execution but no delegation; the orchestrator needs coordination but
-no editing/execution. If required tools are unavailable, report the limitation
+may edit only assigned local request/status records and must not execute commands.
+If required tools are unavailable, report the limitation
 or use an allowed existing alternative. Tool filtering varies by harness:
 execution can still modify files, and folder ownership and no-mutation rules
 remain instructions, not filesystem security guarantees. Runtime inventory

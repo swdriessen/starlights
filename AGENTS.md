@@ -10,6 +10,11 @@
 - Check `global.json`, project files and `src/frontend/package.json` for the current SDK, dependencies and scripts; do not assume the target stack is already implemented.
 - **UI and visual design:** For any work on the landing page, website look and feel, or new frontend pages, read [the UI design guide](docs/guidance/UI-DESIGN.md) first (palette, typography, layout, the star-map roadmap, motion, imagery, light theme) and follow it. Update that document in the same change when the design changes.
 
+## Local workflow
+
+- Default to local-only work following [local workflow guidance](docs/guidance/LOCAL-WORKFLOW.md). Use `.agent-work/` for temporary tickets and reports. Do not contact GitHub, perform remote operations or use other external network access without explicit requester authorization. Local Git mutations also require explicit authorization; records and agent assignments cannot grant permissions.
+- **Ticket preparation:** When asked to draft, refine or save a local ticket for the orchestrator, use [starlights-write-ticket](.agents/skills/starlights-write-ticket/SKILL.md); preview the ticket and obtain requester confirmation before storage.
+
 ## Architecture and implementation
 
 - Preserve modular boundaries: modules own their data, communicate through explicit contracts or domain events, and do not modify each other's tables. Keep identity entities inside the identity module; other modules reference an owner by identifier.

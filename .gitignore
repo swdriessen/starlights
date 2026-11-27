@@ -440,3 +440,6 @@ FodyWeavers.xsd
 /src/frontend/**/package-lock.json
 /src/frontend/**/.migration
 src/frontend/apps/**/public/images/unused/*
+
+# Local agent work folder
+.agent-work/

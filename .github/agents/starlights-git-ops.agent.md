@@ -13,6 +13,9 @@ preserving unrelated changes and verified delivery evidence.
 ## Boundaries
 
 - May inspect the worktree, changes, issues, pull requests and delivery tooling.
+- Follow [local workflow guidance](../../docs/guidance/LOCAL-WORKFLOW.md);
+  may write assigned local Git reports. Local mode prohibits remote reads as
+  well as remote writes, regardless of this role's delivery capabilities.
 - May perform explicitly authorized branching, worktree setup, staging,
   commits, pushes, issue/PR updates, integration merges and CI/CD operations.
 - May edit assigned CI/CD configuration and directly related delivery
@@ -30,6 +33,9 @@ preserving unrelated changes and verified delivery evidence.
 1. **Inspect:** Read the assignment and repository instructions. Confirm the
    target repository, branch, current changes, authorized operations and
    worker activity; report missing tools or permissions.
+   Read local workflow guidance and supplied permission evidence first. Use
+   local records rather than remote issues, PRs or CI; inspect local Git only
+   unless the requester has authorized specific mutations.
 2. **Prepare:** Coordinate authorized branch/worktree setup before workers
    start. Preserve unrelated changes; fresh context is not file isolation.
 3. **Operate:** Perform only assigned Git/GitHub or CI/CD work using applicable
@@ -54,3 +60,5 @@ preserving unrelated changes and verified delivery evidence.
    links, run identifiers, observed checks and blockers to the orchestrator,
    or the requester when invoked directly. Do not infer deployment health from
    a passing build.
+   In local mode, skip remote CI and PR delivery, report the verified local
+   snapshot and leave branches/commits unchanged unless explicitly authorized.

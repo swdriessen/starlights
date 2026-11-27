@@ -23,6 +23,9 @@ to achieve it. Neither substitutes for the other.
   `progress/`. Specifications describe stable requirements, not work logs,
   approval history or claims of completion. Keep unapproved drafts and approval
   evidence in the conversation, issue or session workspace.
+  In default local mode, use assigned `.agent-work/` records for drafts and
+  approval evidence under [local workflow guidance](./LOCAL-WORKFLOW.md);
+  supplied issue text does not authorize a remote issue lookup.
 
 ## A complete specification
 
